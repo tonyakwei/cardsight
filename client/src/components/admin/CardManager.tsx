@@ -20,6 +20,7 @@ import {
   fetchCardSets,
   fetchDesigns,
   fetchHouses,
+  fetchMissions,
   reviewCardSet,
   updateCardSet,
   createCard,
@@ -31,6 +32,7 @@ import {
   type AdminCardSet,
   type AdminDesign,
   type AdminHouse,
+  type AdminMission,
 } from "../../api/admin";
 import { CardRow } from "./CardRow";
 import { SetReviewBanner } from "./SetReviewBanner";
@@ -44,6 +46,7 @@ export function CardManager() {
   const [cardSets, setCardSets] = useState<AdminCardSet[]>([]);
   const [designs, setDesigns] = useState<AdminDesign[]>([]);
   const [houses, setHouses] = useState<AdminHouse[]>([]);
+  const [missions, setMissions] = useState<AdminMission[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -53,18 +56,20 @@ export function CardManager() {
   const loadData = useCallback(async () => {
     if (!gameId) return;
     setLoading(true);
-    const [g, c, s, d, h] = await Promise.all([
+    const [g, c, s, d, h, m] = await Promise.all([
       fetchGame(gameId),
       fetchCards(gameId, { showDeleted: true }),
       fetchCardSets(gameId),
       fetchDesigns(gameId),
       fetchHouses(gameId),
+      fetchMissions(gameId),
     ]);
     setGame(g);
     setCards(c);
     setCardSets(s);
     setDesigns(d);
     setHouses(h);
+    setMissions(m);
     setLoading(false);
   }, [gameId]);
 
@@ -223,6 +228,22 @@ export function CardManager() {
           <Button
             size="xs"
             variant="light"
+            color="green"
+            onClick={() => navigate(`/admin/games/${gameId}/dashboard`)}
+          >
+            Live Dashboard
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
+            color="orange"
+            onClick={() => navigate(`/admin/games/${gameId}/missions`)}
+          >
+            Missions
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
             color="violet"
             onClick={() => navigate(`/admin/games/${gameId}/simulator`)}
           >
@@ -267,7 +288,7 @@ export function CardManager() {
         </Tabs.List>
       </Tabs>
 
-      {/* Set notes + review banner */}
+      {/* Set notes + missions + review banner */}
       {currentSet && (
         <>
           <EditableSetNotes
@@ -277,6 +298,12 @@ export function CardManager() {
             onUpdated={(updated) =>
               setCardSets((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
             }
+          />
+          <SetMissions
+            cardSetId={currentSet.id}
+            cardSetColor={currentSet.color}
+            missions={missions}
+            gameId={gameId!}
           />
           <SetReviewBanner
             modifiedCount={currentSet.modifiedSinceReview}
@@ -437,6 +464,89 @@ function EditableSetNotes({
     >
       {cardSet.notes || "Click to add notes..."}
     </Text>
+  );
+}
+
+function SetMissions({
+  cardSetId,
+  cardSetColor,
+  missions,
+  gameId,
+}: {
+  cardSetId: string;
+  cardSetColor: string;
+  missions: AdminMission[];
+  gameId: string;
+}) {
+  const navigate = useNavigate();
+
+  // Find missions that require this card set
+  const related = missions.filter((m) =>
+    (m.requiredClueSets ?? []).some((rc: any) => rc.cardSetId === cardSetId),
+  );
+
+  if (related.length === 0) return null;
+
+  return (
+    <div
+      style={{
+        marginBottom: "var(--mantine-spacing-sm)",
+        padding: "var(--mantine-spacing-xs) var(--mantine-spacing-sm)",
+        borderRadius: "6px",
+        background: "rgba(255, 200, 0, 0.03)",
+        border: "1px solid var(--mantine-color-dark-5)",
+      }}
+    >
+      <Group justify="space-between" mb={4}>
+        <Text size="xs" fw={600} c="yellow.5">
+          Missions using this set
+        </Text>
+        <ActionIcon
+          size="xs"
+          variant="subtle"
+          color="yellow"
+          onClick={() => navigate(`/admin/games/${gameId}/missions`)}
+          title="Go to missions"
+        >
+          →
+        </ActionIcon>
+      </Group>
+      <Stack gap={2}>
+        {related.map((m) => {
+          const needed = (m.requiredClueSets ?? []).find(
+            (rc: any) => rc.cardSetId === cardSetId,
+          ) as { count: number } | undefined;
+          return (
+            <Group key={m.id} gap="xs">
+              <Badge
+                size="xs"
+                variant={m.isCompleted ? "filled" : "outline"}
+                color={m.isCompleted ? "green" : "gray"}
+              >
+                {m.isCompleted ? "Done" : `Act ${m.act}`}
+              </Badge>
+              <Text size="xs">{m.title}</Text>
+              {m.missionHouses.map((mh) => (
+                <Badge
+                  key={mh.house.id}
+                  size="xs"
+                  variant="dot"
+                  color="gray"
+                  style={{ borderColor: mh.house.color }}
+                >
+                  {mh.house.name}
+                </Badge>
+              ))}
+              {needed && (
+                <Text size="xs" c="dimmed">
+                  (needs {needed.count})
+                </Text>
+              )}
+            </Group>
+          );
+        })}
+      </Stack>
+    </div>
   );
 }
 

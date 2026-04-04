@@ -262,6 +262,168 @@ export async function bulkOperation(
   });
 }
 
+// === Missions ===
+
+export interface AdminMission {
+  id: string;
+  gameId: string;
+  act: number;
+  missionCardId: string | null;
+  missionCard: { id: string; humanCardId: string; title: string } | null;
+  title: string;
+  description: string;
+  requiredClueSets: { cardSetId: string; count: number }[];
+  answerTemplateType: string | null;
+  answerId: string | null;
+  isCompleted: boolean;
+  completedAt: string | null;
+  consequenceCompleted: string | null;
+  consequenceNotCompleted: string | null;
+  consequenceImageCompleted: string | null;
+  consequenceImageNotCompleted: string | null;
+  mechanicalEffectCompleted: any | null;
+  mechanicalEffectNotCompleted: any | null;
+  sortOrder: number;
+  notes: string | null;
+  missionHouses: { id: string; house: { id: string; name: string; color: string } }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function fetchMissions(
+  gameId: string,
+  filters?: { houseId?: string; act?: number },
+): Promise<AdminMission[]> {
+  const params = new URLSearchParams();
+  if (filters?.houseId) params.set("houseId", filters.houseId);
+  if (filters?.act) params.set("act", String(filters.act));
+  const qs = params.toString();
+  const res = await fetch(`${BASE}/games/${gameId}/missions${qs ? `?${qs}` : ""}`);
+  return res.json();
+}
+
+export async function createMission(
+  gameId: string,
+  data: Record<string, any>,
+): Promise<AdminMission> {
+  const res = await fetch(`${BASE}/games/${gameId}/missions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function updateMission(
+  gameId: string,
+  missionId: string,
+  data: Record<string, any>,
+): Promise<AdminMission> {
+  const res = await fetch(`${BASE}/games/${gameId}/missions/${missionId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function deleteMission(
+  gameId: string,
+  missionId: string,
+): Promise<void> {
+  await fetch(`${BASE}/games/${gameId}/missions/${missionId}`, {
+    method: "DELETE",
+  });
+}
+
+export interface ActBreakHouse {
+  house: { id: string; name: string; color: string };
+  missions: {
+    id: string;
+    title: string;
+    isCompleted: boolean;
+    completedAt: string | null;
+    consequence: string | null;
+    consequenceImage: string | null;
+    mechanicalEffect: any | null;
+  }[];
+  completedCount: number;
+  totalCount: number;
+}
+
+export async function fetchActBreak(
+  gameId: string,
+  act: number,
+): Promise<ActBreakHouse[]> {
+  const res = await fetch(`${BASE}/games/${gameId}/act-break/${act}`);
+  return res.json();
+}
+
+// === Act Transitions ===
+
+export interface ActTransitionResult {
+  fromAct: number;
+  toAct: number;
+  cardsLocked: number;
+  cardsUnlocked: number;
+}
+
+export async function transitionAct(
+  gameId: string,
+  fromAct: number,
+): Promise<ActTransitionResult> {
+  const res = await fetch(`${BASE}/games/${gameId}/transition-act`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fromAct }),
+  });
+  return res.json();
+}
+
+// === Live Dashboard ===
+
+export interface DashboardData {
+  overview: {
+    totalCards: number;
+    cardsScanned: number;
+    totalScans: number;
+    totalAttempts: number;
+    correctAttempts: number;
+  };
+  cardDiscovery: {
+    setId: string | null;
+    setName: string;
+    setColor: string;
+    total: number;
+    scanned: number;
+    solved: number;
+  }[];
+  activity: {
+    type: "scan" | "answer";
+    at: string;
+    cardId: string;
+    cardTitle: string;
+    isCorrect?: boolean;
+    attemptNumber?: number;
+  }[];
+  missionProgress: {
+    house: { id: string; name: string; color: string };
+    total: number;
+    completed: number;
+    missions: {
+      id: string;
+      title: string;
+      act: number;
+      isCompleted: boolean;
+    }[];
+  }[];
+}
+
+export async function fetchDashboard(gameId: string): Promise<DashboardData> {
+  const res = await fetch(`${BASE}/games/${gameId}/dashboard`);
+  return res.json();
+}
+
 // === Simulator ===
 
 export interface SimulatorCard {

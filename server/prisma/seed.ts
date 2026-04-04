@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Clean existing data
+  await prisma.missionHouse.deleteMany();
+  await prisma.mission.deleteMany();
   await prisma.cardHouse.deleteMany();
   await prisma.setReview.deleteMany();
   await prisma.answerAttempt.deleteMany();
@@ -431,6 +433,111 @@ The signal originates from an ancient city.`,
       sessionHash: "seed-session",
     },
   });
+
+  // === Missions ===
+
+  // Helper to assign houses to a mission
+  async function assignMissionHouses(missionId: string, houseIds: string[]) {
+    for (const houseId of houseIds) {
+      await prisma.missionHouse.create({ data: { missionId, houseId } });
+    }
+  }
+
+  // Act 1 — Alpha missions
+  const m1 = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Identify the Source Star System",
+      description: "Triangulate the origin of the intercepted signal using stellar cartography data. Collect Signal and Navigation clue cards to determine which star system the transmission originates from.",
+      requiredClueSets: [
+        { cardSetId: signalsSet.id, count: 2 },
+        { cardSetId: navSet.id, count: 1 },
+      ],
+      consequenceCompleted: "Your agency successfully identified the Kepler-442 system as the signal origin. The Science Ministry has granted your team priority access to the deep-space array for Act 2. **You will receive one bonus clue card at the start of Act 2.**",
+      consequenceNotCompleted: "Without a confirmed origin point, your agency's credibility has taken a hit. The joint committee has reassigned one of your analysts to Agency Bravo. **You will have 5 available missions in Act 2 instead of 6.**",
+      mechanicalEffectCompleted: { bonus_clue_cards: 1 },
+      mechanicalEffectNotCompleted: { mission_count_reduction: 1 },
+      sortOrder: 1,
+      notes: "This is the 'easy' mission for Alpha — most teams should complete this.",
+    },
+  });
+  await assignMissionHouses(m1.id, [alpha.id]);
+
+  const m2 = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Decode the Emergency Frequency",
+      description: "An automated distress signal is repeating on an unknown frequency. Find and analyze the signal pattern cards to determine the exact broadcast frequency.",
+      requiredClueSets: [
+        { cardSetId: signalsSet.id, count: 3 },
+      ],
+      consequenceCompleted: "The decoded frequency reveals a second, hidden carrier wave beneath the main signal. Your team now has access to classified intercepts that others do not. **You gain the 'Signal Intelligence' capability for Act 2.**",
+      consequenceNotCompleted: "The emergency frequency continues to broadcast, unidentified. Other agencies are beginning to notice it. You've lost your head start. **No additional effect — but Bravo may have decoded it instead.**",
+      mechanicalEffectCompleted: { capability_gained: "signal_intelligence" },
+      sortOrder: 2,
+    },
+  });
+  await assignMissionHouses(m2.id, [alpha.id]);
+
+  // Act 1 — Bravo missions
+  const m3 = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Map the Constellation Pattern",
+      description: "The alien transmission references a constellation and a specific pattern of stars. Use Geometry and Signal clue cards to reconstruct the pattern.",
+      requiredClueSets: [
+        { cardSetId: geoSet.id, count: 2 },
+        { cardSetId: signalsSet.id, count: 1 },
+      ],
+      consequenceCompleted: "Your agency has mapped the seven-point constellation pattern described in the alien transmission. This gives you a critical advantage in understanding what 'the path opens' means in Act 2.",
+      consequenceNotCompleted: "The constellation remains unmapped. When Act 2 introduces the star gate coordinates, your team will be working from scratch while others have a head start.",
+      mechanicalEffectCompleted: { capability_gained: "constellation_map" },
+      sortOrder: 1,
+    },
+  });
+  await assignMissionHouses(m3.id, [bravo.id]);
+
+  // Act 1 — Charlie missions
+  const m4 = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Translate the Alien Message",
+      description: "A decoded alien transmission has been partially translated. Collect Signal and Navigation cards to fill in the gaps and understand the full message.",
+      requiredClueSets: [
+        { cardSetId: signalsSet.id, count: 2 },
+        { cardSetId: navSet.id, count: 1 },
+      ],
+      consequenceCompleted: "The full alien message reads: 'We have watched your star for many rotations. The light you call north is our beacon home. When the seven points align, the path opens. Do not seek us. We will find you when the map is complete.' Your team now knows the aliens are coming TO you — this changes everything in Act 2.",
+      consequenceNotCompleted: "The partial translation leaves critical ambiguity. 'Do not seek us' could be a warning or an invitation. Your agency will enter Act 2 without knowing the aliens' intent. **Decision-making in Act 2 will be harder without this context.**",
+      sortOrder: 1,
+    },
+  });
+  await assignMissionHouses(m4.id, [charlie.id]);
+
+  // Act 1 — Cross-house mission (Alpha + Bravo collaboration)
+  const m5 = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Reconstruct the Redacted File",
+      description: "A classified document has been heavily redacted. Both Alpha and Bravo have pieces of the original. Combine Geometry clue cards from both agencies to reconstruct the document.",
+      requiredClueSets: [
+        { cardSetId: geoSet.id, count: 3 },
+      ],
+      consequenceCompleted: "The reconstructed document reveals Project LIGHTHOUSE — a decades-old government program that detected the alien signal years ago and suppressed it. Both agencies now have leverage over the Science Ministry. **Both houses gain 'Leverage' capability for Act 2.**",
+      consequenceNotCompleted: "The redacted file remains incomplete. The government's secrets stay buried — for now. **No additional effect.**",
+      mechanicalEffectCompleted: { capability_gained: "leverage" },
+      sortOrder: 3,
+      notes: "This is the collaborative mission — requires Alpha and Bravo to share cards.",
+    },
+  });
+  await assignMissionHouses(m5.id, [alpha.id, bravo.id]);
+
+  console.log("Missions:", [m1, m2, m3, m4, m5].map((m) => m.title).join(", "));
 
   // Create a set review for "Signals" that's 1 hour old (to demo modified count)
   await prisma.setReview.create({

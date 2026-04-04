@@ -9,6 +9,10 @@ import { CardViewer } from "./components/card-viewer/CardViewer";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { GameList } from "./components/admin/GameList";
 import { CardManager } from "./components/admin/CardManager";
+import { MissionManager } from "./components/admin/MissionManager";
+import { ActBreakView } from "./components/admin/ActBreakView";
+import { ConsequencePrint } from "./components/admin/ConsequencePrint";
+import { LiveDashboard } from "./components/admin/LiveDashboard";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
 const theme = createTheme({
@@ -25,6 +29,10 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<GameList />} />
             <Route path="games/:gameId" element={<CardManager />} />
+            <Route path="games/:gameId/dashboard" element={<LiveDashboard />} />
+            <Route path="games/:gameId/missions" element={<MissionManager />} />
+            <Route path="games/:gameId/act-break" element={<ActBreakView />} />
+            <Route path="games/:gameId/act-break/print" element={<ConsequencePrint />} />
             <Route path="games/:gameId/simulator" element={<TableSimulator />} />
           </Route>
           <Route

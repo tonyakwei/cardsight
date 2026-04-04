@@ -40,6 +40,7 @@ model Game {
   designs        Design[]
   cardSets       CardSet[]
   houses         House[]
+  missions       Mission[]
   singleAnswers  SingleAnswer[]
   scanEvents     ScanEvent[]
   answerAttempts AnswerAttempt[]
@@ -74,8 +75,9 @@ model House {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  cards      CardHouse[]
-  tableCards Card[]      @relation("TableAssignment")
+  cards          CardHouse[]
+  tableCards     Card[]          @relation("TableAssignment")
+  missionHouses  MissionHouse[]
 
   @@unique([gameId, name])
   @@map("houses")
@@ -127,6 +129,7 @@ model Card {
   updatedAt           DateTime            @updatedAt @map("updated_at")
 
   cardHouses     CardHouse[]
+  missions       Mission[]
   scanEvents     ScanEvent[]
   answerAttempts AnswerAttempt[]
 
@@ -216,4 +219,48 @@ model SetReview {
 
   @@unique([gameId, cardSetId])
   @@map("set_reviews")
+}
+
+// === Missions ===
+
+model Mission {
+  id                          String              @id @default(uuid()) @db.Uuid
+  gameId                      String              @map("game_id") @db.Uuid
+  game                        Game                @relation(fields: [gameId], references: [id])
+  act                         Int
+  missionCardId               String?             @map("mission_card_id") @db.Uuid
+  missionCard                 Card?               @relation(fields: [missionCardId], references: [id])
+  title                       String
+  description                 String
+  requiredClueSets            Json                @default("[]") @map("required_clue_sets")
+                              // Array of { cardSetId: string, count: number }
+  answerTemplateType          AnswerTemplateType? @map("answer_template_type")
+  answerId                    String?             @map("answer_id") @db.Uuid
+  isCompleted                 Boolean             @default(false) @map("is_completed")
+  completedAt                 DateTime?           @map("completed_at")
+  consequenceCompleted        String?             @map("consequence_completed")
+  consequenceNotCompleted     String?             @map("consequence_not_completed")
+  consequenceImageCompleted   String?             @map("consequence_image_completed")
+  consequenceImageNotCompleted String?            @map("consequence_image_not_completed")
+  mechanicalEffectCompleted    Json?              @map("mechanical_effect_completed")
+  mechanicalEffectNotCompleted Json?              @map("mechanical_effect_not_completed")
+  sortOrder                   Int                 @default(0) @map("sort_order")
+  notes                       String?
+  createdAt                   DateTime            @default(now()) @map("created_at")
+  updatedAt                   DateTime            @updatedAt @map("updated_at")
+
+  missionHouses MissionHouse[]
+
+  @@map("missions")
+}
+
+model MissionHouse {
+  id        String  @id @default(uuid()) @db.Uuid
+  missionId String  @map("mission_id") @db.Uuid
+  mission   Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  houseId   String  @map("house_id") @db.Uuid
+  house     House   @relation(fields: [houseId], references: [id])
+
+  @@unique([missionId, houseId])
+  @@map("mission_houses")
 }

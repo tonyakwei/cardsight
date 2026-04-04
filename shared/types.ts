@@ -30,6 +30,7 @@ export interface CardViewerResponse {
   humanCardId: string;
   title: string;
   description: string | null;
+  clueVisibleCategory: string | null;
   design: CardDesign | null;
 
   // State

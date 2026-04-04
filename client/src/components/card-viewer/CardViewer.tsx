@@ -142,7 +142,11 @@ export function CardViewer() {
 
       {card.status === "available" && entered && (
         <AnimationWrapper type={card.design?.animationIn ?? "fade"}>
-          <CardContent title={card.title} description={card.description} />
+          <CardContent
+            title={card.title}
+            description={card.description}
+            clueVisibleCategory={card.clueVisibleCategory}
+          />
 
           {card.selfDestructedAt && (
             <SelfDestructTimer

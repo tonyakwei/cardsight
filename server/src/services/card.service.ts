@@ -76,6 +76,7 @@ export async function getCardForViewer(
     title: card.title,
     description:
       status === "self_destructed" ? null : card.description,
+    clueVisibleCategory: card.clueVisibleCategory,
     design,
     status,
     lockedOutReason: card.lockedOutReason,
@@ -240,11 +241,23 @@ export async function checkAnswer(
     },
   });
 
-  // If correct, mark card as solved
+  // If correct, mark card as solved + auto-complete any linked mission
   if (correct) {
     await prisma.card.update({
       where: { id: card.id },
       data: { isSolved: true },
+    });
+
+    // Check if this card is a mission card and auto-complete the mission
+    await prisma.mission.updateMany({
+      where: {
+        missionCardId: card.id,
+        isCompleted: false,
+      },
+      data: {
+        isCompleted: true,
+        completedAt: new Date(),
+      },
     });
 
     return {
