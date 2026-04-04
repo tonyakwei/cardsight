@@ -565,7 +565,7 @@ The signal originates from an ancient city.`,
   });
 
   for (const card of cards) {
-    const houses = card.cardHouses.map((ch) => ch.house.name).join("+") || "—";
+    const houses = card.cardHouses.map((ch: any) => ch.house.name).join("+") || "—";
     const set = card.cardSet?.name ?? "—";
     console.log(`  ${card.humanCardId}: ${card.id}  [${set} | ${houses}]`);
     console.log(`    → http://localhost:5173/c/${card.id}`);

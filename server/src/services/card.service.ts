@@ -347,7 +347,7 @@ async function validateAnswer(
 
     // Check alternatives
     return template.acceptAlternatives.some(
-      (alt) => normalize(alt) === normalizedGiven,
+      (alt: string) => normalize(alt) === normalizedGiven,
     );
   }
 

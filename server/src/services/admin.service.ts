@@ -11,7 +11,7 @@ export async function listGames() {
     },
   });
 
-  return games.map((g) => ({
+  return games.map((g: any) => ({
     id: g.id,
     name: g.name,
     description: g.description,
@@ -320,7 +320,7 @@ export async function saveTableAssignments(
   assignments: { cardId: string; tableHouseId: string | null }[],
 ) {
   await prisma.$transaction(
-    assignments.map((a) =>
+    assignments.map((a: any) =>
       prisma.card.update({
         where: { id: a.cardId },
         data: { tableHouseId: a.tableHouseId },
@@ -350,13 +350,13 @@ export async function autoDistribute(gameId: string, act: number) {
   }
 
   // Round-robin deal
-  const assignments = shuffled.map((card, i) => ({
+  const assignments = shuffled.map((card: any, i: number) => ({
     cardId: card.id,
     tableHouseId: houses[i % houses.length].id,
   }));
 
   await prisma.$transaction(
-    assignments.map((a) =>
+    assignments.map((a: any) =>
       prisma.card.update({
         where: { id: a.cardId },
         data: { tableHouseId: a.tableHouseId },
@@ -392,8 +392,8 @@ export async function listMissions(
   });
 
   if (filters?.houseId) {
-    missions = missions.filter((m) =>
-      m.missionHouses.some((mh) => mh.houseId === filters.houseId),
+    missions = missions.filter((m: any) =>
+      m.missionHouses.some((mh: any) => mh.houseId === filters.houseId),
     );
   }
 
@@ -528,14 +528,14 @@ export async function getActBreakSummary(gameId: string, act: number) {
     orderBy: { sortOrder: "asc" },
   });
 
-  return houses.map((house) => {
-    const houseMissions = missions.filter((m) =>
-      m.missionHouses.some((mh) => mh.houseId === house.id),
+  return houses.map((house: any) => {
+    const houseMissions = missions.filter((m: any) =>
+      m.missionHouses.some((mh: any) => mh.houseId === house.id),
     );
 
     return {
       house: { id: house.id, name: house.name, color: house.color },
-      missions: houseMissions.map((m) => ({
+      missions: houseMissions.map((m: any) => ({
         id: m.id,
         title: m.title,
         isCompleted: m.isCompleted,
@@ -550,7 +550,7 @@ export async function getActBreakSummary(gameId: string, act: number) {
           ? m.mechanicalEffectCompleted
           : m.mechanicalEffectNotCompleted,
       })),
-      completedCount: houseMissions.filter((m) => m.isCompleted).length,
+      completedCount: houseMissions.filter((m: any) => m.isCompleted).length,
       totalCount: houseMissions.length,
     };
   });
@@ -679,7 +679,7 @@ export async function getDashboard(gameId: string) {
     }),
   ]);
 
-  const scannedSet = new Set(scannedCardIds.map((s) => s.cardId));
+  const scannedSet = new Set(scannedCardIds.map((s: any) => s.cardId));
 
   // Build card discovery by set
   const setMap = new Map<string | null, {
@@ -710,15 +710,15 @@ export async function getDashboard(gameId: string) {
   }
 
   // Build mission progress by house
-  const missionsByHouse = houses.map((house) => {
-    const houseMissions = missions.filter((m) =>
-      m.missionHouses.some((mh) => mh.houseId === house.id),
+  const missionsByHouse = houses.map((house: any) => {
+    const houseMissions = missions.filter((m: any) =>
+      m.missionHouses.some((mh: any) => mh.houseId === house.id),
     );
     return {
       house: { id: house.id, name: house.name, color: house.color },
       total: houseMissions.length,
-      completed: houseMissions.filter((m) => m.isCompleted).length,
-      missions: houseMissions.map((m) => ({
+      completed: houseMissions.filter((m: any) => m.isCompleted).length,
+      missions: houseMissions.map((m: any) => ({
         id: m.id,
         title: m.title,
         act: m.act,
@@ -729,13 +729,13 @@ export async function getDashboard(gameId: string) {
 
   // Merge and sort recent activity
   const activity = [
-    ...recentScans.map((s) => ({
+    ...recentScans.map((s: any) => ({
       type: "scan" as const,
       at: s.scannedAt.toISOString(),
       cardId: s.card.humanCardId,
       cardTitle: s.card.title,
     })),
-    ...recentAnswers.map((a) => ({
+    ...recentAnswers.map((a: any) => ({
       type: "answer" as const,
       at: a.attemptedAt.toISOString(),
       cardId: a.card.humanCardId,
@@ -923,13 +923,13 @@ export async function duplicateGame(gameId: string) {
 
     // 7. Duplicate CardHouse rows
     const oldCardHouses = await tx.cardHouse.findMany({
-      where: { cardId: { in: oldCards.map((c) => c.id) } },
+      where: { cardId: { in: oldCards.map((c: any) => c.id) } },
     });
     if (oldCardHouses.length > 0) {
       await tx.cardHouse.createMany({
         data: oldCardHouses
-          .filter((ch) => cardMap.has(ch.cardId) && houseMap.has(ch.houseId))
-          .map((ch) => ({
+          .filter((ch: any) => cardMap.has(ch.cardId) && houseMap.has(ch.houseId))
+          .map((ch: any) => ({
             cardId: cardMap.get(ch.cardId)!,
             houseId: houseMap.get(ch.houseId)!,
           })),
@@ -967,8 +967,8 @@ export async function duplicateGame(gameId: string) {
       if (m.missionHouses.length > 0) {
         await tx.missionHouse.createMany({
           data: m.missionHouses
-            .filter((mh) => houseMap.has(mh.houseId))
-            .map((mh) => ({
+            .filter((mh: any) => houseMap.has(mh.houseId))
+            .map((mh: any) => ({
               missionId: newMission.id,
               houseId: houseMap.get(mh.houseId)!,
             })),
