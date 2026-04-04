@@ -223,10 +223,23 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Soft delete / restore for cards
 - Card reordering
 
+- Railway deployment (single service: Express serves API + built Vite client)
+
+## Deployment (Railway)
+
+Single service deployment. Express serves the Vite-built client as static files in production.
+
+- **Build:** `pnpm install` → `pnpm build` (generates Prisma client, builds client + server in parallel)
+- **Start:** `pnpm --filter server prisma migrate deploy && node server/dist/server/src/index.js`
+- **Postgres:** Add Railway's Postgres plugin — it auto-sets `DATABASE_URL`
+- **Health check:** `GET /api/health`
+- **Config:** `railway.json` at project root
+
+The server's compiled output lands at `server/dist/server/src/` (because `rootDir` is `..` to include shared types). The static file path accounts for this.
+
 **Not yet built:**
 - Admin auth (planned: simple shared secret)
 - Design editor and answer template editor in admin
 - Additional answer types (multiple choice, photo select, etc.)
 - Bulk QR code print sheet
 - Mission briefing card print layout (matching consequence card style)
-- Railway deployment config

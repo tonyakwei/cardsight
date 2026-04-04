@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import cardRoutes from "./routes/cards.js";
 import adminRoutes from "./routes/admin.js";
 import { errorHandler } from "./middleware/error-handler.js";
@@ -17,6 +19,20 @@ app.use("/api/admin", adminRoutes);
 // Health check
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+// In production, serve the built client
+// __dirname in compiled output is server/dist/server/src, so we go up to project root
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const clientDist = path.resolve(__dirname, "../../../../client/dist");
+
+app.use(express.static(clientDist));
+
+// Client-side routing: serve index.html for any non-API route
+app.get(/^\/(?!api\/).*/, (_req, res, next) => {
+  res.sendFile(path.join(clientDist, "index.html"), (err) => {
+    if (err) next(); // File doesn't exist (dev mode), skip
+  });
 });
 
 // Error handler (must be last)

@@ -443,7 +443,7 @@ export async function createMission(gameId: string, data: Record<string, any>) {
   if (!("description" in data)) createData.description = "";
   if (!("act" in data)) createData.act = 1;
 
-  const mission = await prisma.mission.create({ data: createData });
+  const mission = await prisma.mission.create({ data: createData as any });
 
   if (houseIds.length > 0) {
     await prisma.missionHouse.createMany({
