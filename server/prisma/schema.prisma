@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === Enums ===
+
+enum GameStatus {
+  draft
+  active
+  completed
+  archived
+}
+
+enum AnswerTemplateType {
+  single_answer
+  multiple_choice
+  multiple_text
+  photo_select
+}
+
+// === Models ===
+
+model Game {
+  id              String     @id @default(uuid()) @db.Uuid
+  name            String
+  description     String?
+  status          GameStatus @default(draft)
+  duplicatedFromId String?   @map("duplicated_from_id") @db.Uuid
+  duplicatedFrom  Game?      @relation("GameLineage", fields: [duplicatedFromId], references: [id])
+  duplicates      Game[]     @relation("GameLineage")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  cards          Card[]
+  designs        Design[]
+  cardSets       CardSet[]
+  houses         House[]
+  singleAnswers  SingleAnswer[]
+  scanEvents     ScanEvent[]
+  answerAttempts AnswerAttempt[]
+  setReviews     SetReview[]
+
+  @@map("games")
+}
+
+model CardSet {
+  id        String   @id @default(uuid()) @db.Uuid
+  gameId    String   @map("game_id") @db.Uuid
+  game      Game     @relation(fields: [gameId], references: [id])
+  name      String
+  color     String   @default("#8b5cf6")
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  cards      Card[]
+  setReviews SetReview[]
+
+  @@unique([gameId, name])
+  @@map("card_sets")
+}
+
+model House {
+  id        String   @id @default(uuid()) @db.Uuid
+  gameId    String   @map("game_id") @db.Uuid
+  game      Game     @relation(fields: [gameId], references: [id])
+  name      String
+  color     String   @default("#3b82f6")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  cards      CardHouse[]
+  tableCards Card[]      @relation("TableAssignment")
+
+  @@unique([gameId, name])
+  @@map("houses")
+}
+
+model CardHouse {
+  id      String @id @default(uuid()) @db.Uuid
+  cardId  String @map("card_id") @db.Uuid
+  card    Card   @relation(fields: [cardId], references: [id])
+  houseId String @map("house_id") @db.Uuid
+  house   House  @relation(fields: [houseId], references: [id])
+
+  @@unique([cardId, houseId])
+  @@map("card_houses")
+}
+
+model Card {
+  id                  String              @id @default(uuid()) @db.Uuid
+  gameId              String              @map("game_id") @db.Uuid
+  game                Game                @relation(fields: [gameId], references: [id])
+  humanCardId         String              @map("human_card_id")
+  act                 Int?
+  cardSetId           String?             @map("card_set_id") @db.Uuid
+  cardSet             CardSet?            @relation(fields: [cardSetId], references: [id])
+  clueVisibleCategory String?             @map("clue_visible_category")
+  title               String
+  description         String?
+  answerTemplateType  AnswerTemplateType? @map("answer_template_type")
+  answerId            String?             @map("answer_id") @db.Uuid
+  isAnswerable        Boolean             @default(false) @map("is_answerable")
+  lockedOut           Boolean             @default(false) @map("locked_out")
+  lockedOutReason     String?             @map("locked_out_reason")
+  selfDestructTimer   Int?                @map("self_destruct_timer")
+  selfDestructedAt    DateTime?           @map("self_destructed_at")
+  selfDestructText    String?             @map("self_destruct_text")
+  designId            String?             @map("design_id") @db.Uuid
+  design              Design?             @relation(fields: [designId], references: [id])
+  hasEntryGate              Boolean   @default(true) @map("has_entry_gate")
+  entryGateText             String?   @map("entry_gate_text")
+  answerVisibleAfterDestruct Boolean  @default(true) @map("answer_visible_after_destruct")
+  tableHouseId        String?             @map("table_house_id") @db.Uuid
+  tableHouse          House?              @relation("TableAssignment", fields: [tableHouseId], references: [id])
+  sortOrder           Int                 @default(0) @map("sort_order")
+  notes               String?
+  isFinished          Boolean             @default(false) @map("is_finished")
+  isSolved            Boolean             @default(false) @map("is_solved")
+  deletedAt           DateTime?           @map("deleted_at")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+
+  cardHouses     CardHouse[]
+  scanEvents     ScanEvent[]
+  answerAttempts AnswerAttempt[]
+
+  @@map("cards")
+}
+
+model Design {
+  id              String   @id @default(uuid()) @db.Uuid
+  gameId          String   @map("game_id") @db.Uuid
+  game            Game     @relation(fields: [gameId], references: [id])
+  name            String
+  bgColor         String   @default("#0a0a0a") @map("bg_color")
+  bgGradient      String?  @map("bg_gradient")
+  bgImageUrl      String?  @map("bg_image_url")
+  textColor       String   @default("#e0e0e0") @map("text_color")
+  accentColor     String   @default("#4fc3f7") @map("accent_color")
+  secondaryColor  String?  @map("secondary_color")
+  fontFamily      String   @default("system-ui") @map("font_family")
+  cardStyle       String   @default("standard") @map("card_style")
+  animationIn     String?  @map("animation_in")
+  borderStyle     String?  @map("border_style")
+  overlayEffect   String?  @map("overlay_effect")
+  customCss       String?  @map("custom_css")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  cards Card[]
+
+  @@map("designs")
+}
+
+model SingleAnswer {
+  id                String   @id @default(uuid()) @db.Uuid
+  gameId            String   @map("game_id") @db.Uuid
+  game              Game     @relation(fields: [gameId], references: [id])
+  correctAnswer     String   @map("correct_answer")
+  caseSensitive     Boolean  @default(false) @map("case_sensitive")
+  trimWhitespace    Boolean  @default(true) @map("trim_whitespace")
+  acceptAlternatives String[] @map("accept_alternatives")
+  hint              String?
+  hintAfterAttempts Int      @default(3) @map("hint_after_attempts")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("single_answers")
+}
+
+model ScanEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  cardId      String   @map("card_id") @db.Uuid
+  card        Card     @relation(fields: [cardId], references: [id])
+  gameId      String   @map("game_id") @db.Uuid
+  game        Game     @relation(fields: [gameId], references: [id])
+  scannedAt   DateTime @default(now()) @map("scanned_at")
+  sessionHash String?  @map("session_hash")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("scan_events")
+}
+
+model AnswerAttempt {
+  id              String   @id @default(uuid()) @db.Uuid
+  cardId          String   @map("card_id") @db.Uuid
+  card            Card     @relation(fields: [cardId], references: [id])
+  gameId          String   @map("game_id") @db.Uuid
+  game            Game     @relation(fields: [gameId], references: [id])
+  attemptNumber   Int      @map("attempt_number")
+  answerGiven     Json     @map("answer_given")
+  isCorrect       Boolean  @map("is_correct")
+  attemptedAt     DateTime @default(now()) @map("attempted_at")
+  timeSinceScanMs Int?     @map("time_since_scan_ms")
+  sessionHash     String?  @map("session_hash")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("answer_attempts")
+}
+
+model SetReview {
+  id        String   @id @default(uuid()) @db.Uuid
+  gameId    String   @map("game_id") @db.Uuid
+  game      Game     @relation(fields: [gameId], references: [id])
+  cardSetId String   @map("card_set_id") @db.Uuid
+  cardSet   CardSet  @relation(fields: [cardSetId], references: [id])
+  reviewedAt DateTime @default(now()) @map("reviewed_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([gameId, cardSetId])
+  @@map("set_reviews")
+}
