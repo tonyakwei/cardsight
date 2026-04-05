@@ -803,7 +803,7 @@ export async function duplicateGame(gameId: string) {
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) throw new AppError(404, "Game not found");
 
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: any) => {
     // 1. Create the new game
     const newGame = await tx.game.create({
       data: {
