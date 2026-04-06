@@ -359,6 +359,91 @@ export async function fetchActBreak(
   return res.json();
 }
 
+// === Showtimes ===
+
+export interface AdminShowtimeSlot {
+  id: string;
+  houseId: string;
+  house: { id: string; name: string; color: string };
+  label: string;
+  description: string | null;
+  answerTemplateType: string | null;
+  answerId: string | null;
+  inputValue: string | null;
+  filledAt: string | null;
+  isCorrect: boolean | null;
+  syncPressedAt: string | null;
+  sortOrder: number;
+}
+
+export interface AdminShowtime {
+  id: string;
+  gameId: string;
+  act: number;
+  title: string;
+  revealTitle: string;
+  revealDescription: string | null;
+  designId: string | null;
+  design: { id: string; name: string } | null;
+  phase: string;
+  showHouseLabels: boolean;
+  syncWindowMs: number;
+  revealedAt: string | null;
+  sortOrder: number;
+  notes: string | null;
+  slots: AdminShowtimeSlot[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function fetchShowtimes(gameId: string): Promise<AdminShowtime[]> {
+  const res = await fetch(`${BASE}/games/${gameId}/showtimes`);
+  return res.json();
+}
+
+export async function createShowtime(
+  gameId: string,
+  data: Record<string, any>,
+): Promise<AdminShowtime> {
+  const res = await fetch(`${BASE}/games/${gameId}/showtimes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function updateShowtime(
+  gameId: string,
+  showtimeId: string,
+  data: Record<string, any>,
+): Promise<AdminShowtime> {
+  const res = await fetch(`${BASE}/games/${gameId}/showtimes/${showtimeId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function deleteShowtime(gameId: string, showtimeId: string): Promise<void> {
+  await fetch(`${BASE}/games/${gameId}/showtimes/${showtimeId}`, { method: "DELETE" });
+}
+
+export async function triggerShowtime(gameId: string, showtimeId: string): Promise<AdminShowtime> {
+  const res = await fetch(`${BASE}/games/${gameId}/showtimes/${showtimeId}/trigger`, {
+    method: "POST",
+  });
+  return res.json();
+}
+
+export async function resetShowtime(gameId: string, showtimeId: string): Promise<AdminShowtime> {
+  const res = await fetch(`${BASE}/games/${gameId}/showtimes/${showtimeId}/reset`, {
+    method: "POST",
+  });
+  return res.json();
+}
+
 // === Act Transitions ===
 
 export interface ActTransitionResult {

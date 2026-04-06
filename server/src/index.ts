@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cardRoutes from "./routes/cards.js";
 import adminRoutes from "./routes/admin.js";
+import showtimeRoutes from "./routes/showtime.js";
 import { errorHandler } from "./middleware/error-handler.js";
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 // Routes
 app.use("/api/cards", cardRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/showtime", showtimeRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {

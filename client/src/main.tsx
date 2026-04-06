@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import { MantineProvider, createTheme } from "@mantine/core";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { CardViewer } from "./components/card-viewer/CardViewer";
+import { ShowtimeViewer } from "./components/showtime/ShowtimeViewer";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { GameList } from "./components/admin/GameList";
 import { CardManager } from "./components/admin/CardManager";
@@ -13,6 +14,7 @@ import { MissionManager } from "./components/admin/MissionManager";
 import { ActBreakView } from "./components/admin/ActBreakView";
 import { ConsequencePrint } from "./components/admin/ConsequencePrint";
 import { LiveDashboard } from "./components/admin/LiveDashboard";
+import { ShowtimeManager } from "./components/admin/ShowtimeManager";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
 const theme = createTheme({
@@ -26,11 +28,13 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/c/:cardId" element={<CardViewer />} />
+          <Route path="/showtime/:showtimeId" element={<ShowtimeViewer />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<GameList />} />
             <Route path="games/:gameId" element={<CardManager />} />
             <Route path="games/:gameId/dashboard" element={<LiveDashboard />} />
             <Route path="games/:gameId/missions" element={<MissionManager />} />
+            <Route path="games/:gameId/showtimes" element={<ShowtimeManager />} />
             <Route path="games/:gameId/act-break" element={<ActBreakView />} />
             <Route path="games/:gameId/act-break/print" element={<ConsequencePrint />} />
             <Route path="games/:gameId/simulator" element={<TableSimulator />} />

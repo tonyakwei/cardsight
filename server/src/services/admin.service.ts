@@ -556,6 +556,154 @@ export async function getActBreakSummary(gameId: string, act: number) {
   });
 }
 
+// === Showtimes ===
+
+const showtimeInclude = {
+  design: { select: { id: true, name: true } },
+  slots: {
+    include: {
+      house: { select: { id: true, name: true, color: true } },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+};
+
+export async function listShowtimes(gameId: string) {
+  return prisma.showtime.findMany({
+    where: { gameId },
+    include: showtimeInclude,
+    orderBy: [{ act: "asc" }, { sortOrder: "asc" }],
+  });
+}
+
+export async function getShowtime(gameId: string, showtimeId: string) {
+  const st = await prisma.showtime.findUnique({
+    where: { id: showtimeId },
+    include: showtimeInclude,
+  });
+  if (!st || st.gameId !== gameId) throw new AppError(404, "Showtime not found");
+  return st;
+}
+
+export async function createShowtime(gameId: string, data: Record<string, any>) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const houses = await prisma.house.findMany({
+    where: { gameId },
+    orderBy: { name: "asc" },
+  });
+
+  const maxSort = await prisma.mission.aggregate({
+    where: { gameId },
+    _max: { sortOrder: true },
+  });
+
+  const showtime = await prisma.showtime.create({
+    data: {
+      gameId,
+      act: data.act ?? 1,
+      title: data.title ?? "New Showtime",
+      revealTitle: data.revealTitle ?? "Analysis Complete",
+      revealDescription: data.revealDescription ?? null,
+      designId: data.designId ?? null,
+      syncWindowMs: data.syncWindowMs ?? 3000,
+      sortOrder: (maxSort._max.sortOrder ?? 0) + 1,
+      notes: data.notes ?? null,
+    },
+  });
+
+  // Auto-create one slot per house
+  for (let i = 0; i < houses.length; i++) {
+    await prisma.showtimeSlot.create({
+      data: {
+        showtimeId: showtime.id,
+        houseId: houses[i].id,
+        label: `${houses[i].name} Analysis`,
+        sortOrder: i,
+      },
+    });
+  }
+
+  return prisma.showtime.findUnique({
+    where: { id: showtime.id },
+    include: showtimeInclude,
+  });
+}
+
+export async function updateShowtime(gameId: string, showtimeId: string, data: Record<string, any>) {
+  const st = await prisma.showtime.findUnique({ where: { id: showtimeId } });
+  if (!st || st.gameId !== gameId) throw new AppError(404, "Showtime not found");
+
+  const allowed = [
+    "act", "title", "revealTitle", "revealDescription",
+    "designId", "showHouseLabels", "syncWindowMs", "sortOrder", "notes",
+  ];
+
+  const updateData: Record<string, any> = {};
+  for (const key of allowed) {
+    if (key in data) updateData[key] = data[key];
+  }
+
+  await prisma.showtime.update({ where: { id: showtimeId }, data: updateData });
+
+  // Update slots if provided
+  if (data.slots && Array.isArray(data.slots)) {
+    for (const slotData of data.slots) {
+      if (!slotData.id) continue;
+      const slotAllowed = ["label", "description", "answerTemplateType", "answerId", "sortOrder"];
+      const slotUpdate: Record<string, any> = {};
+      for (const key of slotAllowed) {
+        if (key in slotData) slotUpdate[key] = slotData[key];
+      }
+      await prisma.showtimeSlot.update({ where: { id: slotData.id }, data: slotUpdate });
+    }
+  }
+
+  return prisma.showtime.findUnique({
+    where: { id: showtimeId },
+    include: showtimeInclude,
+  });
+}
+
+export async function deleteShowtime(gameId: string, showtimeId: string) {
+  const st = await prisma.showtime.findUnique({ where: { id: showtimeId } });
+  if (!st || st.gameId !== gameId) throw new AppError(404, "Showtime not found");
+  await prisma.showtime.delete({ where: { id: showtimeId } });
+}
+
+export async function triggerShowtime(gameId: string, showtimeId: string) {
+  const st = await prisma.showtime.findUnique({ where: { id: showtimeId } });
+  if (!st || st.gameId !== gameId) throw new AppError(404, "Showtime not found");
+
+  return prisma.showtime.update({
+    where: { id: showtimeId },
+    data: { phase: "revealed", revealedAt: new Date() },
+    include: showtimeInclude,
+  });
+}
+
+export async function resetShowtime(gameId: string, showtimeId: string) {
+  const st = await prisma.showtime.findUnique({ where: { id: showtimeId } });
+  if (!st || st.gameId !== gameId) throw new AppError(404, "Showtime not found");
+
+  await prisma.$transaction([
+    prisma.showtimeSlot.updateMany({
+      where: { showtimeId },
+      data: { inputValue: null, filledAt: null, isCorrect: null, syncPressedAt: null },
+    }),
+    prisma.showtime.update({
+      where: { id: showtimeId },
+      data: { phase: "filling", revealedAt: null },
+    }),
+  ]);
+
+  return prisma.showtime.findUnique({
+    where: { id: showtimeId },
+    include: showtimeInclude,
+  });
+}
+
 // === Act Transitions ===
 
 export async function transitionAct(gameId: string, fromAct: number) {
@@ -976,6 +1124,43 @@ export async function duplicateGame(gameId: string) {
       }
     }
 
+    // 9. Duplicate Showtimes
+    const oldShowtimes = await tx.showtime.findMany({
+      where: { gameId },
+      include: { slots: true },
+    });
+    for (const st of oldShowtimes) {
+      const newSt = await tx.showtime.create({
+        data: {
+          gameId: newGame.id,
+          act: st.act,
+          title: st.title,
+          revealTitle: st.revealTitle,
+          revealDescription: st.revealDescription,
+          designId: st.designId ? designMap.get(st.designId) ?? null : null,
+          phase: "filling",
+          syncWindowMs: st.syncWindowMs,
+          revealedAt: null,
+          sortOrder: st.sortOrder,
+          notes: st.notes,
+        },
+      });
+      for (const slot of st.slots) {
+        if (!houseMap.has(slot.houseId)) continue;
+        await tx.showtimeSlot.create({
+          data: {
+            showtimeId: newSt.id,
+            houseId: houseMap.get(slot.houseId)!,
+            label: slot.label,
+            description: slot.description,
+            sortOrder: slot.sortOrder,
+            answerTemplateType: slot.answerTemplateType,
+            answerId: slot.answerId ? answerMap.get(slot.answerId) ?? null : null,
+          },
+        });
+      }
+    }
+
     // Return the full new game
     return tx.game.findUnique({
       where: { id: newGame.id },
@@ -1021,6 +1206,14 @@ export async function resetAllCards(gameId: string) {
     prisma.mission.updateMany({
       where: { gameId },
       data: { isCompleted: false, completedAt: null },
+    }),
+    prisma.showtimeSlot.updateMany({
+      where: { showtime: { gameId } },
+      data: { inputValue: null, filledAt: null, isCorrect: null, syncPressedAt: null },
+    }),
+    prisma.showtime.updateMany({
+      where: { gameId },
+      data: { phase: "filling", revealedAt: null },
     }),
     prisma.scanEvent.deleteMany({ where: { gameId } }),
     prisma.answerAttempt.deleteMany({ where: { gameId } }),

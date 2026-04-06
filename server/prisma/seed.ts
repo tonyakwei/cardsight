@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Clean existing data
+  await prisma.showtimeSlot.deleteMany();
+  await prisma.showtime.deleteMany();
   await prisma.missionHouse.deleteMany();
   await prisma.mission.deleteMany();
   await prisma.cardHouse.deleteMany();
@@ -538,6 +540,55 @@ The signal originates from an ancient city.`,
   await assignMissionHouses(m5.id, [alpha.id, bravo.id]);
 
   console.log("Missions:", [m1, m2, m3, m4, m5].map((m) => m.title).join(", "));
+
+  // === Showtimes ===
+
+  const showtime1 = await prisma.showtime.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Act 1 Convergence — Signal Triangulation",
+      revealTitle: "Signal Origin Confirmed",
+      revealDescription: `**Combined analysis complete.**\n\nBy triangulating the signal fragments from all three agencies, the origin point has been identified:\n\n> **Star System: Kepler-442b**\n> **Distance: 1,206 light-years**\n> **Signal Age: Approximately 12,000 years**\n\nThe signal is not a distress call. It is a *beacon*.\n\nThe coordinates embedded in the signal point to a location on Earth — coordinates that correspond to a site that has been classified since 1947.\n\n*All agencies now share this information. Act 2 begins.*`,
+      designId: classified.id,
+      syncWindowMs: 3000,
+      sortOrder: 1,
+      notes: "This is the Act 1 finale — all three houses contribute their signal data.",
+    },
+  });
+
+  // Create slots for each house
+  await prisma.showtimeSlot.create({
+    data: {
+      showtimeId: showtime1.id,
+      houseId: alpha.id,
+      label: "Alpha — Signal Frequency Analysis",
+      description: "Enter the decoded frequency from your intercepted transmission.",
+      sortOrder: 0,
+    },
+  });
+
+  await prisma.showtimeSlot.create({
+    data: {
+      showtimeId: showtime1.id,
+      houseId: bravo.id,
+      label: "Bravo — Constellation Pattern Data",
+      description: "Enter the constellation pattern identified from your geometric analysis.",
+      sortOrder: 1,
+    },
+  });
+
+  await prisma.showtimeSlot.create({
+    data: {
+      showtimeId: showtime1.id,
+      houseId: charlie.id,
+      label: "Charlie — Alien Transmission Fragment",
+      description: "Enter the key phrase from the decoded alien transmission.",
+      sortOrder: 2,
+    },
+  });
+
+  console.log("Showtime:", showtime1.title);
 
   // Create a set review for "Signals" that's 1 hour old (to demo modified count)
   await prisma.setReview.create({

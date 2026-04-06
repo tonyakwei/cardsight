@@ -89,6 +89,8 @@ cardsight/
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
 - **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, required clue sets (references CardSet IDs with counts), optional mission card link, and polymorphic answer template. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images, and mechanical effects as JSONB (store-and-display only, not auto-processed).
 - **MissionHouse** — join table linking missions to houses. A mission can belong to one or multiple houses.
+- **Showtime** — a synchronized reveal event (1-2 per game, at act transitions). Players discover it through mission cards — each house sees a "shared analysis console" with input slots. Phase state machine: `filling` → `syncing` → `revealed`. Has reveal content (title, markdown description) with a Design for theming. Configurable sync window (default 3s).
+- **ShowtimeSlot** — one slot per house per Showtime. Has label, description, optional answer validation (polymorphic), input value, fill/sync press timestamps. The sync press logic checks if all houses pressed within the sync window — if yes, reveal; if not, reset presses.
 - **Design** — reusable visual configuration (colors, fonts, animations, overlays). Multiple cards share designs.
 - **SingleAnswer** — answer template for text-input puzzles (correct answer, alternatives, hints). Polymorphic pattern: `answerTemplateType` + `answerId` on Card/Mission, resolved manually in card.service.ts. Future types (multiple choice, photo select, etc.) are additive — new table + new UI component.
 - **ScanEvent** / **AnswerAttempt** — analytics logs.
@@ -105,6 +107,9 @@ cardsight/
 - **Mechanical effects are store-and-display** — JSONB fields on missions hold structured effect data, but the system does not auto-process them. The host reads the effects and manually adjusts the next act. This is deliberate — effect types are still being discovered through playtesting.
 - **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a print preview with house-colored borders, images, and themed backgrounds.
 - **Act transitions are explicit** — "End Act N" button locks current act's cards, unlocks next act's cards, and navigates to the act break view.
+- **Showtime uses polling, not WebSockets** — FILLING phase polls every 3s, SYNCING phase polls every 500ms, REVEALED phase stops. In a room of people shouting a countdown, sub-second stagger is imperceptible.
+- **Sync press is server-authoritative** — each house POSTs their press timestamp. Server checks within a Prisma transaction if all presses fall within the sync window. If not, resets all presses atomically.
+- **Answer validation is shared** — `validateAnswer()` is extracted to `server/src/services/answer-validation.ts` and used by both card.service.ts and showtime.service.ts.
 - **Card designs use CSS custom properties** — `CardShell` maps design fields to `--card-*` variables. No CSS-in-JS runtime. Animations use CSS `@keyframes`.
 - **Visibility guard** — blurs content when player switches away from the browser tab (anti-screenshot).
 
@@ -136,16 +141,25 @@ Admin panel: http://localhost:5173/admin
 | `/admin/games/:id/act-break` | ActBreakView | Per-house mission results, consequence texts for host to read |
 | `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), house-themed |
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
+| `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator |
+| `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |
 
 ## API structure
 
 ### Player-facing (no auth)
 ```
+# Cards
 GET   /api/cards/:cardId          # Card content (respects lockout, self-destruct, includes clueVisibleCategory)
 POST  /api/cards/:cardId/scan     # Log scan event
 POST  /api/cards/:cardId/enter    # Start self-destruct timer
 POST  /api/cards/:cardId/answer   # Submit answer (auto-completes linked missions)
+
+# Showtime
+GET   /api/showtime/:id?house=:houseId           # Full console view
+GET   /api/showtime/:id/poll?house=:houseId       # Lightweight poll (phase, slot status)
+POST  /api/showtime/:id/submit?house=:houseId     # Submit slot value
+POST  /api/showtime/:id/sync-press?house=:houseId # Record synchronized button press
 ```
 
 ### Admin (no auth currently — dev mode)
@@ -194,6 +208,15 @@ POST  /api/admin/games/:gameId/transition-act
 # Live Dashboard
 GET   /api/admin/games/:gameId/dashboard
 
+# Showtimes
+GET    /api/admin/games/:gameId/showtimes
+POST   /api/admin/games/:gameId/showtimes
+GET    /api/admin/games/:gameId/showtimes/:id
+PUT    /api/admin/games/:gameId/showtimes/:id
+DELETE /api/admin/games/:gameId/showtimes/:id
+POST   /api/admin/games/:gameId/showtimes/:id/trigger
+POST   /api/admin/games/:gameId/showtimes/:id/reset
+
 # Other
 GET   /api/admin/games/:gameId/designs
 GET   /api/admin/games/:gameId/answers/:type
@@ -222,6 +245,9 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Bulk card operations (assign design/set/act, lock/unlock, mark finished, delete, reset)
 - Soft delete / restore for cards
 - Card reordering
+- Showtime synchronized reveal mechanic (multi-house analysis console, slot filling, sync press, dramatic reveal)
+- Showtime admin (CRUD, slot configuration, live monitoring with auto-refresh, force trigger, reset)
+- Showtime integrated into game reset and duplication
 
 - Railway deployment (single service: Express serves API + built Vite client)
 

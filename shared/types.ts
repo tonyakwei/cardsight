@@ -91,3 +91,52 @@ export interface AnswerResponse {
   lockedOut: boolean;
   message: string;
 }
+
+// === Showtime ===
+
+export type ShowtimePhase = "filling" | "syncing" | "revealed";
+
+export interface ShowtimeSlotView {
+  id: string;
+  houseId: string;
+  houseName: string;
+  houseColor: string;
+  label: string;
+  description: string | null;
+  isFilled: boolean;
+  isMySlot: boolean;
+  inputValue: string | null;
+  isCorrect: boolean | null;
+  syncPressed: boolean;
+}
+
+export interface ShowtimePlayerResponse {
+  id: string;
+  phase: ShowtimePhase;
+  revealTitle: string;
+  revealDescription: string | null;
+  design: CardDesign | null;
+  showHouseLabels: boolean;
+  syncWindowMs: number;
+  slots: ShowtimeSlotView[];
+  mySlotId: string;
+  revealedAt: string | null;
+}
+
+export interface ShowtimePollResponse {
+  phase: ShowtimePhase;
+  slots: ShowtimeSlotView[];
+  revealedAt: string | null;
+}
+
+export interface ShowtimeSlotSubmitResponse {
+  accepted: boolean;
+  isCorrect: boolean | null;
+  message: string;
+}
+
+export interface ShowtimeSyncPressResponse {
+  accepted: boolean;
+  phase: ShowtimePhase;
+  message: string;
+}

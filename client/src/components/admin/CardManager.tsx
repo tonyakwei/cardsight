@@ -244,6 +244,14 @@ export function CardManager() {
           <Button
             size="xs"
             variant="light"
+            color="cyan"
+            onClick={() => navigate(`/admin/games/${gameId}/showtimes`)}
+          >
+            Showtimes
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
             color="violet"
             onClick={() => navigate(`/admin/games/${gameId}/simulator`)}
           >

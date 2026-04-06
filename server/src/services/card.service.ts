@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../middleware/error-handler.js";
+import { validateAnswer } from "./answer-validation.js";
 import type {
   CardViewerResponse,
   CardDesign,
@@ -321,36 +322,4 @@ async function buildAnswerMeta(
   };
 }
 
-async function validateAnswer(
-  type: string,
-  answerId: string,
-  answer: string | string[] | Record<string, string>,
-): Promise<boolean> {
-  if (type === "single_answer") {
-    const template = await prisma.singleAnswer.findUnique({
-      where: { id: answerId },
-    });
-    if (!template) return false;
-
-    const given = typeof answer === "string" ? answer : String(answer);
-    const normalize = (s: string) => {
-      let result = s;
-      if (template.trimWhitespace) result = result.trim();
-      if (!template.caseSensitive) result = result.toLowerCase();
-      return result;
-    };
-
-    const normalizedGiven = normalize(given);
-    const normalizedCorrect = normalize(template.correctAnswer);
-
-    if (normalizedGiven === normalizedCorrect) return true;
-
-    // Check alternatives
-    return template.acceptAlternatives.some(
-      (alt: string) => normalize(alt) === normalizedGiven,
-    );
-  }
-
-  // Other types not yet implemented
-  return false;
-}
+// validateAnswer is imported from ./answer-validation.ts
