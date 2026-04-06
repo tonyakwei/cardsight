@@ -289,4 +289,32 @@ router.get("/games/:gameId/answers/:type", async (req, res) => {
   res.json(templates);
 });
 
+router.get("/games/:gameId/answers/:type/:id", async (req, res) => {
+  const template = await adminService.getAnswerTemplate(
+    req.params.gameId,
+    req.params.type,
+    req.params.id,
+  );
+  res.json(template);
+});
+
+router.post("/games/:gameId/answers/:type", async (req, res) => {
+  const template = await adminService.createAnswerTemplate(
+    req.params.gameId,
+    req.params.type,
+    req.body,
+  );
+  res.status(201).json(template);
+});
+
+router.put("/games/:gameId/answers/:type/:id", async (req, res) => {
+  const template = await adminService.updateAnswerTemplate(
+    req.params.gameId,
+    req.params.type,
+    req.params.id,
+    req.body,
+  );
+  res.json(template);
+});
+
 export default router;

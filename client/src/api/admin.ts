@@ -197,6 +197,56 @@ export async function fetchDesigns(gameId: string): Promise<AdminDesign[]> {
   return res.json();
 }
 
+// === Answer Templates ===
+
+export interface SingleAnswerTemplate {
+  id: string;
+  gameId: string;
+  correctAnswer: string;
+  caseSensitive: boolean;
+  trimWhitespace: boolean;
+  acceptAlternatives: string[];
+  hint: string | null;
+  hintAfterAttempts: number;
+  maxAttempts: number | null;
+}
+
+export async function fetchAnswerTemplate(
+  gameId: string,
+  type: string,
+  id: string,
+): Promise<SingleAnswerTemplate> {
+  const res = await fetch(`${BASE}/games/${gameId}/answers/${type}/${id}`);
+  return res.json();
+}
+
+export async function createAnswerTemplate(
+  gameId: string,
+  type: string,
+  data: Record<string, any>,
+): Promise<SingleAnswerTemplate> {
+  const res = await fetch(`${BASE}/games/${gameId}/answers/${type}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function updateAnswerTemplate(
+  gameId: string,
+  type: string,
+  id: string,
+  data: Record<string, any>,
+): Promise<SingleAnswerTemplate> {
+  const res = await fetch(`${BASE}/games/${gameId}/answers/${type}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
 // === Game Operations ===
 
 // Create game

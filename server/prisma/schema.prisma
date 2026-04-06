@@ -180,6 +180,7 @@ model SingleAnswer {
   acceptAlternatives String[] @map("accept_alternatives")
   hint              String?
   hintAfterAttempts Int      @default(3) @map("hint_after_attempts")
+  maxAttempts       Int?     @map("max_attempts")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 

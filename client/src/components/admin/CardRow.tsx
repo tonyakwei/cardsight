@@ -31,6 +31,7 @@ import {
   type AdminHouse,
 } from "../../api/admin";
 import { PhonePreview } from "./PhonePreview";
+import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 
 interface Props {
   card: AdminCard;
@@ -294,6 +295,42 @@ export function CardRow({
                     <Switch label="Locked Out" size="xs" color="red" checked={current("lockedOut")} onChange={(e) => updateDraft("lockedOut", e.currentTarget.checked)} />
                     <TextInput label="Lock Reason" size="xs" value={current("lockedOutReason") ?? ""} onChange={(e) => updateDraft("lockedOutReason", e.target.value || null)} disabled={!current("lockedOut")} />
                   </Group>
+
+                  {/* Answer configuration */}
+                  <Group grow>
+                    <Switch label="Answerable" size="xs" color="cyan" checked={current("isAnswerable")} onChange={(e) => {
+                      updateDraft("isAnswerable", e.currentTarget.checked);
+                      if (!e.currentTarget.checked) {
+                        updateDraft("answerTemplateType", null);
+                        updateDraft("answerId", null);
+                      } else if (!current("answerTemplateType")) {
+                        updateDraft("answerTemplateType", "single_answer");
+                      }
+                    }} />
+                    {current("isAnswerable") && (
+                      <Select
+                        label="Answer type"
+                        size="xs"
+                        value={current("answerTemplateType") ?? ""}
+                        onChange={(v) => updateDraft("answerTemplateType", v || null)}
+                        data={[
+                          { value: "single_answer", label: "Text input" },
+                        ]}
+                      />
+                    )}
+                  </Group>
+
+                  {current("isAnswerable") && current("answerTemplateType") === "single_answer" && (
+                    <AnswerTemplateEditor
+                      gameId={gameId}
+                      answerTemplateType={current("answerTemplateType")}
+                      answerId={current("answerId")}
+                      onAnswerCreated={(type, id) => {
+                        updateDraft("answerTemplateType", type);
+                        updateDraft("answerId", id);
+                      }}
+                    />
+                  )}
 
                   {/* Action bar */}
                   <Group justify="space-between" mt="xs">

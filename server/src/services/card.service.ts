@@ -270,8 +270,9 @@ export async function checkAnswer(
     };
   }
 
-  // Check if we should show a hint
+  // Check if we should show a hint or lock out
   let hint: string | null = null;
+  let lockedOut = false;
   if (card.answerTemplateType === "single_answer") {
     const template = await prisma.singleAnswer.findUnique({
       where: { id: card.answerId },
@@ -282,14 +283,23 @@ export async function checkAnswer(
     ) {
       hint = template.hint;
     }
+
+    // Lock out if max attempts reached
+    if (template?.maxAttempts && attemptNumber >= template.maxAttempts) {
+      await prisma.card.update({
+        where: { id: card.id },
+        data: { lockedOut: true, lockedOutReason: "Too many incorrect attempts." },
+      });
+      lockedOut = true;
+    }
   }
 
   return {
     correct: false,
     attemptNumber,
     hint,
-    lockedOut: false,
-    message: "Incorrect. Try again.",
+    lockedOut,
+    message: lockedOut ? "Too many attempts. This card is now locked." : "Incorrect. Try again.",
   };
 }
 

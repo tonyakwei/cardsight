@@ -16,6 +16,7 @@ import {
   Select,
   Switch,
 } from "@mantine/core";
+import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 import {
   fetchGame,
   fetchShowtimes,
@@ -380,6 +381,14 @@ function ShowtimeRow({
                   }}
                 />
               </Group>
+              <AnswerTemplateEditor
+                gameId={gameId}
+                answerTemplateType={slot.answerTemplateType}
+                answerId={slot.answerId}
+                onAnswerCreated={(type, id) => {
+                  save({ slots: [{ id: slot.id, answerTemplateType: type, answerId: id }] });
+                }}
+              />
             </Paper>
           ))}
 

@@ -909,6 +909,64 @@ export async function getDashboard(gameId: string) {
   };
 }
 
+// === Answer Templates ===
+
+export async function createAnswerTemplate(gameId: string, type: string, data: Record<string, any>) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  if (type === "single_answer") {
+    return prisma.singleAnswer.create({
+      data: {
+        gameId,
+        correctAnswer: data.correctAnswer ?? "",
+        caseSensitive: data.caseSensitive ?? false,
+        trimWhitespace: data.trimWhitespace ?? true,
+        acceptAlternatives: data.acceptAlternatives ?? [],
+        hint: data.hint ?? null,
+        hintAfterAttempts: data.hintAfterAttempts ?? 3,
+        maxAttempts: data.maxAttempts ?? null,
+      },
+    });
+  }
+
+  throw new AppError(400, `Unknown answer template type: ${type}`);
+}
+
+export async function updateAnswerTemplate(gameId: string, type: string, id: string, data: Record<string, any>) {
+  if (type === "single_answer") {
+    const template = await prisma.singleAnswer.findUnique({ where: { id } });
+    if (!template || template.gameId !== gameId) {
+      throw new AppError(404, "Answer template not found");
+    }
+
+    const allowed = [
+      "correctAnswer", "caseSensitive", "trimWhitespace",
+      "acceptAlternatives", "hint", "hintAfterAttempts", "maxAttempts",
+    ];
+    const updateData: Record<string, any> = {};
+    for (const key of allowed) {
+      if (key in data) updateData[key] = data[key];
+    }
+
+    return prisma.singleAnswer.update({ where: { id }, data: updateData });
+  }
+
+  throw new AppError(400, `Unknown answer template type: ${type}`);
+}
+
+export async function getAnswerTemplate(gameId: string, type: string, id: string) {
+  if (type === "single_answer") {
+    const template = await prisma.singleAnswer.findUnique({ where: { id } });
+    if (!template || template.gameId !== gameId) {
+      throw new AppError(404, "Answer template not found");
+    }
+    return template;
+  }
+
+  throw new AppError(400, `Unknown answer template type: ${type}`);
+}
+
 // === Designs (read-only) ===
 
 export async function listDesigns(gameId: string) {
