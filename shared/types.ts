@@ -140,3 +140,7 @@ export interface ShowtimeSyncPressResponse {
   phase: ShowtimePhase;
   message: string;
 }
+
+// === Admin Types ===
+
+export * from "./admin-types.js";

@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useState, useCallback } from "react";
+import { useNavigate } from "react-router";
 import {
   Group,
   Text,
@@ -19,73 +19,42 @@ import {
   Checkbox,
 } from "@mantine/core";
 import {
-  fetchGame,
   fetchMissions,
   fetchCardSets,
   fetchHouses,
   createMission,
   updateMission,
   deleteMission,
-  type GameDetail,
   type AdminMission,
   type AdminCardSet,
   type AdminHouse,
 } from "../../api/admin";
+import { useAdminList } from "../../hooks/useAdminList";
 
 export function MissionManager() {
-  const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
-  const [game, setGame] = useState<GameDetail | null>(null);
-  const [missions, setMissions] = useState<AdminMission[]>([]);
-  const [cardSets, setCardSets] = useState<AdminCardSet[]>([]);
-  const [houses, setHouses] = useState<AdminHouse[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    gameId, game, items: missions, setItems: setMissions,
+    extras, loading, handleUpdated, handleDeleted,
+  } = useAdminList<AdminMission>({
+    fetchItems: fetchMissions,
+    extraFetches: {
+      cardSets: fetchCardSets,
+      houses: fetchHouses,
+    },
+  });
+
+  const cardSets: AdminCardSet[] = extras.cardSets ?? [];
+  const houses: AdminHouse[] = extras.houses ?? [];
   const [activeTab, setActiveTab] = useState<string>("all");
-
-  const loadData = useCallback(async () => {
-    if (!gameId) return;
-    setLoading(true);
-    const [g, m, s, h] = await Promise.all([
-      fetchGame(gameId),
-      fetchMissions(gameId),
-      fetchCardSets(gameId),
-      fetchHouses(gameId),
-    ]);
-    setGame(g);
-    setMissions(m);
-    setCardSets(s);
-    setHouses(h);
-    setLoading(false);
-  }, [gameId]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
 
   const handleCreate = useCallback(async () => {
     if (!gameId) return;
-    // Default to the active tab's house if viewing a specific house
     const houseIds = activeTab !== "all" ? [activeTab] : [];
     await createMission(gameId, { houseIds });
     const m = await fetchMissions(gameId);
     setMissions(m);
-  }, [gameId, activeTab]);
-
-  const handleUpdated = useCallback(
-    (updated: AdminMission) => {
-      setMissions((prev) =>
-        prev.map((m) => (m.id === updated.id ? updated : m)),
-      );
-    },
-    [],
-  );
-
-  const handleDeleted = useCallback(
-    (id: string) => {
-      setMissions((prev) => prev.filter((m) => m.id !== id));
-    },
-    [],
-  );
+  }, [gameId, activeTab, setMissions]);
 
   if (loading) {
     return (

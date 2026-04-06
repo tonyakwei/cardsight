@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useState, useCallback } from "react";
+import { useNavigate } from "react-router";
 import {
   Group,
   Text,
@@ -18,7 +18,6 @@ import {
 } from "@mantine/core";
 import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 import {
-  fetchGame,
   fetchShowtimes,
   fetchDesigns,
   createShowtime,
@@ -26,10 +25,10 @@ import {
   deleteShowtime,
   triggerShowtime,
   resetShowtime,
-  type GameDetail,
   type AdminShowtime,
   type AdminDesign,
 } from "../../api/admin";
+import { useAdminList } from "../../hooks/useAdminList";
 
 const PHASE_COLORS: Record<string, string> = {
   filling: "blue",
@@ -38,57 +37,24 @@ const PHASE_COLORS: Record<string, string> = {
 };
 
 export function ShowtimeManager() {
-  const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
-  const [game, setGame] = useState<GameDetail | null>(null);
-  const [showtimes, setShowtimes] = useState<AdminShowtime[]>([]);
-  const [designs, setDesigns] = useState<AdminDesign[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    gameId, game, items: showtimes, setItems: setShowtimes,
+    extras, loading, handleUpdated, handleDeleted,
+  } = useAdminList<AdminShowtime>({
+    fetchItems: fetchShowtimes,
+    extraFetches: { designs: fetchDesigns },
+    pollInterval: 5000,
+  });
 
-  const loadData = useCallback(async () => {
-    if (!gameId) return;
-    setLoading(true);
-    const [g, s, d] = await Promise.all([
-      fetchGame(gameId),
-      fetchShowtimes(gameId),
-      fetchDesigns(gameId),
-    ]);
-    setGame(g);
-    setShowtimes(s);
-    setDesigns(d);
-    setLoading(false);
-  }, [gameId]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  // Auto-refresh for live monitoring
-  useEffect(() => {
-    if (!gameId) return;
-    const id = setInterval(async () => {
-      const s = await fetchShowtimes(gameId);
-      setShowtimes(s);
-    }, 5000);
-    return () => clearInterval(id);
-  }, [gameId]);
+  const designs: AdminDesign[] = extras.designs ?? [];
 
   const handleCreate = useCallback(async () => {
     if (!gameId) return;
     await createShowtime(gameId, {});
     const s = await fetchShowtimes(gameId);
     setShowtimes(s);
-  }, [gameId]);
-
-  const handleUpdated = useCallback((updated: AdminShowtime) => {
-    setShowtimes((prev) =>
-      prev.map((s) => (s.id === updated.id ? updated : s)),
-    );
-  }, []);
-
-  const handleDeleted = useCallback((id: string) => {
-    setShowtimes((prev) => prev.filter((s) => s.id !== id));
-  }, []);
+  }, [gameId, setShowtimes]);
 
   if (loading) {
     return (

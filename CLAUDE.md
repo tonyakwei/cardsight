@@ -31,53 +31,91 @@ Physical cards with QR codes are distributed around the room. When a player scan
 cardsight/
 ├── client/                    # React app (Vite)
 │   ├── src/
-│   │   ├── api/               # API client functions (cards.ts, admin.ts)
+│   │   ├── api/
+│   │   │   ├── admin.ts             # Barrel re-export for all admin API functions
+│   │   │   ├── admin/               # Split admin API by domain
+│   │   │   │   ├── common.ts        # BASE constant, card sets, houses, designs
+│   │   │   │   ├── games.ts         # Game CRUD, duplicate
+│   │   │   │   ├── cards.ts         # Card CRUD, bulk, reorder, delete, QR
+│   │   │   │   ├── missions.ts      # Mission CRUD, act-break
+│   │   │   │   ├── showtimes.ts     # Showtime CRUD, trigger, reset
+│   │   │   │   ├── dashboard.ts     # Live dashboard, act transitions
+│   │   │   │   ├── answers.ts       # Answer template CRUD
+│   │   │   │   └── simulator.ts     # Table simulator
+│   │   │   ├── cards.ts             # Player-facing card API
+│   │   │   └── showtime.ts          # Player-facing showtime API
+│   │   ├── hooks/
+│   │   │   └── useAdminList.ts      # Shared CRUD list hook (game + items + extras + polling)
 │   │   ├── components/
-│   │   │   ├── card-viewer/   # Player-facing scan experience
-│   │   │   │   ├── animations/  # FadeIn, SlideUp, GlitchIn, DecryptIn
-│   │   │   │   ├── overlays/    # Scanlines, StaticNoise, Glow, Particles
-│   │   │   │   ├── answers/     # SingleAnswerInput (more types planned)
-│   │   │   │   ├── states/      # Loading, NotFound, LockedOut, SelfDestructed, AlreadyAnswered
-│   │   │   │   ├── CardViewer.tsx       # Main orchestrator
-│   │   │   │   ├── CardShell.tsx        # Full-viewport design container
-│   │   │   │   ├── CardContent.tsx      # Title + clueVisibleCategory label + markdown description
-│   │   │   │   ├── EntryGate.tsx        # "Press to enter" gate before content
-│   │   │   │   ├── SelfDestructTimer.tsx
-│   │   │   │   └── VisibilityGuard.tsx  # Blur on tab switch (anti-screenshot)
-│   │   │   └── admin/         # Admin panel
-│   │   │       ├── AdminLayout.tsx      # AppShell with gold/dark theme
-│   │   │       ├── GameList.tsx         # Game cards
-│   │   │       ├── CardManager.tsx      # Card list with set tabs, act grouping, set notes editing, mission summary per set
-│   │   │       ├── CardRow.tsx          # Expandable card with inline editing + phone preview
-│   │   │       ├── PhonePreview.tsx     # iframe-based card preview
-│   │   │       ├── SetReviewBanner.tsx  # "N cards modified" banner
-│   │   │       ├── BulkActionBar.tsx    # Bulk operations on selected cards
-│   │   │       ├── MissionManager.tsx   # Mission CRUD organized by house tabs + act groups
-│   │   │       ├── ActBreakView.tsx     # Per-house mission results + consequence texts for host
-│   │   │       ├── ConsequencePrint.tsx # Printable consequence cards (2-3 per US letter page)
-│   │   │       ├── LiveDashboard.tsx    # Real-time game dashboard with auto-polling
+│   │   │   ├── card-viewer/         # Player-facing scan experience
+│   │   │   │   ├── animations/      # FadeIn, SlideUp, GlitchIn, DecryptIn
+│   │   │   │   ├── overlays/        # Scanlines, StaticNoise, Glow, Particles
+│   │   │   │   ├── answers/         # SingleAnswerInput
+│   │   │   │   ├── states/          # Loading, NotFound, LockedOut, SelfDestructed, AlreadyAnswered
+│   │   │   │   ├── CardViewer.tsx, CardShell.tsx, CardContent.tsx
+│   │   │   │   ├── EntryGate.tsx, SelfDestructTimer.tsx, VisibilityGuard.tsx
+│   │   │   ├── showtime/           # Player-facing Showtime experience
+│   │   │   │   ├── ShowtimeViewer.tsx    # Main orchestrator (polling, phase state machine)
+│   │   │   │   ├── ShowtimeConsole.tsx   # Slot grid + sync button
+│   │   │   │   ├── ShowtimeSlot.tsx      # Individual slot (editable/read-only)
+│   │   │   │   ├── SyncButton.tsx        # Synchronized press button
+│   │   │   │   └── ShowtimeReveal.tsx    # Reveal content display
+│   │   │   └── admin/              # Admin panel
+│   │   │       ├── AdminLayout.tsx       # AppShell with gold/dark theme
+│   │   │       ├── GameList.tsx          # Game cards
+│   │   │       ├── CardManager.tsx       # Card list with set tabs, act grouping, mission summary
+│   │   │       ├── CardRow.tsx           # Expandable card with inline editing + answer template editor
+│   │   │       ├── AnswerTemplateEditor.tsx # Reusable answer editor (cards + showtime slots)
+│   │   │       ├── PhonePreview.tsx, SetReviewBanner.tsx, BulkActionBar.tsx
+│   │   │       ├── MissionManager.tsx    # Mission CRUD by house tabs + act groups
+│   │   │       ├── ActBreakView.tsx      # Per-house mission results for host
+│   │   │       ├── ConsequencePrint.tsx  # Printable consequence cards (2-3 per page)
+│   │   │       ├── ShowtimeManager.tsx   # Showtime CRUD, live monitoring, force trigger/reset
+│   │   │       ├── LiveDashboard.tsx     # Real-time game dashboard (auto-polls 5s)
 │   │   │       └── simulator/           # Table assignment simulator
+│   │   │           ├── TableSimulator.tsx, TableColumn.tsx
+│   │   │           ├── SimCardChip.tsx, PreviewSidebar.tsx
 │   │   ├── utils/session.ts
 │   │   └── styles/global.css
 │   └── vite.config.ts         # Proxy /api → server
 ├── server/                    # Express API
 │   ├── src/
 │   │   ├── routes/
-│   │   │   ├── cards.ts       # Player-facing: GET card, POST scan, POST enter, POST answer
-│   │   │   └── admin.ts       # Admin: games, cards, missions, card sets, houses, QR, designs, dashboard, act transitions
+│   │   │   ├── cards.ts              # Player-facing card routes
+│   │   │   ├── showtime.ts           # Player-facing showtime routes
+│   │   │   ├── admin.ts              # Barrel composing sub-routers
+│   │   │   └── admin/                # Split admin routes by domain
+│   │   │       ├── card-routes.ts    # Cards, card sets, houses, simulator, QR
+│   │   │       ├── mission-routes.ts # Missions, act-break
+│   │   │       ├── showtime-routes.ts# Showtimes, trigger, reset
+│   │   │       └── game-routes.ts    # Games, duplicate, dashboard, designs, answers
 │   │   ├── services/
-│   │   │   ├── card.service.ts   # Core scan flow logic (lockout, self-destruct, answer checking, mission auto-completion)
-│   │   │   ├── admin.service.ts  # Admin business logic (CRUD, missions, dashboard, act transitions, game duplication)
-│   │   │   └── qr.service.ts    # QR code PNG generation
+│   │   │   ├── card.service.ts       # Player scan flow (lockout, self-destruct, answers, mission auto-complete)
+│   │   │   ├── showtime.service.ts   # Player showtime flow (slots, sync press, reveal)
+│   │   │   ├── answer-validation.ts  # Shared answer validation (used by card + showtime)
+│   │   │   ├── admin.service.ts      # Barrel re-export for all admin services
+│   │   │   ├── admin/                # Split admin services by domain
+│   │   │   │   ├── card-admin.service.ts     # Card CRUD, bulk, reorder, reset
+│   │   │   │   ├── cardset-admin.service.ts  # Card set CRUD, reviews
+│   │   │   │   ├── house-admin.service.ts    # House CRUD, simulator
+│   │   │   │   ├── mission-admin.service.ts  # Mission CRUD, act-break summary
+│   │   │   │   ├── showtime-admin.service.ts # Showtime CRUD, trigger, reset
+│   │   │   │   ├── game-admin.service.ts     # Game CRUD, duplicate, act transitions, answers, designs
+│   │   │   │   └── dashboard.service.ts      # Live dashboard aggregation
+│   │   │   └── qr.service.ts        # QR code PNG generation
 │   │   ├── middleware/error-handler.ts
-│   │   ├── validation/cards.ts   # Zod schemas
+│   │   ├── validation/
+│   │   │   ├── cards.ts              # Card Zod schemas
+│   │   │   └── showtime.ts           # Showtime Zod schemas
 │   │   └── lib/prisma.ts
 │   └── prisma/
 │       ├── schema.prisma
 │       └── seed.ts
 ├── shared/                    # Shared TypeScript types
-│   └── types.ts
+│   ├── types.ts               # Player-facing types + barrel for admin-types
+│   └── admin-types.ts         # All Admin* interfaces (single source of truth)
 ├── docker-compose.yml         # Postgres 16
+├── railway.json               # Railway deployment config
 └── package.json               # Volta pins, workspace scripts
 ```
 
