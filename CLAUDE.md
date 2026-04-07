@@ -77,6 +77,9 @@ cardsight/
 │   │   │           ├── SimCardChip.tsx, PreviewSidebar.tsx
 │   │   ├── utils/session.ts
 │   │   └── styles/global.css
+│   ├── public/
+│   │   ├── landing.html             # ATN static landing page (served at /)
+│   │   └── images/forgotten-files/  # Gallery photos for landing page
 │   └── vite.config.ts         # Proxy /api → server
 ├── server/                    # Express API
 │   ├── src/
@@ -287,12 +290,14 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Showtime admin (CRUD, slot configuration, live monitoring with auto-refresh, force trigger, reset)
 - Showtime integrated into game reset and duplication
 
-- Railway deployment (single service: Express serves API + built Vite client)
+- Railway deployment (single service: Express serves API + built Vite client + ATN landing page)
 
 ## Deployment (Railway)
 
-Single service deployment. Express serves the Vite-built client as static files in production.
+Single service deployment on Railway Hobby tier. Express serves everything: the ATN landing page at `/`, the Vite-built React app for all card/admin/showtime routes, and the API.
 
+- **Custom domain:** `alltogethernow.land` → CNAME to Railway (`rf1jww64.up.railway.app`). DNS also has a `_railway-verify` TXT record for SSL cert provisioning. `www` CNAME also points to Railway.
+- **QR code links:** Physical cards use Short.io short links (`alltogethernow.land/xyz`) which redirect to card routes on the same domain.
 - **Build:** `pnpm install` → `pnpm build` (generates Prisma client, builds client + server in parallel)
 - **Start:** `pnpm --filter server prisma migrate deploy && node server/dist/server/src/index.js`
 - **Postgres:** Add Railway's Postgres plugin — it auto-sets `DATABASE_URL`
@@ -300,6 +305,15 @@ Single service deployment. Express serves the Vite-built client as static files 
 - **Config:** `railway.json` at project root
 
 The server's compiled output lands at `server/dist/server/src/` (because `rootDir` is `..` to include shared types). The static file path accounts for this.
+
+### Static site integration
+
+The All Together Now landing page (previously hosted on GitHub Pages at `tonyakwei/all-together-now-web`) is now served from CardSight. The static HTML lives at `client/public/landing.html` with gallery images in `client/public/images/`. Vite copies these to `client/dist/` during build. Express route order:
+
+1. API routes (`/api/*`)
+2. Static file middleware (`express.static` with `index: false`)
+3. Landing page route (`GET /` → `landing.html`)
+4. SPA fallback (all other non-API routes → React `index.html`)
 
 **Not yet built:**
 - Admin auth (planned: simple shared secret)
