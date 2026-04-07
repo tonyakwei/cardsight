@@ -1,5 +1,5 @@
 import type { SingleAnswerTemplate } from "@cardsight/shared";
-import { BASE } from "./common.js";
+import { BASE, adminFetch } from "./common.js";
 
 export type { SingleAnswerTemplate };
 
@@ -8,7 +8,7 @@ export async function fetchAnswerTemplate(
   type: string,
   id: string,
 ): Promise<SingleAnswerTemplate> {
-  const res = await fetch(`${BASE}/games/${gameId}/answers/${type}/${id}`);
+  const res = await adminFetch(`${BASE}/games/${gameId}/answers/${type}/${id}`);
   return res.json();
 }
 
@@ -17,7 +17,7 @@ export async function createAnswerTemplate(
   type: string,
   data: Record<string, any>,
 ): Promise<SingleAnswerTemplate> {
-  const res = await fetch(`${BASE}/games/${gameId}/answers/${type}`, {
+  const res = await adminFetch(`${BASE}/games/${gameId}/answers/${type}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -31,7 +31,7 @@ export async function updateAnswerTemplate(
   id: string,
   data: Record<string, any>,
 ): Promise<SingleAnswerTemplate> {
-  const res = await fetch(`${BASE}/games/${gameId}/answers/${type}/${id}`, {
+  const res = await adminFetch(`${BASE}/games/${gameId}/answers/${type}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

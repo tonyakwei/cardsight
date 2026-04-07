@@ -5,6 +5,11 @@ import showtimeRoutes from "./admin/showtime-routes.js";
 import gameRoutes from "./admin/game-routes.js";
 
 const router: RouterType = Router();
+
+router.get("/verify", (_req, res) => {
+  res.json({ authenticated: true });
+});
+
 router.use("/", gameRoutes);
 router.use("/", cardRoutes);
 router.use("/", missionRoutes);

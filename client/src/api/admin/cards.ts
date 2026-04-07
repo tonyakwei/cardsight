@@ -1,5 +1,5 @@
 import type { AdminCard } from "@cardsight/shared";
-import { BASE } from "./common.js";
+import { BASE, adminFetch, getAdminToken } from "./common.js";
 
 export type { AdminCard };
 
@@ -14,7 +14,7 @@ export async function fetchCards(
   if (filters?.showDeleted !== undefined) params.set("showDeleted", String(filters.showDeleted));
 
   const qs = params.toString();
-  const res = await fetch(`${BASE}/games/${gameId}/cards${qs ? `?${qs}` : ""}`);
+  const res = await adminFetch(`${BASE}/games/${gameId}/cards${qs ? `?${qs}` : ""}`);
   return res.json();
 }
 
@@ -23,7 +23,7 @@ export async function updateCard(
   cardId: string,
   data: Record<string, any>,
 ): Promise<AdminCard> {
-  const res = await fetch(`${BASE}/games/${gameId}/cards/${cardId}`, {
+  const res = await adminFetch(`${BASE}/games/${gameId}/cards/${cardId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -35,7 +35,7 @@ export async function createCard(
   gameId: string,
   data: Record<string, any>,
 ): Promise<AdminCard> {
-  const res = await fetch(`${BASE}/games/${gameId}/cards`, {
+  const res = await adminFetch(`${BASE}/games/${gameId}/cards`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -44,25 +44,25 @@ export async function createCard(
 }
 
 export async function resetCard(gameId: string, cardId: string): Promise<AdminCard> {
-  const res = await fetch(`${BASE}/games/${gameId}/cards/${cardId}/reset`, { method: "POST" });
+  const res = await adminFetch(`${BASE}/games/${gameId}/cards/${cardId}/reset`, { method: "POST" });
   return res.json();
 }
 
 export async function resetAllCards(gameId: string): Promise<void> {
-  await fetch(`${BASE}/games/${gameId}/reset`, { method: "POST" });
+  await adminFetch(`${BASE}/games/${gameId}/reset`, { method: "POST" });
 }
 
 export async function deleteCard(gameId: string, cardId: string): Promise<void> {
-  await fetch(`${BASE}/games/${gameId}/cards/${cardId}`, { method: "DELETE" });
+  await adminFetch(`${BASE}/games/${gameId}/cards/${cardId}`, { method: "DELETE" });
 }
 
 export async function restoreCard(gameId: string, cardId: string): Promise<AdminCard> {
-  const res = await fetch(`${BASE}/games/${gameId}/cards/${cardId}/restore`, { method: "POST" });
+  const res = await adminFetch(`${BASE}/games/${gameId}/cards/${cardId}/restore`, { method: "POST" });
   return res.json();
 }
 
 export async function reorderCards(gameId: string, cardIds: string[]): Promise<void> {
-  await fetch(`${BASE}/games/${gameId}/cards/reorder`, {
+  await adminFetch(`${BASE}/games/${gameId}/cards/reorder`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ cardIds }),
@@ -75,7 +75,7 @@ export async function bulkOperation(
   action: string,
   value?: any,
 ): Promise<void> {
-  await fetch(`${BASE}/games/${gameId}/cards/bulk`, {
+  await adminFetch(`${BASE}/games/${gameId}/cards/bulk`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ cardIds, action, value }),
@@ -83,5 +83,7 @@ export async function bulkOperation(
 }
 
 export function getQRUrl(gameId: string, cardId: string): string {
-  return `${BASE}/games/${gameId}/cards/${cardId}/qr`;
+  const token = getAdminToken();
+  const url = `${BASE}/games/${gameId}/cards/${cardId}/qr`;
+  return token ? `${url}?token=${token}` : url;
 }

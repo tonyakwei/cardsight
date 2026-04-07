@@ -1,7 +1,26 @@
-import { AppShell, Group, Text } from "@mantine/core";
+import { useState, useEffect } from "react";
+import { AppShell, Group, Text, ActionIcon, Tooltip } from "@mantine/core";
 import { Outlet } from "react-router";
+import { adminFetch, clearAdminToken, BASE } from "../../api/admin/common";
+import { AdminLogin } from "./AdminLogin";
 
 export function AdminLayout() {
+  const [authed, setAuthed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    adminFetch(`${BASE}/verify`)
+      .then((res) => setAuthed(res.ok))
+      .catch(() => setAuthed(false));
+  }, []);
+
+  function handleLogout() {
+    clearAdminToken();
+    setAuthed(false);
+  }
+
+  if (authed === null) return null;
+  if (!authed) return <AdminLogin onLogin={() => setAuthed(true)} />;
+
   return (
     <AppShell
       header={{ height: 56 }}
@@ -29,6 +48,11 @@ export function AdminLayout() {
               Admin
             </Text>
           </Group>
+          <Tooltip label="Sign out">
+            <ActionIcon variant="subtle" color="gray" onClick={handleLogout} size="sm">
+              ↪
+            </ActionIcon>
+          </Tooltip>
         </Group>
       </AppShell.Header>
 

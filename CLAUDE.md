@@ -153,6 +153,7 @@ cardsight/
 - **Answer validation is shared** — `validateAnswer()` is extracted to `server/src/services/answer-validation.ts` and used by both card.service.ts and showtime.service.ts.
 - **Card designs use CSS custom properties** — `CardShell` maps design fields to `--card-*` variables. No CSS-in-JS runtime. Animations use CSS `@keyframes`.
 - **Visibility guard** — blurs content when player switches away from the browser tab (anti-screenshot).
+- **Admin auth** — HTTP Basic Auth on all `/api/admin/*` routes via `adminAuth` middleware. Controlled by `ENV_LEVEL` env var: skipped when not `production`. Client stores base64 credentials in `sessionStorage`, sends via `Authorization: Basic` header through the `adminFetch()` wrapper in `client/src/api/admin/common.ts`. QR image URLs pass token as `?token=` query param (since `<img src>` can't set headers). Login gate lives in `AdminLayout.tsx`, verifies via `GET /api/admin/verify`.
 
 ## Running locally
 
@@ -171,6 +172,16 @@ pnpm dev:client                   # Vite on port 5173 (proxies /api → 3001)
 ```
 
 Admin panel: http://localhost:5173/admin
+
+### Environment variables (`server/.env`)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | (local Postgres) | Prisma connection string |
+| `PORT` | `3001` | Express server port |
+| `ENV_LEVEL` | `development` | `development` skips admin auth; `production` requires it |
+| `ADMIN_USER` | `anthony` | Admin login username (used when `ENV_LEVEL=production`) |
+| `ADMIN_PASS` | `niceday100` | Admin login password (used when `ENV_LEVEL=production`) |
 
 ## Admin pages
 
@@ -203,7 +214,7 @@ POST  /api/showtime/:id/submit?house=:houseId     # Submit slot value
 POST  /api/showtime/:id/sync-press?house=:houseId # Record synchronized button press
 ```
 
-### Admin (no auth currently — dev mode)
+### Admin (HTTP Basic Auth in production, open in development)
 ```
 # Games
 GET   /api/admin/games
@@ -289,6 +300,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Showtime synchronized reveal mechanic (multi-house analysis console, slot filling, sync press, dramatic reveal)
 - Showtime admin (CRUD, slot configuration, live monitoring with auto-refresh, force trigger, reset)
 - Showtime integrated into game reset and duplication
+- Admin authentication (HTTP Basic Auth, env-controlled via `ENV_LEVEL`)
 
 - Railway deployment (single service: Express serves API + built Vite client + ATN landing page)
 
@@ -316,7 +328,6 @@ The All Together Now landing page (previously hosted on GitHub Pages at `tonyakw
 4. SPA fallback (all other non-API routes → React `index.html`)
 
 **Not yet built:**
-- Admin auth (planned: simple shared secret)
 - Design editor and answer template editor in admin
 - Additional answer types (multiple choice, photo select, etc.)
 - Bulk QR code print sheet
