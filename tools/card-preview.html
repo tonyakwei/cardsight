@@ -150,37 +150,33 @@
       z-index: 3;
     }
 
-    /* Corner spade spokes — pointing inward from corners */
+    /* Corner spade spokes — protruding inward from inner border corners */
     .corner-spade {
       position: absolute;
       z-index: 4;
-      width: 70px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 56px;
-      color: var(--dark-border);
+      font-size: 64px;
+      color: var(--border-color);
       line-height: 1;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     .corner-spade-tl {
-      top: 24px;
-      left: 24px;
+      top: 58px;
+      left: 58px;
       transform: rotate(135deg);
     }
     .corner-spade-tr {
-      top: 24px;
-      right: 24px;
+      top: 58px;
+      right: 58px;
       transform: rotate(225deg);
     }
     .corner-spade-bl {
-      bottom: 24px;
-      left: 24px;
+      bottom: 58px;
+      left: 58px;
       transform: rotate(45deg);
     }
     .corner-spade-br {
-      bottom: 24px;
-      right: 24px;
+      bottom: 58px;
+      right: 58px;
       transform: rotate(-45deg);
     }
 
