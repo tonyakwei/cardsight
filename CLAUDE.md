@@ -116,7 +116,10 @@ cardsight/
 │       └── seed.ts
 ├── shared/                    # Shared TypeScript types
 │   ├── types.ts               # Player-facing types + barrel for admin-types
-│   └── admin-types.ts         # All Admin* interfaces (single source of truth)
+│   ├── admin-types.ts         # All Admin* interfaces (single source of truth)
+│   └── physical-cards.json    # 54 physical card definitions (UUIDs, colors, names, Short.io links)
+├── tools/                     # Design and print tooling
+│   └── card-preview.html      # Physical card design preview (standalone, open in browser)
 ├── docker-compose.yml         # Postgres 16
 ├── railway.json               # Railway deployment config
 └── package.json               # Volta pins, workspace scripts
@@ -326,6 +329,40 @@ The All Together Now landing page (previously hosted on GitHub Pages at `tonyakw
 2. Static file middleware (`express.static` with `index: false`)
 3. Landing page route (`GET /` → `landing.html`)
 4. SPA fallback (all other non-API routes → React `index.html`)
+
+## Physical cards
+
+54 large-format playing cards (89mm x 146mm / 3.5" x 5.75", 300 DPI minimum) printed by a card printing service. These are permanent physical objects reused across all games — the same UUIDs are used when creating cards in the database for each new game.
+
+### Card deck structure
+- 6 colors: red, yellow, green, blue, purple, white — 9 cards each = 54 total
+- Each card has: a **color**, a **number** (1-9), a **unique name** (adjective + noun, e.g. "Thermonuclear Chili"), a **QR code**, and a **center icon**
+- Names are game-agnostic, humorous/evocative, and designed to feel like each card is its own little world
+- The number is NOT displayed — instead, each number maps to a unique icon:
+
+| # | Icon |
+|---|------|
+| 1 | Star |
+| 2 | Diamond |
+| 3 | Crescent Moon |
+| 4 | Compass Rose |
+| 5 | Shield |
+| 6 | Six-pointed Star (Crown) |
+| 7 | Key |
+| 8 | Hourglass |
+| 9 | All-seeing Eye |
+
+### Card visual design (WIP in `tools/card-preview.html`)
+- **Borders**: Three layers from outside in — thin dark edge border, outer color border, gap showing background, inner color border
+- **Corner spades**: ♠ shapes at all 4 corners of the inner border, pointing inward, colored to match the border
+- **Background**: Card's main color with ATN-style diagonal light shafts (thick bands, rotated 30deg, going top-right to bottom-left) and scattered sparkle dots
+- **Layout top to bottom**: Name (large, Cinzel Decorative font, auto-sized to fit, always 2 lines), Icon (center, SVG), QR code (bottom, semi-transparent)
+- **QR codes**: Link to `alltogethernow.short.gy/<8-char-slug>` which redirects to `alltogethernow.land/c/<uuid>`. Short.io provides an indirection layer so QR codes survive domain/URL changes
+- **Font**: Currently Cinzel Decorative (Google Fonts). User prefers something like "Seagram TFB" — slightly gothic but readable, not full blackletter. Font choice is still being iterated.
+
+### Card data
+- `shared/physical-cards.json` — canonical list of all 54 cards with id, slug, color, number, name, shortUrl, destination
+- Short.io links already created for all 54 cards under `alltogethernow.short.gy`
 
 **Not yet built:**
 - Design editor and answer template editor in admin
