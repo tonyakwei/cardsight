@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Together Now</title>
+  <meta name="description" content="Immersive events. Real connection. Any night of the week. Washington, DC.">
+  <meta property="og:title" content="All Together Now">
+  <meta property="og:description" content="Immersive events. Real connection. Any night of the week.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alltogethernow.land">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0D0C0A;
+      --gold: #C9A84C;
+      --cream: #F0EAD6;
+      --cream-dim: rgba(240, 234, 214, 0.5);
+      --gold-dim: rgba(201, 168, 76, 0.3);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--gold-dim);
+      color: var(--cream);
+    }
+
+    /* ——— HERO ——— */
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1.2s ease forwards 0.3s;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream-dim);
+      max-width: 36ch;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 1.2s ease forwards 0.7s;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: fadeUp 1.2s ease forwards 1.4s;
+    }
+
+    .hero-scroll span {
+      display: block;
+      width: 1px;
+      height: 48px;
+      background: var(--gold-dim);
+      margin: 0 auto;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    /* ——— SECTIONS (shared) ——— */
+
+    section {
+      padding: 6rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+
+    .section-heading {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-body {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: var(--cream-dim);
+      line-height: 1.75;
+    }
+
+    .section-body p + p {
+      margin-top: 1.25em;
+    }
+
+    /* ——— BELIEF ——— */
+
+    .belief {
+      padding-top: 4rem;
+    }
+
+    .belief .section-body {
+      max-width: 640px;
+    }
+
+    /* ——— NEXT EVENT ——— */
+
+    .next-event {
+      padding: 6rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .event-card {
+      border: 1px solid var(--gold-dim);
+      padding: 3rem 2.5rem;
+      position: relative;
+      background: rgba(201, 168, 76, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(201, 168, 76, 0.08);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .event-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(201, 168, 76, 0.2);
+    }
+
+    .event-card, .event-card .section-body {
+      color: #FFFFFF;
+    }
+
+    .event-card .event-details {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .event-card .event-details strong {
+      color: #FFFFFF;
+    }
+
+    .event-card .event-mission-text {
+      color: #FFFFFF;
+    }
+
+    .event-collab {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .event-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .event-details {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--cream-dim);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .event-details strong {
+      color: var(--cream);
+      font-weight: 500;
+    }
+
+    .event-mission {
+      border-top: 1px solid var(--gold-dim);
+      margin-top: 2rem;
+      padding-top: 2rem;
+    }
+
+    .event-mission-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .event-mission-text {
+      font-size: 1.15rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.6;
+      max-width: 540px;
+    }
+
+    .event-cta {
+      margin-top: 2.5rem;
+    }
+
+    .event-cta a {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      padding: 0.9rem 2.4rem;
+      text-decoration: none;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .event-cta a:hover {
+      background: var(--cream);
+      color: var(--bg);
+    }
+
+    /* ——— HOW IT WORKS ——— */
+
+    .how-it-works ol {
+      list-style: none;
+      counter-reset: steps;
+      margin-top: 2rem;
+    }
+
+    .how-it-works li {
+      counter-increment: steps;
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: var(--cream-dim);
+      line-height: 1.75;
+      padding-left: 2.5rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .how-it-works li::before {
+      content: counter(steps);
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--gold);
+    }
+
+    /* ——— PREVIOUS EXPERIENCES ——— */
+
+    .past-work {
+      max-width: 100%;
+      padding: 6rem 0;
+    }
+
+    .past-work .section-label,
+    .past-work .section-heading,
+    .past-work .section-body {
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 2rem;
+    }
+
+    .past-work-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      margin-top: 3rem;
+    }
+
+    .past-work-gallery .gallery-item {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background: #1a1917;
+    }
+
+    .past-work-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0.85;
+      transition: opacity 0.4s ease;
+    }
+
+    .past-work-gallery img:hover {
+      opacity: 1;
+    }
+
+    .experience-list {
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      padding: 0 2rem;
+    }
+
+    .experience-item {
+      padding: 1.75rem 1.5rem;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.12);
+      transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+    }
+
+    .experience-item:hover {
+      transform: scale(1.02);
+      background: rgba(201, 168, 76, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 16px rgba(201, 168, 76, 0.12);
+    }
+
+    .experience-name {
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+
+    .experience-desc {
+      font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+      font-weight: 300;
+      color: var(--cream-dim);
+      line-height: 1.7;
+      max-width: 620px;
+    }
+
+    /* ——— PHILOSOPHY ——— */
+
+    .philosophy blockquote {
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.5;
+      border-left: 2px solid var(--gold);
+      padding-left: 1.5rem;
+      margin: 2.5rem 0;
+      max-width: 580px;
+    }
+
+    /* ——— FOOTER ——— */
+
+    footer {
+      padding: 4rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--gold-dim);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .footer-name {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .footer-tagline {
+      font-size: 1rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream-dim);
+      margin-bottom: 2rem;
+    }
+
+    .footer-link {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--cream);
+    }
+
+    .footer-location {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--cream-dim);
+      letter-spacing: 0.05em;
+    }
+
+    /* ——— LIGHT SHAFTS ——— */
+
+    .shafts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .shaft {
+      position: absolute;
+      top: -60%;
+      left: var(--x);
+      width: var(--w);
+      height: 260%;
+      transform: rotate(30deg);
+      transform-origin: top right;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(201, 168, 76, var(--opacity)) 20%,
+        rgba(201, 168, 76, var(--opacity)) 50%,
+        rgba(201, 168, 76, calc(var(--opacity) * 0.5)) 75%,
+        transparent 100%
+      );
+      animation: shaftBreath 8s ease-in-out var(--delay) infinite;
+    }
+
+    @keyframes shaftBreath {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ——— ANIMATIONS ——— */
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.6; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ——— RESPONSIVE ——— */
+
+    @media (max-width: 640px) {
+      section {
+        padding: 4rem 1.5rem;
+      }
+
+      .next-event {
+        padding: 4rem 1.5rem;
+      }
+
+      .event-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .past-work-gallery {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      footer {
+        padding: 3rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ——— STARS ——— -->
+  <canvas id="stars"></canvas>
+
+  <!-- ——— LIGHT SHAFTS ——— -->
+  <div class="shafts" aria-hidden="true">
+    <div class="shaft" style="--w: 180px; --x: 12%; --opacity: 0.054; --delay: 0s;"></div>
+    <div class="shaft" style="--w: 60px;  --x: 25%; --opacity: 0.096; --delay: 2s;"></div>
+    <div class="shaft" style="--w: 320px; --x: 38%; --opacity: 0.036; --delay: 5s;"></div>
+    <div class="shaft" style="--w: 90px;  --x: 52%; --opacity: 0.084; --delay: 1s;"></div>
+    <div class="shaft" style="--w: 220px; --x: 65%; --opacity: 0.042; --delay: 4s;"></div>
+    <div class="shaft" style="--w: 45px;  --x: 74%; --opacity: 0.108; --delay: 3s;"></div>
+    <div class="shaft" style="--w: 280px; --x: 85%; --opacity: 0.03;  --delay: 6s;"></div>
+    <div class="shaft" style="--w: 70px;  --x: 95%; --opacity: 0.072; --delay: 1.5s;"></div>
+    <div class="shaft" style="--w: 140px; --x: 8%;  --opacity: 0.04;  --delay: 3.5s;"></div>
+    <div class="shaft" style="--w: 50px;  --x: 45%; --opacity: 0.1;   --delay: 0.5s;"></div>
+  </div>
+
+  <!-- ——— HERO ——— -->
+  <header class="hero">
+    <h1 class="hero-title">All Together Now</h1>
+    <p class="hero-subtitle">Immersive events. Real connection. Any night of the week.</p>
+    <div class="hero-scroll"><span></span></div>
+  </header>
+
+  <!-- ——— BELIEF ——— -->
+  <section class="belief reveal">
+    <p class="section-label">The Belief</p>
+    <h2 class="section-heading">A Tuesday can be a chapter.</h2>
+    <div class="section-body">
+      <p>Most nights are fine. The bar is fine. The movie is fine. You go, you come back, you are roughly the same person who left. The week passes. Months accumulate. And one day you look back and realize you don't remember most of it — not because your memory is bad, but because most of it wasn't memorable.</p>
+      <p>We build experiences that change that. Evenings designed to stay with you — where the structure pulls you somewhere you wouldn't have gone on your own, and the people in the room become real to you, not just faces. You arrive as yourself. You leave having discovered something.</p>
+    </div>
+  </section>
+
+  <!-- ——— NEXT EVENT ——— -->
+  <div class="next-event reveal">
+    <p class="section-label">Next Event</p>
+    <div class="event-card">
+      <p class="event-collab">All Together Now &times; Afromeet</p>
+      <h2 class="event-title">Come and Be Found</h2>
+      <div class="event-details">
+        <strong>Wednesday, March 11, 2026</strong><br>
+        6:00 PM &ndash; 8:00 PM<br>
+        Goodlove DC &middot; 1100 15th St NW, Washington, DC 20005
+      </div>
+      <p class="section-body">A social gathering for about 15 people. When you arrive, you'll get a name tag. And a mission.</p>
+      <p class="section-body" style="margin-top: 1em;">Not a bingo card. Not a scavenger hunt. A single, specific assignment that turns you into a detective — pointed toward the kind of conversation you actually want to be having, but rarely end up in.</p>
+      <div class="event-mission">
+        <p class="event-mission-label">Sample Mission</p>
+        <p class="event-mission-text">"Find someone who's in the middle of figuring something out — not a problem at work, but something about how they want to live."</p>
+      </div>
+      <div class="event-cta">
+        <a href="https://instagram.com/all.together.now_" target="_blank" rel="noopener">Get the Details</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— WHAT WE MAKE ——— -->
+  <section class="how-it-works reveal">
+    <p class="section-label">What We Make</p>
+    <h2 class="section-heading">No two nights are the same.</h2>
+    <div class="section-body">
+      <p>Every event is built from scratch — a different mechanic, a different emotional register, a different kind of invitation. A collaborative mystery where the room pieces together a scientist's scattered files. A Rashomon-style tribunal where the truth is up for debate. A magical school where board games become the excuse to drop your armor.</p>
+      <p>What stays constant: every night has a structure that does the social work for you. You are never left to just mingle. Something is always in play that gives your presence a purpose — and gives the evening a reason to stay with you.</p>
+    </div>
+  </section>
+
+  <!-- ——— PREVIOUS EXPERIENCES ——— -->
+  <section class="past-work reveal">
+    <p class="section-label">Previous Experiences</p>
+    <h2 class="section-heading">Every chapter felt different.</h2>
+
+    <div class="experience-list">
+      <div class="experience-item">
+        <h3 class="experience-name">The Forgotten Files of Ira Remyndu</h3>
+        <p class="experience-desc">A full-evening collaborative puzzle built around an original fictional world. Guests received a scientist's scattered case files and pieced together the story as a community. Every detail rewarded curiosity. People played for hours without being told to.</p>
+      </div>
+      <div class="experience-item">
+        <h3 class="experience-name">Anatomy of Truth</h3>
+        <p class="experience-desc">A Rashomon-style tribunal where multiple witnesses recount the same event differently. Guests take roles — advocates, adjudicators — and the truth is decided collectively. The kind of night where people forget they're at a social event and start arguing about epistemology.</p>
+      </div>
+      <div class="experience-item">
+        <h3 class="experience-name">The Pigbumps School of Sorcery and Magic</h3>
+        <p class="experience-desc">A magical-school-themed board game night. The name is a wink. The theming liberates people from their adult social armor. You can't be guarded when the room has been dressed for a school of witchcraft.</p>
+      </div>
+    </div>
+
+    <div class="past-work-gallery">
+      <div class="gallery-item">
+        <img src="/images/forgotten-files/still-01.jpg" alt="Atmospheric still from The Forgotten Files of Ira Remyndu">
+      </div>
+      <div class="gallery-item">
+        <img src="/images/forgotten-files/still-02.jpg" alt="Atmospheric still from The Forgotten Files of Ira Remyndu">
+      </div>
+      <div class="gallery-item">
+        <img src="/images/forgotten-files/still-03.jpg" alt="Atmospheric still from The Forgotten Files of Ira Remyndu">
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— PHILOSOPHY ——— -->
+  <section class="philosophy reveal">
+    <p class="section-label">The Philosophy</p>
+    <h2 class="section-heading">Did they come out touched?</h2>
+    <div class="section-body">
+      <p>Not entertained. Not impressed. Not "that was fun." <em>Touched.</em> Changed in some small but real way. On the walk home, feeling like something actually happened tonight.</p>
+      <p>That is the product. Everything else — the format, the narrative, the mechanics — is in service of that.</p>
+    </div>
+    <blockquote>
+      "I know for a fact if I had a choice where I could just know that — oh my god, on Tuesday I get to experience a sci-fi murder mystery with a couple strangers, make some friends, and then come back home and just relax — that would be a dream come true."
+    </blockquote>
+  </section>
+
+  <!-- ——— FOOTER ——— -->
+  <footer>
+    <p class="footer-name">All Together Now</p>
+    <p class="footer-tagline">Any night of the week.</p>
+    <a class="footer-link" href="https://instagram.com/all.together.now_" target="_blank" rel="noopener">@all.together.now_</a>
+    <p class="footer-location">Washington, DC</p>
+  </footer>
+
+  <!-- ——— FALLING STARS ——— -->
+  <script>
+    (function () {
+      var canvas = document.getElementById('stars');
+      var ctx = canvas.getContext('2d');
+      var particles = [];
+      var count = 40;
+
+      var angle = 30 * Math.PI / 180;
+      var speed = 1.2;
+      var vx = -Math.sin(angle) * speed;
+      var vy = Math.cos(angle) * speed;
+
+      function resize() {
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '1';
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function createParticle() {
+        var fromTop = Math.random() < 0.7;
+        return {
+          x: fromTop ? Math.random() * canvas.width * 1.4 : canvas.width + 4,
+          y: fromTop ? -4 : Math.random() * canvas.height * 0.5,
+          size: Math.random() * 1.8 + 0.6,
+          baseOpacity: Math.random() * 0.5 + 0.15,
+          opacity: 0,
+          twinkleSpeed: Math.random() * 0.008 + 0.003,
+          twinkleOffset: Math.random() * Math.PI * 2,
+          speedMult: Math.random() * 0.5 + 0.75
+        };
+      }
+
+      function init() {
+        resize();
+        for (var i = 0; i < count; i++) {
+          var p = createParticle();
+          var progress = Math.random();
+          p.x += vx * p.speedMult * progress * canvas.height * 2;
+          p.y += vy * p.speedMult * progress * canvas.height * 2;
+          particles.push(p);
+        }
+      }
+
+      var time = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        time += 1;
+
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          p.x += vx * p.speedMult;
+          p.y += vy * p.speedMult;
+
+          var twinkle = Math.sin(time * p.twinkleSpeed + p.twinkleOffset);
+          p.opacity = p.baseOpacity * (0.5 + 0.5 * twinkle);
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(201, 168, 76, ' + p.opacity + ')';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(201, 168, 76, ' + (p.opacity * 0.15) + ')';
+          ctx.fill();
+
+          if (p.y > canvas.height + 10 || p.x < -10) {
+            particles[i] = createParticle();
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      init();
+      draw();
+    })();
+  </script>
+
+  <!-- ——— SCROLL REVEAL ——— -->
+  <script>
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('visible'); });
+        return;
+      }
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      els.forEach(function (el) { observer.observe(el); });
+    })();
+  </script>
+
+</body>
+</html>

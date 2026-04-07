@@ -28,7 +28,14 @@ app.get("/api/health", (_req, res) => {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientDist = path.resolve(__dirname, "../../../../client/dist");
 
-app.use(express.static(clientDist));
+app.use(express.static(clientDist, { index: false }));
+
+// Landing page: serve ATN static site at root
+app.get("/", (_req, res, next) => {
+  res.sendFile(path.join(clientDist, "landing.html"), (err) => {
+    if (err) next();
+  });
+});
 
 // Client-side routing: serve index.html for any non-API route
 app.get(/^\/(?!api\/).*/, (_req, res, next) => {
