@@ -84,17 +84,6 @@ export function ActBreakView() {
               { label: "Act 3", value: "3" },
             ]}
           />
-          <Button
-            size="xs"
-            color="yellow"
-            onClick={() =>
-              navigate(
-                `/admin/games/${gameId}/act-break/print?act=${act}`,
-              )
-            }
-          >
-            Print Consequence Cards
-          </Button>
         </Group>
       </Group>
 

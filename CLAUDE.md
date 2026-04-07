@@ -69,7 +69,7 @@ cardsight/
 │   │   │       ├── PhonePreview.tsx, SetReviewBanner.tsx, BulkActionBar.tsx
 │   │   │       ├── MissionManager.tsx    # Mission CRUD by house tabs + act groups
 │   │   │       ├── ActBreakView.tsx      # Per-house mission results for host
-│   │   │       ├── ConsequencePrint.tsx  # Printable consequence cards (2-3 per page)
+│   │   │       ├── ConsequencePrint.tsx  # Printable consequence cards, themed (Space/Explorer)
 │   │   │       ├── ShowtimeManager.tsx   # Showtime CRUD, live monitoring, force trigger/reset
 │   │   │       ├── LiveDashboard.tsx     # Real-time game dashboard (auto-polls 5s)
 │   │   │       └── simulator/           # Table assignment simulator
@@ -143,7 +143,7 @@ cardsight/
 - **Mission auto-completion** — when a card linked as a mission's `missionCardId` is answered correctly, the mission is automatically marked complete in card.service.ts.
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
 - **Mechanical effects are store-and-display** — JSONB fields on missions hold structured effect data, but the system does not auto-process them. The host reads the effects and manually adjusts the next act. This is deliberate — effect types are still being discovered through playtesting.
-- **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a print preview with house-colored borders, images, and themed backgrounds.
+- **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a themed print preview with switchable themes (Space, Explorer), markdown rendering, Google Fonts (loaded dynamically), and `print-color-adjust: exact` for dark backgrounds. Theme system is defined in `ConsequencePrint.tsx` via a `CardTheme` interface driving fonts, colors, backgrounds, and border styles. Print link lives in MissionManager toolbar.
 - **Act transitions are explicit** — "End Act N" button locks current act's cards, unlocks next act's cards, and navigates to the act break view.
 - **Showtime uses polling, not WebSockets** — FILLING phase polls every 3s, SYNCING phase polls every 500ms, REVEALED phase stops. In a room of people shouting a countdown, sub-second stagger is imperceptible.
 - **Sync press is server-authoritative** — each house POSTs their press timestamp. Server checks within a Prisma transaction if all presses fall within the sync window. If not, resets all presses atomically.
@@ -175,9 +175,9 @@ Admin panel: http://localhost:5173/admin
 |-------|-----------|---------|
 | `/admin` | GameList | Game cards, create/duplicate games |
 | `/admin/games/:id` | CardManager | Card list with set tabs, inline editing, set notes, mission summary per set |
-| `/admin/games/:id/missions` | MissionManager | Mission CRUD by house tabs + act groups, consequence editing |
+| `/admin/games/:id/missions` | MissionManager | Mission CRUD by house tabs + act groups, consequence editing, print link |
 | `/admin/games/:id/act-break` | ActBreakView | Per-house mission results, consequence texts for host to read |
-| `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), house-themed |
+| `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), switchable themes (Space/Explorer), markdown support |
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator |
@@ -275,7 +275,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Mission system (CRUD, house assignment, required clue sets, consequence texts, mechanical effects JSONB)
 - Mission auto-completion when linked mission card is answered correctly
 - Act break view (per-house mission results with consequence texts for host)
-- Consequence card print preview (2-3 per US letter page, house-themed with images)
+- Consequence card print preview (2-3 per US letter page, switchable themes: Space with Audiowide/Exo 2 fonts + nebula bg, Explorer with Cinzel/Crimson Text fonts + aged parchment bg, markdown rendering)
 - Live game dashboard (real-time scans, card discovery, answer attempts, mission progress, auto-polls every 5s)
 - Act transition workflow (lock current act cards, unlock next act cards)
 - Game duplication (deep-copies cards, designs, answers, card sets, houses, missions)

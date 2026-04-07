@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router";
+import Markdown from "react-markdown";
 import {
   Group,
   Text,
   Loader,
   Button,
-  Stack,
   SegmentedControl,
   ActionIcon,
 } from "@mantine/core";
@@ -18,12 +18,173 @@ import {
   type AdminHouse,
 } from "../../api/admin";
 
-// Inline styles for print — avoids needing a separate CSS file
-const printStyles = `
+// --- Theme definitions ---
+
+interface CardTheme {
+  id: string;
+  label: string;
+  fonts: string; // Google Fonts URL
+  baseFont: string;
+  headingFont: string;
+  cardBg: string;
+  textColor: string;
+  headingColor: string;
+  strongColor: string;
+  borderRadius: string;
+  /** Render background layers behind the card content */
+  renderBackground: (houseColor: string) => React.ReactNode;
+  /** Border style for the inset frame */
+  borderStyle: (houseColor: string) => string;
+  /** Extra CSS for markdown text */
+  markdownStyles: string;
+}
+
+const spaceTheme: CardTheme = {
+  id: "space",
+  label: "Space",
+  fonts: "https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@400;600;700&display=swap",
+  baseFont: "'Exo 2', sans-serif",
+  headingFont: "'Audiowide', sans-serif",
+  cardBg: "#080c10",
+  textColor: "#c8c8c8",
+  headingColor: "#e8e8e8",
+  strongColor: "#e8e8e8",
+  borderRadius: "8px",
+  borderStyle: (houseColor: string) => `3px solid ${houseColor}`,
+  renderBackground: (houseColor: string) => (
+    <>
+      {/* Nebula / starfield */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: `
+            radial-gradient(ellipse at 20% 50%, ${houseColor}18 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 30%, rgba(90, 50, 160, 0.12) 0%, transparent 50%),
+            radial-gradient(ellipse at 60% 80%, rgba(30, 80, 140, 0.10) 0%, transparent 50%),
+            radial-gradient(circle at 15% 20%, rgba(255,255,255,0.04) 0%, transparent 30%),
+            radial-gradient(circle at 85% 70%, rgba(255,255,255,0.03) 0%, transparent 25%)
+          `,
+        }}
+      />
+      {/* Star dots */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          backgroundImage: `
+            radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.5) 50%, transparent 100%),
+            radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.4) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 45% 10%, rgba(255,255,255,0.6) 50%, transparent 100%),
+            radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.35) 50%, transparent 100%),
+            radial-gradient(1px 1px at 70% 75%, rgba(255,255,255,0.45) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 88% 25%, rgba(255,255,255,0.5) 50%, transparent 100%),
+            radial-gradient(1px 1px at 35% 85%, rgba(255,255,255,0.3) 50%, transparent 100%),
+            radial-gradient(1px 1px at 92% 55%, rgba(255,255,255,0.4) 50%, transparent 100%),
+            radial-gradient(1px 1px at 5% 80%, rgba(255,255,255,0.35) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 65% 30%, rgba(255,255,255,0.55) 50%, transparent 100%)
+          `,
+        }}
+      />
+    </>
+  ),
+  markdownStyles: `
+    .consequence-text strong { color: #e8e8e8; }
+  `,
+};
+
+const adventureTheme: CardTheme = {
+  id: "adventure",
+  label: "Explorer",
+  fonts: "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap",
+  baseFont: "'Crimson Text', serif",
+  headingFont: "'Cinzel', serif",
+  cardBg: "#1a150e",
+  textColor: "#d4c9a8",
+  headingColor: "#e8d5a3",
+  strongColor: "#f0dfa8",
+  borderRadius: "4px",
+  borderStyle: () => "3px solid #b8963a",
+  renderBackground: (houseColor: string) => (
+    <>
+      {/* Aged parchment / torchlight glow */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: `
+            radial-gradient(ellipse at 15% 50%, ${houseColor}15 0%, transparent 55%),
+            radial-gradient(ellipse at 85% 40%, rgba(180, 120, 40, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 90%, rgba(120, 80, 20, 0.06) 0%, transparent 45%)
+          `,
+        }}
+      />
+      {/* Subtle stone / dust texture via noise-like dots */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.06,
+          backgroundImage: `
+            radial-gradient(2px 2px at 8% 12%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 22% 55%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(2px 2px at 40% 8%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(1px 1px at 52% 42%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 68% 72%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(2px 2px at 82% 22%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(1px 1px at 90% 60%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 35% 82%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(1px 1px at 75% 15%, rgba(200,180,140,1) 50%, transparent 100%),
+            radial-gradient(2px 2px at 60% 50%, rgba(200,180,140,1) 50%, transparent 100%)
+          `,
+        }}
+      />
+      {/* Cracked line accents */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.04,
+          backgroundImage: `
+            linear-gradient(165deg, transparent 40%, rgba(160,130,70,1) 40.5%, transparent 41%),
+            linear-gradient(20deg, transparent 60%, rgba(160,130,70,1) 60.3%, transparent 60.6%),
+            linear-gradient(95deg, transparent 75%, rgba(160,130,70,1) 75.2%, transparent 75.5%)
+          `,
+        }}
+      />
+    </>
+  ),
+  markdownStyles: `
+    .consequence-text strong { color: #f0dfa8; }
+  `,
+};
+
+const THEMES: CardTheme[] = [spaceTheme, adventureTheme];
+
+// --- Shared print styles ---
+
+const basePrintStyles = `
+  .consequence-text p { margin: 0 0 0.4em 0; }
+  .consequence-text p:last-child { margin-bottom: 0; }
+  .consequence-text em { font-style: italic; }
+  .consequence-text ul, .consequence-text ol { margin: 0.2em 0; padding-left: 1.2em; }
+  .consequence-text li { margin-bottom: 0.15em; }
+
   @media print {
-    /* Hide everything except the print area */
-    body > #root > * { display: none !important; }
-    body > #root > .consequence-print-root { display: block !important; }
+    body * { visibility: hidden; }
+    .consequence-print-root,
+    .consequence-print-root * { visibility: visible; }
+    .consequence-print-root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
     .no-print { display: none !important; }
 
     @page {
@@ -34,9 +195,20 @@ const printStyles = `
     .consequence-card {
       break-inside: avoid;
       page-break-inside: avoid;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    .consequence-print-root * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
   }
 `;
+
+// --- Component ---
 
 export function ConsequencePrint() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -48,6 +220,9 @@ export function ConsequencePrint() {
   const [loading, setLoading] = useState(true);
   const [act, setAct] = useState(searchParams.get("act") ?? "1");
   const [cardsPerPage, setCardsPerPage] = useState("3");
+  const [themeId, setThemeId] = useState("space");
+
+  const theme = THEMES.find((t) => t.id === themeId) ?? spaceTheme;
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -67,15 +242,21 @@ export function ConsequencePrint() {
     loadData();
   }, [loadData]);
 
-  // Inject print styles
+  // Load Google Fonts + inject styles
   useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = theme.fonts;
+    document.head.appendChild(link);
+
     const style = document.createElement("style");
-    style.textContent = printStyles;
+    style.textContent = basePrintStyles + "\n" + theme.markdownStyles;
     document.head.appendChild(style);
     return () => {
+      document.head.removeChild(link);
       document.head.removeChild(style);
     };
-  }, []);
+  }, [theme]);
 
   if (loading) {
     return (
@@ -113,8 +294,6 @@ export function ConsequencePrint() {
   }
 
   const perPage = Number(cardsPerPage);
-  // Card height: for 3 per page on letter (11in - 1in margins = 10in usable), each ~3.2in
-  // For 2 per page, each ~4.8in
   const cardHeight = perPage === 3 ? "3.13in" : "4.7in";
 
   return (
@@ -135,6 +314,12 @@ export function ConsequencePrint() {
             </Text>
           </Group>
           <Group gap="sm">
+            <SegmentedControl
+              size="xs"
+              value={themeId}
+              onChange={setThemeId}
+              data={THEMES.map((t) => ({ label: t.label, value: t.id }))}
+            />
             <SegmentedControl
               size="xs"
               value={act}
@@ -173,7 +358,7 @@ export function ConsequencePrint() {
         style={{
           maxWidth: "8.5in",
           margin: "0 auto",
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: theme.baseFont,
         }}
       >
         {allCards.map((card, i) => (
@@ -184,152 +369,154 @@ export function ConsequencePrint() {
               height: cardHeight,
               width: "100%",
               boxSizing: "border-box",
-              display: "flex",
               overflow: "hidden",
-              border: `2px solid ${card.houseColor}`,
-              borderRadius: "8px",
+              borderRadius: theme.borderRadius,
               marginBottom: "0.15in",
-              background: `linear-gradient(135deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.06) 100%)`,
+              padding: "0.15in",
               position: "relative",
               pageBreakInside: "avoid",
+              background: theme.cardBg,
             }}
           >
-            {/* Background pattern */}
+            {/* Theme background */}
+            {theme.renderBackground(card.houseColor)}
+
+            {/* Thick house-colored border (inset from card edge) */}
             <div
               style={{
-                position: "absolute",
-                inset: 0,
-                opacity: 0.04,
-                backgroundImage: `repeating-linear-gradient(
-                  45deg,
-                  ${card.houseColor} 0px,
-                  ${card.houseColor} 1px,
-                  transparent 1px,
-                  transparent 20px
-                )`,
-                pointerEvents: "none",
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                border: theme.borderStyle(card.houseColor),
+                borderRadius: "4px",
+                display: "flex",
+                overflow: "hidden",
+                boxSizing: "border-box",
               }}
-            />
-
-            {/* Left image */}
-            {card.consequenceImage ? (
-              <div
-                style={{
-                  width: "2.2in",
-                  minWidth: "2.2in",
-                  height: "100%",
-                  backgroundImage: `url(${card.consequenceImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  borderRight: `3px solid ${card.houseColor}`,
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "1.5in",
-                  minWidth: "1.5in",
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRight: `3px solid ${card.houseColor}`,
-                  background: `linear-gradient(180deg, ${card.houseColor}22 0%, ${card.houseColor}11 100%)`,
-                }}
-              >
+            >
+              {/* Left image */}
+              {card.consequenceImage ? (
                 <div
                   style={{
-                    width: "0.8in",
-                    height: "0.8in",
-                    borderRadius: "50%",
-                    border: `3px solid ${card.houseColor}`,
+                    width: "2.2in",
+                    minWidth: "2.2in",
+                    margin: "0.15in",
+                    borderRadius: "4px",
+                    backgroundImage: `url(${card.consequenceImage})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "1.5in",
+                    minWidth: "1.5in",
+                    margin: "0.15in",
+                    borderRadius: "4px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "24px",
-                    fontWeight: 700,
-                    color: card.houseColor,
+                    background: `linear-gradient(180deg, ${card.houseColor}22 0%, ${card.houseColor}11 100%)`,
                   }}
                 >
-                  {card.houseName[0]}
+                  <div
+                    style={{
+                      width: "0.8in",
+                      height: "0.8in",
+                      borderRadius: "50%",
+                      border: `3px solid ${card.houseColor}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "24px",
+                      fontWeight: 700,
+                      color: card.houseColor,
+                      fontFamily: theme.headingFont,
+                    }}
+                  >
+                    {card.houseName[0]}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Content */}
-            <div
-              style={{
-                flex: 1,
-                padding: "0.3in 0.35in",
-                display: "flex",
-                flexDirection: "column",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              {/* House label + status */}
+              {/* Content */}
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "0.15in",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "9px",
-                    fontWeight: 700,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: card.houseColor,
-                  }}
-                >
-                  {card.houseName}
-                </span>
-                <span
-                  style={{
-                    fontSize: "8px",
-                    fontWeight: 600,
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                    color: card.isCompleted ? "#2e7d32" : "#c62828",
-                    padding: "2px 8px",
-                    borderRadius: "3px",
-                    border: `1px solid ${card.isCompleted ? "#2e7d32" : "#c62828"}`,
-                  }}
-                >
-                  {card.isCompleted ? "Mission Complete" : "Mission Failed"}
-                </span>
-              </div>
-
-              {/* Title */}
-              <div
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  color: "#1a1a1a",
-                  marginBottom: "0.12in",
-                  lineHeight: 1.2,
-                  borderBottom: `1px solid ${card.houseColor}44`,
-                  paddingBottom: "0.08in",
-                }}
-              >
-                {card.title}
-              </div>
-
-              {/* Consequence text */}
-              <div
-                style={{
-                  fontSize: "11px",
-                  lineHeight: 1.55,
-                  color: "#333",
                   flex: 1,
+                  padding: "0.2in 0.25in 0.2in 0.1in",
+                  display: "flex",
+                  flexDirection: "column",
                   overflow: "hidden",
-                  whiteSpace: "pre-wrap",
                 }}
               >
-                {card.consequence}
+                {/* House label + status */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "0.12in",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: theme.headingFont,
+                      fontSize: "13px",
+                      fontWeight: 400,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      color: card.houseColor,
+                    }}
+                  >
+                    {card.houseName}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: theme.headingFont,
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      letterSpacing: "0.05em",
+                      textTransform: "uppercase",
+                      color: card.isCompleted ? "#4caf50" : "#ef5350",
+                      padding: "4px 12px",
+                      borderRadius: "3px",
+                      border: `1px solid ${card.isCompleted ? "#4caf50" : "#ef5350"}`,
+                    }}
+                  >
+                    {card.isCompleted ? "Mission Complete" : "Mission Failed"}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <div
+                  style={{
+                    fontFamily: theme.headingFont,
+                    fontSize: "22px",
+                    fontWeight: 400,
+                    color: theme.headingColor,
+                    marginBottom: "0.1in",
+                    lineHeight: 1.2,
+                    borderBottom: `1px solid ${card.houseColor}44`,
+                    paddingBottom: "0.08in",
+                  }}
+                >
+                  {card.title}
+                </div>
+
+                {/* Consequence text */}
+                <div
+                  style={{
+                    fontSize: "21px",
+                    lineHeight: 1.6,
+                    color: theme.textColor,
+                    flex: 1,
+                    overflow: "hidden",
+                  }}
+                  className="consequence-text"
+                >
+                  <Markdown>{card.consequence}</Markdown>
+                </div>
               </div>
             </div>
           </div>
