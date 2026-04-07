@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CardSight - Physical Card Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #111;
+      color: #ccc;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      color: #d4a017;
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin: 16px 0 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .controls select, .controls button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #222;
+      color: #eee;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .controls select:hover, .controls button:hover {
+      border-color: #666;
+    }
+
+    .preview-area {
+      transform: scale(var(--preview-scale, 0.42));
+      transform-origin: top center;
+      margin-bottom: -600px;
+    }
+
+    /* === CARD === */
+    .card {
+      width: 1050px;
+      height: 1725px;
+      position: relative;
+      border-radius: 42px;
+      overflow: hidden;
+    }
+
+    /* Background layer: base color */
+    .card-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--card-color);
+    }
+
+    /* Light shafts — ATN style, thick diagonal bands toward bottom-left */
+    .card-shafts {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .shaft {
+      position: absolute;
+      top: -60%;
+      height: 280%;
+      transform: rotate(30deg);
+      transform-origin: center center;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        var(--shaft-color) 20%,
+        var(--shaft-color) 50%,
+        var(--shaft-color-fade) 80%,
+        transparent 100%
+      );
+    }
+
+    /* Sparkles */
+    .card-sparkles {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(2.5px 2.5px at 180px 250px, var(--sparkle-color), transparent),
+        radial-gradient(3px 3px at 750px 400px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 400px 700px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 850px 900px, var(--sparkle-color), transparent),
+        radial-gradient(3px 3px at 250px 1100px, var(--sparkle-color), transparent),
+        radial-gradient(2.5px 2.5px at 600px 1300px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 900px 1500px, var(--sparkle-color), transparent),
+        radial-gradient(3.5px 3.5px at 150px 1550px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 500px 300px, var(--sparkle-color), transparent),
+        radial-gradient(2.5px 2.5px at 700px 1050px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 350px 1400px, var(--sparkle-color), transparent),
+        radial-gradient(3px 3px at 820px 200px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 480px 1600px, var(--sparkle-color), transparent),
+        radial-gradient(3px 3px at 130px 800px, var(--sparkle-color), transparent),
+        radial-gradient(1.5px 1.5px at 300px 450px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 650px 650px, var(--sparkle-color), transparent),
+        radial-gradient(2.5px 2.5px at 950px 1200px, var(--sparkle-color), transparent),
+        radial-gradient(2px 2px at 100px 1000px, var(--sparkle-color), transparent);
+      pointer-events: none;
+    }
+
+    /* Outer dark border */
+    .card-outer-border {
+      position: absolute;
+      inset: 0;
+      border: 10px solid var(--dark-border);
+      border-radius: 42px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Main color border (the prominent one) */
+    .card-color-border {
+      position: absolute;
+      inset: 10px;
+      border: 38px solid var(--border-color);
+      border-radius: 32px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Corner spade spokes — pointing inward from corners */
+    .corner-spade {
+      position: absolute;
+      z-index: 4;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      color: var(--dark-border);
+      line-height: 1;
+    }
+    .corner-spade-tl {
+      top: 24px;
+      left: 24px;
+      transform: rotate(135deg);
+    }
+    .corner-spade-tr {
+      top: 24px;
+      right: 24px;
+      transform: rotate(225deg);
+    }
+    .corner-spade-bl {
+      bottom: 24px;
+      left: 24px;
+      transform: rotate(45deg);
+    }
+    .corner-spade-br {
+      bottom: 24px;
+      right: 24px;
+      transform: rotate(-45deg);
+    }
+
+    /* Content area */
+    .card-content {
+      position: absolute;
+      inset: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 50px 5px 40px;
+      z-index: 2;
+    }
+
+    .card-name-box {
+      width: 100%;
+      height: 430px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .card-name {
+      font-family: 'Cinzel Decorative', 'Cinzel', serif;
+      font-weight: 700;
+      color: var(--text-color);
+      text-align: center;
+      line-height: 1.1;
+      text-shadow:
+        3px 3px 6px rgba(0,0,0,0.6),
+        0 0 30px rgba(0,0,0,0.3);
+      width: 100%;
+      padding: 0 10px;
+    }
+
+    .card-number {
+      font-family: 'Cinzel', serif;
+      font-size: 200px;
+      font-weight: 900;
+      color: var(--text-color);
+      text-shadow:
+        3px 3px 8px rgba(0,0,0,0.6),
+        0 0 40px rgba(0,0,0,0.2);
+      opacity: 0.8;
+    }
+
+    .card-qr {
+      width: 420px;
+      height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-qr canvas {
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+
+    /* Info below card */
+    .card-info {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>CardSight Physical Card Preview</h1>
+  <p style="color:#666; font-size:13px; margin-bottom:4px;">89mm x 146mm at 300 DPI (1050 x 1725px)</p>
+
+  <div class="controls">
+    <select id="colorFilter">
+      <option value="all">All Colors</option>
+      <option value="red">Red</option>
+      <option value="yellow">Yellow</option>
+      <option value="green">Green</option>
+      <option value="blue">Blue</option>
+      <option value="purple">Purple</option>
+      <option value="white">White</option>
+    </select>
+    <select id="cardSelect"></select>
+    <button id="prevBtn">&larr; Prev</button>
+    <button id="nextBtn">Next &rarr;</button>
+  </div>
+
+  <div class="preview-area" id="previewArea">
+    <div class="card" id="card">
+      <div class="card-bg"></div>
+      <div class="card-shafts" id="cardShafts"></div>
+      <div class="card-sparkles"></div>
+      <div class="card-outer-border"></div>
+      <div class="card-color-border"></div>
+      <div class="corner-spade corner-spade-tl">&spades;</div>
+      <div class="corner-spade corner-spade-tr">&spades;</div>
+      <div class="corner-spade corner-spade-bl">&spades;</div>
+      <div class="corner-spade corner-spade-br">&spades;</div>
+      <div class="card-content">
+        <div class="card-name-box">
+          <div class="card-name" id="cardName"></div>
+        </div>
+        <div class="card-number" id="cardNumber"></div>
+        <div class="card-qr" id="cardQr"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-info" id="cardInfo"></div>
+
+  <script>
+    const CARDS = [{"id":"f7527ff0-ce57-4fda-8add-f92eff798e39","slug":"f7527ff0","color":"red","number":1,"name":"Guiltless Strawberry","shortUrl":"https://alltogethernow.short.gy/f7527ff0"},{"id":"958f83b5-264e-4989-8ba2-9d723c23b7c3","slug":"958f83b5","color":"red","number":2,"name":"Adamant Brick","shortUrl":"https://alltogethernow.short.gy/958f83b5"},{"id":"ad63ede9-c802-43ed-8293-60bfbc54eff4","slug":"ad63ede9","color":"red","number":3,"name":"Regal Cardinal","shortUrl":"https://alltogethernow.short.gy/ad63ede9"},{"id":"6d0ef2b6-c07d-45b2-8c9a-d6e89cd9a51a","slug":"6d0ef2b6","color":"red","number":4,"name":"Thermonuclear Chili","shortUrl":"https://alltogethernow.short.gy/6d0ef2b6"},{"id":"43748db6-fb77-4d28-9b1f-b9fe8970635c","slug":"43748db6","color":"red","number":5,"name":"Unyielding Inferno","shortUrl":"https://alltogethernow.short.gy/43748db6"},{"id":"bdd17a4d-13ac-421a-9aff-f6e6e6ffe2c9","slug":"bdd17a4d","color":"red","number":6,"name":"Voluptuous Lobster","shortUrl":"https://alltogethernow.short.gy/bdd17a4d"},{"id":"1cabf955-0283-4d70-82ad-456bd4ec49d9","slug":"1cabf955","color":"red","number":7,"name":"Welcoming Evening","shortUrl":"https://alltogethernow.short.gy/1cabf955"},{"id":"d7955209-4253-48c1-b32e-3c3fa94d142b","slug":"d7955209","color":"red","number":8,"name":"Glistening Cherry","shortUrl":"https://alltogethernow.short.gy/d7955209"},{"id":"86838f61-1131-4cfd-8e3d-61db5b2e74b0","slug":"86838f61","color":"red","number":9,"name":"Enchanted Rose","shortUrl":"https://alltogethernow.short.gy/86838f61"},{"id":"647c2448-edfa-4bcf-93d2-c3daf9311839","slug":"647c2448","color":"yellow","number":1,"name":"Suspicious Lemon","shortUrl":"https://alltogethernow.short.gy/647c2448"},{"id":"5e3d6682-7c34-4096-8150-a1474bdb7500","slug":"5e3d6682","color":"yellow","number":2,"name":"Commonplace Dandelion","shortUrl":"https://alltogethernow.short.gy/5e3d6682"},{"id":"7aee1ed1-716b-43fe-9b6f-53310bcd498e","slug":"7aee1ed1","color":"yellow","number":3,"name":"Velvety Margarine","shortUrl":"https://alltogethernow.short.gy/7aee1ed1"},{"id":"b8fd2516-7e13-4084-a724-c8a8c3c8c2ba","slug":"b8fd2516","color":"yellow","number":4,"name":"Eponymous Canary","shortUrl":"https://alltogethernow.short.gy/b8fd2516"},{"id":"da7750da-c3b6-46b0-b89c-bdce2131e744","slug":"da7750da","color":"yellow","number":5,"name":"Explosive Marigold","shortUrl":"https://alltogethernow.short.gy/da7750da"},{"id":"77cb35d9-b1da-40d9-af15-4a58e2be7b7d","slug":"77cb35d9","color":"yellow","number":6,"name":"Mushy Banana","shortUrl":"https://alltogethernow.short.gy/77cb35d9"},{"id":"e2d30355-98e5-4787-8f05-4d40695067c0","slug":"e2d30355","color":"yellow","number":7,"name":"Dazzling Firefly","shortUrl":"https://alltogethernow.short.gy/e2d30355"},{"id":"c4c0893b-c629-4754-aab5-858270ba4c36","slug":"c4c0893b","color":"yellow","number":8,"name":"Nervous Bumblebee","shortUrl":"https://alltogethernow.short.gy/c4c0893b"},{"id":"753f0805-4d25-446f-aaa3-48c812a1ccb5","slug":"753f0805","color":"yellow","number":9,"name":"Revealing Sunbeam","shortUrl":"https://alltogethernow.short.gy/753f0805"},{"id":"33db8a41-f8aa-4834-8065-72a20e264c08","slug":"33db8a41","color":"green","number":1,"name":"Jealous Frog","shortUrl":"https://alltogethernow.short.gy/33db8a41"},{"id":"962598c5-9a60-4483-8c1b-790d6be1a49c","slug":"962598c5","color":"green","number":2,"name":"Patient Fern","shortUrl":"https://alltogethernow.short.gy/962598c5"},{"id":"e203385c-8f85-4b3c-a456-25744c25ac61","slug":"e203385c","color":"green","number":3,"name":"Discounted Broccoli","shortUrl":"https://alltogethernow.short.gy/e203385c"},{"id":"5abb9852-c9e2-4c48-94b8-a9b156819409","slug":"5abb9852","color":"green","number":4,"name":"Cunning Lizard","shortUrl":"https://alltogethernow.short.gy/5abb9852"},{"id":"9f53fdb1-b7ee-4865-bc9c-488f4609148c","slug":"9f53fdb1","color":"green","number":5,"name":"Sly Crocodile","shortUrl":"https://alltogethernow.short.gy/9f53fdb1"},{"id":"bfeded77-a2d0-4990-8ded-1c714fdbbb3c","slug":"bfeded77","color":"green","number":6,"name":"Overgrown Ivy","shortUrl":"https://alltogethernow.short.gy/bfeded77"},{"id":"6513af68-048e-4368-9400-01fa8e3bb19c","slug":"6513af68","color":"green","number":7,"name":"Titular Turtle","shortUrl":"https://alltogethernow.short.gy/6513af68"},{"id":"91224d54-e63b-48ca-9b0e-cf8e7e1bf192","slug":"91224d54","color":"green","number":8,"name":"Persistent Moss","shortUrl":"https://alltogethernow.short.gy/91224d54"},{"id":"193b11c9-f9fb-43c0-816e-b20e3e8f2ce6","slug":"193b11c9","color":"green","number":9,"name":"Admiral Parrot","shortUrl":"https://alltogethernow.short.gy/193b11c9"},{"id":"084af63c-e806-4723-939b-3a871baeeb31","slug":"084af63c","color":"blue","number":1,"name":"Splintered Sapphire","shortUrl":"https://alltogethernow.short.gy/084af63c"},{"id":"ff70a1bc-8595-462b-8107-bd4b5782b360","slug":"ff70a1bc","color":"blue","number":2,"name":"Dancing Dolphin","shortUrl":"https://alltogethernow.short.gy/ff70a1bc"},{"id":"40202e90-239a-4ea7-894d-795bfda84c7b","slug":"40202e90","color":"blue","number":3,"name":"Sleeping Ocean","shortUrl":"https://alltogethernow.short.gy/40202e90"},{"id":"51ddd3fd-b4e9-4db3-9295-69a79852c791","slug":"51ddd3fd","color":"blue","number":4,"name":"Indomitable Sky","shortUrl":"https://alltogethernow.short.gy/51ddd3fd"},{"id":"cdb832cb-a2b1-4c12-9e8e-93eb12bafc9a","slug":"cdb832cb","color":"blue","number":5,"name":"Brooding Glacier","shortUrl":"https://alltogethernow.short.gy/cdb832cb"},{"id":"ff18d342-445c-4659-b107-99fcac0eb21a","slug":"ff18d342","color":"blue","number":6,"name":"Tardy Bluebird","shortUrl":"https://alltogethernow.short.gy/ff18d342"},{"id":"ac53d05b-4041-40d7-b48d-44db64b2aa86","slug":"ac53d05b","color":"blue","number":7,"name":"Overripe Blueberry","shortUrl":"https://alltogethernow.short.gy/ac53d05b"},{"id":"814b8934-fa9e-408a-9545-0100c4f0b6b4","slug":"814b8934","color":"blue","number":8,"name":"Elusive Jellyfish","shortUrl":"https://alltogethernow.short.gy/814b8934"},{"id":"984eabf4-0cc4-46b5-a488-d226f6469665","slug":"984eabf4","color":"blue","number":9,"name":"Ripped Jeans","shortUrl":"https://alltogethernow.short.gy/984eabf4"},{"id":"7c06c619-2fe6-4eb3-bcd5-e4af074d109e","slug":"7c06c619","color":"purple","number":1,"name":"Priceless Amethyst","shortUrl":"https://alltogethernow.short.gy/7c06c619"},{"id":"e590fecc-0d67-4b12-8c95-4c938e7ec105","slug":"e590fecc","color":"purple","number":2,"name":"Roundish Plum","shortUrl":"https://alltogethernow.short.gy/e590fecc"},{"id":"3b5dd3bd-67f8-465f-9867-f75fffb38f2f","slug":"3b5dd3bd","color":"purple","number":3,"name":"Easing Lavender","shortUrl":"https://alltogethernow.short.gy/3b5dd3bd"},{"id":"87d851a8-6b70-4435-8ae9-71cacb8dfb74","slug":"87d851a8","color":"purple","number":4,"name":"Foreboding Raven","shortUrl":"https://alltogethernow.short.gy/87d851a8"},{"id":"7ac3c232-042b-4869-91c0-2be56f1d43a7","slug":"7ac3c232","color":"purple","number":5,"name":"Lost Peacock","shortUrl":"https://alltogethernow.short.gy/7ac3c232"},{"id":"3de84b4c-131d-41b0-9c44-93bbbf7e4725","slug":"3de84b4c","color":"purple","number":6,"name":"Tall Foxglove","shortUrl":"https://alltogethernow.short.gy/3de84b4c"},{"id":"ae2ab4a9-5d7c-41b0-9a3d-dee899650d1b","slug":"ae2ab4a9","color":"purple","number":7,"name":"Hearty Eggplant","shortUrl":"https://alltogethernow.short.gy/ae2ab4a9"},{"id":"556911a0-9436-4a9e-bcc2-82bf8f6e963f","slug":"556911a0","color":"purple","number":8,"name":"Falling Twilight","shortUrl":"https://alltogethernow.short.gy/556911a0"},{"id":"fb86ad81-cd34-41f8-b696-3a8396bc52ca","slug":"fb86ad81","color":"purple","number":9,"name":"Returning Prince","shortUrl":"https://alltogethernow.short.gy/fb86ad81"},{"id":"ea00af39-b3bb-457b-98c3-6db7cd83ad5f","slug":"ea00af39","color":"white","number":1,"name":"Forgotten Snowflake","shortUrl":"https://alltogethernow.short.gy/ea00af39"},{"id":"83296f7e-1fe9-4c79-83db-e43da386915f","slug":"83296f7e","color":"white","number":2,"name":"Motherly Moon","shortUrl":"https://alltogethernow.short.gy/83296f7e"},{"id":"5462a9e9-ea11-4824-bb06-e273cbd6d525","slug":"5462a9e9","color":"white","number":3,"name":"Propitious Dove","shortUrl":"https://alltogethernow.short.gy/5462a9e9"},{"id":"554fce90-09cc-430f-9da8-9afe71f7d805","slug":"554fce90","color":"white","number":4,"name":"Rolling Fog","shortUrl":"https://alltogethernow.short.gy/554fce90"},{"id":"6b01f182-893c-4795-89ab-b8b6c0bcad4d","slug":"6b01f182","color":"white","number":5,"name":"Wispy Cloud","shortUrl":"https://alltogethernow.short.gy/6b01f182"},{"id":"4bec84dd-ac8e-40fc-a5dd-39518528dfb8","slug":"4bec84dd","color":"white","number":6,"name":"Sentimental Pearl","shortUrl":"https://alltogethernow.short.gy/4bec84dd"},{"id":"13c830b0-a73d-444a-9924-adae74f2af7f","slug":"13c830b0","color":"white","number":7,"name":"Frightening Canine","shortUrl":"https://alltogethernow.short.gy/13c830b0"},{"id":"77aeeaed-26d3-440d-b0ec-a6e371e12a73","slug":"77aeeaed","color":"white","number":8,"name":"Resilient Porcelain","shortUrl":"https://alltogethernow.short.gy/77aeeaed"},{"id":"447f1399-fe34-4a80-ab51-fa4a6b24f24a","slug":"447f1399","color":"white","number":9,"name":"Washed Cotton","shortUrl":"https://alltogethernow.short.gy/447f1399"}];
+
+    const THEMES = {
+      red: {
+        bg: '#7A1520',
+        border: '#C41E3A',
+        darkBorder: 'rgba(0,0,0,0.55)',
+        text: '#FFFFFF',
+        sparkle: 'rgba(255,200,200,0.9)',
+        qrFill: 'rgba(0,0,0,0.4)',
+        shaftColor: 'rgba(255,180,180,0.07)',
+        shaftFade: 'rgba(255,180,180,0.02)',
+      },
+      yellow: {
+        bg: '#7A6200',
+        border: '#D4A017',
+        darkBorder: 'rgba(0,0,0,0.55)',
+        text: '#FFFFFF',
+        sparkle: 'rgba(255,250,200,0.9)',
+        qrFill: 'rgba(0,0,0,0.4)',
+        shaftColor: 'rgba(255,240,180,0.08)',
+        shaftFade: 'rgba(255,240,180,0.02)',
+      },
+      green: {
+        bg: '#0A4A25',
+        border: '#1B8C4F',
+        darkBorder: 'rgba(0,0,0,0.55)',
+        text: '#FFFFFF',
+        sparkle: 'rgba(200,255,220,0.9)',
+        qrFill: 'rgba(0,0,0,0.4)',
+        shaftColor: 'rgba(180,255,200,0.07)',
+        shaftFade: 'rgba(180,255,200,0.02)',
+      },
+      blue: {
+        bg: '#0C1A5E',
+        border: '#1E3A8A',
+        darkBorder: 'rgba(0,0,0,0.55)',
+        text: '#FFFFFF',
+        sparkle: 'rgba(200,220,255,0.9)',
+        qrFill: 'rgba(0,0,0,0.4)',
+        shaftColor: 'rgba(180,200,255,0.09)',
+        shaftFade: 'rgba(180,200,255,0.02)',
+      },
+      purple: {
+        bg: '#2D0A50',
+        border: '#6B21A8',
+        darkBorder: 'rgba(0,0,0,0.55)',
+        text: '#FFFFFF',
+        sparkle: 'rgba(230,200,255,0.9)',
+        qrFill: 'rgba(0,0,0,0.4)',
+        shaftColor: 'rgba(220,180,255,0.08)',
+        shaftFade: 'rgba(220,180,255,0.02)',
+      },
+      white: {
+        bg: '#C8C8CC',
+        border: '#E4E4E8',
+        darkBorder: 'rgba(0,0,0,0.35)',
+        text: '#1A1A2E',
+        sparkle: 'rgba(255,255,255,0.95)',
+        qrFill: 'rgba(0,0,0,0.3)',
+        shaftColor: 'rgba(255,255,255,0.2)',
+        shaftFade: 'rgba(255,255,255,0.05)',
+      },
+    };
+
+    // Shaft definitions: x position (%), width (px)
+    const SHAFT_DEFS = [
+      { x: '8%',  w: 200 },
+      { x: '22%', w: 70  },
+      { x: '35%', w: 320 },
+      { x: '50%', w: 100 },
+      { x: '62%', w: 250 },
+      { x: '75%', w: 55  },
+      { x: '85%', w: 180 },
+      { x: '15%', w: 140 },
+      { x: '45%', w: 60  },
+      { x: '92%', w: 90  },
+    ];
+
+    const cardEl = document.getElementById('card');
+    const nameEl = document.getElementById('cardName');
+    const numberEl = document.getElementById('cardNumber');
+    const qrEl = document.getElementById('cardQr');
+    const infoEl = document.getElementById('cardInfo');
+    const shaftsEl = document.getElementById('cardShafts');
+    const colorFilter = document.getElementById('colorFilter');
+    const cardSelect = document.getElementById('cardSelect');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let filteredCards = [...CARDS];
+    let currentIndex = 0;
+
+    function populateCardSelect() {
+      cardSelect.innerHTML = '';
+      const color = colorFilter.value;
+      filteredCards = color === 'all'
+        ? [...CARDS]
+        : CARDS.filter(c => c.color === color);
+      filteredCards.forEach((c, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${c.color} ${c.number} — ${c.name}`;
+        cardSelect.appendChild(opt);
+      });
+      currentIndex = 0;
+      cardSelect.value = 0;
+      renderCard();
+    }
+
+    function renderCard() {
+      const card = filteredCards[currentIndex];
+      if (!card) return;
+      const theme = THEMES[card.color];
+
+      // Set CSS custom properties
+      cardEl.style.setProperty('--card-color', theme.bg);
+      cardEl.style.setProperty('--border-color', theme.border);
+      cardEl.style.setProperty('--dark-border', theme.darkBorder);
+      cardEl.style.setProperty('--text-color', theme.text);
+      cardEl.style.setProperty('--sparkle-color', theme.sparkle);
+
+      // Build shafts
+      shaftsEl.innerHTML = '';
+      SHAFT_DEFS.forEach(def => {
+        const shaft = document.createElement('div');
+        shaft.className = 'shaft';
+        shaft.style.left = def.x;
+        shaft.style.width = def.w + 'px';
+        shaft.style.setProperty('--shaft-color', theme.shaftColor);
+        shaft.style.setProperty('--shaft-color-fade', theme.shaftFade);
+        shaftsEl.appendChild(shaft);
+      });
+
+      // Split name into two lines and auto-size to fit
+      const words = card.name.split(' ');
+      nameEl.innerHTML = words.join('<br>');
+
+      // Auto-scale: measure each word's natural width with a hidden probe
+      const nameBox = nameEl.parentElement;
+      const maxWidth = nameBox.clientWidth - 20; // some padding
+      const maxHeight = nameBox.clientHeight;
+      const longestWord = words.reduce((a, b) => a.length > b.length ? a : b);
+
+      const probe = document.createElement('span');
+      probe.style.cssText = "font-family:'Cinzel Decorative','Cinzel',serif;font-weight:700;white-space:nowrap;visibility:hidden;position:absolute;left:-9999px;";
+      document.body.appendChild(probe);
+
+      let fontSize = 160;
+      while (fontSize > 50) {
+        probe.style.fontSize = fontSize + 'px';
+        probe.textContent = longestWord;
+        const wordWidth = probe.offsetWidth;
+        const totalHeight = fontSize * 1.1 * 2; // 2 lines, line-height 1.1
+        if (wordWidth <= maxWidth && totalHeight <= maxHeight) break;
+        fontSize -= 4;
+      }
+      document.body.removeChild(probe);
+      nameEl.style.fontSize = fontSize + 'px';
+
+      numberEl.textContent = card.number;
+
+      // QR code
+      qrEl.innerHTML = '';
+      const qr = qrcode(0, 'M');
+      qr.addData(card.shortUrl);
+      qr.make();
+
+      const moduleCount = qr.getModuleCount();
+      const canvas = document.createElement('canvas');
+      const size = 420;
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      const cellSize = size / moduleCount;
+      ctx.clearRect(0, 0, size, size);
+
+      for (let row = 0; row < moduleCount; row++) {
+        for (let col = 0; col < moduleCount; col++) {
+          if (qr.isDark(row, col)) {
+            ctx.fillStyle = theme.qrFill;
+            ctx.fillRect(col * cellSize, row * cellSize, cellSize + 0.5, cellSize + 0.5);
+          }
+        }
+      }
+
+      qrEl.appendChild(canvas);
+
+      // Info
+      infoEl.innerHTML = `<strong>${card.name}</strong> &middot; ${card.color} #${card.number}<br>${card.shortUrl}<br><span style="color:#444">${card.id}</span>`;
+    }
+
+    colorFilter.addEventListener('change', populateCardSelect);
+    cardSelect.addEventListener('change', () => {
+      currentIndex = parseInt(cardSelect.value);
+      renderCard();
+    });
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+      cardSelect.value = currentIndex;
+      renderCard();
+    });
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % filteredCards.length;
+      cardSelect.value = currentIndex;
+      renderCard();
+    });
+
+    // Init — force-load the display font before measuring text
+    Promise.all([
+      document.fonts.load('700 100px "Cinzel Decorative"'),
+      document.fonts.load('900 100px "Cinzel"'),
+    ]).then(() => {
+      populateCardSelect();
+    });
+  </script>
+</body>
+</html>
