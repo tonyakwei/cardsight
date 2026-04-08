@@ -15,6 +15,7 @@ import { SingleAnswerInput } from "./answers/SingleAnswerInput";
 import { SelfDestructTimer } from "./SelfDestructTimer";
 import { AnimationWrapper } from "./animations/AnimationWrapper";
 import { OverlayRenderer } from "./overlays/OverlayRenderer";
+import { PhysicalCardFlash, isPhysicalCard } from "./PhysicalCardFlash";
 import type { CardViewerResponse } from "@cardsight/shared";
 
 export function CardViewer() {
@@ -24,6 +25,9 @@ export function CardViewer() {
   const [notFound, setNotFound] = useState(false);
   const [entered, setEntered] = useState(false);
   const [justSolved, setJustSolved] = useState(false);
+  const [flashDone, setFlashDone] = useState(
+    () => !cardId || !isPhysicalCard(cardId),
+  );
 
   const loadCard = useCallback(async () => {
     if (!cardId) return;
@@ -89,6 +93,9 @@ export function CardViewer() {
     );
   }, []);
 
+  if (!flashDone && cardId) {
+    return <PhysicalCardFlash cardId={cardId} onComplete={() => setFlashDone(true)} />;
+  }
   if (loading) return <LoadingState />;
   if (notFound || !card) return <NotFoundState />;
 
