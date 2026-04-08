@@ -28,6 +28,7 @@ function getArg(name, fallback) {
 const OUTPUT_DIR = path.resolve(getArg('output', './card-exports'));
 const FORMAT = getArg('format', 'jpeg');
 const QUALITY = parseInt(getArg('quality', '95'), 10);
+const COLOR_FILTER = getArg('color', 'all'); // e.g. "blue-alt" to export only blue with alt theme
 
 const PREVIEW_PATH = path.resolve(__dirname, 'card-preview.html');
 
@@ -51,13 +52,17 @@ async function main() {
   const totalCards = await page.evaluate(() => CARDS.length);
   console.log(`Exporting ${totalCards} cards as ${FORMAT.toUpperCase()} to ${OUTPUT_DIR}`);
 
-  // Set filter to "all" so filteredCards = all cards
-  await page.evaluate(() => {
-    document.getElementById('colorFilter').value = 'all';
+  // Set color filter
+  await page.evaluate((color) => {
+    document.getElementById('colorFilter').value = color;
     document.getElementById('colorFilter').dispatchEvent(new Event('change'));
-  });
+  }, COLOR_FILTER);
 
-  for (let i = 0; i < totalCards; i++) {
+  const cardCount = await page.evaluate(() => filteredCards.length);
+  const filePrefix = COLOR_FILTER.endsWith('-alt') ? COLOR_FILTER : '';
+  console.log(`Exporting ${cardCount} cards as ${FORMAT.toUpperCase()} to ${OUTPUT_DIR}`);
+
+  for (let i = 0; i < cardCount; i++) {
     // Navigate to card by index
     await page.evaluate((index) => {
       const select = document.getElementById('cardSelect');
@@ -75,12 +80,13 @@ async function main() {
 
     // Get card info for filename
     const cardInfo = await page.evaluate((index) => {
-      const card = CARDS[index];
+      const card = filteredCards[index];
       return { color: card.color, number: card.number, name: card.name };
     }, i);
 
+    const colorLabel = filePrefix || cardInfo.color;
     const safeName = cardInfo.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const filename = `${cardInfo.color}-${cardInfo.number}-${safeName}.${FORMAT === 'jpeg' ? 'jpg' : 'png'}`;
+    const filename = `${colorLabel}-${cardInfo.number}-${safeName}.${FORMAT === 'jpeg' ? 'jpg' : 'png'}`;
 
     // Screenshot just the card element
     const cardEl = await page.$('.card');
@@ -90,37 +96,32 @@ async function main() {
       quality: FORMAT === 'jpeg' ? QUALITY : undefined,
     });
 
-    console.log(`  [${i + 1}/${totalCards}] ${filename}`);
+    console.log(`  [${i + 1}/${cardCount}] ${filename}`);
   }
 
-  // Export card backs — one per color, no text/icon/QR/spades
-  const colors = ['red', 'yellow', 'green', 'blue', 'purple', 'white'];
-  console.log(`\nExporting ${colors.length} card backs...`);
+  // Export card backs
+  const baseColor = COLOR_FILTER.replace('-alt', '');
+  const colors = COLOR_FILTER === 'all'
+    ? ['red', 'yellow', 'green', 'blue', 'purple', 'white']
+    : [baseColor];
+  console.log(`\nExporting ${colors.length} card back(s)...`);
 
   for (const color of colors) {
-    // Navigate to the first card of this color
+    // Set the color filter (handles alt themes) and navigate to first card
+    const filterValue = COLOR_FILTER.endsWith('-alt') ? COLOR_FILTER : color;
     await page.evaluate((c) => {
-      const index = CARDS.findIndex((card) => card.color === c);
-      const select = document.getElementById('cardSelect');
-      select.value = index;
-      select.dispatchEvent(new Event('change'));
-    }, color);
+      document.getElementById('colorFilter').value = c;
+      document.getElementById('colorFilter').dispatchEvent(new Event('change'));
+    }, filterValue);
 
     await new Promise((r) => setTimeout(r, 300));
 
-    // Hide front-only elements
-    await page.evaluate(() => {
-      document.querySelector('.card-name-box').style.visibility = 'hidden';
-      document.querySelector('#cardIcon').style.visibility = 'hidden';
-      document.querySelector('.card-qr').style.visibility = 'hidden';
-      document.querySelectorAll('.corner-spade').forEach((el) => {
-        el.style.visibility = 'hidden';
-      });
-    });
+    // Flip to back
+    await page.evaluate(() => document.getElementById('flipBtn').click());
+    await new Promise((r) => setTimeout(r, 200));
 
-    await new Promise((r) => setTimeout(r, 100));
-
-    const filename = `${color}-back.${FORMAT === 'jpeg' ? 'jpg' : 'png'}`;
+    const backLabel = COLOR_FILTER.endsWith('-alt') ? COLOR_FILTER : color;
+    const filename = `${backLabel}-back.${FORMAT === 'jpeg' ? 'jpg' : 'png'}`;
     const cardEl = await page.$('.card');
     await cardEl.screenshot({
       path: path.join(OUTPUT_DIR, filename),
@@ -128,21 +129,14 @@ async function main() {
       quality: FORMAT === 'jpeg' ? QUALITY : undefined,
     });
 
-    // Restore visibility
-    await page.evaluate(() => {
-      document.querySelector('.card-name-box').style.visibility = '';
-      document.querySelector('#cardIcon').style.visibility = '';
-      document.querySelector('.card-qr').style.visibility = '';
-      document.querySelectorAll('.corner-spade').forEach((el) => {
-        el.style.visibility = '';
-      });
-    });
+    // Flip back to front
+    await page.evaluate(() => document.getElementById('flipBtn').click());
 
     console.log(`  ${filename}`);
   }
 
   await browser.close();
-  console.log(`\nDone! ${totalCards} fronts + ${colors.length} backs exported to ${OUTPUT_DIR}`);
+  console.log(`\nDone! ${cardCount} fronts + ${colors.length} back(s) exported to ${OUTPUT_DIR}`);
 }
 
 main().catch((err) => {

@@ -241,6 +241,29 @@
       image-rendering: pixelated;
     }
 
+    /* Card back */
+    .card-back-content {
+      position: absolute;
+      inset: 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 20px 80px;
+      z-index: 2;
+    }
+    .card-back-title {
+      font-family: 'Cinzel Decorative', 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 64px;
+      color: var(--text-color);
+      text-align: center;
+      line-height: 1.1;
+      text-shadow:
+        3px 3px 6px rgba(0,0,0,0.6),
+        0 0 30px rgba(0,0,0,0.3);
+    }
+
     /* Info below card */
     .card-info {
       margin-top: 20px;
@@ -267,6 +290,7 @@
     <select id="cardSelect"></select>
     <button id="prevBtn">&larr; Prev</button>
     <button id="nextBtn">Next &rarr;</button>
+    <button id="flipBtn">Flip (Back)</button>
   </div>
 
   <div class="preview-area" id="previewArea">
@@ -287,6 +311,9 @@
         </div>
         <div class="card-icon" id="cardIcon"></div>
         <div class="card-qr" id="cardQr"></div>
+      </div>
+      <div class="card-back-content" id="cardBackContent" style="display:none;">
+        <div class="card-back-title">All Together Now</div>
       </div>
     </div>
   </div>
@@ -328,14 +355,14 @@
         shaftFade: 'rgba(180,255,200,0.02)',
       },
       blue: {
-        bg: '#0C1A5E',
-        border: '#1E3A8A',
-        darkBorder: 'rgba(0,0,0,0.55)',
+        bg: '#1A3278',
+        border: '#2E52A8',
+        darkBorder: 'rgba(0,0,0,0.45)',
         text: '#FFFFFF',
         sparkle: 'rgba(200,220,255,0.9)',
         qrFill: 'rgba(0,0,0,0.5)',
-        shaftColor: 'rgba(180,200,255,0.09)',
-        shaftFade: 'rgba(180,200,255,0.02)',
+        shaftColor: 'rgba(180,200,255,0.10)',
+        shaftFade: 'rgba(180,200,255,0.03)',
       },
       purple: {
         bg: '#2D0A50',
@@ -396,16 +423,19 @@
     const cardSelect = document.getElementById('cardSelect');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const flipBtn = document.getElementById('flipBtn');
 
     let filteredCards = [...CARDS];
     let currentIndex = 0;
+    let showingBack = false;
 
     function populateCardSelect() {
       cardSelect.innerHTML = '';
       const color = colorFilter.value;
+      const baseColor = color.replace('-alt', '');
       filteredCards = color === 'all'
         ? [...CARDS]
-        : CARDS.filter(c => c.color === color);
+        : CARDS.filter(c => c.color === baseColor);
       filteredCards.forEach((c, i) => {
         const opt = document.createElement('option');
         opt.value = i;
@@ -420,7 +450,8 @@
     function renderCard() {
       const card = filteredCards[currentIndex];
       if (!card) return;
-      const theme = THEMES[card.color];
+      const themeOverride = colorFilter.value.endsWith('-alt') ? colorFilter.value : null;
+      const theme = THEMES[themeOverride || card.color];
 
       // Set CSS custom properties
       cardEl.style.setProperty('--card-color', theme.bg);
@@ -514,6 +545,14 @@
       currentIndex = (currentIndex + 1) % filteredCards.length;
       cardSelect.value = currentIndex;
       renderCard();
+    });
+
+    flipBtn.addEventListener('click', () => {
+      showingBack = !showingBack;
+      flipBtn.textContent = showingBack ? 'Flip (Front)' : 'Flip (Back)';
+      document.querySelector('.card-content').style.display = showingBack ? 'none' : '';
+      document.querySelectorAll('.corner-spade').forEach(el => el.style.display = showingBack ? 'none' : '');
+      document.getElementById('cardBackContent').style.display = showingBack ? '' : 'none';
     });
 
     // Init — force-load the display font before measuring text
