@@ -78,6 +78,7 @@ export async function getCardForViewer(
     description:
       status === "self_destructed" ? null : card.description,
     clueVisibleCategory: card.clueVisibleCategory,
+    act: card.act,
     design,
     status,
     lockedOutReason: card.lockedOutReason,

@@ -1,6 +1,31 @@
 import { useEffect, useState } from "react";
 import physicalCards from "../../../../shared/physical-cards.json";
 
+// --- Transition types, escalating by act ---
+// Act 1 (gentle):  1-5 → fade,   6-9 → iris
+// Act 2 (kinetic): 1-5 → slice,  6-9 → flip
+// Act 3 (intense): 1-5 → glitch, 6-9 → burn
+
+type Transition = "fade" | "iris" | "slice" | "flip" | "glitch" | "burn";
+
+const EXIT_DURATION: Record<Transition, number> = {
+  fade: 400,
+  iris: 500,
+  slice: 400,
+  flip: 500,
+  glitch: 1800,
+  burn: 1800,
+};
+
+function getTransition(act: number, cardNumber: number): Transition {
+  const isLow = cardNumber <= 5;
+  switch (act) {
+    case 1: return isLow ? "fade" : "iris";
+    case 2: return isLow ? "slice" : "flip";
+    default: return isLow ? "glitch" : "burn"; // act 3+
+  }
+}
+
 // --- Color themes (from card-preview.html) ---
 const THEMES: Record<string, {
   bg: string; border: string; darkBorder: string; text: string;
@@ -59,16 +84,23 @@ const SHAFTS = [
   { x: '92%', w: 17 },
 ];
 
+// ============================================================
+// Main component
+// ============================================================
+
 interface PhysicalCardFlashProps {
   cardId: string;
+  act?: number;
   onComplete: () => void;
 }
 
-export function PhysicalCardFlash({ cardId, onComplete }: PhysicalCardFlashProps) {
+export function PhysicalCardFlash({ cardId, act, onComplete }: PhysicalCardFlashProps) {
   const [exiting, setExiting] = useState(false);
 
   const card = physicalCards.find((c) => c.id === cardId);
   const theme = card ? THEMES[card.color] : null;
+  const transition = card ? getTransition(act ?? 1, card.number) : "fade";
+  const exitMs = EXIT_DURATION[transition];
 
   useEffect(() => {
     if (!card) {
@@ -76,7 +108,7 @@ export function PhysicalCardFlash({ cardId, onComplete }: PhysicalCardFlashProps
       return;
     }
 
-    // Try to preload the font for future scans
+    // Preload the font for future scans
     if (typeof document !== "undefined") {
       const existing = document.querySelector('link[href*="Cinzel+Decorative"]');
       if (!existing) {
@@ -89,57 +121,46 @@ export function PhysicalCardFlash({ cardId, onComplete }: PhysicalCardFlashProps
     }
 
     const showTimer = setTimeout(() => setExiting(true), 700);
-    const doneTimer = setTimeout(() => onComplete(), 1100); // 700 + 400
+    const doneTimer = setTimeout(() => onComplete(), 700 + exitMs);
 
     return () => {
       clearTimeout(showTimer);
       clearTimeout(doneTimer);
     };
-  }, [card, onComplete]);
+  }, [card, exitMs, onComplete]);
 
   if (!card || !theme) return null;
 
   const words = card.name.split(" ");
+  const cssVars = {
+    "--flash-bg": theme.bg,
+    "--flash-border": theme.border,
+    "--flash-dark-border": theme.darkBorder,
+    "--flash-text": theme.text,
+    "--flash-sparkle": theme.sparkle,
+    "--flash-shaft": theme.shaftColor,
+    "--flash-shaft-fade": theme.shaftFade,
+  } as React.CSSProperties;
+
+  const cardProps = { card, words, theme };
 
   return (
     <div style={styles.backdrop}>
-      {/* Top half */}
-      <div
-        style={{
-          ...styles.card,
-          "--flash-bg": theme.bg,
-          "--flash-border": theme.border,
-          "--flash-dark-border": theme.darkBorder,
-          "--flash-text": theme.text,
-          "--flash-sparkle": theme.sparkle,
-          "--flash-shaft": theme.shaftColor,
-          "--flash-shaft-fade": theme.shaftFade,
-          clipPath: "inset(0 0 50% 0)",
-          animation: exiting ? "flashSliceTop 400ms ease-in-out forwards" : "none",
-        } as React.CSSProperties}
-      >
-        <CardInner card={card} words={words} theme={theme} />
-      </div>
+      {!exiting && (
+        <div style={{ ...styles.card, ...cssVars }}>
+          <CardInner {...cardProps} />
+        </div>
+      )}
 
-      {/* Bottom half */}
-      <div
-        style={{
-          ...styles.card,
-          "--flash-bg": theme.bg,
-          "--flash-border": theme.border,
-          "--flash-dark-border": theme.darkBorder,
-          "--flash-text": theme.text,
-          "--flash-sparkle": theme.sparkle,
-          "--flash-shaft": theme.shaftColor,
-          "--flash-shaft-fade": theme.shaftFade,
-          clipPath: "inset(50% 0 0 0)",
-          animation: exiting ? "flashSliceBottom 400ms ease-in-out forwards" : "none",
-        } as React.CSSProperties}
-      >
-        <CardInner card={card} words={words} theme={theme} />
-      </div>
+      {exiting && (
+        <ExitAnimation
+          transition={transition}
+          cssVars={cssVars}
+          cardProps={cardProps}
+        />
+      )}
 
-      <style>{keyframes}</style>
+      <style>{allKeyframes}</style>
     </div>
   );
 }
@@ -149,17 +170,144 @@ export function isPhysicalCard(cardId: string): boolean {
   return physicalCards.some((c) => c.id === cardId);
 }
 
-// --- Internal card rendering ---
+// ============================================================
+// Exit animation dispatcher
+// ============================================================
 
-function CardInner({
-  card,
-  words,
-  theme,
-}: {
+interface CardInnerProps {
   card: (typeof physicalCards)[number];
   words: string[];
   theme: (typeof THEMES)[string];
+}
+
+function ExitAnimation({
+  transition,
+  cssVars,
+  cardProps,
+}: {
+  transition: Transition;
+  cssVars: React.CSSProperties;
+  cardProps: CardInnerProps;
 }) {
+  const dur = EXIT_DURATION[transition] + "ms";
+
+  switch (transition) {
+    // --- Act 1: gentle ---
+
+    case "fade":
+      return (
+        <div style={{
+          ...styles.card, ...cssVars,
+          animation: `flashFade ${dur} ease-out forwards`,
+        }}>
+          <CardInner {...cardProps} />
+        </div>
+      );
+
+    case "iris":
+      return (
+        <div style={{ ...styles.card, ...cssVars }}>
+          <CardInner {...cardProps} />
+          {/* Black overlay with growing circular hole */}
+          <div style={{
+            position: "absolute",
+            inset: -2,
+            background: "#000",
+            zIndex: 10,
+            animation: `flashIrisHole ${dur} ease-in forwards`,
+          }} />
+        </div>
+      );
+
+    // --- Act 2: kinetic ---
+
+    case "slice":
+      return (
+        <>
+          <div style={{
+            ...styles.card, ...cssVars,
+            clipPath: "inset(0 0 50% 0)",
+            animation: `flashSliceTop ${dur} ease-in-out forwards`,
+          }}>
+            <CardInner {...cardProps} />
+          </div>
+          <div style={{
+            ...styles.card, ...cssVars,
+            clipPath: "inset(50% 0 0 0)",
+            animation: `flashSliceBottom ${dur} ease-in-out forwards`,
+          }}>
+            <CardInner {...cardProps} />
+          </div>
+        </>
+      );
+
+    case "flip":
+      return (
+        <div style={{ perspective: 600 }}>
+          <div style={{
+            ...styles.card, ...cssVars,
+            animation: `flashFlip ${dur} ease-in forwards`,
+            transformStyle: "preserve-3d" as const,
+          }}>
+            <CardInner {...cardProps} />
+          </div>
+        </div>
+      );
+
+    // --- Act 3: intense ---
+
+    case "glitch":
+      return (
+        <>
+          {/* Base card — escalating jitter + fade out */}
+          <div style={{ animation: `flashGlitchShake ${dur} linear forwards` }}>
+            <div style={{
+              ...styles.card, ...cssVars,
+              animation: `flashGlitchBase ${dur} ease-in forwards`,
+            }}>
+              <CardInner {...cardProps} />
+            </div>
+          </div>
+          {/* Red-shifted strip — fades in midway, tears across top */}
+          <div style={{
+            ...styles.card, ...cssVars,
+            animation: `flashGlitchR ${dur} steps(8) forwards`,
+            filter: "hue-rotate(60deg) saturate(2)",
+          }}>
+            <CardInner {...cardProps} />
+          </div>
+          {/* Cyan-shifted strip — fades in later, tears across bottom */}
+          <div style={{
+            ...styles.card, ...cssVars,
+            animation: `flashGlitchC ${dur} steps(6) forwards`,
+            filter: "hue-rotate(-60deg) saturate(2)",
+          }}>
+            <CardInner {...cardProps} />
+          </div>
+        </>
+      );
+
+    case "burn":
+      return (
+        <div style={{
+          animation: `flashBurnShake ${dur} linear forwards`,
+        }}>
+          <div style={{
+            ...styles.card, ...cssVars,
+            animation: `flashBurn ${dur} ease-in forwards`,
+          }}>
+            <CardInner {...cardProps} />
+          </div>
+        </div>
+      );
+  }
+}
+
+// ============================================================
+// Card rendering
+// ============================================================
+
+function CardInner({ card, words, theme }: CardInnerProps) {
   return (
     <>
       {/* Background */}
@@ -184,7 +332,7 @@ function CardInner({
         ))}
       </div>
 
-      {/* Sparkles (simplified for phone size) */}
+      {/* Sparkles */}
       <div
         style={{
           ...styles.sparkles,
@@ -202,7 +350,7 @@ function CardInner({
         }}
       />
 
-      {/* Borders: outer dark → outer color → gap → inner color */}
+      {/* Borders: outer dark -> outer color -> gap -> inner color */}
       <div style={{ ...styles.outerDarkBorder, borderColor: theme.darkBorder }} />
       <div style={{ ...styles.outerColorBorder, borderColor: theme.border }} />
       <div style={{ ...styles.innerColorBorder, borderColor: theme.border }} />
@@ -210,18 +358,13 @@ function CardInner({
       {/* Corner spades */}
       {cornerPositions.map((pos, i) => (
         <div key={i} style={{ ...styles.spade, ...pos, color: theme.border }}>
-          ♠
+          &#9824;
         </div>
       ))}
 
       {/* Card name */}
       <div style={styles.nameArea}>
-        <div
-          style={{
-            ...styles.name,
-            color: theme.text,
-          }}
-        >
+        <div style={{ ...styles.name, color: theme.text }}>
           {words.map((w, i) => (
             <div key={i}>{w}</div>
           ))}
@@ -237,27 +380,216 @@ function CardInner({
   );
 }
 
-// --- Corner spade positions (pointing inward) ---
+// ============================================================
+// Static data
+// ============================================================
+
 const cornerPositions: React.CSSProperties[] = [
-  { top: 8, left: 10, transform: "rotate(135deg)" },   // top-left
-  { top: 8, right: 10, transform: "rotate(-135deg)" },  // top-right → note: using scaleX(-1) would mirror, but rotation is simpler
-  { bottom: 8, left: 10, transform: "rotate(45deg)" },  // bottom-left
-  { bottom: 8, right: 10, transform: "rotate(-45deg)" }, // bottom-right
+  { top: 8, left: 10, transform: "rotate(135deg)" },
+  { top: 8, right: 10, transform: "rotate(-135deg)" },
+  { bottom: 8, left: 10, transform: "rotate(45deg)" },
+  { bottom: 8, right: 10, transform: "rotate(-45deg)" },
 ];
 
-// --- Keyframes ---
-const keyframes = `
+// ============================================================
+// Keyframes for all 6 transitions
+// ============================================================
+
+const allKeyframes = `
+/* === Act 1: Fade — gentle scale-down + opacity === */
+@keyframes flashFade {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.88); }
+}
+
+/* === Act 1: Iris — black overlay with circular hole expanding from center === */
+@keyframes flashIrisHole {
+  0%   { clip-path: circle(0px at 50% 50%); }
+  100% { clip-path: circle(250px at 50% 50%); }
+}
+
+/* === Act 2: Slice — halves fly apart === */
 @keyframes flashSliceTop {
-  0% { clip-path: inset(0 0 50% 0); transform: translateY(0); opacity: 1; }
+  0%   { clip-path: inset(0 0 50% 0); transform: translateY(0); opacity: 1; }
   100% { clip-path: inset(0 0 50% 0); transform: translateY(-120%); opacity: 0; }
 }
 @keyframes flashSliceBottom {
-  0% { clip-path: inset(50% 0 0 0); transform: translateY(0); opacity: 1; }
+  0%   { clip-path: inset(50% 0 0 0); transform: translateY(0); opacity: 1; }
   100% { clip-path: inset(50% 0 0 0); transform: translateY(120%); opacity: 0; }
+}
+
+/* === Act 2: Flip — 3D rotation away === */
+@keyframes flashFlip {
+  0%   { transform: rotateY(0deg) scale(1); opacity: 1; }
+  60%  { transform: rotateY(70deg) scale(0.95); opacity: 0.8; }
+  100% { transform: rotateY(90deg) scale(0.85); opacity: 0; }
+}
+
+/* === Act 3: Glitch — escalating digital corruption === */
+
+/* Base card: slight brightness flicker, fades out at end */
+@keyframes flashGlitchBase {
+  0%   { filter: brightness(1);   opacity: 1; }
+  30%  { filter: brightness(1);   opacity: 1; }
+  40%  { filter: brightness(1.1); opacity: 1; }
+  50%  { filter: brightness(0.9); opacity: 1; }
+  60%  { filter: brightness(1.2); opacity: 0.95; }
+  70%  { filter: brightness(0.8); opacity: 0.9; }
+  80%  { filter: brightness(1.4); opacity: 0.8; }
+  90%  { filter: brightness(0.6); opacity: 0.5; }
+  95%  { filter: brightness(1.6); opacity: 0.3; }
+  100% { filter: brightness(0.2); opacity: 0; }
+}
+
+/* Base card shake — starts still, escalates to violent */
+@keyframes flashGlitchShake {
+  0%, 25%  { transform: translate(0, 0); }
+  /* Subtle glitches start */
+  27%  { transform: translate(1px, 0); }
+  29%  { transform: translate(-1px, 0.5px); }
+  31%  { transform: translate(0, 0); }
+  35%  { transform: translate(0.5px, -0.5px); }
+  37%  { transform: translate(-1px, 0); }
+  39%  { transform: translate(0, 0); }
+  /* Getting worse */
+  42%  { transform: translate(2px, -1px); }
+  44%  { transform: translate(-1.5px, 1px); }
+  46%  { transform: translate(0, 0); }
+  48%  { transform: translate(-2px, 0); }
+  50%  { transform: translate(1.5px, -1px); }
+  52%  { transform: translate(0, 0); }
+  /* Clearly broken */
+  55%  { transform: translate(-3px, 1.5px); }
+  57%  { transform: translate(2.5px, -1px); }
+  59%  { transform: translate(-1px, 2px); }
+  61%  { transform: translate(3px, -2px); }
+  63%  { transform: translate(-2.5px, 0.5px); }
+  65%  { transform: translate(0, 0); }
+  /* Severe */
+  68%  { transform: translate(4px, -2px); }
+  70%  { transform: translate(-3.5px, 2.5px); }
+  72%  { transform: translate(2px, -3px); }
+  74%  { transform: translate(-4px, 1px); }
+  76%  { transform: translate(3.5px, -2.5px); }
+  78%  { transform: translate(-2px, 3px); }
+  /* Total breakdown */
+  80%  { transform: translate(5px, -3px); }
+  82%  { transform: translate(-6px, 2px); }
+  84%  { transform: translate(4px, -4px); }
+  86%  { transform: translate(-5px, 3px); }
+  88%  { transform: translate(6px, -2px); }
+  90%  { transform: translate(-4px, 5px); }
+  92%  { transform: translate(5px, -5px); }
+  94%  { transform: translate(-6px, 3px); }
+  96%  { transform: translate(4px, -4px); }
+  98%  { transform: translate(-5px, 4px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Red-shifted strip: invisible early, appears mid-way as a torn horizontal band */
+@keyframes flashGlitchR {
+  0%, 35%   { clip-path: inset(100% 0 0 0); transform: translate(0, 0);     opacity: 0; }
+  37.5%     { clip-path: inset(20% 0 60% 0); transform: translate(8px, 0);   opacity: 0.7; }
+  40%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  45%       { clip-path: inset(50% 0 30% 0); transform: translate(-6px, 0);  opacity: 0.6; }
+  47%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  55%       { clip-path: inset(10% 0 70% 0); transform: translate(10px, 0);  opacity: 0.8; }
+  57%       { clip-path: inset(60% 0 15% 0); transform: translate(-8px, 0);  opacity: 0.7; }
+  59%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  65%       { clip-path: inset(5% 0 55% 0);  transform: translate(12px, 0);  opacity: 0.9; }
+  67%       { clip-path: inset(40% 0 25% 0); transform: translate(-10px, 0); opacity: 0.8; }
+  70%       { clip-path: inset(70% 0 5% 0);  transform: translate(14px, 0);  opacity: 0.9; }
+  72%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  78%       { clip-path: inset(0 0 50% 0);   transform: translate(-16px, 0); opacity: 1; }
+  80%       { clip-path: inset(30% 0 20% 0); transform: translate(12px, 0);  opacity: 0.9; }
+  83%       { clip-path: inset(60% 0 0 0);   transform: translate(-14px, 0); opacity: 1; }
+  86%       { clip-path: inset(0 0 30% 0);   transform: translate(18px, 0);  opacity: 0.8; }
+  90%       { clip-path: inset(20% 0 10% 0); transform: translate(-20px, 0); opacity: 0.7; }
+  95%       { clip-path: inset(0 0 0 0);     transform: translate(10px, 0);  opacity: 0.4; }
+  100%      { clip-path: inset(0 0 0 0);     transform: translate(0, 0);     opacity: 0; }
+}
+
+/* Cyan-shifted strip: appears even later, opposite offsets */
+@keyframes flashGlitchC {
+  0%, 50%   { clip-path: inset(100% 0 0 0); transform: translate(0, 0);     opacity: 0; }
+  52%       { clip-path: inset(40% 0 35% 0); transform: translate(-10px, 0); opacity: 0.6; }
+  54%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  60%       { clip-path: inset(65% 0 10% 0); transform: translate(8px, 0);   opacity: 0.7; }
+  62%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  68%       { clip-path: inset(10% 0 60% 0); transform: translate(-12px, 0); opacity: 0.8; }
+  70%       { clip-path: inset(50% 0 20% 0); transform: translate(10px, 0);  opacity: 0.7; }
+  72%       { clip-path: inset(100% 0 0 0); transform: translate(0, 0);      opacity: 0; }
+  78%       { clip-path: inset(0 0 60% 0);   transform: translate(14px, 0);  opacity: 0.9; }
+  80%       { clip-path: inset(45% 0 15% 0); transform: translate(-16px, 0); opacity: 0.8; }
+  83%       { clip-path: inset(70% 0 0 0);   transform: translate(12px, 0);  opacity: 1; }
+  86%       { clip-path: inset(10% 0 40% 0); transform: translate(-18px, 0); opacity: 0.9; }
+  90%       { clip-path: inset(35% 0 5% 0);  transform: translate(20px, 0);  opacity: 0.8; }
+  95%       { clip-path: inset(0 0 0 0);     transform: translate(-12px, 0); opacity: 0.4; }
+  100%      { clip-path: inset(0 0 0 0);     transform: translate(0, 0);     opacity: 0; }
+}
+
+/* === Act 3: Burn — card blazes bright and consumes itself === */
+@keyframes flashBurn {
+  0%   { transform: scale(1);    filter: brightness(1);                           opacity: 1; }
+  25%  { transform: scale(1.03); filter: brightness(1.3) sepia(0.3);              opacity: 1; }
+  50%  { transform: scale(1.06); filter: brightness(1.8) sepia(0.6) saturate(1.5); opacity: 1; }
+  70%  { transform: scale(1.10); filter: brightness(2.5) sepia(0.8) saturate(2);  opacity: 0.9; }
+  85%  { transform: scale(1.15); filter: brightness(3.5) sepia(1) saturate(3);    opacity: 0.6; }
+  100% { transform: scale(1.20); filter: brightness(5) sepia(1) saturate(3);      opacity: 0; }
+}
+
+/* Shake that escalates — gentle tremor to violent rattle */
+@keyframes flashBurnShake {
+  0%, 3%    { transform: translate(0, 0); }
+  /* Gentle phase — barely perceptible */
+  5%   { transform: translate(0.5px, -0.5px); }
+  7%   { transform: translate(-0.5px, 0.5px); }
+  9%   { transform: translate(0.5px, 0px); }
+  11%  { transform: translate(-0.5px, -0.5px); }
+  13%  { transform: translate(0px, 0.5px); }
+  /* Building */
+  20%  { transform: translate(1px, -1px); }
+  22%  { transform: translate(-1px, 0.5px); }
+  24%  { transform: translate(0.5px, 1px); }
+  26%  { transform: translate(-1px, -0.5px); }
+  28%  { transform: translate(1px, 0px); }
+  /* Medium */
+  35%  { transform: translate(-1.5px, 1px); }
+  37%  { transform: translate(2px, -1px); }
+  39%  { transform: translate(-1px, 1.5px); }
+  41%  { transform: translate(1.5px, -1.5px); }
+  43%  { transform: translate(-2px, 0.5px); }
+  /* Stronger */
+  50%  { transform: translate(2.5px, -2px); }
+  52%  { transform: translate(-2px, 1.5px); }
+  54%  { transform: translate(1.5px, 2px); }
+  56%  { transform: translate(-3px, -1px); }
+  58%  { transform: translate(2px, -2.5px); }
+  /* Intense */
+  65%  { transform: translate(-3px, 2px); }
+  67%  { transform: translate(3.5px, -1.5px); }
+  69%  { transform: translate(-2.5px, 3px); }
+  71%  { transform: translate(4px, -2px); }
+  73%  { transform: translate(-3.5px, 1px); }
+  /* Violent */
+  80%  { transform: translate(4.5px, -3px); }
+  82%  { transform: translate(-4px, 2.5px); }
+  84%  { transform: translate(3px, -4px); }
+  86%  { transform: translate(-5px, 2px); }
+  88%  { transform: translate(4px, -3.5px); }
+  90%  { transform: translate(-4.5px, 4px); }
+  92%  { transform: translate(5px, -2.5px); }
+  94%  { transform: translate(-3.5px, 5px); }
+  96%  { transform: translate(5px, -4px); }
+  98%  { transform: translate(-5px, 3px); }
+  100% { transform: translate(0, 0); }
 }
 `;
 
-// --- Inline styles ---
+// ============================================================
+// Inline styles
+// ============================================================
+
 const styles: Record<string, React.CSSProperties> = {
   backdrop: {
     position: "fixed",

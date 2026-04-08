@@ -94,7 +94,7 @@ export function CardViewer() {
   }, []);
 
   if (!flashDone && cardId) {
-    return <PhysicalCardFlash cardId={cardId} onComplete={() => setFlashDone(true)} />;
+    return <PhysicalCardFlash cardId={cardId} act={card?.act ?? undefined} onComplete={() => setFlashDone(true)} />;
   }
   if (loading) return <LoadingState />;
   if (notFound || !card) return <NotFoundState />;
