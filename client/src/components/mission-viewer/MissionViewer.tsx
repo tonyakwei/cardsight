@@ -177,6 +177,27 @@ export function MissionViewer() {
           description={mission.puzzleDescription ?? mission.description}
         />
 
+        {mission.warnings.length > 0 && (
+          <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {mission.warnings.map((w, i) => (
+              <div
+                key={i}
+                style={{
+                  padding: "0.75rem 1rem",
+                  borderRadius: "8px",
+                  background: "rgba(255, 200, 0, 0.08)",
+                  border: "1px solid rgba(255, 200, 0, 0.25)",
+                  fontSize: "0.85rem",
+                  lineHeight: 1.6,
+                  color: "#ffd54f",
+                }}
+              >
+                {w}
+              </div>
+            ))}
+          </div>
+        )}
+
         {mission.requiredClueSets.length > 0 && (
           <RequiredClues clueSets={mission.requiredClueSets} />
         )}

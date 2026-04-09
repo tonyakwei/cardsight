@@ -1,7 +1,7 @@
-import type { AdminMission, ActBreakHouse } from "@cardsight/shared";
+import type { AdminMission, AdminMissionConsequence, ActBreakHouse } from "@cardsight/shared";
 import { BASE, adminFetch } from "./common.js";
 
-export type { AdminMission, ActBreakHouse };
+export type { AdminMission, AdminMissionConsequence, ActBreakHouse };
 
 export async function fetchMissions(
   gameId: string,
@@ -51,6 +51,51 @@ export async function deleteMission(
 
 export function getMissionQRUrl(gameId: string, missionId: string): string {
   return `${BASE}/games/${gameId}/missions/${missionId}/qr`;
+}
+
+// === Consequences ===
+
+export async function fetchConsequences(
+  gameId: string,
+  missionId: string,
+): Promise<AdminMissionConsequence[]> {
+  const res = await adminFetch(`${BASE}/games/${gameId}/missions/${missionId}/consequences`);
+  return res.json();
+}
+
+export async function createConsequence(
+  gameId: string,
+  missionId: string,
+  data: Record<string, any>,
+): Promise<AdminMissionConsequence> {
+  const res = await adminFetch(`${BASE}/games/${gameId}/missions/${missionId}/consequences`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function updateConsequence(
+  gameId: string,
+  consequenceId: string,
+  data: Record<string, any>,
+): Promise<AdminMissionConsequence> {
+  const res = await adminFetch(`${BASE}/games/${gameId}/consequences/${consequenceId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function deleteConsequence(
+  gameId: string,
+  consequenceId: string,
+): Promise<void> {
+  await adminFetch(`${BASE}/games/${gameId}/consequences/${consequenceId}`, {
+    method: "DELETE",
+  });
 }
 
 export async function fetchActBreak(

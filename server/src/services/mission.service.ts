@@ -64,6 +64,20 @@ export async function getMissionForViewer(
     };
   });
 
+  // Fetch any warning-type triggered consequences targeting this mission
+  const warnings = await prisma.triggeredConsequence.findMany({
+    where: {
+      consequence: {
+        targetMissionId: missionId,
+        type: "warning",
+      },
+    },
+    include: {
+      consequence: { select: { message: true } },
+    },
+  });
+  const warningMessages = warnings.map((w) => w.consequence.message);
+
   // Build answer meta if answerable
   let answerMeta: AnswerMeta | null = null;
   const isAnswerable = !!mission.answerTemplateType && !!mission.answerId && !mission.isCompleted;
@@ -87,6 +101,7 @@ export async function getMissionForViewer(
     completedAt: mission.completedAt?.toISOString() ?? null,
     lockedOut: mission.lockedOut,
     lockedOutReason: mission.lockedOutReason,
+    warnings: warningMessages,
     isAnswerable,
     answerTemplateType: mission.answerTemplateType as AnswerTemplateType | null,
     answerMeta,

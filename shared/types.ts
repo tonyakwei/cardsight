@@ -12,6 +12,8 @@ export type CardComplexity = "simple" | "complex";
 
 export type CardStatus = "available" | "locked_out" | "self_destructed" | "answered";
 
+export type ConsequenceType = "warning" | "lock" | "redistribute";
+
 // === API Response Types (Player-Facing) ===
 
 export interface CardDesign {
@@ -163,6 +165,7 @@ export interface MissionViewerResponse {
   completedAt: string | null;
   lockedOut: boolean;
   lockedOutReason: string | null;
+  warnings: string[];
   isAnswerable: boolean;
   answerTemplateType: AnswerTemplateType | null;
   answerMeta: AnswerMeta | null;

@@ -163,10 +163,40 @@ export async function getActBreakSummary(gameId: string, act: number) {
     orderBy: { sortOrder: "asc" },
   });
 
+  // Fetch triggered consequences for this act
+  const triggered = await prisma.triggeredConsequence.findMany({
+    where: { gameId, triggeredAtAct: act },
+    include: {
+      consequence: {
+        include: {
+          sourceMission: { select: { id: true, title: true } },
+          targetMission: { select: { id: true, title: true } },
+        },
+      },
+      house: { select: { id: true, name: true, color: true } },
+    },
+  });
+
   return houses.map((house: any) => {
     const houseMissions = missions.filter((m: any) =>
       m.missionHouses.some((mh: any) => mh.houseId === house.id),
     );
+
+    const houseTriggered = triggered
+      .filter((t: any) => t.houseId === house.id)
+      .map((t: any) => ({
+        id: t.id,
+        consequenceId: t.consequenceId,
+        consequence: {
+          type: t.consequence.type,
+          message: t.consequence.message,
+          sourceMission: t.consequence.sourceMission,
+          targetMission: t.consequence.targetMission,
+        },
+        house: t.house,
+        triggeredAtAct: t.triggeredAtAct,
+        triggeredAt: t.triggeredAt.toISOString(),
+      }));
 
     return {
       house: { id: house.id, name: house.name, color: house.color },
@@ -185,8 +215,71 @@ export async function getActBreakSummary(gameId: string, act: number) {
           ? m.mechanicalEffectCompleted
           : m.mechanicalEffectNotCompleted,
       })),
+      triggeredConsequences: houseTriggered,
       completedCount: houseMissions.filter((m: any) => m.isCompleted).length,
       totalCount: houseMissions.length,
     };
   });
+}
+
+// === Mission Consequences ===
+
+export async function listConsequences(missionId: string) {
+  return prisma.missionConsequence.findMany({
+    where: { sourceMissionId: missionId },
+    include: {
+      targetMission: { select: { id: true, title: true, act: true } },
+    },
+    orderBy: { sortOrder: "asc" },
+  });
+}
+
+export async function createConsequence(missionId: string, data: Record<string, any>) {
+  const mission = await prisma.mission.findUnique({ where: { id: missionId } });
+  if (!mission) throw new AppError(404, "Mission not found");
+
+  return prisma.missionConsequence.create({
+    data: {
+      sourceMissionId: missionId,
+      targetMissionId: data.targetMissionId || null,
+      triggerOnFailure: data.triggerOnFailure ?? true,
+      triggerOnSuccess: data.triggerOnSuccess ?? false,
+      type: data.type ?? "warning",
+      message: data.message ?? "",
+      sortOrder: data.sortOrder ?? 0,
+    },
+    include: {
+      targetMission: { select: { id: true, title: true, act: true } },
+    },
+  });
+}
+
+export async function updateConsequence(consequenceId: string, data: Record<string, any>) {
+  const consequence = await prisma.missionConsequence.findUnique({ where: { id: consequenceId } });
+  if (!consequence) throw new AppError(404, "Consequence not found");
+
+  const allowed = [
+    "targetMissionId", "triggerOnFailure", "triggerOnSuccess",
+    "type", "message", "sortOrder",
+  ];
+
+  const updateData: Record<string, any> = {};
+  for (const key of allowed) {
+    if (key in data) updateData[key] = data[key];
+  }
+
+  return prisma.missionConsequence.update({
+    where: { id: consequenceId },
+    data: updateData,
+    include: {
+      targetMission: { select: { id: true, title: true, act: true } },
+    },
+  });
+}
+
+export async function deleteConsequence(consequenceId: string) {
+  const consequence = await prisma.missionConsequence.findUnique({ where: { id: consequenceId } });
+  if (!consequence) throw new AppError(404, "Consequence not found");
+
+  await prisma.missionConsequence.delete({ where: { id: consequenceId } });
 }

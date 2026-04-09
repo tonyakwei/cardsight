@@ -187,6 +187,59 @@ export function ActBreakView() {
                   </Text>
                 )}
               </Stack>
+
+              {/* Triggered consequences */}
+              {entry.triggeredConsequences && entry.triggeredConsequences.length > 0 && (
+                <Stack gap="xs" mt="md">
+                  <Text size="sm" fw={700} c="yellow.5">
+                    Triggered Consequences
+                  </Text>
+                  {entry.triggeredConsequences.map((tc) => (
+                    <Paper
+                      key={tc.id}
+                      p="sm"
+                      style={{
+                        background:
+                          tc.consequence.type === "lock"
+                            ? "rgba(255, 82, 82, 0.06)"
+                            : tc.consequence.type === "redistribute"
+                              ? "rgba(255, 200, 0, 0.06)"
+                              : "rgba(79, 195, 247, 0.06)",
+                        borderLeft: `4px solid ${
+                          tc.consequence.type === "lock"
+                            ? "#f44336"
+                            : tc.consequence.type === "redistribute"
+                              ? "#ffc107"
+                              : "#4fc3f7"
+                        }`,
+                      }}
+                    >
+                      <Group gap="xs" mb={4}>
+                        <Badge
+                          size="xs"
+                          variant="filled"
+                          color={
+                            tc.consequence.type === "lock"
+                              ? "red"
+                              : tc.consequence.type === "redistribute"
+                                ? "yellow"
+                                : "blue"
+                          }
+                        >
+                          {tc.consequence.type}
+                        </Badge>
+                        <Text size="xs" c="dimmed">
+                          from: {tc.consequence.sourceMission.title}
+                          {tc.consequence.targetMission && (
+                            <> → {tc.consequence.targetMission.title}</>
+                          )}
+                        </Text>
+                      </Group>
+                      <Text size="sm">{tc.consequence.message}</Text>
+                    </Paper>
+                  ))}
+                </Stack>
+              )}
             </Paper>
           ))}
         </Stack>

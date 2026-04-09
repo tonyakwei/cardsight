@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   Group,
@@ -17,6 +17,7 @@ import {
   Collapse,
   Paper,
   Checkbox,
+  Switch,
 } from "@mantine/core";
 import {
   fetchMissions,
@@ -27,7 +28,12 @@ import {
   updateMission,
   deleteMission,
   getMissionQRUrl,
+  fetchConsequences,
+  createConsequence,
+  updateConsequence,
+  deleteConsequence,
   type AdminMission,
+  type AdminMissionConsequence,
   type AdminCardSet,
   type AdminHouse,
   type AdminDesign,
@@ -202,6 +208,7 @@ export function MissionManager() {
                     key={mission.id}
                     mission={mission}
                     gameId={gameId!}
+                    allMissions={missions}
                     houses={houses}
                     cardSets={cardSets}
                     designs={designs}
@@ -221,6 +228,7 @@ export function MissionManager() {
 function MissionRow({
   mission,
   gameId,
+  allMissions,
   houses,
   cardSets,
   designs,
@@ -229,6 +237,7 @@ function MissionRow({
 }: {
   mission: AdminMission;
   gameId: string;
+  allMissions: AdminMission[];
   houses: AdminHouse[];
   cardSets: AdminCardSet[];
   designs: AdminDesign[];
@@ -533,6 +542,12 @@ function MissionRow({
             onBlur={(e) => save({ notes: e.target.value || null })}
           />
 
+          <ConsequenceEditor
+            gameId={gameId}
+            missionId={mission.id}
+            allMissions={allMissions}
+          />
+
           <Group justify="flex-end" mt="xs">
             <Text size="xs" c="dimmed">
               {saving ? "Saving..." : "Changes save on blur"}
@@ -618,6 +633,119 @@ function RequiredClueSetsEditor({
           onClick={() => update([...items, { cardSetId: "", count: 1 }])}
         >
           + Add clue set
+        </Button>
+      </Stack>
+    </div>
+  );
+}
+
+function ConsequenceEditor({
+  gameId,
+  missionId,
+  allMissions,
+}: {
+  gameId: string;
+  missionId: string;
+  allMissions: AdminMission[];
+}) {
+  const [consequences, setConsequences] = useState<AdminMissionConsequence[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetchConsequences(gameId, missionId).then((c) => {
+      setConsequences(c);
+      setLoaded(true);
+    });
+  }, [gameId, missionId]);
+
+  const handleCreate = async () => {
+    const c = await createConsequence(gameId, missionId, {
+      type: "warning",
+      message: "",
+    });
+    setConsequences((prev) => [...prev, c]);
+  };
+
+  const handleUpdate = async (consequenceId: string, data: Record<string, any>) => {
+    const updated = await updateConsequence(gameId, consequenceId, data);
+    setConsequences((prev) => prev.map((c) => (c.id === consequenceId ? updated : c)));
+  };
+
+  const handleDelete = async (consequenceId: string) => {
+    await deleteConsequence(gameId, consequenceId);
+    setConsequences((prev) => prev.filter((c) => c.id !== consequenceId));
+  };
+
+  // Target missions: all missions in later acts (or same act, but not self)
+  const targetOptions = allMissions
+    .filter((m) => m.id !== missionId)
+    .map((m) => ({ value: m.id, label: `Act ${m.act}: ${m.title}` }));
+
+  if (!loaded) return null;
+
+  return (
+    <div>
+      <Text size="xs" fw={600} mt="xs" mb={4}>
+        Act Consequences
+      </Text>
+      <Stack gap="xs">
+        {consequences.map((c) => (
+          <Paper key={c.id} p="xs" withBorder style={{ background: "rgba(255,200,0,0.03)" }}>
+            <Group gap="xs" mb="xs">
+              <Select
+                size="xs"
+                value={c.type}
+                onChange={(v) => v && handleUpdate(c.id, { type: v })}
+                data={[
+                  { value: "warning", label: "Warning" },
+                  { value: "lock", label: "Lock mission" },
+                  { value: "redistribute", label: "Redistribute cards" },
+                ]}
+                style={{ width: 150 }}
+              />
+              <Select
+                size="xs"
+                placeholder="Target mission (optional)"
+                clearable
+                value={c.targetMissionId ?? ""}
+                onChange={(v) => handleUpdate(c.id, { targetMissionId: v || null })}
+                data={targetOptions}
+                style={{ flex: 1 }}
+              />
+              <ActionIcon size="xs" variant="subtle" color="red" onClick={() => handleDelete(c.id)}>
+                x
+              </ActionIcon>
+            </Group>
+            <Group gap="xs" mb="xs">
+              <Switch
+                size="xs"
+                label="On failure"
+                checked={c.triggerOnFailure}
+                onChange={(e) => handleUpdate(c.id, { triggerOnFailure: e.currentTarget.checked })}
+              />
+              <Switch
+                size="xs"
+                label="On success"
+                checked={c.triggerOnSuccess}
+                onChange={(e) => handleUpdate(c.id, { triggerOnSuccess: e.currentTarget.checked })}
+              />
+            </Group>
+            <Textarea
+              size="xs"
+              placeholder="Consequence message..."
+              minRows={2}
+              maxRows={5}
+              autosize
+              defaultValue={c.message}
+              onBlur={(e) => {
+                if (e.target.value !== c.message)
+                  handleUpdate(c.id, { message: e.target.value });
+              }}
+            />
+          </Paper>
+        ))}
+        <Button size="xs" variant="subtle" color="yellow" onClick={handleCreate}>
+          + Add Consequence
         </Button>
       </Stack>
     </div>

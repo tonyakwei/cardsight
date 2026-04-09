@@ -301,26 +301,103 @@ export async function transitionAct(gameId: string, fromAct: number) {
 
   const toAct = fromAct + 1;
 
+  // 1. Lock/unlock cards
   await prisma.$transaction([
-    // Lock all cards in the current act
     prisma.card.updateMany({
       where: { gameId, act: fromAct, deletedAt: null },
       data: { lockedOut: true, lockedOutReason: `Act ${fromAct} has ended.` },
     }),
-    // Unlock cards in the next act
     prisma.card.updateMany({
       where: { gameId, act: toAct, deletedAt: null },
       data: { lockedOut: false, lockedOutReason: null },
     }),
   ]);
 
-  // Count affected cards
+  // 2. Evaluate consequences for ending act missions
+  const missions = await prisma.mission.findMany({
+    where: { gameId, act: fromAct },
+    include: {
+      missionHouses: true,
+      consequencesAsSource: {
+        include: {
+          targetMission: { select: { id: true, title: true } },
+        },
+      },
+    },
+  });
+
+  const triggeredRecords: any[] = [];
+
+  for (const mission of missions) {
+    for (const mh of mission.missionHouses) {
+      const completed = mission.isCompleted;
+      for (const consequence of mission.consequencesAsSource) {
+        const shouldTrigger =
+          (completed && consequence.triggerOnSuccess) ||
+          (!completed && consequence.triggerOnFailure);
+
+        if (!shouldTrigger) continue;
+
+        // Create the triggered consequence record
+        const triggered = await prisma.triggeredConsequence.create({
+          data: {
+            gameId,
+            consequenceId: consequence.id,
+            houseId: mh.houseId,
+            triggeredAtAct: fromAct,
+          },
+          include: {
+            consequence: {
+              include: {
+                sourceMission: { select: { id: true, title: true } },
+                targetMission: { select: { id: true, title: true } },
+              },
+            },
+            house: { select: { id: true, name: true, color: true } },
+          },
+        });
+
+        // Apply lock consequences immediately
+        if (consequence.type === "lock" && consequence.targetMissionId) {
+          await prisma.mission.update({
+            where: { id: consequence.targetMissionId },
+            data: {
+              lockedOut: true,
+              lockedOutReason: consequence.message,
+            },
+          });
+        }
+
+        triggeredRecords.push({
+          id: triggered.id,
+          consequenceId: triggered.consequenceId,
+          consequence: {
+            type: triggered.consequence.type,
+            message: triggered.consequence.message,
+            sourceMission: triggered.consequence.sourceMission,
+            targetMission: triggered.consequence.targetMission,
+          },
+          house: triggered.house,
+          triggeredAtAct: triggered.triggeredAtAct,
+          triggeredAt: triggered.triggeredAt.toISOString(),
+        });
+      }
+    }
+  }
+
+  // 3. Count affected cards
   const [locked, unlocked] = await Promise.all([
     prisma.card.count({ where: { gameId, act: fromAct, lockedOut: true, deletedAt: null } }),
     prisma.card.count({ where: { gameId, act: toAct, lockedOut: false, deletedAt: null } }),
   ]);
 
-  return { fromAct, toAct, cardsLocked: locked, cardsUnlocked: unlocked };
+  return {
+    fromAct,
+    toAct,
+    cardsLocked: locked,
+    cardsUnlocked: unlocked,
+    triggeredConsequences: triggeredRecords,
+  };
 }
 
 // === Answer Templates ===

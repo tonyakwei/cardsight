@@ -53,6 +53,7 @@ model Game {
   answerAttempts        AnswerAttempt[]
   missionScanEvents     MissionScanEvent[]
   missionAnswerAttempts MissionAnswerAttempt[]
+  triggeredConsequences TriggeredConsequence[]
   setReviews            SetReview[]
 
   @@map("games")
@@ -84,10 +85,11 @@ model House {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  cards          CardHouse[]
-  tableCards     Card[]          @relation("TableAssignment")
-  missionHouses  MissionHouse[]
-  showtimeSlots  ShowtimeSlot[]
+  cards                  CardHouse[]
+  tableCards             Card[]          @relation("TableAssignment")
+  missionHouses          MissionHouse[]
+  showtimeSlots          ShowtimeSlot[]
+  triggeredConsequences  TriggeredConsequence[]
 
   @@unique([gameId, name])
   @@map("houses")
@@ -272,6 +274,8 @@ model Mission {
   missionHouses         MissionHouse[]
   missionScanEvents     MissionScanEvent[]
   missionAnswerAttempts MissionAnswerAttempt[]
+  consequencesAsSource  MissionConsequence[] @relation("ConsequenceSource")
+  consequencesAsTarget  MissionConsequence[] @relation("ConsequenceTarget")
 
   @@map("missions")
 }
@@ -285,6 +289,41 @@ model MissionHouse {
 
   @@unique([missionId, houseId])
   @@map("mission_houses")
+}
+
+model MissionConsequence {
+  id                String   @id @default(uuid()) @db.Uuid
+  sourceMissionId   String   @map("source_mission_id") @db.Uuid
+  sourceMission     Mission  @relation("ConsequenceSource", fields: [sourceMissionId], references: [id], onDelete: Cascade)
+  targetMissionId   String?  @map("target_mission_id") @db.Uuid
+  targetMission     Mission? @relation("ConsequenceTarget", fields: [targetMissionId], references: [id], onDelete: SetNull)
+  triggerOnFailure  Boolean  @default(true) @map("trigger_on_failure")
+  triggerOnSuccess  Boolean  @default(false) @map("trigger_on_success")
+  type              String   // "warning" | "lock" | "redistribute"
+  message           String
+  sortOrder         Int      @default(0) @map("sort_order")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  triggeredConsequences TriggeredConsequence[]
+
+  @@map("mission_consequences")
+}
+
+model TriggeredConsequence {
+  id              String             @id @default(uuid()) @db.Uuid
+  gameId          String             @map("game_id") @db.Uuid
+  game            Game               @relation(fields: [gameId], references: [id])
+  consequenceId   String             @map("consequence_id") @db.Uuid
+  consequence     MissionConsequence @relation(fields: [consequenceId], references: [id], onDelete: Cascade)
+  houseId         String             @map("house_id") @db.Uuid
+  house           House              @relation(fields: [houseId], references: [id])
+  triggeredAtAct  Int                @map("triggered_at_act")
+  triggeredAt     DateTime           @default(now()) @map("triggered_at")
+  acknowledged    Boolean            @default(false)
+  createdAt       DateTime           @default(now()) @map("created_at")
+
+  @@map("triggered_consequences")
 }
 
 model MissionScanEvent {

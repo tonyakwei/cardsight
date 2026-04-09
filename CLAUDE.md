@@ -159,6 +159,7 @@ cardsight/
 - **Mission auto-completion** — when a card linked as a mission's `missionCardId` is answered correctly, the mission is automatically marked complete in card.service.ts.
 - **Missions are player-scannable** — each mission has a QR code linking to `/m/:missionId`. The MissionViewer shows the narrative/puzzle, required clue categories, and an answer input. For multi-house missions, a house picker (stored in sessionStorage as `cardsight_house`) appears first. Mission QR codes are separate from the physical card deck — they're printed on story sheets. Analytics tracked via `MissionScanEvent` and `MissionAnswerAttempt` tables.
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
+- **Act consequences are configurable per-mission** — `MissionConsequence` records define what happens when a mission succeeds or fails at act end. Types: `warning` (text shown on a target mission), `lock` (locks a target mission with explanation), `redistribute` (reminder to host about physical card redistribution). When admin hits "End Act", `transitionAct` evaluates each mission's completion per house and creates `TriggeredConsequence` records. Lock consequences immediately set `lockedOut` on the target mission. Warning consequences are fetched by the player-facing mission viewer and displayed as yellow callouts. Redistribute consequences appear in the act break view for the host. All consequences are configurable per-mission in the admin with type, target mission, trigger condition (on failure/success), and message.
 - **Mechanical effects are store-and-display** — JSONB fields on missions hold structured effect data, but the system does not auto-process them. The host reads the effects and manually adjusts the next act. This is deliberate — effect types are still being discovered through playtesting.
 - **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a themed print preview with switchable themes (Space, Explorer), markdown rendering, Google Fonts (loaded dynamically), and `print-color-adjust: exact` for dark backgrounds. Theme system is defined in `ConsequencePrint.tsx` via a `CardTheme` interface driving fonts, colors, backgrounds, and border styles. Print link lives in MissionManager toolbar.
 - **Act transitions are explicit** — "End Act N" button locks current act's cards, unlocks next act's cards, and navigates to the act break view.
@@ -274,6 +275,10 @@ POST  /api/admin/games/:gameId/missions
 PUT   /api/admin/games/:gameId/missions/:missionId
 DELETE /api/admin/games/:gameId/missions/:missionId
 GET   /api/admin/games/:gameId/missions/:missionId/qr
+GET   /api/admin/games/:gameId/missions/:missionId/consequences
+POST  /api/admin/games/:gameId/missions/:missionId/consequences
+PUT   /api/admin/games/:gameId/consequences/:consequenceId
+DELETE /api/admin/games/:gameId/consequences/:consequenceId
 
 # Act Break & Transitions
 GET   /api/admin/games/:gameId/act-break/:act
@@ -314,7 +319,8 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Act break view (per-house mission results with consequence texts for host)
 - Consequence card print preview (2-3 per US letter page, switchable themes: Space with Audiowide/Exo 2 fonts + nebula bg, Explorer with Cinzel/Crimson Text fonts + aged parchment bg, markdown rendering)
 - Live game dashboard (real-time scans, card discovery, answer attempts, mission progress, auto-polls every 5s)
-- Act transition workflow (lock current act cards, unlock next act cards)
+- Act transition workflow (lock current act cards, unlock next act cards, evaluate and trigger mission consequences)
+- Act consequences system (configurable per-mission: warning/lock/redistribute, triggered on act end, shown in act break view and player mission viewer)
 - Game duplication (deep-copies cards, designs, answers, card sets, houses, missions)
 - Table assignment simulator with auto-distribute
 - Bulk card operations (assign design/set/act, lock/unlock, mark finished, delete, reset)

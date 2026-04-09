@@ -1,4 +1,4 @@
-import type { GameStatus, AnswerTemplateType, CardComplexity, ShowtimePhase } from "./types.js";
+import type { GameStatus, AnswerTemplateType, CardComplexity, ShowtimePhase, ConsequenceType } from "./types.js";
 
 // === Admin Types ===
 // Single source of truth for all admin API response shapes.
@@ -136,6 +136,32 @@ export interface AdminMission {
   updatedAt: string;
 }
 
+export interface AdminMissionConsequence {
+  id: string;
+  sourceMissionId: string;
+  targetMissionId: string | null;
+  targetMission: { id: string; title: string; act: number } | null;
+  triggerOnFailure: boolean;
+  triggerOnSuccess: boolean;
+  type: ConsequenceType;
+  message: string;
+  sortOrder: number;
+}
+
+export interface AdminTriggeredConsequence {
+  id: string;
+  consequenceId: string;
+  consequence: {
+    type: ConsequenceType;
+    message: string;
+    sourceMission: { id: string; title: string };
+    targetMission: { id: string; title: string } | null;
+  };
+  house: { id: string; name: string; color: string };
+  triggeredAtAct: number;
+  triggeredAt: string;
+}
+
 export interface ActBreakHouse {
   house: { id: string; name: string; color: string };
   missions: {
@@ -147,6 +173,7 @@ export interface ActBreakHouse {
     consequenceImage: string | null;
     mechanicalEffect: any | null;
   }[];
+  triggeredConsequences: AdminTriggeredConsequence[];
   completedCount: number;
   totalCount: number;
 }
@@ -195,6 +222,7 @@ export interface ActTransitionResult {
   toAct: number;
   cardsLocked: number;
   cardsUnlocked: number;
+  triggeredConsequences: AdminTriggeredConsequence[];
 }
 
 // === Live Dashboard ===

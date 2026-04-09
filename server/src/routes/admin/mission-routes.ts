@@ -38,6 +38,30 @@ router.delete("/games/:gameId/missions/:missionId", async (req, res) => {
   res.json({ ok: true });
 });
 
+// === Mission Consequences ===
+
+router.get("/games/:gameId/missions/:missionId/consequences", async (req, res) => {
+  await adminService.getMission(req.params.gameId, req.params.missionId);
+  const consequences = await adminService.listConsequences(req.params.missionId);
+  res.json(consequences);
+});
+
+router.post("/games/:gameId/missions/:missionId/consequences", async (req, res) => {
+  await adminService.getMission(req.params.gameId, req.params.missionId);
+  const consequence = await adminService.createConsequence(req.params.missionId, req.body);
+  res.status(201).json(consequence);
+});
+
+router.put("/games/:gameId/consequences/:consequenceId", async (req, res) => {
+  const consequence = await adminService.updateConsequence(req.params.consequenceId, req.body);
+  res.json(consequence);
+});
+
+router.delete("/games/:gameId/consequences/:consequenceId", async (req, res) => {
+  await adminService.deleteConsequence(req.params.consequenceId);
+  res.json({ ok: true });
+});
+
 // === Mission QR ===
 
 router.get("/games/:gameId/missions/:missionId/qr", async (req, res) => {
