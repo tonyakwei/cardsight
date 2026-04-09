@@ -63,7 +63,6 @@ export async function createMission(gameId: string, data: Record<string, any>) {
     "requiredClueSets", "answerTemplateType", "answerId", "designId",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
-    "mechanicalEffectCompleted", "mechanicalEffectNotCompleted",
     "sortOrder", "notes",
   ];
 
@@ -107,7 +106,6 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
     "isCompleted", "completedAt", "lockedOut", "lockedOutReason",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
-    "mechanicalEffectCompleted", "mechanicalEffectNotCompleted",
     "sortOrder", "notes",
   ];
 
@@ -211,9 +209,6 @@ export async function getActBreakSummary(gameId: string, act: number) {
         consequenceImage: m.isCompleted
           ? m.consequenceImageCompleted
           : m.consequenceImageNotCompleted,
-        mechanicalEffect: m.isCompleted
-          ? m.mechanicalEffectCompleted
-          : m.mechanicalEffectNotCompleted,
       })),
       triggeredConsequences: houseTriggered,
       completedCount: houseMissions.filter((m: any) => m.isCompleted).length,

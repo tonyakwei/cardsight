@@ -164,20 +164,6 @@ export function ActBreakView() {
                       </Paper>
                     )}
 
-                    {m.mechanicalEffect && (
-                      <Paper
-                        mt="xs"
-                        p="xs"
-                        style={{ background: "rgba(255, 200, 0, 0.05)" }}
-                      >
-                        <Text size="xs" fw={600} c="yellow.5" mb={2}>
-                          Mechanical Effect:
-                        </Text>
-                        <Text size="xs" ff="monospace">
-                          {JSON.stringify(m.mechanicalEffect, null, 2)}
-                        </Text>
-                      </Paper>
-                    )}
                   </Paper>
                 ))}
 

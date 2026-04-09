@@ -492,54 +492,6 @@ function MissionRow({
           </Group>
 
           <Textarea
-            label="Mechanical effects (completed) — JSON"
-            size="xs"
-            autosize
-            minRows={1}
-            maxRows={4}
-            placeholder='{"capability_gained": "deep_analysis"}'
-            defaultValue={
-              mission.mechanicalEffectCompleted
-                ? JSON.stringify(mission.mechanicalEffectCompleted, null, 2)
-                : ""
-            }
-            onBlur={(e) => {
-              try {
-                const val = e.target.value.trim()
-                  ? JSON.parse(e.target.value)
-                  : null;
-                save({ mechanicalEffectCompleted: val });
-              } catch {
-                /* invalid JSON, ignore */
-              }
-            }}
-          />
-
-          <Textarea
-            label="Mechanical effects (not completed) — JSON"
-            size="xs"
-            autosize
-            minRows={1}
-            maxRows={4}
-            placeholder='{"mission_count_reduction": 1}'
-            defaultValue={
-              mission.mechanicalEffectNotCompleted
-                ? JSON.stringify(mission.mechanicalEffectNotCompleted, null, 2)
-                : ""
-            }
-            onBlur={(e) => {
-              try {
-                const val = e.target.value.trim()
-                  ? JSON.parse(e.target.value)
-                  : null;
-                save({ mechanicalEffectNotCompleted: val });
-              } catch {
-                /* invalid JSON, ignore */
-              }
-            }}
-          />
-
-          <Textarea
             label="Admin notes"
             size="xs"
             autosize

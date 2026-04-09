@@ -127,8 +127,6 @@ export interface AdminMission {
   consequenceNotCompleted: string | null;
   consequenceImageCompleted: string | null;
   consequenceImageNotCompleted: string | null;
-  mechanicalEffectCompleted: any | null;
-  mechanicalEffectNotCompleted: any | null;
   sortOrder: number;
   notes: string | null;
   missionHouses: { id: string; house: { id: string; name: string; color: string } }[];
@@ -171,7 +169,6 @@ export interface ActBreakHouse {
     completedAt: string | null;
     consequence: string | null;
     consequenceImage: string | null;
-    mechanicalEffect: any | null;
   }[];
   triggeredConsequences: AdminTriggeredConsequence[];
   completedCount: number;

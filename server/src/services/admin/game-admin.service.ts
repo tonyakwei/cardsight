@@ -228,8 +228,6 @@ export async function duplicateGame(gameId: string) {
           consequenceNotCompleted: m.consequenceNotCompleted,
           consequenceImageCompleted: m.consequenceImageCompleted,
           consequenceImageNotCompleted: m.consequenceImageNotCompleted,
-          mechanicalEffectCompleted: m.mechanicalEffectCompleted ?? undefined,
-          mechanicalEffectNotCompleted: m.mechanicalEffectNotCompleted ?? undefined,
           sortOrder: m.sortOrder,
           notes: m.notes,
         },

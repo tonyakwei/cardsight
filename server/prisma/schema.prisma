@@ -266,8 +266,6 @@ model Mission {
   consequenceNotCompleted     String?             @map("consequence_not_completed")
   consequenceImageCompleted   String?             @map("consequence_image_completed")
   consequenceImageNotCompleted String?            @map("consequence_image_not_completed")
-  mechanicalEffectCompleted    Json?              @map("mechanical_effect_completed")
-  mechanicalEffectNotCompleted Json?              @map("mechanical_effect_not_completed")
   sortOrder                   Int                 @default(0) @map("sort_order")
   notes                       String?
   createdAt                   DateTime            @default(now()) @map("created_at")
