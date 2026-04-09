@@ -33,6 +33,30 @@ import {
 import { PhonePreview } from "./PhonePreview";
 import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 import { CollapsibleSection } from "./CollapsibleSection";
+import physicalCards from "../../../../shared/physical-cards.json";
+
+const physicalCardMap = new Map(physicalCards.map((pc) => [pc.id, pc]));
+const physicalCardOptions = (() => {
+  const groups = new Map<string, { value: string; label: string }[]>();
+  for (const pc of physicalCards) {
+    const group = pc.color.charAt(0).toUpperCase() + pc.color.slice(1);
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group)!.push({
+      value: pc.id,
+      label: `${group} ${pc.number} — ${pc.name}`,
+    });
+  }
+  return [...groups.entries()].map(([group, items]) => ({ group, items }));
+})();
+
+function physicalLabel(physicalCardId: string): string {
+  const pc = physicalCardMap.get(physicalCardId);
+  return pc ? `${pc.color[0].toUpperCase()}${pc.number}` : physicalCardId.slice(0, 8);
+}
+
+function physicalName(physicalCardId: string): string {
+  return physicalCardMap.get(physicalCardId)?.name ?? physicalCardId.slice(0, 8);
+}
 
 interface Props {
   card: AdminCard;
@@ -88,16 +112,16 @@ export function CardRow({
   }, [gameId, card.id, card.isFinished, onCardUpdated]);
 
   const handleReset = useCallback(async () => {
-    if (!window.confirm(`Reset card ${card.humanCardId}? This clears self-destruct, solved status, and all scan/answer data.`)) return;
+    if (!window.confirm(`Reset card ${physicalLabel(card.physicalCardId)}? This clears self-destruct, solved status, and all scan/answer data.`)) return;
     const updated = await resetCard(gameId, card.id);
     onCardUpdated(updated);
-  }, [gameId, card.id, card.humanCardId, onCardUpdated]);
+  }, [gameId, card.id, card.physicalCardId, onCardUpdated]);
 
   const handleDelete = useCallback(async () => {
-    if (!window.confirm(`Delete card ${card.humanCardId}?`)) return;
+    if (!window.confirm(`Delete card ${physicalLabel(card.physicalCardId)}?`)) return;
     await deleteCard(gameId, card.id);
     onCardRemoved(card.id);
-  }, [gameId, card.id, card.humanCardId, onCardRemoved]);
+  }, [gameId, card.id, card.physicalCardId, onCardRemoved]);
 
   const handleRestore = useCallback(async () => {
     const updated = await restoreCard(gameId, card.id);
@@ -124,7 +148,7 @@ export function CardRow({
   const downloadQR = () => {
     const a = document.createElement("a");
     a.href = getQRUrl(gameId, card.id);
-    a.download = `qr-${card.humanCardId}.png`;
+    a.download = `qr-${physicalLabel(card.physicalCardId)}.png`;
     a.click();
   };
 
@@ -205,12 +229,17 @@ export function CardRow({
               </ActionIcon>
             </Group>
           </div>
-          <Text size="sm" fw={700} c="yellow.5" style={{ minWidth: "48px", textDecoration: isDeleted ? "line-through" : undefined }}>
-            {card.humanCardId}
+          <Text size="sm" fw={700} c="yellow.5" style={{ flexShrink: 0, textDecoration: isDeleted ? "line-through" : undefined }}>
+            {physicalLabel(card.physicalCardId)}
           </Text>
-          <Text size="sm" lineClamp={1} style={{ flex: 1, minWidth: 0, textDecoration: isDeleted ? "line-through" : undefined }}>
-            {card.title}
+          <Text size="xs" c="dimmed" style={{ flexShrink: 0, textDecoration: isDeleted ? "line-through" : undefined }}>
+            {physicalName(card.physicalCardId)}
           </Text>
+          {card.header && (
+            <Text size="sm" lineClamp={1} style={{ flex: 1, minWidth: 0, textDecoration: isDeleted ? "line-through" : undefined }}>
+              {card.header}
+            </Text>
+          )}
         </Group>
 
         <Group gap="sm" wrap="nowrap">
@@ -264,9 +293,9 @@ export function CardRow({
                 <Stack gap="sm">
                   {/* Always visible: identity fields */}
                   <Group grow>
-                    <TextInput label="Card ID" size="xs" value={current("humanCardId")} onChange={(e) => updateDraft("humanCardId", e.target.value)} />
                     <NumberInput label="Act" size="xs" value={current("act") ?? ""} onChange={(v) => updateDraft("act", v || null)} min={1} max={5} />
                   </Group>
+                  <Select label="Physical Card" size="xs" searchable value={current("physicalCardId")} onChange={(v) => updateDraft("physicalCardId", v)} data={physicalCardOptions} />
                   <Group grow>
                     <Select label="Card Set" size="xs" value={current("cardSetId") ?? ""} onChange={handleCardSetChange} data={cardSetData} clearable />
                     <MultiSelect label="Houses" size="xs" value={currentHouseIds} onChange={handleHousesChange} data={houseData} placeholder="Select houses..." />
@@ -274,7 +303,7 @@ export function CardRow({
 
                   <CollapsibleSection sectionKey="card-content" label="Content">
                     <Stack gap="sm">
-                      <TextInput label="Title" size="xs" value={current("title")} onChange={(e) => updateDraft("title", e.target.value)} />
+                      <TextInput label="Header" size="xs" value={current("header") ?? ""} onChange={(e) => updateDraft("header", e.target.value || null)} />
                       <Group grow>
                         <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
                         <Select label="Complexity" size="xs" value={current("complexity") ?? "simple"} onChange={(v) => updateDraft("complexity", v || "simple")} data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]} />

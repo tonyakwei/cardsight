@@ -140,6 +140,12 @@ router.post("/games/:gameId/simulator/auto-distribute", async (req, res) => {
   res.json(assignments);
 });
 
+// Randomize physical card assignments
+router.post("/games/:gameId/cards/randomize-physical", async (req, res) => {
+  const cards = await adminService.randomizePhysicalCards(req.params.gameId);
+  res.json(cards);
+});
+
 // === QR Code ===
 
 router.get("/games/:gameId/cards/:cardId/qr", async (req, res) => {

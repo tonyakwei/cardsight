@@ -123,7 +123,7 @@ export function CardViewer() {
         <AnimationWrapper type="fade">
           <SelfDestructedState
             text={card.selfDestructText}
-            title={card.answerVisibleAfterDestruct ? card.title : undefined}
+            header={card.answerVisibleAfterDestruct ? card.header : undefined}
           >
             {card.answerVisibleAfterDestruct && showAnswerInput && (
               <SingleAnswerInput
@@ -149,7 +149,7 @@ export function CardViewer() {
       {card.status === "available" && examined && (
         <AnimationWrapper type={card.design?.animationIn ?? "fade"}>
           <CardContent
-            title={card.title}
+            header={card.header}
             description={card.description}
             clueVisibleCategory={card.clueVisibleCategory}
           />

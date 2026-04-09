@@ -319,6 +319,18 @@ function MissionRow({
                   save({ title: e.target.value });
               }}
             />
+            <TextInput
+              label="Sheet Letter"
+              size="xs"
+              style={{ maxWidth: 80 }}
+              placeholder="A"
+              defaultValue={mission.sheetLetter ?? ""}
+              onBlur={(e) => {
+                const val = e.target.value.toUpperCase().trim() || null;
+                if (val !== (mission.sheetLetter ?? null))
+                  save({ sheetLetter: val });
+              }}
+            />
             <NumberInput
               label="Act"
               size="xs"

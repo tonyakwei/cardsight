@@ -9,7 +9,7 @@ const missionInclude = {
       house: { select: { id: true, name: true, color: true } },
     },
   },
-  missionCard: { select: { id: true, humanCardId: true, title: true } },
+  missionCard: { select: { id: true, physicalCardId: true, header: true } },
   design: { select: { id: true, name: true } },
 };
 
@@ -59,7 +59,7 @@ export async function createMission(gameId: string, data: Record<string, any>) {
   });
 
   const allowed = [
-    "act", "title", "description", "puzzleDescription", "missionCardId",
+    "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
     "requiredClueSets", "answerTemplateType", "answerId", "designId",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
@@ -101,7 +101,7 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
   delete data.houseIds;
 
   const allowed = [
-    "act", "title", "description", "puzzleDescription", "missionCardId",
+    "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
     "requiredClueSets", "answerTemplateType", "answerId", "designId",
     "isCompleted", "completedAt", "lockedOut", "lockedOutReason",
     "consequenceCompleted", "consequenceNotCompleted",

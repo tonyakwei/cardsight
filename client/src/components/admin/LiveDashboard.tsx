@@ -18,8 +18,11 @@ import {
   type GameDetail,
   type DashboardData,
 } from "../../api/admin";
+import physicalCards from "../../../../shared/physical-cards.json";
 
 const POLL_INTERVAL = 5000;
+const pcMap = new Map(physicalCards.map((pc) => [pc.id, pc]));
+function pcLabel(id: string) { const pc = pcMap.get(id); return pc ? `${pc.color[0].toUpperCase()}${pc.number}` : id.slice(0, 8); }
 
 export function LiveDashboard() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -290,7 +293,7 @@ export function LiveDashboard() {
                       : "Wrong"}
                 </Badge>
                 <Text size="xs" fw={600} style={{ width: 50 }}>
-                  {event.cardId}
+                  {pcLabel(event.cardId)}
                 </Text>
                 <Text size="xs" c="dimmed" style={{ flex: 1 }}>
                   {event.cardTitle}

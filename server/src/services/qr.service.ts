@@ -24,7 +24,7 @@ export async function generateMissionQRCode(missionId: string): Promise<Buffer> 
     margin: 2,
     color: {
       dark: "#000000",
-      light: "#ffffff",
+      light: "#00000000", // transparent background
     },
     errorCorrectionLevel: "M",
   });

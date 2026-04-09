@@ -27,6 +27,7 @@ import {
   resetAllCards,
   reorderCards,
   bulkOperation,
+  randomizePhysicalCards,
   type GameDetail,
   type AdminCard,
   type AdminCardSet,
@@ -119,6 +120,13 @@ export function CardManager() {
     await loadData();
   }, [gameId, loadData]);
 
+  const handleRandomizePhysical = useCallback(async () => {
+    if (!gameId) return;
+    if (!window.confirm("Randomly reassign all physical cards? This changes which printed card corresponds to each game card.")) return;
+    await randomizePhysicalCards(gameId);
+    await loadData();
+  }, [gameId, loadData]);
+
   const handleReorder = useCallback(async (cardId: string, direction: "up" | "down") => {
     if (!gameId) return;
     const idx = cards.findIndex((c) => c.id === cardId);
@@ -171,8 +179,7 @@ export function CardManager() {
     const q = search.toLowerCase();
     filtered = filtered.filter(
       (c) =>
-        c.humanCardId.toLowerCase().includes(q) ||
-        c.title.toLowerCase().includes(q) ||
+        (c.header?.toLowerCase().includes(q) ?? false) ||
         c.cardHouses.some((ch) => ch.house.name.toLowerCase().includes(q)) ||
         (c.notes?.toLowerCase().includes(q) ?? false),
     );
@@ -216,6 +223,9 @@ export function CardManager() {
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: 200 }}
           />
+          <Button size="xs" variant="light" color="violet" onClick={handleRandomizePhysical}>
+            Shuffle Physical Cards
+          </Button>
           <Button size="xs" variant="light" color="red" onClick={handleResetAll}>
             Reset All
           </Button>

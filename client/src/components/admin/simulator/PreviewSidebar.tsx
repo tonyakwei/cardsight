@@ -1,6 +1,9 @@
 import { Text, Group, Badge, CloseButton } from "@mantine/core";
 import { PhonePreview } from "../PhonePreview";
 import type { SimulatorCard } from "../../../api/admin";
+import physicalCards from "../../../../../shared/physical-cards.json";
+
+const pcMap = new Map(physicalCards.map((pc) => [pc.id, pc]));
 
 interface Props {
   card: SimulatorCard;
@@ -25,13 +28,13 @@ export function PreviewSidebar({ card, onClose }: Props) {
     >
       <Group justify="space-between">
         <Text size="sm" fw={700} c="yellow.5">
-          {card.humanCardId}
+          {(() => { const pc = pcMap.get(card.physicalCardId); return pc ? `${pc.color[0].toUpperCase()}${pc.number} — ${pc.name}` : card.physicalCardId.slice(0, 8); })()}
         </Text>
         <CloseButton size="sm" onClick={onClose} />
       </Group>
 
       <Text size="sm" fw={600} lineClamp={2}>
-        {card.title}
+        {card.header}
       </Text>
 
       <Group gap="xs">

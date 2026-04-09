@@ -11,10 +11,11 @@ interface Props {
   selectedCardId: string | null;
   onCardClick: (cardId: string) => void;
   onDrop: (cardId: string, tableHouseId: string | null) => void;
+  physicalNameMap?: Map<string, string>; // undefined = don't show
 }
 
 export function TableColumn({
-  title, color, houseId, cards, selectedCardId, onCardClick, onDrop,
+  title, color, houseId, cards, selectedCardId, onCardClick, onDrop, physicalNameMap,
 }: Props) {
   const [dragOver, setDragOver] = useState(false);
 
@@ -85,6 +86,7 @@ export function TableColumn({
                 isHome={isHome}
                 isSelected={selectedCardId === card.id}
                 onClick={() => onCardClick(card.id)}
+                physicalName={physicalNameMap?.get(card.physicalCardId) ?? null}
               />
             );
           })}

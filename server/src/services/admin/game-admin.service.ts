@@ -160,12 +160,12 @@ export async function duplicateGame(gameId: string) {
       const newCard = await tx.card.create({
         data: {
           gameId: newGame.id,
-          humanCardId: c.humanCardId,
+          physicalCardId: c.physicalCardId,
           act: c.act,
           cardSetId: c.cardSetId ? cardSetMap.get(c.cardSetId) ?? null : null,
           clueVisibleCategory: c.clueVisibleCategory,
           complexity: c.complexity,
-          title: c.title,
+          header: c.header,
           description: c.description,
           clueContent: c.clueContent,
           answerTemplateType: c.answerTemplateType,
@@ -216,6 +216,7 @@ export async function duplicateGame(gameId: string) {
           act: m.act,
           missionCardId: m.missionCardId ? cardMap.get(m.missionCardId) ?? null : null,
           title: m.title,
+          sheetLetter: m.sheetLetter,
           description: m.description,
           puzzleDescription: m.puzzleDescription,
           requiredClueSets: m.requiredClueSets ?? [],

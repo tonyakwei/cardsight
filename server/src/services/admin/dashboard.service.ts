@@ -45,7 +45,7 @@ export async function getDashboard(gameId: string) {
       orderBy: { scannedAt: "desc" },
       take: 20,
       include: {
-        card: { select: { humanCardId: true, title: true, cardSetId: true } },
+        card: { select: { physicalCardId: true, header: true, cardSetId: true } },
       },
     }),
 
@@ -55,7 +55,7 @@ export async function getDashboard(gameId: string) {
       orderBy: { attemptedAt: "desc" },
       take: 20,
       include: {
-        card: { select: { humanCardId: true, title: true, cardSetId: true } },
+        card: { select: { physicalCardId: true, header: true, cardSetId: true } },
       },
     }),
 
@@ -64,8 +64,8 @@ export async function getDashboard(gameId: string) {
       where: { gameId, deletedAt: null },
       select: {
         id: true,
-        humanCardId: true,
-        title: true,
+        physicalCardId: true,
+        header: true,
         cardSetId: true,
         cardSet: { select: { id: true, name: true, color: true } },
         isSolved: true,
@@ -147,14 +147,14 @@ export async function getDashboard(gameId: string) {
     ...recentScans.map((s: any) => ({
       type: "scan" as const,
       at: s.scannedAt.toISOString(),
-      cardId: s.card.humanCardId,
-      cardTitle: s.card.title,
+      cardId: s.card.physicalCardId,
+      cardTitle: s.card.header,
     })),
     ...recentAnswers.map((a: any) => ({
       type: "answer" as const,
       at: a.attemptedAt.toISOString(),
-      cardId: a.card.humanCardId,
-      cardTitle: a.card.title,
+      cardId: a.card.physicalCardId,
+      cardTitle: a.card.header,
       isCorrect: a.isCorrect,
       attemptNumber: a.attemptNumber,
     })),

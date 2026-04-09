@@ -1,5 +1,10 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const physicalCards: { id: string; name: string; color: string; number: number }[] = require("../../../../shared/physical-cards.json");
+
+const ALL_PHYSICAL_IDS = physicalCards.map((pc) => pc.id);
 
 // === Cards ===
 
@@ -54,7 +59,7 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
 
   // Filter to only allowed scalar fields
   const allowed = [
-    "humanCardId", "title", "description", "clueContent", "complexity", "act",
+    "physicalCardId", "header", "description", "clueContent", "complexity", "act",
     "cardSetId", "clueVisibleCategory", "notes",
     "designId", "answerTemplateType", "answerId", "isAnswerable",
     "lockedOut", "lockedOutReason",
@@ -107,11 +112,18 @@ export async function createCard(gameId: string, data: Record<string, any>) {
   const houseIds: string[] = data.houseIds ?? [];
   delete data.houseIds;
 
+  // Auto-assign a random unused physical card if not provided
+  let physicalCardId = data.physicalCardId;
+  if (!physicalCardId) {
+    physicalCardId = await pickRandomPhysicalCardId(gameId);
+  }
+  delete data.physicalCardId;
+
   const card = await prisma.card.create({
     data: {
       gameId,
-      humanCardId: data.humanCardId || "NEW",
-      title: data.title || "New Card",
+      physicalCardId,
+      header: data.header ?? null,
       description: data.description,
       sortOrder: (maxSort._max.sortOrder ?? 0) + 1,
       ...data,
@@ -293,6 +305,62 @@ export async function resetAllCards(gameId: string) {
 
   return prisma.card.findMany({
     where: { gameId },
+    include: cardInclude,
+    orderBy: { sortOrder: "asc" },
+  });
+}
+
+// === Physical Card Helpers ===
+
+async function getUsedPhysicalIds(gameId: string): Promise<Set<string>> {
+  const existing = await prisma.card.findMany({
+    where: { gameId },
+    select: { physicalCardId: true },
+  });
+  return new Set(existing.map((c) => c.physicalCardId));
+}
+
+async function pickRandomPhysicalCardId(gameId: string): Promise<string> {
+  const used = await getUsedPhysicalIds(gameId);
+  const available = ALL_PHYSICAL_IDS.filter((id) => !used.has(id));
+  if (available.length === 0) {
+    throw new AppError(400, "All 54 physical cards are already assigned in this game");
+  }
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+export async function randomizePhysicalCards(gameId: string) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const cards = await prisma.card.findMany({
+    where: { gameId, deletedAt: null },
+    select: { id: true },
+    orderBy: { sortOrder: "asc" },
+  });
+
+  if (cards.length > ALL_PHYSICAL_IDS.length) {
+    throw new AppError(400, `Game has ${cards.length} cards but only ${ALL_PHYSICAL_IDS.length} physical cards exist`);
+  }
+
+  // Fisher-Yates shuffle
+  const shuffled = [...ALL_PHYSICAL_IDS];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  await prisma.$transaction(
+    cards.map((card, i) =>
+      prisma.card.update({
+        where: { id: card.id },
+        data: { physicalCardId: shuffled[i] },
+      }),
+    ),
+  );
+
+  return prisma.card.findMany({
+    where: { gameId, deletedAt: null },
     include: cardInclude,
     orderBy: { sortOrder: "asc" },
   });

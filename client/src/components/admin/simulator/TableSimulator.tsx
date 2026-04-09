@@ -6,6 +6,7 @@ import {
   Button,
   Tabs,
   Loader,
+  Switch,
 } from "@mantine/core";
 import {
   fetchSimulator,
@@ -18,6 +19,7 @@ import {
 } from "../../../api/admin";
 import { TableColumn } from "./TableColumn";
 import { PreviewSidebar } from "./PreviewSidebar";
+import physicalCards from "../../../../../shared/physical-cards.json";
 
 export function TableSimulator() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -29,6 +31,10 @@ export function TableSimulator() {
   const [activeAct, setActiveAct] = useState<string>("1");
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
+  const [showPhysicalNames, setShowPhysicalNames] = useState(false);
+
+  // Build lookup map: card UUID → physical card name
+  const physicalNameMap = new Map(physicalCards.map((pc) => [pc.id, pc.name]));
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -114,6 +120,13 @@ export function TableSimulator() {
             </Text>
           </div>
           <Group gap="sm">
+            <Switch
+              label="Physical names"
+              size="xs"
+              checked={showPhysicalNames}
+              onChange={(e) => setShowPhysicalNames(e.currentTarget.checked)}
+              styles={{ label: { color: "var(--mantine-color-dimmed)", cursor: "pointer" } }}
+            />
             <Button
               size="xs"
               variant="light"
@@ -168,6 +181,7 @@ export function TableSimulator() {
             selectedCardId={selectedCardId}
             onCardClick={setSelectedCardId}
             onDrop={handleDrop}
+            physicalNameMap={showPhysicalNames ? physicalNameMap : undefined}
           />
 
           {/* House tables */}
@@ -181,6 +195,7 @@ export function TableSimulator() {
               selectedCardId={selectedCardId}
               onCardClick={setSelectedCardId}
               onDrop={handleDrop}
+              physicalNameMap={showPhysicalNames ? physicalNameMap : undefined}
             />
           ))}
         </div>

@@ -1,14 +1,18 @@
 import { Group, Text, Badge } from "@mantine/core";
 import type { SimulatorCard } from "../../../api/admin";
+import physicalCards from "../../../../../shared/physical-cards.json";
+
+const pcMap = new Map(physicalCards.map((pc) => [pc.id, pc]));
 
 interface Props {
   card: SimulatorCard;
   isHome: boolean; // card belongs to the house whose table it's on
   isSelected: boolean;
   onClick: () => void;
+  physicalName: string | null; // when set, shown instead of header
 }
 
-export function SimCardChip({ card, isHome, isSelected, onClick }: Props) {
+export function SimCardChip({ card, isHome, isSelected, onClick, physicalName }: Props) {
   return (
     <div
       draggable
@@ -45,10 +49,10 @@ export function SimCardChip({ card, isHome, isSelected, onClick }: Props) {
           />
         )}
         <Text size="xs" fw={700} c="yellow.5" style={{ flexShrink: 0 }}>
-          {card.humanCardId}
+          {(() => { const pc = pcMap.get(card.physicalCardId); return pc ? `${pc.color[0].toUpperCase()}${pc.number}` : "??"; })()}
         </Text>
         <Text size="xs" lineClamp={1} style={{ flex: 1, minWidth: 0 }}>
-          {card.title}
+          {physicalName || card.header}
         </Text>
         {card.cardHouses.map((ch) => (
           <Badge

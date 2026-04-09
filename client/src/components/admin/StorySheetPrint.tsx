@@ -18,6 +18,7 @@ import {
 interface PrintMission {
   id: string;
   title: string;
+  sheetLetter: string | null;
   description: string;
 }
 
@@ -30,14 +31,125 @@ interface PrintSheet {
   missions: PrintMission[];
 }
 
-/** Parse content into segments: plain text or mission-marked paragraphs */
+// --- Theme system ---
+
+interface SheetTheme {
+  id: string;
+  label: string;
+  fonts?: string; // Google Fonts URL to load
+  pageBg: string;
+  textColor: string;
+  bodyFont: string;
+  headingFont: string;
+  headingColor: string;
+  labelColor: (houseColor: string) => string;
+  borderStyle: (houseColor: string) => string;
+  headerBorder: (houseColor: string) => string;
+  missionBandBg: (houseColor: string) => string;
+  missionBandBorder: (houseColor: string) => string;
+  missionLetterColor: (houseColor: string) => string;
+  missionMarkerColor: (houseColor: string) => string;
+  /** Optional decorative background layers */
+  renderBackground?: (houseColor: string) => React.ReactNode;
+}
+
+const classicTheme: SheetTheme = {
+  id: "classic",
+  label: "Classic",
+  pageBg: "#faf9f6",
+  textColor: "#1a1a1a",
+  bodyFont: "'Georgia', 'Times New Roman', serif",
+  headingFont: "'Georgia', 'Times New Roman', serif",
+  headingColor: "#1a1a1a",
+  labelColor: (houseColor) => houseColor,
+  borderStyle: (houseColor) => `3px solid ${houseColor}`,
+  headerBorder: (houseColor) => `2px solid ${houseColor}`,
+  missionBandBg: (houseColor) => `${houseColor}12`,
+  missionBandBorder: (houseColor) => `4px solid ${houseColor}`,
+  missionLetterColor: (houseColor) => houseColor,
+  missionMarkerColor: (houseColor) => houseColor,
+};
+
+const templeTheme: SheetTheme = {
+  id: "temple",
+  label: "Temple",
+  fonts: "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap",
+  pageBg: "#f4e4c1",
+  textColor: "#2c2118",
+  bodyFont: "'Crimson Text', 'Georgia', serif",
+  headingFont: "'Cinzel', serif",
+  headingColor: "#3d2b1a",
+  labelColor: () => "#8b5e3c",
+  borderStyle: () => "4px double #8b6f47",
+  headerBorder: () => "2px solid #c4a265",
+  missionBandBg: () => "rgba(139, 94, 60, 0.10)",
+  missionBandBorder: () => "4px solid #a0845c",
+  missionLetterColor: () => "#8b5e3c",
+  missionMarkerColor: () => "#6b4226",
+  renderBackground: () => (
+    <>
+      {/* Parchment texture — subtle warm grain */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.06,
+          backgroundImage: `
+            radial-gradient(2px 2px at 12% 8%, rgba(120,80,30,1) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 28% 52%, rgba(140,100,50,1) 50%, transparent 100%),
+            radial-gradient(2px 2px at 45% 15%, rgba(110,75,25,1) 50%, transparent 100%),
+            radial-gradient(1px 1px at 58% 38%, rgba(130,90,40,1) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 72% 68%, rgba(120,85,35,1) 50%, transparent 100%),
+            radial-gradient(2px 2px at 85% 25%, rgba(140,100,45,1) 50%, transparent 100%),
+            radial-gradient(1px 1px at 92% 58%, rgba(110,80,30,1) 50%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 38% 78%, rgba(130,95,42,1) 50%, transparent 100%)
+          `,
+        }}
+      />
+      {/* Aged edge darkening */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: `
+            radial-gradient(ellipse at center, transparent 50%, rgba(100, 70, 30, 0.08) 100%)
+          `,
+        }}
+      />
+      {/* Faint crack lines */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.035,
+          backgroundImage: `
+            linear-gradient(155deg, transparent 42%, rgba(100,70,30,1) 42.3%, transparent 42.6%),
+            linear-gradient(25deg, transparent 65%, rgba(100,70,30,1) 65.2%, transparent 65.5%),
+            linear-gradient(100deg, transparent 78%, rgba(100,70,30,1) 78.2%, transparent 78.5%)
+          `,
+        }}
+      />
+    </>
+  ),
+};
+
+const THEMES: SheetTheme[] = [classicTheme, templeTheme];
+
+// --- Content parsing ---
+
+/** Parse content into segments: plain text or mission-marked paragraphs.
+ *  Missions are matched by their explicit sheetLetter field (set in admin). */
 function parseContent(content: string, missions: PrintMission[]) {
   const paragraphs = content.split(/\n\n+/);
   const missionLetterMap = new Map<string, PrintMission>();
-  missions.forEach((m, i) => {
-    const letter = String.fromCharCode(65 + i); // A, B, C...
-    missionLetterMap.set(letter, m);
-  });
+  for (const m of missions) {
+    if (m.sheetLetter) {
+      missionLetterMap.set(m.sheetLetter.toUpperCase(), m);
+    }
+  }
 
   return paragraphs.map((para) => {
     // Check for (A), (B), etc. anywhere in the paragraph
@@ -53,13 +165,18 @@ function parseContent(content: string, missions: PrintMission[]) {
   });
 }
 
+// --- Components ---
+
 export function StorySheetPrint() {
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
   const [game, setGame] = useState<GameDetail | null>(null);
   const [sheets, setSheets] = useState<PrintSheet[]>([]);
   const [act, setAct] = useState("1");
+  const [themeId, setThemeId] = useState("classic");
   const [loading, setLoading] = useState(true);
+
+  const theme = THEMES.find((t) => t.id === themeId) ?? classicTheme;
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -89,6 +206,11 @@ export function StorySheetPrint() {
 
   return (
     <div>
+      {/* Google Fonts for active theme */}
+      {theme.fonts && (
+        <link rel="stylesheet" href={theme.fonts} />
+      )}
+
       {/* Controls (hidden in print) */}
       <div className="no-print" style={{ marginBottom: "1.5rem" }}>
         <Group justify="space-between" mb="md">
@@ -105,6 +227,12 @@ export function StorySheetPrint() {
             </Text>
           </Group>
           <Group gap="sm">
+            <SegmentedControl
+              size="xs"
+              value={themeId}
+              onChange={setThemeId}
+              data={THEMES.map((t) => ({ label: t.label, value: t.id }))}
+            />
             <SegmentedControl
               size="xs"
               value={act}
@@ -137,6 +265,7 @@ export function StorySheetPrint() {
               key={sheet.id}
               sheet={sheet}
               gameId={gameId!}
+              theme={theme}
               isLast={i === sheets.length - 1}
             />
           ))}
@@ -159,10 +288,12 @@ export function StorySheetPrint() {
 function SheetPage({
   sheet,
   gameId,
+  theme,
   isLast,
 }: {
   sheet: PrintSheet;
   gameId: string;
+  theme: SheetTheme;
   isLast: boolean;
 }) {
   const segments = parseContent(sheet.content, sheet.missions);
@@ -176,67 +307,77 @@ function SheetPage({
         maxWidth: "850px",
         margin: "0 auto",
         padding: "2.5rem",
-        background: "#faf9f6",
-        color: "#1a1a1a",
-        border: `3px solid ${houseColor}`,
+        position: "relative",
+        overflow: "hidden",
+        background: theme.pageBg,
+        color: theme.textColor,
+        border: theme.borderStyle(houseColor),
         borderRadius: "4px",
-        fontFamily: "'Georgia', 'Times New Roman', serif",
+        fontFamily: theme.bodyFont,
         printColorAdjust: "exact",
         WebkitPrintColorAdjust: "exact",
       } as React.CSSProperties}
     >
-      {/* Title header */}
-      <div
-        style={{
-          borderBottom: `2px solid ${houseColor}`,
-          paddingBottom: "1rem",
-          marginBottom: "2rem",
-        }}
-      >
+      {/* Decorative background layers */}
+      {theme.renderBackground?.(houseColor)}
+
+      {/* Content (above background) */}
+      <div style={{ position: "relative" }}>
+        {/* Title header */}
         <div
           style={{
-            fontSize: "0.7rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.2em",
-            color: houseColor,
-            fontFamily: "system-ui, sans-serif",
-            fontWeight: 700,
-            marginBottom: "0.3rem",
+            borderBottom: theme.headerBorder(houseColor),
+            paddingBottom: "1rem",
+            marginBottom: "2rem",
           }}
         >
-          {sheet.house.name} — Act {sheet.act}
+          <div
+            style={{
+              fontSize: "0.7rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              color: theme.labelColor(houseColor),
+              fontFamily: theme.headingFont,
+              fontWeight: 700,
+              marginBottom: "0.3rem",
+            }}
+          >
+            {sheet.house.name} — Act {sheet.act}
+          </div>
+          <h1
+            style={{
+              fontSize: "1.6rem",
+              fontWeight: 700,
+              color: theme.headingColor,
+              fontFamily: theme.headingFont,
+              margin: 0,
+              lineHeight: 1.25,
+            }}
+          >
+            {sheet.title}
+          </h1>
         </div>
-        <h1
-          style={{
-            fontSize: "1.6rem",
-            fontWeight: 700,
-            color: "#1a1a1a",
-            margin: 0,
-            lineHeight: 1.25,
-          }}
-        >
-          {sheet.title}
-        </h1>
-      </div>
 
-      {/* Content segments */}
-      <div style={{ fontSize: "0.95rem", lineHeight: 1.85 }}>
-        {segments.map((seg, j) =>
-          seg.type === "mission" ? (
-            <MissionBand
-              key={j}
-              text={seg.text}
-              letter={seg.letter}
-              mission={seg.mission}
-              houseColor={houseColor}
-              gameId={gameId}
-            />
-          ) : (
-            <p key={j} style={{ margin: "0 0 1rem 0" }}>
-              {seg.text}
-            </p>
-          ),
-        )}
+        {/* Content segments */}
+        <div style={{ fontSize: "0.95rem", lineHeight: 1.85 }}>
+          {segments.map((seg, j) =>
+            seg.type === "mission" ? (
+              <MissionBand
+                key={j}
+                text={seg.text}
+                letter={seg.letter}
+                mission={seg.mission}
+                houseColor={houseColor}
+                gameId={gameId}
+                theme={theme}
+              />
+            ) : (
+              <p key={j} style={{ margin: "0 0 1rem 0" }}>
+                {seg.text}
+              </p>
+            ),
+          )}
+        </div>
       </div>
     </div>
   );
@@ -248,12 +389,14 @@ function MissionBand({
   mission,
   houseColor,
   gameId,
+  theme,
 }: {
   text: string;
   letter: string;
   mission: PrintMission;
   houseColor: string;
   gameId: string;
+  theme: SheetTheme;
 }) {
   // Bold the (X) marker in the text
   const markerRegex = new RegExp(`\\(${letter}\\)`);
@@ -266,8 +409,8 @@ function MissionBand({
         alignItems: "stretch",
         margin: "1rem -1.5rem",
         padding: "1rem 1.5rem",
-        background: `${houseColor}12`,
-        borderLeft: `4px solid ${houseColor}`,
+        background: theme.missionBandBg(houseColor),
+        borderLeft: theme.missionBandBorder(houseColor),
         borderRadius: "0 4px 4px 0",
         gap: "1rem",
         pageBreakInside: "avoid",
@@ -278,14 +421,14 @@ function MissionBand({
         style={{
           fontSize: "2.5rem",
           fontWeight: 700,
-          color: houseColor,
+          color: theme.missionLetterColor(houseColor),
           opacity: 0.35,
           lineHeight: 1,
           minWidth: "2.5rem",
           display: "flex",
           alignItems: "flex-start",
           paddingTop: "0.15rem",
-          fontFamily: "system-ui, sans-serif",
+          fontFamily: theme.headingFont,
         }}
       >
         {letter}
@@ -295,7 +438,7 @@ function MissionBand({
       <div style={{ flex: 1 }}>
         <p style={{ margin: 0 }}>
           {parts[0]}
-          <strong style={{ color: houseColor }}>({letter})</strong>
+          <strong style={{ color: theme.missionMarkerColor(houseColor) }}>({letter})</strong>
           {parts[1] ?? ""}
         </p>
       </div>

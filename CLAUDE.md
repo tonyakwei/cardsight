@@ -143,7 +143,7 @@ cardsight/
 ## Data model overview
 
 - **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived). Only one active at a time.
-- **Card** — a QR-scannable unit of content. Belongs to a game. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Shows `clueVisibleCategory` to players so they know what type of clue they're collecting. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash. Cards have a `complexity` field: `simple` (default) shows the clue directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
+- **Card** — a QR-scannable unit of content. Belongs to a game. Has a required `physicalCardId` (UUID linking to an entry in `physical-cards.json` — unique per game) which determines which printed physical card this game card corresponds to. Three naming layers: `cardSet.name` for dev tracking/mission grouping (e.g., "Stone"), `clueVisibleCategory` for the player-facing clue category shown on scan (e.g., "Broken Stone Lettering"), and `header` (optional) for per-card narrative flavor headings shown on the card content (e.g., "The Fragment of Orion"). The physical card's permanent printed name (e.g., "Nervous Bumblebee") lives in `physical-cards.json` and is looked up by `physicalCardId`. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash. Cards have a `complexity` field: `simple` (default) shows the clue directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
 - **CardSet** — first-class grouping (e.g., "Signals", "Navigation"). Has name, color, admin notes (editable inline). Cards are filtered by set in the admin. Set reviews track which sets have been reviewed since last edit. Each set tab shows which missions reference it.
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
 - **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, `puzzleDescription` (shown to players), required clue sets (references CardSet IDs with counts), optional mission card link, optional Design for theming, and polymorphic answer template. Player-scannable via QR codes at `/m/:missionId`. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images. Can be locked with `lockedOut`/`lockedOutReason` (used by future act consequences system).
@@ -220,7 +220,7 @@ Admin panel: http://localhost:5173/admin
 | `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), switchable themes (Space/Explorer), markdown support |
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
-| `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator |
+| `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator with physical card name toggle |
 | `/admin/games/:id/print` | PrintCenter | Unified print hub (story sheets, consequence cards) |
 | `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
 | `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |
@@ -341,7 +341,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Act transition workflow (lock current act cards, unlock next act cards, evaluate and trigger mission consequences)
 - Act consequences system (configurable per-mission: warning/lock/redistribute, triggered on act end, shown in act break view and player mission viewer)
 - Game duplication (deep-copies cards, designs, answers, card sets, houses, missions)
-- Table assignment simulator with auto-distribute
+- Table assignment simulator with auto-distribute and physical card name toggle (looks up `physical-cards.json` by UUID)
 - Bulk card operations (assign design/set/act, lock/unlock, mark finished, delete, reset)
 - Soft delete / restore for cards
 - Card reordering
@@ -350,7 +350,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Showtime integrated into game reset and duplication
 - Admin authentication (HTTP Basic Auth, env-controlled via `ENV_LEVEL`)
 
-- Story sheets (per house per act narrative documents, markdown editor, print view with mission lists, duplicated with games)
+- Story sheets (per house per act narrative documents, markdown editor, print view with mission lists and inline QR codes with transparent backgrounds, duplicated with games)
 - Railway deployment (single service: Express serves API + built Vite client + ATN landing page)
 
 ## Deployment (Railway)

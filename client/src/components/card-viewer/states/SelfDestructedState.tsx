@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 
 interface Props {
   text: string | null;
-  title?: string;
+  header?: string | null;
   children?: ReactNode; // answer input slot
 }
 
-export function SelfDestructedState({ text, title, children }: Props) {
+export function SelfDestructedState({ text, header, children }: Props) {
   return (
     <div>
       <div style={{ textAlign: "center", padding: "2rem 0" }}>
@@ -26,7 +26,7 @@ export function SelfDestructedState({ text, title, children }: Props) {
           ⌛
         </div>
 
-        {title && (
+        {header && (
           <h1
             style={{
               fontSize: "1.3rem",
@@ -36,7 +36,7 @@ export function SelfDestructedState({ text, title, children }: Props) {
               lineHeight: 1.3,
             }}
           >
-            {title}
+            {header}
           </h1>
         )}
 

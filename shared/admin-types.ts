@@ -26,8 +26,8 @@ export interface GameDetail extends GameSummary {
 export interface AdminCard {
   id: string;
   gameId: string;
-  humanCardId: string;
-  title: string;
+  physicalCardId: string;
+  header: string | null;
   description: string | null;
   act: number | null;
   cardSetId: string | null;
@@ -110,8 +110,9 @@ export interface AdminMission {
   gameId: string;
   act: number;
   missionCardId: string | null;
-  missionCard: { id: string; humanCardId: string; title: string } | null;
+  missionCard: { id: string; physicalCardId: string; header: string | null } | null;
   title: string;
+  sheetLetter: string | null;
   description: string;
   puzzleDescription: string | null;
   requiredClueSets: { cardSetId: string; count: number }[];
@@ -281,8 +282,8 @@ export interface DashboardData {
 
 export interface SimulatorCard {
   id: string;
-  humanCardId: string;
-  title: string;
+  physicalCardId: string;
+  header: string | null;
   act: number | null;
   tableHouseId: string | null;
   cardSet: { id: string; name: string; color: string } | null;

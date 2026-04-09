@@ -112,13 +112,13 @@ model Card {
   id                  String              @id @default(uuid()) @db.Uuid
   gameId              String              @map("game_id") @db.Uuid
   game                Game                @relation(fields: [gameId], references: [id])
-  humanCardId         String              @map("human_card_id")
+  physicalCardId      String              @map("physical_card_id") @db.Uuid
   act                 Int?
   cardSetId           String?             @map("card_set_id") @db.Uuid
   cardSet             CardSet?            @relation(fields: [cardSetId], references: [id])
   clueVisibleCategory String?             @map("clue_visible_category")
   complexity          String              @default("simple")
-  title               String
+  header              String?
   description         String?
   clueContent         String?             @map("clue_content")
   answerTemplateType  AnswerTemplateType? @map("answer_template_type")
@@ -149,6 +149,7 @@ model Card {
   scanEvents     ScanEvent[]
   answerAttempts AnswerAttempt[]
 
+  @@unique([gameId, physicalCardId])
   @@map("cards")
 }
 
@@ -250,6 +251,7 @@ model Mission {
   missionCardId               String?             @map("mission_card_id") @db.Uuid
   missionCard                 Card?               @relation(fields: [missionCardId], references: [id])
   title                       String
+  sheetLetter                 String?             @map("sheet_letter")
   description                 String
   puzzleDescription           String?             @map("puzzle_description")
   requiredClueSets            Json                @default("[]") @map("required_clue_sets")

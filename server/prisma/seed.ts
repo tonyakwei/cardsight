@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const physicalCards: { id: string; name: string; color: string; number: number }[] = require("../../shared/physical-cards.json");
 
 const prisma = new PrismaClient();
 
@@ -218,9 +221,10 @@ async function main() {
   const card1 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "A-01",
+
+      physicalCardId: physicalCards[0].id,
       act: 1,
-      title: "CLASSIFIED: Mission Briefing",
+      header: "CLASSIFIED: Mission Briefing",
       description: `**AGENCY ALPHA — EYES ONLY**
 
 You have been recruited for Operation Starlight. Your mission: decode the constellation map before the signal fades.
@@ -242,12 +246,13 @@ Three fragments of the map are scattered across the room. Each fragment is held 
   const card2 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "A-02",
+
+      physicalCardId: physicalCards[1].id,
       act: 1,
       cardSetId: signalsSet.id,
       clueVisibleCategory: "Fragment",
       complexity: "complex",
-      title: "Signal Fragment #1",
+      header: "Signal Fragment #1",
       description: `Intercepted transmission fragment:
 
 \`\`\`
@@ -282,11 +287,12 @@ The transmission originates from the Orion constellation. Cross-reference this w
   const card3 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "B-01",
+
+      physicalCardId: physicalCards[2].id,
       act: 1,
       cardSetId: signalsSet.id,
       clueVisibleCategory: "Frequency",
-      title: "⚠ EMERGENCY FREQUENCY DETECTED",
+      header: "⚠ EMERGENCY FREQUENCY DETECTED",
       description: `**AUTOMATED ALERT — DO NOT IGNORE**
 
 A repeating signal has been detected on an unknown frequency. The pattern is:
@@ -313,11 +319,12 @@ Separated by silence. Then it repeats.
   const card4 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "C-01",
+
+      physicalCardId: physicalCards[3].id,
       act: 1,
       cardSetId: signalsSet.id,
       clueVisibleCategory: "Transmission",
-      title: "Anomalous Signal Decoded",
+      header: "Anomalous Signal Decoded",
       description: `*Translation matrix applied. Confidence: 73%.*
 
 > We have watched your star for many rotations. The light you call "north" is our beacon home. When the seven points align, the path opens.
@@ -342,11 +349,12 @@ Separated by silence. Then it repeats.
   const card5 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "S-01",
+
+      physicalCardId: physicalCards[4].id,
       act: 1,
       cardSetId: navSet.id,
       clueVisibleCategory: "Grid-7",
-      title: "Navigation Clue: The Beacon",
+      header: "Navigation Clue: The Beacon",
       description: `The old keeper said it before he vanished:
 
 > *"When all other lights go out, there is one that remains. It stands where the land meets the sea, and it has guided every lost soul home."*
@@ -366,9 +374,10 @@ Separated by silence. Then it repeats.
   await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "X-01",
+
+      physicalCardId: physicalCards[5].id,
       act: 2,
-      title: "Act 2 — Restricted Access",
+      header: "Act 2 — Restricted Access",
       description: "This content is not yet available.",
       designId: standard.id,
       lockedOut: true,
@@ -381,12 +390,13 @@ Separated by silence. Then it repeats.
   const card7 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "R-01",
+
+      physicalCardId: physicalCards[6].id,
       act: 1,
       cardSetId: geoSet.id,
       clueVisibleCategory: "Shape",
       complexity: "complex",
-      title: "REDACTED DOCUMENT — PARTIAL RECOVERY",
+      header: "REDACTED DOCUMENT — PARTIAL RECOVERY",
       description: `The following was recovered from a damaged file:
 
 > Project ████████ involved a shape with ████ vertices. The shape was described as having "more ██████ than a hexagon but fewer than an ████████."
@@ -415,10 +425,11 @@ The shape is a heptagon (7 vertices). The project codename references the seven-
   const card8 = await prisma.card.create({
     data: {
       gameId: game.id,
-      humanCardId: "A-03",
+
+      physicalCardId: physicalCards[7].id,
       act: 1,
       cardSetId: signalsSet.id,
-      title: "Decoded Coordinates",
+      header: "Decoded Coordinates",
       description: `The coordinates have been decoded:
 
 **LAT:** 41.9028° N
@@ -466,6 +477,7 @@ The signal originates from an ancient city.`,
       gameId: game.id,
       act: 1,
       title: "Identify the Source Star System",
+      sheetLetter: "A",
       description: "Triangulate the origin of the intercepted signal using stellar cartography data. Collect Signal and Navigation clue cards to determine which star system the transmission originates from.",
       puzzleDescription: "Using the signal fragments your team has collected, cross-reference the stellar coordinates with the navigation data. You need **2 Signal clues** and **1 Navigation clue** to triangulate the origin.\n\nOnce you've identified the star system, enter its designation below.",
       requiredClueSets: [
@@ -485,6 +497,7 @@ The signal originates from an ancient city.`,
       gameId: game.id,
       act: 1,
       title: "Decode the Emergency Frequency",
+      sheetLetter: "B",
       description: "An automated distress signal is repeating on an unknown frequency. Find and analyze the signal pattern cards to determine the exact broadcast frequency.",
       requiredClueSets: [
         { cardSetId: signalsSet.id, count: 3 },
@@ -501,6 +514,7 @@ The signal originates from an ancient city.`,
       gameId: game.id,
       act: 1,
       title: "Recover the QRian Tools",
+      sheetLetter: "C",
       description: "A stone shelf on the eastern wall holds cylindrical instruments with geometric etchings — possibly QRian measuring or carving tools. The water will reach the shelf within the hour.",
       requiredClueSets: [
         { cardSetId: geoSet.id, count: 2 },
@@ -515,6 +529,7 @@ The signal originates from an ancient city.`,
       gameId: game.id,
       act: 1,
       title: "Reconstruct the Floor Mosaic",
+      sheetLetter: "D",
       description: "The floor mosaic near the entrance has been deliberately damaged — someone took a chisel to it long after it was laid. The pattern beneath is partially visible.",
       requiredClueSets: [
         { cardSetId: navSet.id, count: 2 },
@@ -531,6 +546,7 @@ The signal originates from an ancient city.`,
       gameId: game.id,
       act: 1,
       title: "Map the Constellation Pattern",
+      sheetLetter: "E",
       description: "The alien transmission references a constellation and a specific pattern of stars. Use Geometry and Signal clue cards to reconstruct the pattern.",
       requiredClueSets: [
         { cardSetId: geoSet.id, count: 2 },
@@ -688,7 +704,9 @@ Your team has time to attempt some of these before the water forces you upward. 
   for (const card of cards) {
     const houses = card.cardHouses.map((ch: any) => ch.house.name).join("+") || "—";
     const set = card.cardSet?.name ?? "—";
-    console.log(`  ${card.humanCardId}: ${card.id}  [${set} | ${houses}]`);
+    const pc = physicalCards.find((p) => p.id === card.physicalCardId);
+    const pcLabel = pc ? `${pc.color[0].toUpperCase()}${pc.number} ${pc.name}` : card.physicalCardId.slice(0, 8);
+    console.log(`  ${pcLabel}: ${card.id}  [${set} | ${houses}]`);
     console.log(`    → http://localhost:5173/c/${card.id}`);
   }
 }

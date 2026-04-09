@@ -33,8 +33,7 @@ export interface CardDesign {
 
 export interface CardViewerResponse {
   id: string;
-  humanCardId: string;
-  title: string;
+  header: string | null;
   description: string | null;
   clueVisibleCategory: string | null;
   complexity: CardComplexity;

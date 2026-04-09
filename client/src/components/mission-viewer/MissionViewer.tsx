@@ -173,7 +173,7 @@ export function MissionViewer() {
       <OverlayRenderer effect={mission.design?.overlayEffect ?? null} />
       <AnimationWrapper type={mission.design?.animationIn ?? "fade"}>
         <CardContent
-          title={mission.title}
+          header={mission.title}
           description={mission.puzzleDescription ?? mission.description}
         />
 

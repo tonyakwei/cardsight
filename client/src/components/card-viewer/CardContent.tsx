@@ -1,12 +1,12 @@
 import ReactMarkdown from "react-markdown";
 
 interface Props {
-  title: string;
+  header: string | null;
   description: string | null;
   clueVisibleCategory?: string | null;
 }
 
-export function CardContent({ title, description, clueVisibleCategory }: Props) {
+export function CardContent({ header, description, clueVisibleCategory }: Props) {
   return (
     <div>
       {clueVisibleCategory && (
@@ -24,17 +24,19 @@ export function CardContent({ title, description, clueVisibleCategory }: Props) 
           {clueVisibleCategory}
         </div>
       )}
-      <h1
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          marginBottom: "1.25rem",
-          color: "var(--card-accent-color)",
-          lineHeight: 1.3,
-        }}
-      >
-        {title}
-      </h1>
+      {header && (
+        <h1
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: 700,
+            marginBottom: "1.25rem",
+            color: "var(--card-accent-color)",
+            lineHeight: 1.3,
+          }}
+        >
+          {header}
+        </h1>
+      )}
 
       {description && (
         <div

@@ -80,8 +80,7 @@ export async function getCardForViewer(
 
   return {
     id: card.id,
-    humanCardId: card.humanCardId,
-    title: card.title,
+    header: card.header,
     description:
       status === "self_destructed" ? null : card.description,
     clueVisibleCategory: card.clueVisibleCategory,

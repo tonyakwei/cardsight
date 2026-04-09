@@ -82,6 +82,13 @@ export async function bulkOperation(
   });
 }
 
+export async function randomizePhysicalCards(gameId: string): Promise<AdminCard[]> {
+  const res = await adminFetch(`${BASE}/games/${gameId}/cards/randomize-physical`, {
+    method: "POST",
+  });
+  return res.json();
+}
+
 export function getQRUrl(gameId: string, cardId: string): string {
   const token = getAdminToken();
   const url = `${BASE}/games/${gameId}/cards/${cardId}/qr`;

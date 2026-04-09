@@ -108,6 +108,7 @@ export async function getStorySheetPrintData(gameId: string, act: number) {
       .map((m: any) => ({
         id: m.id,
         title: m.title,
+        sheetLetter: m.sheetLetter,
         description: m.description,
       })),
   }));
