@@ -1,5 +1,5 @@
 import type { AdminMission, AdminMissionConsequence, ActBreakHouse } from "@cardsight/shared";
-import { BASE, adminFetch } from "./common.js";
+import { BASE, adminFetch, getAdminToken } from "./common.js";
 
 export type { AdminMission, AdminMissionConsequence, ActBreakHouse };
 
@@ -50,7 +50,9 @@ export async function deleteMission(
 }
 
 export function getMissionQRUrl(gameId: string, missionId: string): string {
-  return `${BASE}/games/${gameId}/missions/${missionId}/qr`;
+  const token = getAdminToken();
+  const url = `${BASE}/games/${gameId}/missions/${missionId}/qr`;
+  return token ? `${url}?token=${token}` : url;
 }
 
 // === Consequences ===
