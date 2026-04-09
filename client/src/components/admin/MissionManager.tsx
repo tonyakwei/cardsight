@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from "react";
-import { useNavigate } from "react-router";
 import {
   Group,
   Text,
@@ -39,9 +38,9 @@ import {
   type AdminDesign,
 } from "../../api/admin";
 import { useAdminList } from "../../hooks/useAdminList";
+import { CollapsibleSection } from "./CollapsibleSection";
 
 export function MissionManager() {
-  const navigate = useNavigate();
   const {
     gameId, game, items: missions, setItems: setMissions,
     extras, loading, handleUpdated, handleDeleted,
@@ -97,52 +96,17 @@ export function MissionManager() {
     <div>
       {/* Header */}
       <Group justify="space-between" mb="md">
-        <Group gap="sm">
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => navigate(`/admin/games/${gameId}`)}
-          >
-            ←
-          </ActionIcon>
-          <div>
-            <Text size="xl" fw={700}>
-              {game.name} — Missions
-            </Text>
-            <Text size="xs" c="dimmed">
-              {missions.length} missions across {houses.length} houses
-            </Text>
-          </div>
-        </Group>
-        <Group gap="sm">
-          <Button
-            size="xs"
-            variant="light"
-            color="cyan"
-            onClick={() => navigate(`/admin/games/${gameId}/story-sheets`)}
-          >
-            Story Sheets
-          </Button>
-          <Button
-            size="xs"
-            variant="light"
-            color="yellow"
-            onClick={() => navigate(`/admin/games/${gameId}/act-break/print`)}
-          >
-            Print Consequences
-          </Button>
-          <Button
-            size="xs"
-            variant="light"
-            color="violet"
-            onClick={() => navigate(`/admin/games/${gameId}/act-break`)}
-          >
-            Act Break View
-          </Button>
-          <Button size="sm" color="yellow" onClick={handleCreate}>
-            + New Mission
-          </Button>
-        </Group>
+        <div>
+          <Text size="xl" fw={700}>
+            {game.name} — Missions
+          </Text>
+          <Text size="xs" c="dimmed">
+            {missions.length} missions across {houses.length} houses
+          </Text>
+        </div>
+        <Button size="sm" color="yellow" onClick={handleCreate}>
+          + New Mission
+        </Button>
       </Group>
 
       {/* House tabs */}
@@ -340,6 +304,7 @@ function MissionRow({
       {/* Expanded editor */}
       <Collapse in={expanded}>
         <Stack gap="sm" mt="md">
+          {/* Always visible: title + act */}
           <Group grow>
             <TextInput
               label="Title"
@@ -362,134 +327,127 @@ function MissionRow({
             />
           </Group>
 
-          <Textarea
-            label="Description (narrative briefing)"
-            size="xs"
-            autosize
-            minRows={2}
-            maxRows={8}
-            defaultValue={mission.description}
-            onBlur={(e) => {
-              if (e.target.value !== mission.description)
-                save({ description: e.target.value });
-            }}
-          />
-
-          <Textarea
-            label="Puzzle Description (shown to players — markdown)"
-            size="xs"
-            autosize
-            minRows={2}
-            maxRows={8}
-            defaultValue={mission.puzzleDescription ?? ""}
-            onBlur={(e) => {
-              const val = e.target.value || null;
-              if (val !== mission.puzzleDescription)
-                save({ puzzleDescription: val });
-            }}
-            styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }}
-          />
-
-          <Group grow>
-            <Select
-              label="Design"
-              size="xs"
-              clearable
-              value={mission.designId ?? ""}
-              onChange={(val) => save({ designId: val || null })}
-              data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]}
-            />
-            <div>
-              <Text size="xs" fw={500} mb={4}>QR Code</Text>
-              <Button
+          <CollapsibleSection sectionKey="mission-content" label="Content">
+            <Stack gap="sm">
+              <Textarea
+                label="Description (narrative briefing)"
                 size="xs"
-                variant="light"
-                color="yellow"
-                onClick={() => {
-                  const a = document.createElement("a");
-                  a.href = getMissionQRUrl(gameId, mission.id);
-                  a.download = `qr-mission-${mission.title.slice(0, 20).replace(/\s/g, "-")}.png`;
-                  a.click();
+                autosize
+                minRows={2}
+                maxRows={8}
+                defaultValue={mission.description}
+                onBlur={(e) => {
+                  if (e.target.value !== mission.description)
+                    save({ description: e.target.value });
                 }}
-              >
-                Download QR
-              </Button>
-            </div>
-          </Group>
+              />
+              <Textarea
+                label="Puzzle Description (shown to players — markdown)"
+                size="xs"
+                autosize
+                minRows={2}
+                maxRows={8}
+                defaultValue={mission.puzzleDescription ?? ""}
+                onBlur={(e) => {
+                  const val = e.target.value || null;
+                  if (val !== mission.puzzleDescription)
+                    save({ puzzleDescription: val });
+                }}
+                styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }}
+              />
+              <Group grow>
+                <Select
+                  label="Design"
+                  size="xs"
+                  clearable
+                  value={mission.designId ?? ""}
+                  onChange={(val) => save({ designId: val || null })}
+                  data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]}
+                />
+                <div>
+                  <Text size="xs" fw={500} mb={4}>QR Code</Text>
+                  <Button
+                    size="xs"
+                    variant="light"
+                    color="yellow"
+                    onClick={() => {
+                      const a = document.createElement("a");
+                      a.href = getMissionQRUrl(gameId, mission.id);
+                      a.download = `qr-mission-${mission.title.slice(0, 20).replace(/\s/g, "-")}.png`;
+                      a.click();
+                    }}
+                  >
+                    Download QR
+                  </Button>
+                </div>
+              </Group>
+            </Stack>
+          </CollapsibleSection>
 
-          <MultiSelect
-            label="Houses"
-            size="xs"
-            data={houses.map((h) => ({ value: h.id, label: h.name }))}
-            defaultValue={mission.missionHouses.map((mh) => mh.house.id)}
-            onChange={(val) => save({ houseIds: val })}
-          />
+          <CollapsibleSection sectionKey="mission-houses" label="Houses & Clues">
+            <Stack gap="sm">
+              <MultiSelect
+                label="Houses"
+                size="xs"
+                data={houses.map((h) => ({ value: h.id, label: h.name }))}
+                defaultValue={mission.missionHouses.map((mh) => mh.house.id)}
+                onChange={(val) => save({ houseIds: val })}
+              />
+              <RequiredClueSetsEditor
+                value={mission.requiredClueSets ?? []}
+                cardSets={cardSets}
+                onChange={(val) => save({ requiredClueSets: val })}
+              />
+            </Stack>
+          </CollapsibleSection>
 
-          <RequiredClueSetsEditor
-            value={mission.requiredClueSets ?? []}
-            cardSets={cardSets}
-            onChange={(val) => save({ requiredClueSets: val })}
-          />
-
-          <Text size="xs" fw={600} mt="xs">
-            Consequences
-          </Text>
-
-          <Group grow align="start">
-            <Textarea
-              label="If completed"
-              size="xs"
-              autosize
-              minRows={3}
-              maxRows={10}
-              placeholder="Narrative consequence text (markdown)..."
-              defaultValue={mission.consequenceCompleted ?? ""}
-              onBlur={(e) =>
-                save({
-                  consequenceCompleted: e.target.value || null,
-                })
-              }
-            />
-            <Textarea
-              label="If not completed"
-              size="xs"
-              autosize
-              minRows={3}
-              maxRows={10}
-              placeholder="Narrative consequence text (markdown)..."
-              defaultValue={mission.consequenceNotCompleted ?? ""}
-              onBlur={(e) =>
-                save({
-                  consequenceNotCompleted: e.target.value || null,
-                })
-              }
-            />
-          </Group>
-
-          <Group grow>
-            <TextInput
-              label="Consequence image (completed)"
-              size="xs"
-              placeholder="/assets/consequences/alpha-success.png"
-              defaultValue={mission.consequenceImageCompleted ?? ""}
-              onBlur={(e) =>
-                save({
-                  consequenceImageCompleted: e.target.value || null,
-                })
-              }
-            />
-            <TextInput
-              label="Consequence image (not completed)"
-              size="xs"
-              placeholder="/assets/consequences/alpha-failure.png"
-              defaultValue={mission.consequenceImageNotCompleted ?? ""}
-              onBlur={(e) =>
-                save({
-                  consequenceImageNotCompleted: e.target.value || null,
-                })
-              }
-            />
-          </Group>
+          <CollapsibleSection sectionKey="mission-consequences" label="Consequences">
+            <Stack gap="sm">
+              <Group grow align="start">
+                <Textarea
+                  label="Narrative — if completed"
+                  size="xs"
+                  autosize
+                  minRows={2}
+                  maxRows={10}
+                  placeholder="Text the host reads aloud (markdown)..."
+                  defaultValue={mission.consequenceCompleted ?? ""}
+                  onBlur={(e) => save({ consequenceCompleted: e.target.value || null })}
+                />
+                <Textarea
+                  label="Narrative — if not completed"
+                  size="xs"
+                  autosize
+                  minRows={2}
+                  maxRows={10}
+                  placeholder="Text the host reads aloud (markdown)..."
+                  defaultValue={mission.consequenceNotCompleted ?? ""}
+                  onBlur={(e) => save({ consequenceNotCompleted: e.target.value || null })}
+                />
+              </Group>
+              <Group grow>
+                <TextInput
+                  label="Image (completed)"
+                  size="xs"
+                  placeholder="/assets/consequences/..."
+                  defaultValue={mission.consequenceImageCompleted ?? ""}
+                  onBlur={(e) => save({ consequenceImageCompleted: e.target.value || null })}
+                />
+                <TextInput
+                  label="Image (not completed)"
+                  size="xs"
+                  placeholder="/assets/consequences/..."
+                  defaultValue={mission.consequenceImageNotCompleted ?? ""}
+                  onBlur={(e) => save({ consequenceImageNotCompleted: e.target.value || null })}
+                />
+              </Group>
+              <ConsequenceEditor
+                gameId={gameId}
+                missionId={mission.id}
+                allMissions={allMissions}
+              />
+            </Stack>
+          </CollapsibleSection>
 
           <Textarea
             label="Admin notes"
@@ -500,12 +458,6 @@ function MissionRow({
             placeholder="Internal notes..."
             defaultValue={mission.notes ?? ""}
             onBlur={(e) => save({ notes: e.target.value || null })}
-          />
-
-          <ConsequenceEditor
-            gameId={gameId}
-            missionId={mission.id}
-            allMissions={allMissions}
           />
 
           <Group justify="flex-end" mt="xs">

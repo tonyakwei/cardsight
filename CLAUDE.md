@@ -46,7 +46,8 @@ cardsight/
 │   │   │   ├── missions.ts          # Player-facing mission API
 │   │   │   └── showtime.ts          # Player-facing showtime API
 │   │   ├── hooks/
-│   │   │   └── useAdminList.ts      # Shared CRUD list hook (game + items + extras + polling)
+│   │   │   ├── useAdminList.ts      # Shared CRUD list hook (game + items + extras + polling)
+│   │   │   └── useSectionCollapse.ts # SessionStorage-backed collapsible section state
 │   │   ├── components/
 │   │   │   ├── card-viewer/         # Player-facing scan experience
 │   │   │   │   ├── animations/      # FadeIn, SlideUp, GlitchIn, DecryptIn
@@ -67,7 +68,9 @@ cardsight/
 │   │   │   │   ├── SyncButton.tsx        # Synchronized press button
 │   │   │   │   └── ShowtimeReveal.tsx    # Reveal content display
 │   │   │   └── admin/              # Admin panel
-│   │   │       ├── AdminLayout.tsx       # AppShell with gold/dark theme
+│   │   │       ├── AdminLayout.tsx       # AppShell with gold/dark theme, sidebar nav within games
+│   │   │       ├── CollapsibleSection.tsx # Reusable collapsible section with sessionStorage persistence
+│   │   │       ├── PrintCenter.tsx       # Unified print hub (story sheets, consequence cards)
 │   │   │       ├── GameList.tsx          # Game cards
 │   │   │       ├── CardManager.tsx       # Card list with set tabs, act grouping, mission summary
 │   │   │       ├── CardRow.tsx           # Expandable card with inline editing + answer template editor
@@ -172,6 +175,8 @@ cardsight/
 - **Card designs use CSS custom properties** — `CardShell` maps design fields to `--card-*` variables. No CSS-in-JS runtime. Animations use CSS `@keyframes`.
 - **Physical card flash is client-side only** — `PhysicalCardFlash` imports `physical-cards.json` directly (bundled by Vite) and looks up the card by UUID. No server call needed for the flash. The `act` field from the API response (which loads concurrently) determines the exit transition; defaults to act 1 if the fetch hasn't completed yet. Themes, icons, and all 6 transition keyframes are self-contained in the one component.
 - **Visibility guard** — blurs content when player switches away from the browser tab (anti-screenshot).
+- **Admin sidebar navigation** — when inside a game (`/admin/games/:gameId/*`), `AdminLayout` shows a persistent sidebar with links to all game sections (Cards, Missions, Story Sheets, Showtimes, Dashboard, Act Break, Simulator, Print Center). Individual page headers no longer have cross-page navigation buttons.
+- **Collapsible sections** — CardRow and MissionRow use `CollapsibleSection` to group fields into expandable sections (Content, Behavior, Answer for cards; Content, Houses & Clues, Consequences for missions). Collapse state is persisted in sessionStorage via `useSectionCollapse` hook — sections default to expanded but stay collapsed once collapsed until the session ends.
 - **Admin auth** — HTTP Basic Auth on all `/api/admin/*` routes via `adminAuth` middleware. Controlled by `ENV_LEVEL` env var: skipped when not `production`. Client stores base64 credentials in `sessionStorage`, sends via `Authorization: Basic` header through the `adminFetch()` wrapper in `client/src/api/admin/common.ts`. QR image URLs pass token as `?token=` query param (since `<img src>` can't set headers). Login gate lives in `AdminLayout.tsx`, verifies via `GET /api/admin/verify`.
 
 ## Running locally
@@ -216,6 +221,7 @@ Admin panel: http://localhost:5173/admin
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator |
+| `/admin/games/:id/print` | PrintCenter | Unified print hub (story sheets, consequence cards) |
 | `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
 | `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |
 

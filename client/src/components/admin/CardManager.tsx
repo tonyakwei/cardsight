@@ -40,7 +40,6 @@ import { BulkActionBar } from "./BulkActionBar";
 
 export function CardManager() {
   const { gameId } = useParams<{ gameId: string }>();
-  const navigate = useNavigate();
   const [game, setGame] = useState<GameDetail | null>(null);
   const [cards, setCards] = useState<AdminCard[]>([]);
   const [cardSets, setCardSets] = useState<AdminCardSet[]>([]);
@@ -197,17 +196,12 @@ export function CardManager() {
     <div>
       {/* Header */}
       <Group justify="space-between" mb="md">
-        <Group gap="sm">
-          <ActionIcon variant="subtle" color="gray" onClick={() => navigate("/admin")}>
-            ←
-          </ActionIcon>
-          <div>
-            <Text size="xl" fw={700}>{game.name}</Text>
-            <Text size="xs" c="dimmed">
-              {game.cardCount} cards &middot; {game.finishedCount} finished
-            </Text>
-          </div>
-        </Group>
+        <div>
+          <Text size="xl" fw={700}>{game.name}</Text>
+          <Text size="xs" c="dimmed">
+            {game.cardCount} cards &middot; {game.finishedCount} finished
+          </Text>
+        </div>
         <Group gap="sm">
           <Switch
             size="xs"
@@ -224,38 +218,6 @@ export function CardManager() {
           />
           <Button size="xs" variant="light" color="red" onClick={handleResetAll}>
             Reset All
-          </Button>
-          <Button
-            size="xs"
-            variant="light"
-            color="green"
-            onClick={() => navigate(`/admin/games/${gameId}/dashboard`)}
-          >
-            Live Dashboard
-          </Button>
-          <Button
-            size="xs"
-            variant="light"
-            color="orange"
-            onClick={() => navigate(`/admin/games/${gameId}/missions`)}
-          >
-            Missions
-          </Button>
-          <Button
-            size="xs"
-            variant="light"
-            color="cyan"
-            onClick={() => navigate(`/admin/games/${gameId}/showtimes`)}
-          >
-            Showtimes
-          </Button>
-          <Button
-            size="xs"
-            variant="light"
-            color="violet"
-            onClick={() => navigate(`/admin/games/${gameId}/simulator`)}
-          >
-            Simulator
           </Button>
           <Button size="sm" color="yellow" onClick={handleNewCard}>
             + New Card

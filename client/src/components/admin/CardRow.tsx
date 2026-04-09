@@ -32,6 +32,7 @@ import {
 } from "../../api/admin";
 import { PhonePreview } from "./PhonePreview";
 import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
+import { CollapsibleSection } from "./CollapsibleSection";
 
 interface Props {
   card: AdminCard;
@@ -261,84 +262,88 @@ export function CardRow({
             <Grid gutter="xl">
               <Grid.Col span={{ base: 12, md: 7 }}>
                 <Stack gap="sm">
+                  {/* Always visible: identity fields */}
                   <Group grow>
                     <TextInput label="Card ID" size="xs" value={current("humanCardId")} onChange={(e) => updateDraft("humanCardId", e.target.value)} />
                     <NumberInput label="Act" size="xs" value={current("act") ?? ""} onChange={(v) => updateDraft("act", v || null)} min={1} max={5} />
                   </Group>
-
                   <Group grow>
                     <Select label="Card Set" size="xs" value={current("cardSetId") ?? ""} onChange={handleCardSetChange} data={cardSetData} clearable />
                     <MultiSelect label="Houses" size="xs" value={currentHouseIds} onChange={handleHousesChange} data={houseData} placeholder="Select houses..." />
                   </Group>
 
-                  <Group grow>
-                    <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
-                    <Select label="Complexity" size="xs" value={current("complexity") ?? "simple"} onChange={(v) => updateDraft("complexity", v || "simple")} data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]} />
-                  </Group>
-                  <TextInput label="Title" size="xs" value={current("title")} onChange={(e) => updateDraft("title", e.target.value)} />
+                  <CollapsibleSection sectionKey="card-content" label="Content">
+                    <Stack gap="sm">
+                      <TextInput label="Title" size="xs" value={current("title")} onChange={(e) => updateDraft("title", e.target.value)} />
+                      <Group grow>
+                        <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
+                        <Select label="Complexity" size="xs" value={current("complexity") ?? "simple"} onChange={(v) => updateDraft("complexity", v || "simple")} data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]} />
+                      </Group>
+                      <Textarea label={current("complexity") === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"} size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
+                      {current("complexity") === "complex" && (
+                        <Textarea label="Revealed Clue (shown after solve)" size="xs" minRows={3} maxRows={8} autosize value={current("clueContent") ?? ""} onChange={(e) => updateDraft("clueContent", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem", background: "rgba(105, 240, 174, 0.04)", borderColor: "rgba(105, 240, 174, 0.15)" } }} />
+                      )}
+                      <Textarea label="Admin Notes" size="xs" minRows={2} maxRows={5} autosize value={current("notes") ?? ""} onChange={(e) => updateDraft("notes", e.target.value || null)} styles={{ input: { background: "rgba(212, 168, 67, 0.04)", borderColor: "rgba(212, 168, 67, 0.15)" } }} />
+                    </Stack>
+                  </CollapsibleSection>
 
-                  <Textarea label={current("complexity") === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"} size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
+                  <CollapsibleSection sectionKey="card-behavior" label="Behavior">
+                    <Stack gap="sm">
+                      <Select label="Design" size="xs" value={current("designId") ?? ""} onChange={(v) => updateDraft("designId", v || null)} data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]} clearable />
+                      <TextInput label="Examine Button Text" size="xs" value={current("examineText") ?? ""} onChange={(e) => updateDraft("examineText", e.target.value || null)} placeholder="Examine (default)" />
+                      <Group grow>
+                        <NumberInput label="Self-Destruct (seconds)" size="xs" value={current("selfDestructTimer") ?? ""} onChange={(v) => updateDraft("selfDestructTimer", v || null)} min={0} />
+                        <Switch label="Answer visible after destruct" size="xs" checked={current("answerVisibleAfterDestruct")} onChange={(e) => updateDraft("answerVisibleAfterDestruct", e.currentTarget.checked)} />
+                      </Group>
+                      <TextInput label="Self-Destruct Text" size="xs" value={current("selfDestructText") ?? ""} onChange={(e) => updateDraft("selfDestructText", e.target.value || null)} placeholder="This card's information is no longer available." />
+                      <Group grow>
+                        <Switch label="Locked Out" size="xs" color="red" checked={current("lockedOut")} onChange={(e) => updateDraft("lockedOut", e.currentTarget.checked)} />
+                        <TextInput label="Lock Reason" size="xs" value={current("lockedOutReason") ?? ""} onChange={(e) => updateDraft("lockedOutReason", e.target.value || null)} disabled={!current("lockedOut")} />
+                      </Group>
+                    </Stack>
+                  </CollapsibleSection>
 
                   {current("complexity") === "complex" && (
-                    <Textarea label="Revealed Clue (shown after solve)" size="xs" minRows={3} maxRows={8} autosize value={current("clueContent") ?? ""} onChange={(e) => updateDraft("clueContent", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem", background: "rgba(105, 240, 174, 0.04)", borderColor: "rgba(105, 240, 174, 0.15)" } }} />
+                    <CollapsibleSection sectionKey="card-answer" label="Answer">
+                      <Stack gap="sm">
+                        <Group grow>
+                          <Switch label="Answerable" size="xs" color="cyan" checked={current("isAnswerable")} onChange={(e) => {
+                            updateDraft("isAnswerable", e.currentTarget.checked);
+                            if (!e.currentTarget.checked) {
+                              updateDraft("answerTemplateType", null);
+                              updateDraft("answerId", null);
+                            } else if (!current("answerTemplateType")) {
+                              updateDraft("answerTemplateType", "single_answer");
+                            }
+                          }} />
+                          {current("isAnswerable") && (
+                            <Select
+                              label="Answer type"
+                              size="xs"
+                              value={current("answerTemplateType") ?? ""}
+                              onChange={(v) => updateDraft("answerTemplateType", v || null)}
+                              data={[
+                                { value: "single_answer", label: "Text input" },
+                              ]}
+                            />
+                          )}
+                        </Group>
+                        {current("isAnswerable") && current("answerTemplateType") === "single_answer" && (
+                          <AnswerTemplateEditor
+                            gameId={gameId}
+                            answerTemplateType={current("answerTemplateType")}
+                            answerId={current("answerId")}
+                            onAnswerCreated={(type, id) => {
+                              updateDraft("answerTemplateType", type);
+                              updateDraft("answerId", id);
+                            }}
+                          />
+                        )}
+                      </Stack>
+                    </CollapsibleSection>
                   )}
-                  <Textarea label="Admin Notes" size="xs" minRows={2} maxRows={5} autosize value={current("notes") ?? ""} onChange={(e) => updateDraft("notes", e.target.value || null)} styles={{ input: { background: "rgba(212, 168, 67, 0.04)", borderColor: "rgba(212, 168, 67, 0.15)" } }} />
 
-                  <Select label="Design" size="xs" value={current("designId") ?? ""} onChange={(v) => updateDraft("designId", v || null)} data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]} clearable />
-
-                  <TextInput label="Examine Button Text" size="xs" value={current("examineText") ?? ""} onChange={(e) => updateDraft("examineText", e.target.value || null)} placeholder="Examine (default)" />
-
-                  <Group grow>
-                    <NumberInput label="Self-Destruct (seconds)" size="xs" value={current("selfDestructTimer") ?? ""} onChange={(v) => updateDraft("selfDestructTimer", v || null)} min={0} />
-                    <Switch label="Answer visible after destruct" size="xs" checked={current("answerVisibleAfterDestruct")} onChange={(e) => updateDraft("answerVisibleAfterDestruct", e.currentTarget.checked)} />
-                  </Group>
-
-                  <TextInput label="Self-Destruct Text" size="xs" value={current("selfDestructText") ?? ""} onChange={(e) => updateDraft("selfDestructText", e.target.value || null)} placeholder="This card's information is no longer available." />
-
-                  <Group grow>
-                    <Switch label="Locked Out" size="xs" color="red" checked={current("lockedOut")} onChange={(e) => updateDraft("lockedOut", e.currentTarget.checked)} />
-                    <TextInput label="Lock Reason" size="xs" value={current("lockedOutReason") ?? ""} onChange={(e) => updateDraft("lockedOutReason", e.target.value || null)} disabled={!current("lockedOut")} />
-                  </Group>
-
-                  {/* Answer configuration — only for complex cards */}
-                  {current("complexity") === "complex" && (<>
-                    <Group grow>
-                      <Switch label="Answerable" size="xs" color="cyan" checked={current("isAnswerable")} onChange={(e) => {
-                        updateDraft("isAnswerable", e.currentTarget.checked);
-                        if (!e.currentTarget.checked) {
-                          updateDraft("answerTemplateType", null);
-                          updateDraft("answerId", null);
-                        } else if (!current("answerTemplateType")) {
-                          updateDraft("answerTemplateType", "single_answer");
-                        }
-                      }} />
-                      {current("isAnswerable") && (
-                        <Select
-                          label="Answer type"
-                          size="xs"
-                          value={current("answerTemplateType") ?? ""}
-                          onChange={(v) => updateDraft("answerTemplateType", v || null)}
-                          data={[
-                            { value: "single_answer", label: "Text input" },
-                          ]}
-                        />
-                      )}
-                    </Group>
-
-                    {current("isAnswerable") && current("answerTemplateType") === "single_answer" && (
-                      <AnswerTemplateEditor
-                        gameId={gameId}
-                        answerTemplateType={current("answerTemplateType")}
-                        answerId={current("answerId")}
-                        onAnswerCreated={(type, id) => {
-                          updateDraft("answerTemplateType", type);
-                          updateDraft("answerId", id);
-                        }}
-                      />
-                    )}
-                  </>)}
-
-                  {/* Action bar */}
+                  {/* Action bar — always visible */}
                   <Group justify="space-between" mt="xs">
                     <Group gap="xs">
                       <Button size="xs" variant="light" color="orange" onClick={handleReset}>

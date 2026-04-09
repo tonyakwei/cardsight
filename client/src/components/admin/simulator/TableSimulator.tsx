@@ -1,12 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import {
   Group,
   Text,
   Button,
   Tabs,
   Loader,
-  ActionIcon,
 } from "@mantine/core";
 import {
   fetchSimulator,
@@ -22,7 +21,6 @@ import { PreviewSidebar } from "./PreviewSidebar";
 
 export function TableSimulator() {
   const { gameId } = useParams<{ gameId: string }>();
-  const navigate = useNavigate();
   const [game, setGame] = useState<GameDetail | null>(null);
   const [houses, setHouses] = useState<AdminHouse[]>([]);
   const [cards, setCards] = useState<SimulatorCard[]>([]);
@@ -107,23 +105,14 @@ export function TableSimulator() {
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Header */}
         <Group justify="space-between" mb="md">
-          <Group gap="sm">
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              onClick={() => navigate(`/admin/games/${gameId}`)}
-            >
-              ←
-            </ActionIcon>
-            <div>
-              <Text size="xl" fw={700}>
-                {game?.name} — Table Simulator
-              </Text>
-              <Text size="xs" c="dimmed">
-                Drag cards between tables to plan distribution
-              </Text>
-            </div>
-          </Group>
+          <div>
+            <Text size="xl" fw={700}>
+              {game?.name} — Table Simulator
+            </Text>
+            <Text size="xs" c="dimmed">
+              Drag cards between tables to plan distribution
+            </Text>
+          </div>
           <Group gap="sm">
             <Button
               size="xs"

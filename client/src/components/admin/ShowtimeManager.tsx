@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router";
 import {
   Group,
   Text,
@@ -7,7 +6,6 @@ import {
   Loader,
   Button,
   Stack,
-  ActionIcon,
   Paper,
   TextInput,
   Textarea,
@@ -37,7 +35,6 @@ const PHASE_COLORS: Record<string, string> = {
 };
 
 export function ShowtimeManager() {
-  const navigate = useNavigate();
   const {
     gameId, game, items: showtimes, setItems: setShowtimes,
     extras, loading, handleUpdated, handleDeleted,
@@ -69,23 +66,14 @@ export function ShowtimeManager() {
   return (
     <div>
       <Group justify="space-between" mb="md">
-        <Group gap="sm">
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => navigate(`/admin/games/${gameId}`)}
-          >
-            ←
-          </ActionIcon>
-          <div>
-            <Text size="xl" fw={700}>
-              {game.name} — Showtimes
-            </Text>
-            <Text size="xs" c="dimmed">
-              Synchronized reveal events · auto-refreshing
-            </Text>
-          </div>
-        </Group>
+        <div>
+          <Text size="xl" fw={700}>
+            {game.name} — Showtimes
+          </Text>
+          <Text size="xs" c="dimmed">
+            Synchronized reveal events · auto-refreshing
+          </Text>
+        </div>
         <Button size="sm" color="yellow" onClick={handleCreate}>
           + New Showtime
         </Button>

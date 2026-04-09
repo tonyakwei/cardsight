@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router";
 import {
   Group,
   Text,
@@ -7,7 +6,6 @@ import {
   Loader,
   Button,
   Stack,
-  ActionIcon,
   Tabs,
   Textarea,
   TextInput,
@@ -27,7 +25,6 @@ import {
 import { useAdminList } from "../../hooks/useAdminList";
 
 export function StorySheetManager() {
-  const navigate = useNavigate();
   const {
     gameId, game, items: sheets, setItems: setSheets,
     extras, loading, handleUpdated, handleDeleted,
@@ -75,36 +72,17 @@ export function StorySheetManager() {
   return (
     <div>
       <Group justify="space-between" mb="md">
-        <Group gap="sm">
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => navigate(`/admin/games/${gameId}/missions`)}
-          >
-            ←
-          </ActionIcon>
-          <div>
-            <Text size="xl" fw={700}>
-              {game.name} — Story Sheets
-            </Text>
-            <Text size="xs" c="dimmed">
-              {sheets.length} story sheets across {houses.length} houses
-            </Text>
-          </div>
-        </Group>
-        <Group gap="sm">
-          <Button
-            size="xs"
-            variant="light"
-            color="yellow"
-            onClick={() => navigate(`/admin/games/${gameId}/story-sheets/print`)}
-          >
-            Print View
-          </Button>
-          <Button size="sm" color="yellow" onClick={handleCreate}>
-            + New Story Sheet
-          </Button>
-        </Group>
+        <div>
+          <Text size="xl" fw={700}>
+            {game.name} — Story Sheets
+          </Text>
+          <Text size="xs" c="dimmed">
+            {sheets.length} story sheets across {houses.length} houses
+          </Text>
+        </div>
+        <Button size="sm" color="yellow" onClick={handleCreate}>
+          + New Story Sheet
+        </Button>
       </Group>
 
       <Tabs value={activeTab} onChange={(v) => setActiveTab(v ?? "all")} mb="md">

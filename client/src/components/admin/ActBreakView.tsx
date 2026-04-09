@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import {
   Group,
   Text,
@@ -9,7 +9,6 @@ import {
   Stack,
   Paper,
   SegmentedControl,
-  ActionIcon,
 } from "@mantine/core";
 import {
   fetchGame,
@@ -20,7 +19,6 @@ import {
 
 export function ActBreakView() {
   const { gameId } = useParams<{ gameId: string }>();
-  const navigate = useNavigate();
   const [game, setGame] = useState<GameDetail | null>(null);
   const [act, setAct] = useState("1");
   const [summary, setSummary] = useState<ActBreakHouse[]>([]);
@@ -56,23 +54,14 @@ export function ActBreakView() {
     <div>
       {/* Header */}
       <Group justify="space-between" mb="md">
-        <Group gap="sm">
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => navigate(`/admin/games/${gameId}/missions`)}
-          >
-            ←
-          </ActionIcon>
-          <div>
-            <Text size="xl" fw={700}>
-              {game.name} — Act Break
-            </Text>
-            <Text size="xs" c="dimmed">
-              Mission results and consequences by house
-            </Text>
-          </div>
-        </Group>
+        <div>
+          <Text size="xl" fw={700}>
+            {game.name} — Act Break
+          </Text>
+          <Text size="xs" c="dimmed">
+            Mission results and consequences by house
+          </Text>
+        </div>
         <Group gap="sm">
           <SegmentedControl
             size="xs"

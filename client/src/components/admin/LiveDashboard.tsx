@@ -9,7 +9,6 @@ import {
   Stack,
   Paper,
   Progress,
-  ActionIcon,
   SimpleGrid,
 } from "@mantine/core";
 import {
@@ -24,7 +23,6 @@ const POLL_INTERVAL = 5000;
 
 export function LiveDashboard() {
   const { gameId } = useParams<{ gameId: string }>();
-  const navigate = useNavigate();
   const [game, setGame] = useState<GameDetail | null>(null);
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,36 +72,27 @@ export function LiveDashboard() {
     <div>
       {/* Header */}
       <Group justify="space-between" mb="lg">
-        <Group gap="sm">
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() => navigate(`/admin/games/${gameId}`)}
-          >
-            ←
-          </ActionIcon>
-          <div>
-            <Text size="xl" fw={700}>
-              {game.name} — Live Dashboard
+        <div>
+          <Text size="xl" fw={700}>
+            {game.name} — Live Dashboard
+          </Text>
+          <Group gap="xs">
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                backgroundColor: "#4caf50",
+                animation: "pulse 2s infinite",
+              }}
+            />
+            <Text size="xs" c="dimmed">
+              Auto-refreshing every {POLL_INTERVAL / 1000}s
+              {lastUpdated &&
+                ` · last updated ${lastUpdated.toLocaleTimeString()}`}
             </Text>
-            <Group gap="xs">
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: "#4caf50",
-                  animation: "pulse 2s infinite",
-                }}
-              />
-              <Text size="xs" c="dimmed">
-                Auto-refreshing every {POLL_INTERVAL / 1000}s
-                {lastUpdated &&
-                  ` · last updated ${lastUpdated.toLocaleTimeString()}`}
-              </Text>
-            </Group>
-          </div>
-        </Group>
+          </Group>
+        </div>
         <Group gap="sm">
           <ActTransitionButton gameId={gameId!} onTransitioned={loadData} />
         </Group>
