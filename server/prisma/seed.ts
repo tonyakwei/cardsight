@@ -4,6 +4,11 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Clean existing data
+  await prisma.storySheet.deleteMany();
+  await prisma.triggeredConsequence.deleteMany();
+  await prisma.missionConsequence.deleteMany();
+  await prisma.missionAnswerAttempt.deleteMany();
+  await prisma.missionScanEvent.deleteMany();
   await prisma.showtimeSlot.deleteMany();
   await prisma.showtime.deleteMany();
   await prisma.missionHouse.deleteMany();
@@ -491,6 +496,35 @@ The signal originates from an ancient city.`,
   });
   await assignMissionHouses(m2.id, [alpha.id]);
 
+  const m2b = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Recover the QRian Tools",
+      description: "A stone shelf on the eastern wall holds cylindrical instruments with geometric etchings — possibly QRian measuring or carving tools. The water will reach the shelf within the hour.",
+      requiredClueSets: [
+        { cardSetId: geoSet.id, count: 2 },
+      ],
+      sortOrder: 3,
+    },
+  });
+  await assignMissionHouses(m2b.id, [alpha.id]);
+
+  const m2c = await prisma.mission.create({
+    data: {
+      gameId: game.id,
+      act: 1,
+      title: "Reconstruct the Floor Mosaic",
+      description: "The floor mosaic near the entrance has been deliberately damaged — someone took a chisel to it long after it was laid. The pattern beneath is partially visible.",
+      requiredClueSets: [
+        { cardSetId: navSet.id, count: 2 },
+        { cardSetId: geoSet.id, count: 1 },
+      ],
+      sortOrder: 4,
+    },
+  });
+  await assignMissionHouses(m2c.id, [alpha.id]);
+
   // Act 1 — Bravo missions
   const m3 = await prisma.mission.create({
     data: {
@@ -539,7 +573,7 @@ The signal originates from an ancient city.`,
       ],
       consequenceCompleted: "The reconstructed document reveals Project LIGHTHOUSE — a decades-old government program that detected the alien signal years ago and suppressed it. Both agencies now have leverage over the Science Ministry. **Both houses gain 'Leverage' capability for Act 2.**",
       consequenceNotCompleted: "The redacted file remains incomplete. The government's secrets stay buried — for now. **No additional effect.**",
-      sortOrder: 3,
+      sortOrder: 5,
       notes: "This is the collaborative mission — requires Alpha and Bravo to share cards.",
     },
   });
@@ -604,6 +638,36 @@ The signal originates from an ancient city.`,
       reviewedAt: new Date(Date.now() - 3600000),
     },
   });
+
+  // === Story Sheets ===
+
+  const storySheet1 = await prisma.storySheet.create({
+    data: {
+      gameId: game.id,
+      houseId: alpha.id,
+      act: 1,
+      title: "The Lower Chamber",
+      content: `The water was ankle-deep when you entered. It is now at your knees, and it is not slowing.
+
+Your team has reached the lower chamber of the temple — the oldest section, the part the QRians sealed first. The walls here are covered floor to ceiling in carved inscriptions, dense and deliberate. Your translators are picking up signal from every direction. There is more here than you can possibly record before the water takes it.
+
+The chamber is vast. Inscriptions cover the northern wall in an unbroken line. An alcove to the east holds a sealed compartment. The floor mosaic near the entrance has been partially destroyed. A narrow corridor descends further south, and two unfamiliar symbols sit above the main archway.
+
+The northern wall bears the longest unbroken inscription you've seen so far — nearly eight meters of continuous carved text. It appears to be a single message, urgent in tone. But the waterline is rising fastest here. (A) If your team commits to translating it, you will need to work quickly and may not have time for much else.
+
+Against the eastern wall, a stone shelf holds what appear to be QRian tools — cylindrical instruments with geometric etchings, possibly used for carving or measuring. The water will reach the shelf within the hour. (B) If you recover and examine them now, they may prove useful deeper in the temple — or they may be nothing.
+
+The floor mosaic near the entrance has been deliberately damaged — someone took a chisel to it long after it was laid. The pattern beneath is partially visible, and your translator flickers when pointed at it, as though trying and failing to read something. (C) Reconstructing what was destroyed here could reveal what someone wanted erased — but it will take time and focus.
+
+Your team can hear the Drake Delegation working in a chamber to the south — close enough to communicate, but their entrance is on the other side. There is a partially submerged passageway between your chambers, still navigable if someone goes now. (D) Sending a member through could allow you to glimpse what Drake has found — or to propose an exchange — but you will be down one person for the duration of the act, and the passage may not stay open as the water rises.
+
+A narrow corridor descends further south, deeper than your team expected the temple to go. The water is flowing from this direction. The inscriptions along its walls are shorter, more frantic, and carved by different hands than the rest of the chamber. (E) Following it means walking toward the source of the flooding — but whatever was written down there was written in a hurry, by people who may have been the last to leave.
+
+Your team has time to attempt some of these before the water forces you upward. Choose carefully — what you leave behind will be sealed.`,
+    },
+  });
+
+  console.log("Story Sheet:", storySheet1.title);
 
   console.log("Seed data created successfully!");
   console.log(`Game: ${game.name} (${game.id})`);
