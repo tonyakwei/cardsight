@@ -53,6 +53,7 @@ cardsight/
 │   │   │   │   ├── answers/         # SingleAnswerInput
 │   │   │   │   ├── states/          # Loading, NotFound, LockedOut, SelfDestructed, AlreadyAnswered
 │   │   │   │   ├── CardViewer.tsx, CardShell.tsx, CardContent.tsx
+│   │   │   │   ├── PhysicalCardFlash.tsx  # Physical card identity flash on scan
 │   │   │   │   ├── EntryGate.tsx, SelfDestructTimer.tsx, VisibilityGuard.tsx
 │   │   │   ├── showtime/           # Player-facing Showtime experience
 │   │   │   │   ├── ShowtimeViewer.tsx    # Main orchestrator (polling, phase state machine)
@@ -155,6 +156,7 @@ cardsight/
 - **Sync press is server-authoritative** — each house POSTs their press timestamp. Server checks within a Prisma transaction if all presses fall within the sync window. If not, resets all presses atomically.
 - **Answer validation is shared** — `validateAnswer()` is extracted to `server/src/services/answer-validation.ts` and used by both card.service.ts and showtime.service.ts.
 - **Card designs use CSS custom properties** — `CardShell` maps design fields to `--card-*` variables. No CSS-in-JS runtime. Animations use CSS `@keyframes`.
+- **Physical card flash is client-side only** — `PhysicalCardFlash` imports `physical-cards.json` directly (bundled by Vite) and looks up the card by UUID. No server call needed for the flash. The `act` field from the API response (which loads concurrently) determines the exit transition; defaults to act 1 if the fetch hasn't completed yet. Themes, icons, and all 6 transition keyframes are self-contained in the one component.
 - **Visibility guard** — blurs content when player switches away from the browser tab (anti-screenshot).
 - **Admin auth** — HTTP Basic Auth on all `/api/admin/*` routes via `adminAuth` middleware. Controlled by `ENV_LEVEL` env var: skipped when not `production`. Client stores base64 credentials in `sessionStorage`, sends via `Authorization: Basic` header through the `adminFetch()` wrapper in `client/src/api/admin/common.ts`. QR image URLs pass token as `?token=` query param (since `<img src>` can't set headers). Login gate lives in `AdminLayout.tsx`, verifies via `GET /api/admin/verify`.
 
@@ -283,7 +285,8 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 ## What's built vs. what's planned
 
 **Built:**
-- Full scan flow (QR → entry gate → content → self-destruct → answer → feedback)
+- Full scan flow (QR → physical card flash → entry gate → content → self-destruct → answer → feedback)
+- Physical card flash on scan — when a card's UUID matches a physical card in `physical-cards.json`, a CSS replica of the physical card (color, borders, name, icon) displays for 700ms before an exit transition reveals the game content. Transition escalates by act: Act 1 (fade, iris), Act 2 (slice, flip), Act 3 (glitch, burn — 1.8s with escalating shake/corruption). Card number determines which of the two transitions per act: 1-5 gets one, 6-9 gets the other. Runs concurrently with the API fetch, so no added latency.
 - `clueVisibleCategory` shown to players on card content (so they know what type of clue they're collecting)
 - Visual polish (4 entry animations, 4 overlay effects, self-destruct countdown)
 - Admin panel (game list, card management with inline editing, set tabs with review tracking, phone preview, QR generation)
