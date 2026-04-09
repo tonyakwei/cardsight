@@ -2,14 +2,18 @@ import { useState, useRef } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
 
 interface Props {
-  cardId: string;
+  cardId?: string;
+  missionId?: string;
+  url?: string;
 }
 
-export function PhonePreview({ cardId }: Props) {
+export function PhonePreview({ cardId, missionId, url }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [key, setKey] = useState(0);
 
   const refresh = () => setKey((k) => k + 1);
+
+  const src = url ?? (cardId ? `/c/${cardId}` : missionId ? `/m/${missionId}` : "");
 
   return (
     <div>
@@ -65,7 +69,7 @@ export function PhonePreview({ cardId }: Props) {
         <iframe
           ref={iframeRef}
           key={key}
-          src={`/c/${cardId}`}
+          src={src}
           style={{
             width: "375px",
             height: "667px",
@@ -73,7 +77,7 @@ export function PhonePreview({ cardId }: Props) {
             transform: "scale(0.746)",
             transformOrigin: "top left",
           }}
-          title="Card Preview"
+          title="Preview"
         />
       </div>
     </div>

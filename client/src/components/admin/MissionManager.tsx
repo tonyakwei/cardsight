@@ -17,6 +17,7 @@ import {
   Paper,
   Checkbox,
   Switch,
+  Grid,
 } from "@mantine/core";
 import {
   fetchMissions,
@@ -39,6 +40,7 @@ import {
 } from "../../api/admin";
 import { useAdminList } from "../../hooks/useAdminList";
 import { CollapsibleSection } from "./CollapsibleSection";
+import { PhonePreview } from "./PhonePreview";
 
 export function MissionManager() {
   const {
@@ -303,7 +305,9 @@ function MissionRow({
 
       {/* Expanded editor */}
       <Collapse in={expanded}>
-        <Stack gap="sm" mt="md">
+        <Grid gutter="xl" mt="md">
+          <Grid.Col span={{ base: 12, md: 8 }}>
+        <Stack gap="sm">
           {/* Always visible: title + act */}
           <Group grow>
             <TextInput
@@ -474,6 +478,11 @@ function MissionRow({
             </Button>
           </Group>
         </Stack>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <PhonePreview missionId={mission.id} />
+          </Grid.Col>
+        </Grid>
       </Collapse>
     </Paper>
   );
