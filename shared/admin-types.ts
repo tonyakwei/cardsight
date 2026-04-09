@@ -1,3 +1,5 @@
+import type { GameStatus, AnswerTemplateType, CardComplexity, ShowtimePhase } from "./types.js";
+
 // === Admin Types ===
 // Single source of truth for all admin API response shapes.
 // These are re-exported from types.ts so consumers can import from "@cardsight/shared".
@@ -8,7 +10,7 @@ export interface GameSummary {
   id: string;
   name: string;
   description: string | null;
-  status: string;
+  status: GameStatus;
   cardCount: number;
   createdAt: string;
   updatedAt: string;
@@ -32,10 +34,12 @@ export interface AdminCard {
   cardSet: { id: string; name: string; color: string } | null;
   cardHouses: { id: string; house: { id: string; name: string; color: string } }[];
   clueVisibleCategory: string | null;
+  complexity: CardComplexity;
+  clueContent: string | null;
   notes: string | null;
   designId: string | null;
   design: { id: string; name: string } | null;
-  answerTemplateType: string | null;
+  answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;
   isAnswerable: boolean;
   lockedOut: boolean;
@@ -110,7 +114,7 @@ export interface AdminMission {
   title: string;
   description: string;
   requiredClueSets: { cardSetId: string; count: number }[];
-  answerTemplateType: string | null;
+  answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;
   isCompleted: boolean;
   completedAt: string | null;
@@ -150,7 +154,7 @@ export interface AdminShowtimeSlot {
   house: { id: string; name: string; color: string };
   label: string;
   description: string | null;
-  answerTemplateType: string | null;
+  answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;
   inputValue: string | null;
   filledAt: string | null;
@@ -168,7 +172,7 @@ export interface AdminShowtime {
   revealDescription: string | null;
   designId: string | null;
   design: { id: string; name: string } | null;
-  phase: string;
+  phase: ShowtimePhase;
   showHouseLabels: boolean;
   syncWindowMs: number;
   revealedAt: string | null;

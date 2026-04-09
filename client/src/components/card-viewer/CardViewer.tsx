@@ -89,7 +89,11 @@ export function CardViewer() {
   if (loading) return <LoadingState />;
   if (notFound || !card) return <NotFoundState />;
 
+  const isComplex = card.complexity === "complex";
+
+  // Only complex cards show the answer input
   const showAnswerInput =
+    isComplex &&
     card.isAnswerable &&
     card.answerTemplateType === "single_answer" &&
     cardId &&
@@ -107,7 +111,7 @@ export function CardViewer() {
         </AnimationWrapper>
       )}
 
-      {/* Already answered */}
+      {/* Already answered (complex cards that were solved) */}
       {card.status === "answered" && (
         <AnimationWrapper type={card.design?.animationIn ?? "fade"}>
           <AlreadyAnsweredState card={card} justSolved={justSolved} />

@@ -7,9 +7,20 @@ interface Props {
 }
 
 export function AlreadyAnsweredState({ card, justSolved }: Props) {
+  const isComplex = card.complexity === "complex";
+
   return (
     <div>
-      <CardContent title={card.title} description={card.description} />
+      {/* For complex cards that were just solved, show the revealed clue prominently */}
+      {isComplex && card.clueContent ? (
+        <CardContent
+          title={card.title}
+          description={card.clueContent}
+          clueVisibleCategory={card.clueVisibleCategory}
+        />
+      ) : (
+        <CardContent title={card.title} description={card.description} />
+      )}
 
       <div
         style={{
@@ -38,7 +49,9 @@ export function AlreadyAnsweredState({ card, justSolved }: Props) {
               : "var(--card-accent-color)",
           }}
         >
-          {justSolved ? "Correct!" : "This puzzle has been solved"}
+          {justSolved
+            ? isComplex ? "Correct! Here's your clue." : "Correct!"
+            : isComplex ? "This puzzle has been solved — clue revealed" : "This puzzle has been solved"}
         </div>
         {!justSolved && (
           <div

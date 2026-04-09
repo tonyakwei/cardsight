@@ -241,6 +241,7 @@ Three fragments of the map are scattered across the room. Each fragment is held 
       act: 1,
       cardSetId: signalsSet.id,
       clueVisibleCategory: "Fragment",
+      complexity: "complex",
       title: "Signal Fragment #1",
       description: `Intercepted transmission fragment:
 
@@ -251,6 +252,11 @@ Three fragments of the map are scattered across the room. Each fragment is held 
 \`\`\`
 
 **Identify the constellation referenced in this fragment.**`,
+      clueContent: `**FRAGMENT DECODED — Signal Origin: Orion**
+
+The transmission originates from the Orion constellation. Cross-reference this with Navigation clues to triangulate the source star system.
+
+*Clue: The hunter's belt points the way.*`,
       designId: classified.id,
       answerTemplateType: "single_answer",
       answerId: answer1.id,
@@ -374,6 +380,7 @@ Separated by silence. Then it repeats.
       act: 1,
       cardSetId: geoSet.id,
       clueVisibleCategory: "Shape",
+      complexity: "complex",
       title: "REDACTED DOCUMENT — PARTIAL RECOVERY",
       description: `The following was recovered from a damaged file:
 
@@ -382,6 +389,11 @@ Separated by silence. Then it repeats.
 > The number of vertices is ███.
 
 **How many vertices does the shape have?**`,
+      clueContent: `**DOCUMENT RECOVERED — Project HEPTAGON**
+
+The shape is a heptagon (7 vertices). The project codename references the seven-point constellation pattern from the alien transmission.
+
+*Clue: Seven points. Seven stars. The shape IS the map.*`,
       designId: redacted.id,
       answerTemplateType: "single_answer",
       answerId: answer4.id,

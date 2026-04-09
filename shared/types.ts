@@ -1,4 +1,4 @@
-// === Enums ===
+// === Union Types ===
 
 export type GameStatus = "draft" | "active" | "completed" | "archived";
 
@@ -7,6 +7,10 @@ export type AnswerTemplateType =
   | "multiple_choice"
   | "multiple_text"
   | "photo_select";
+
+export type CardComplexity = "simple" | "complex";
+
+export type CardStatus = "available" | "locked_out" | "self_destructed" | "answered";
 
 // === API Response Types (Player-Facing) ===
 
@@ -31,11 +35,13 @@ export interface CardViewerResponse {
   title: string;
   description: string | null;
   clueVisibleCategory: string | null;
+  complexity: CardComplexity;
+  clueContent: string | null;
   act: number | null;
   design: CardDesign | null;
 
   // State
-  status: "available" | "locked_out" | "self_destructed" | "answered";
+  status: CardStatus;
   lockedOutReason: string | null;
   selfDestructText: string | null;
 

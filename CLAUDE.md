@@ -129,7 +129,7 @@ cardsight/
 ## Data model overview
 
 - **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived). Only one active at a time.
-- **Card** — a QR-scannable unit of content. Belongs to a game. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Shows `clueVisibleCategory` to players so they know what type of clue they're collecting. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash.
+- **Card** — a QR-scannable unit of content. Belongs to a game. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Shows `clueVisibleCategory` to players so they know what type of clue they're collecting. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash. Cards have a `complexity` field: `simple` (default) shows the clue directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
 - **CardSet** — first-class grouping (e.g., "Signals", "Navigation"). Has name, color, admin notes (editable inline). Cards are filtered by set in the admin. Set reviews track which sets have been reviewed since last edit. Each set tab shows which missions reference it.
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
 - **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, required clue sets (references CardSet IDs with counts), optional mission card link, and polymorphic answer template. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images, and mechanical effects as JSONB (store-and-display only, not auto-processed).
@@ -146,6 +146,7 @@ cardsight/
 - **Polymorphic answers** — `answerId` on Card/Mission is NOT a Prisma relation. The service layer resolves it by `answerTemplateType`. Adding new answer types is purely additive.
 - **Self-destruct is server-authoritative** — timer starts when player presses the EXAMINE button (POST `/api/cards/:id/examine`), not on page load. Client counts down from server timestamp.
 - **Splash gate** — every card shows a splash screen on first scan displaying the clue category and an EXAMINE button with a warning. Once examined (`examinedAt` is set on Card), subsequent scans skip the splash and go straight to content. Timer starts on examine, not on scan.
+- **Simple vs complex cards** — `complexity` field on Card. Simple cards (`"simple"`, default) show `description` as the clue directly, no answer input. Complex cards (`"complex"`) show `description` as a puzzle with answer input; `clueContent` is revealed after solving. The server enforces this: `isAnswerable` is only true for complex cards in the viewer response.
 - **"Solved" is card-level** — once any player answers correctly, the card is solved for everyone. Each house gets distinct cards, so no per-house answer tracking needed.
 - **Mission auto-completion** — when a card linked as a mission's `missionCardId` is answered correctly, the mission is automatically marked complete in card.service.ts.
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
@@ -285,7 +286,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 ## What's built vs. what's planned
 
 **Built:**
-- Full scan flow (QR → physical card flash → splash gate (clue category + EXAMINE) → content → self-destruct → answer → feedback)
+- Full scan flow (QR → physical card flash → splash gate (clue category + EXAMINE) → content → self-destruct → answer → feedback). Simple cards show clue directly; complex cards show puzzle with answer input, then reveal clue on solve.
 - Physical card flash on scan — when a card's UUID matches a physical card in `physical-cards.json`, a CSS replica of the physical card (color, borders, name, icon) displays for 700ms before an exit transition reveals the game content. Transition escalates by act: Act 1 (fade, iris), Act 2 (slice, flip), Act 3 (glitch, burn — 1.8s with escalating shake/corruption). Card number determines which of the two transitions per act: 1-5 gets one, 6-9 gets the other. Runs concurrently with the API fetch, so no added latency.
 - `clueVisibleCategory` shown to players on card content (so they know what type of clue they're collecting)
 - Visual polish (4 entry animations, 4 overlay effects, self-destruct countdown)

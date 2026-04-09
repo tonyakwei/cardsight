@@ -4,6 +4,7 @@ import { validateAnswer } from "./answer-validation.js";
 import type {
   CardViewerResponse,
   CardDesign,
+  CardComplexity,
   AnswerMeta,
   ScanResponse,
   ExamineResponse,
@@ -57,19 +58,25 @@ export async function getCardForViewer(
   }
 
   // Build answer metadata (without revealing correct answers)
+  // Complex cards are always answerable; simple cards never show answer input
   // Show answer meta when available, OR when self-destructed but answer should remain visible
   let answerMeta: AnswerMeta | null = null;
+  const isComplex = card.complexity === "complex";
+  const isAnswerable = isComplex && card.isAnswerable;
   const showAnswer =
     status === "available" ||
     (status === "self_destructed" && card.answerVisibleAfterDestruct);
 
-  if (card.isAnswerable && card.answerTemplateType && card.answerId && showAnswer) {
+  if (isAnswerable && card.answerTemplateType && card.answerId && showAnswer) {
     answerMeta = await buildAnswerMeta(
       card.answerTemplateType,
       card.answerId,
       cardId,
     );
   }
+
+  // For complex cards that are solved, reveal the clueContent
+  const clueContent = (isComplex && card.isSolved) ? card.clueContent : null;
 
   return {
     id: card.id,
@@ -78,6 +85,8 @@ export async function getCardForViewer(
     description:
       status === "self_destructed" ? null : card.description,
     clueVisibleCategory: card.clueVisibleCategory,
+    complexity: card.complexity as CardComplexity,
+    clueContent,
     act: card.act,
     design,
     status,
@@ -90,7 +99,7 @@ export async function getCardForViewer(
     isExamined: card.examinedAt !== null,
     examinedAt: card.examinedAt?.toISOString() ?? null,
     examineText: card.examineText,
-    isAnswerable: card.isAnswerable,
+    isAnswerable,
     answerTemplateType: card.answerTemplateType,
     answerMeta,
     answerVisibleAfterDestruct: card.answerVisibleAfterDestruct,

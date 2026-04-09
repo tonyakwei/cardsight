@@ -271,10 +271,17 @@ export function CardRow({
                     <MultiSelect label="Houses" size="xs" value={currentHouseIds} onChange={handleHousesChange} data={houseData} placeholder="Select houses..." />
                   </Group>
 
-                  <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
+                  <Group grow>
+                    <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
+                    <Select label="Complexity" size="xs" value={current("complexity") ?? "simple"} onChange={(v) => updateDraft("complexity", v || "simple")} data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]} />
+                  </Group>
                   <TextInput label="Title" size="xs" value={current("title")} onChange={(e) => updateDraft("title", e.target.value)} />
 
-                  <Textarea label="Description (Markdown)" size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
+                  <Textarea label={current("complexity") === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"} size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
+
+                  {current("complexity") === "complex" && (
+                    <Textarea label="Revealed Clue (shown after solve)" size="xs" minRows={3} maxRows={8} autosize value={current("clueContent") ?? ""} onChange={(e) => updateDraft("clueContent", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem", background: "rgba(105, 240, 174, 0.04)", borderColor: "rgba(105, 240, 174, 0.15)" } }} />
+                  )}
                   <Textarea label="Admin Notes" size="xs" minRows={2} maxRows={5} autosize value={current("notes") ?? ""} onChange={(e) => updateDraft("notes", e.target.value || null)} styles={{ input: { background: "rgba(212, 168, 67, 0.04)", borderColor: "rgba(212, 168, 67, 0.15)" } }} />
 
                   <Select label="Design" size="xs" value={current("designId") ?? ""} onChange={(v) => updateDraft("designId", v || null)} data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]} clearable />
@@ -293,41 +300,43 @@ export function CardRow({
                     <TextInput label="Lock Reason" size="xs" value={current("lockedOutReason") ?? ""} onChange={(e) => updateDraft("lockedOutReason", e.target.value || null)} disabled={!current("lockedOut")} />
                   </Group>
 
-                  {/* Answer configuration */}
-                  <Group grow>
-                    <Switch label="Answerable" size="xs" color="cyan" checked={current("isAnswerable")} onChange={(e) => {
-                      updateDraft("isAnswerable", e.currentTarget.checked);
-                      if (!e.currentTarget.checked) {
-                        updateDraft("answerTemplateType", null);
-                        updateDraft("answerId", null);
-                      } else if (!current("answerTemplateType")) {
-                        updateDraft("answerTemplateType", "single_answer");
-                      }
-                    }} />
-                    {current("isAnswerable") && (
-                      <Select
-                        label="Answer type"
-                        size="xs"
-                        value={current("answerTemplateType") ?? ""}
-                        onChange={(v) => updateDraft("answerTemplateType", v || null)}
-                        data={[
-                          { value: "single_answer", label: "Text input" },
-                        ]}
+                  {/* Answer configuration — only for complex cards */}
+                  {current("complexity") === "complex" && (<>
+                    <Group grow>
+                      <Switch label="Answerable" size="xs" color="cyan" checked={current("isAnswerable")} onChange={(e) => {
+                        updateDraft("isAnswerable", e.currentTarget.checked);
+                        if (!e.currentTarget.checked) {
+                          updateDraft("answerTemplateType", null);
+                          updateDraft("answerId", null);
+                        } else if (!current("answerTemplateType")) {
+                          updateDraft("answerTemplateType", "single_answer");
+                        }
+                      }} />
+                      {current("isAnswerable") && (
+                        <Select
+                          label="Answer type"
+                          size="xs"
+                          value={current("answerTemplateType") ?? ""}
+                          onChange={(v) => updateDraft("answerTemplateType", v || null)}
+                          data={[
+                            { value: "single_answer", label: "Text input" },
+                          ]}
+                        />
+                      )}
+                    </Group>
+
+                    {current("isAnswerable") && current("answerTemplateType") === "single_answer" && (
+                      <AnswerTemplateEditor
+                        gameId={gameId}
+                        answerTemplateType={current("answerTemplateType")}
+                        answerId={current("answerId")}
+                        onAnswerCreated={(type, id) => {
+                          updateDraft("answerTemplateType", type);
+                          updateDraft("answerId", id);
+                        }}
                       />
                     )}
-                  </Group>
-
-                  {current("isAnswerable") && current("answerTemplateType") === "single_answer" && (
-                    <AnswerTemplateEditor
-                      gameId={gameId}
-                      answerTemplateType={current("answerTemplateType")}
-                      answerId={current("answerId")}
-                      onAnswerCreated={(type, id) => {
-                        updateDraft("answerTemplateType", type);
-                        updateDraft("answerId", id);
-                      }}
-                    />
-                  )}
+                  </>)}
 
                   {/* Action bar */}
                   <Group justify="space-between" mt="xs">

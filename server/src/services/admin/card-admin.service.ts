@@ -54,7 +54,7 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
 
   // Filter to only allowed scalar fields
   const allowed = [
-    "humanCardId", "title", "description", "act",
+    "humanCardId", "title", "description", "clueContent", "complexity", "act",
     "cardSetId", "clueVisibleCategory", "notes",
     "designId", "answerTemplateType", "answerId", "isAnswerable",
     "lockedOut", "lockedOutReason",

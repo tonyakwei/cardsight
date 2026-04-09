@@ -111,8 +111,10 @@ model Card {
   cardSetId           String?             @map("card_set_id") @db.Uuid
   cardSet             CardSet?            @relation(fields: [cardSetId], references: [id])
   clueVisibleCategory String?             @map("clue_visible_category")
+  complexity          String              @default("simple")
   title               String
   description         String?
+  clueContent         String?             @map("clue_content")
   answerTemplateType  AnswerTemplateType? @map("answer_template_type")
   answerId            String?             @map("answer_id") @db.Uuid
   isAnswerable        Boolean             @default(false) @map("is_answerable")
