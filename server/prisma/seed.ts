@@ -462,6 +462,7 @@ The signal originates from an ancient city.`,
       act: 1,
       title: "Identify the Source Star System",
       description: "Triangulate the origin of the intercepted signal using stellar cartography data. Collect Signal and Navigation clue cards to determine which star system the transmission originates from.",
+      puzzleDescription: "Using the signal fragments your team has collected, cross-reference the stellar coordinates with the navigation data. You need **2 Signal clues** and **1 Navigation clue** to triangulate the origin.\n\nOnce you've identified the star system, enter its designation below.",
       requiredClueSets: [
         { cardSetId: signalsSet.id, count: 2 },
         { cardSetId: navSet.id, count: 1 },

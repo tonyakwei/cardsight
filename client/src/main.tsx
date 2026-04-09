@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import { MantineProvider, createTheme } from "@mantine/core";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { CardViewer } from "./components/card-viewer/CardViewer";
+import { MissionViewer } from "./components/mission-viewer/MissionViewer";
 import { ShowtimeViewer } from "./components/showtime/ShowtimeViewer";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { GameList } from "./components/admin/GameList";
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/c/:cardId" element={<CardViewer />} />
+          <Route path="/m/:missionId" element={<MissionViewer />} />
           <Route path="/showtime/:showtimeId" element={<ShowtimeViewer />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<GameList />} />

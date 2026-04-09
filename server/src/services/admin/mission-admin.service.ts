@@ -10,6 +10,7 @@ const missionInclude = {
     },
   },
   missionCard: { select: { id: true, humanCardId: true, title: true } },
+  design: { select: { id: true, name: true } },
 };
 
 export async function listMissions(
@@ -58,8 +59,8 @@ export async function createMission(gameId: string, data: Record<string, any>) {
   });
 
   const allowed = [
-    "act", "title", "description", "missionCardId",
-    "requiredClueSets", "answerTemplateType", "answerId",
+    "act", "title", "description", "puzzleDescription", "missionCardId",
+    "requiredClueSets", "answerTemplateType", "answerId", "designId",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
     "mechanicalEffectCompleted", "mechanicalEffectNotCompleted",
@@ -101,9 +102,9 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
   delete data.houseIds;
 
   const allowed = [
-    "act", "title", "description", "missionCardId",
-    "requiredClueSets", "answerTemplateType", "answerId",
-    "isCompleted", "completedAt",
+    "act", "title", "description", "puzzleDescription", "missionCardId",
+    "requiredClueSets", "answerTemplateType", "answerId", "designId",
+    "isCompleted", "completedAt", "lockedOut", "lockedOutReason",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
     "mechanicalEffectCompleted", "mechanicalEffectNotCompleted",

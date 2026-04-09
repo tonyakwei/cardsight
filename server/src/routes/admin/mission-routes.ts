@@ -1,5 +1,6 @@
 import { Router, type Router as RouterType } from "express";
 import * as adminService from "../../services/admin.service.js";
+import { generateMissionQRCode } from "../../services/qr.service.js";
 
 const router: RouterType = Router();
 
@@ -35,6 +36,16 @@ router.put("/games/:gameId/missions/:missionId", async (req, res) => {
 router.delete("/games/:gameId/missions/:missionId", async (req, res) => {
   await adminService.deleteMission(req.params.gameId, req.params.missionId);
   res.json({ ok: true });
+});
+
+// === Mission QR ===
+
+router.get("/games/:gameId/missions/:missionId/qr", async (req, res) => {
+  // Verify mission belongs to game
+  await adminService.getMission(req.params.gameId, req.params.missionId);
+  const buffer = await generateMissionQRCode(req.params.missionId);
+  res.set("Content-Type", "image/png");
+  res.send(buffer);
 });
 
 // === Act Breaks ===

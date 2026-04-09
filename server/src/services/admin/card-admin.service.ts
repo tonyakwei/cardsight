@@ -274,8 +274,10 @@ export async function resetAllCards(gameId: string) {
     }),
     prisma.mission.updateMany({
       where: { gameId },
-      data: { isCompleted: false, completedAt: null },
+      data: { isCompleted: false, completedAt: null, lockedOut: false, lockedOutReason: null },
     }),
+    prisma.missionScanEvent.deleteMany({ where: { gameId } }),
+    prisma.missionAnswerAttempt.deleteMany({ where: { gameId } }),
     prisma.showtimeSlot.updateMany({
       where: { showtime: { gameId } },
       data: { inputValue: null, filledAt: null, isCorrect: null, syncPressedAt: null },

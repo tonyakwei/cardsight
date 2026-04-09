@@ -113,10 +113,15 @@ export interface AdminMission {
   missionCard: { id: string; humanCardId: string; title: string } | null;
   title: string;
   description: string;
+  puzzleDescription: string | null;
   requiredClueSets: { cardSetId: string; count: number }[];
   answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;
+  designId: string | null;
+  design: { id: string; name: string } | null;
   isCompleted: boolean;
+  lockedOut: boolean;
+  lockedOutReason: string | null;
   completedAt: string | null;
   consequenceCompleted: string | null;
   consequenceNotCompleted: string | null;

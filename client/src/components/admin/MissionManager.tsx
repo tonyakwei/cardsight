@@ -22,12 +22,15 @@ import {
   fetchMissions,
   fetchCardSets,
   fetchHouses,
+  fetchDesigns,
   createMission,
   updateMission,
   deleteMission,
+  getMissionQRUrl,
   type AdminMission,
   type AdminCardSet,
   type AdminHouse,
+  type AdminDesign,
 } from "../../api/admin";
 import { useAdminList } from "../../hooks/useAdminList";
 
@@ -41,11 +44,13 @@ export function MissionManager() {
     extraFetches: {
       cardSets: fetchCardSets,
       houses: fetchHouses,
+      designs: fetchDesigns,
     },
   });
 
   const cardSets: AdminCardSet[] = extras.cardSets ?? [];
   const houses: AdminHouse[] = extras.houses ?? [];
+  const designs: AdminDesign[] = extras.designs ?? [];
   const [activeTab, setActiveTab] = useState<string>("all");
 
   const handleCreate = useCallback(async () => {
@@ -199,6 +204,7 @@ export function MissionManager() {
                     gameId={gameId!}
                     houses={houses}
                     cardSets={cardSets}
+                    designs={designs}
                     onUpdated={handleUpdated}
                     onDeleted={handleDeleted}
                   />
@@ -217,6 +223,7 @@ function MissionRow({
   gameId,
   houses,
   cardSets,
+  designs,
   onUpdated,
   onDeleted,
 }: {
@@ -224,6 +231,7 @@ function MissionRow({
   gameId: string;
   houses: AdminHouse[];
   cardSets: AdminCardSet[];
+  designs: AdminDesign[];
   onUpdated: (m: AdminMission) => void;
   onDeleted: (id: string) => void;
 }) {
@@ -338,7 +346,7 @@ function MissionRow({
           </Group>
 
           <Textarea
-            label="Description (mission briefing)"
+            label="Description (narrative briefing)"
             size="xs"
             autosize
             minRows={2}
@@ -349,6 +357,48 @@ function MissionRow({
                 save({ description: e.target.value });
             }}
           />
+
+          <Textarea
+            label="Puzzle Description (shown to players — markdown)"
+            size="xs"
+            autosize
+            minRows={2}
+            maxRows={8}
+            defaultValue={mission.puzzleDescription ?? ""}
+            onBlur={(e) => {
+              const val = e.target.value || null;
+              if (val !== mission.puzzleDescription)
+                save({ puzzleDescription: val });
+            }}
+            styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }}
+          />
+
+          <Group grow>
+            <Select
+              label="Design"
+              size="xs"
+              clearable
+              value={mission.designId ?? ""}
+              onChange={(val) => save({ designId: val || null })}
+              data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]}
+            />
+            <div>
+              <Text size="xs" fw={500} mb={4}>QR Code</Text>
+              <Button
+                size="xs"
+                variant="light"
+                color="yellow"
+                onClick={() => {
+                  const a = document.createElement("a");
+                  a.href = getMissionQRUrl(gameId, mission.id);
+                  a.download = `qr-mission-${mission.title.slice(0, 20).replace(/\s/g, "-")}.png`;
+                  a.click();
+                }}
+              >
+                Download QR
+              </Button>
+            </div>
+          </Group>
 
           <MultiSelect
             label="Houses"

@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import cardRoutes from "./routes/cards.js";
+import missionRoutes from "./routes/missions.js";
 import adminRoutes from "./routes/admin.js";
 import showtimeRoutes from "./routes/showtime.js";
 import { errorHandler } from "./middleware/error-handler.js";
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/cards", cardRoutes);
+app.use("/api/missions", missionRoutes);
 app.use("/api/admin", adminAuth, adminRoutes);
 app.use("/api/showtime", showtimeRoutes);
 

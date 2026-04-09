@@ -43,6 +43,7 @@ cardsight/
 │   │   │   │   ├── answers.ts       # Answer template CRUD
 │   │   │   │   └── simulator.ts     # Table simulator
 │   │   │   ├── cards.ts             # Player-facing card API
+│   │   │   ├── missions.ts          # Player-facing mission API
 │   │   │   └── showtime.ts          # Player-facing showtime API
 │   │   ├── hooks/
 │   │   │   └── useAdminList.ts      # Shared CRUD list hook (game + items + extras + polling)
@@ -55,6 +56,10 @@ cardsight/
 │   │   │   │   ├── CardViewer.tsx, CardShell.tsx, CardContent.tsx
 │   │   │   │   ├── PhysicalCardFlash.tsx  # Physical card identity flash on scan
 │   │   │   │   ├── SplashGate.tsx, SelfDestructTimer.tsx, VisibilityGuard.tsx
+│   │   │   ├── mission-viewer/      # Player-facing mission scan experience
+│   │   │   │   ├── MissionViewer.tsx     # Main orchestrator (house picker, answer, completion)
+│   │   │   │   ├── MissionAnswerInput.tsx # Answer input for missions
+│   │   │   │   └── RequiredClues.tsx     # Required clue category badges
 │   │   │   ├── showtime/           # Player-facing Showtime experience
 │   │   │   │   ├── ShowtimeViewer.tsx    # Main orchestrator (polling, phase state machine)
 │   │   │   │   ├── ShowtimeConsole.tsx   # Slot grid + sync button
@@ -86,6 +91,7 @@ cardsight/
 │   ├── src/
 │   │   ├── routes/
 │   │   │   ├── cards.ts              # Player-facing card routes
+│   │   │   ├── missions.ts           # Player-facing mission routes
 │   │   │   ├── showtime.ts           # Player-facing showtime routes
 │   │   │   ├── admin.ts              # Barrel composing sub-routers
 │   │   │   └── admin/                # Split admin routes by domain
@@ -95,6 +101,7 @@ cardsight/
 │   │   │       └── game-routes.ts    # Games, duplicate, dashboard, designs, answers
 │   │   ├── services/
 │   │   │   ├── card.service.ts       # Player scan flow (lockout, self-destruct, answers, mission auto-complete)
+│   │   │   ├── mission.service.ts    # Player mission flow (viewer, scan, answer, completion)
 │   │   │   ├── showtime.service.ts   # Player showtime flow (slots, sync press, reveal)
 │   │   │   ├── answer-validation.ts  # Shared answer validation (used by card + showtime)
 │   │   │   ├── admin.service.ts      # Barrel re-export for all admin services
@@ -110,6 +117,7 @@ cardsight/
 │   │   ├── middleware/error-handler.ts
 │   │   ├── validation/
 │   │   │   ├── cards.ts              # Card Zod schemas
+│   │   │   ├── missions.ts           # Mission Zod schemas
 │   │   │   └── showtime.ts           # Showtime Zod schemas
 │   │   └── lib/prisma.ts
 │   └── prisma/
@@ -132,7 +140,7 @@ cardsight/
 - **Card** — a QR-scannable unit of content. Belongs to a game. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Shows `clueVisibleCategory` to players so they know what type of clue they're collecting. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash. Cards have a `complexity` field: `simple` (default) shows the clue directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
 - **CardSet** — first-class grouping (e.g., "Signals", "Navigation"). Has name, color, admin notes (editable inline). Cards are filtered by set in the admin. Set reviews track which sets have been reviewed since last edit. Each set tab shows which missions reference it.
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
-- **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, required clue sets (references CardSet IDs with counts), optional mission card link, and polymorphic answer template. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images, and mechanical effects as JSONB (store-and-display only, not auto-processed).
+- **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, `puzzleDescription` (shown to players), required clue sets (references CardSet IDs with counts), optional mission card link, optional Design for theming, and polymorphic answer template. Player-scannable via QR codes at `/m/:missionId`. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images, and mechanical effects as JSONB (store-and-display only, not auto-processed). Can be locked with `lockedOut`/`lockedOutReason` (used by future act consequences system).
 - **MissionHouse** — join table linking missions to houses. A mission can belong to one or multiple houses.
 - **Showtime** — a synchronized reveal event (1-2 per game, at act transitions). Players discover it through mission cards — each house sees a "shared analysis console" with input slots. Phase state machine: `filling` → `syncing` → `revealed`. Has reveal content (title, markdown description) with a Design for theming. Configurable sync window (default 3s).
 - **ShowtimeSlot** — one slot per house per Showtime. Has label, description, optional answer validation (polymorphic), input value, fill/sync press timestamps. The sync press logic checks if all houses pressed within the sync window — if yes, reveal; if not, reset presses.
@@ -149,6 +157,7 @@ cardsight/
 - **Simple vs complex cards** — `complexity` field on Card. Simple cards (`"simple"`, default) show `description` as the clue directly, no answer input. Complex cards (`"complex"`) show `description` as a puzzle with answer input; `clueContent` is revealed after solving. The server enforces this: `isAnswerable` is only true for complex cards in the viewer response.
 - **"Solved" is card-level** — once any player answers correctly, the card is solved for everyone. Each house gets distinct cards, so no per-house answer tracking needed.
 - **Mission auto-completion** — when a card linked as a mission's `missionCardId` is answered correctly, the mission is automatically marked complete in card.service.ts.
+- **Missions are player-scannable** — each mission has a QR code linking to `/m/:missionId`. The MissionViewer shows the narrative/puzzle, required clue categories, and an answer input. For multi-house missions, a house picker (stored in sessionStorage as `cardsight_house`) appears first. Mission QR codes are separate from the physical card deck — they're printed on story sheets. Analytics tracked via `MissionScanEvent` and `MissionAnswerAttempt` tables.
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
 - **Mechanical effects are store-and-display** — JSONB fields on missions hold structured effect data, but the system does not auto-process them. The host reads the effects and manually adjusts the next act. This is deliberate — effect types are still being discovered through playtesting.
 - **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a themed print preview with switchable themes (Space, Explorer), markdown rendering, Google Fonts (loaded dynamically), and `print-color-adjust: exact` for dark backgrounds. Theme system is defined in `ConsequencePrint.tsx` via a `CardTheme` interface driving fonts, colors, backgrounds, and border styles. Print link lives in MissionManager toolbar.
@@ -201,6 +210,7 @@ Admin panel: http://localhost:5173/admin
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator |
+| `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
 | `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |
 
 ## API structure
@@ -212,6 +222,11 @@ GET   /api/cards/:cardId          # Card content (respects lockout, self-destruc
 POST  /api/cards/:cardId/scan     # Log scan event
 POST  /api/cards/:cardId/examine  # Examine card (starts self-destruct timer)
 POST  /api/cards/:cardId/answer   # Submit answer (auto-completes linked missions)
+
+# Missions
+GET   /api/missions/:missionId           # Mission content for viewer
+POST  /api/missions/:missionId/scan      # Log scan event
+POST  /api/missions/:missionId/answer    # Submit answer (marks mission complete)
 
 # Showtime
 GET   /api/showtime/:id?house=:houseId           # Full console view
@@ -258,6 +273,7 @@ GET   /api/admin/games/:gameId/missions/:missionId
 POST  /api/admin/games/:gameId/missions
 PUT   /api/admin/games/:gameId/missions/:missionId
 DELETE /api/admin/games/:gameId/missions/:missionId
+GET   /api/admin/games/:gameId/missions/:missionId/qr
 
 # Act Break & Transitions
 GET   /api/admin/games/:gameId/act-break/:act
@@ -293,7 +309,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Admin panel (game list, card management with inline editing, set tabs with review tracking, phone preview, QR generation)
 - CardSet and House as first-class entities with colors and many-to-many
 - Card set notes editable inline in admin
-- Mission system (CRUD, house assignment, required clue sets, consequence texts, mechanical effects JSONB)
+- Mission system (CRUD, house assignment, required clue sets, consequence texts, mechanical effects JSONB, QR codes, player-facing viewer at `/m/:missionId` with house picker, required clues display, answer input)
 - Mission auto-completion when linked mission card is answered correctly
 - Act break view (per-house mission results with consequence texts for host)
 - Consequence card print preview (2-3 per US letter page, switchable themes: Space with Audiowide/Exo 2 fonts + nebula bg, Explorer with Cinzel/Crimson Text fonts + aged parchment bg, markdown rendering)

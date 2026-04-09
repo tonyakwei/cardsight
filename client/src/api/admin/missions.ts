@@ -49,6 +49,10 @@ export async function deleteMission(
   });
 }
 
+export function getMissionQRUrl(gameId: string, missionId: string): string {
+  return `${BASE}/games/${gameId}/missions/${missionId}/qr`;
+}
+
 export async function fetchActBreak(
   gameId: string,
   act: number,

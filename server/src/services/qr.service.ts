@@ -15,3 +15,17 @@ export async function generateQRCode(cardId: string): Promise<Buffer> {
     errorCorrectionLevel: "M",
   });
 }
+
+export async function generateMissionQRCode(missionId: string): Promise<Buffer> {
+  const url = `${DOMAIN}/m/${missionId}`;
+  return QRCode.toBuffer(url, {
+    type: "png",
+    width: 400,
+    margin: 2,
+    color: {
+      dark: "#000000",
+      light: "#ffffff",
+    },
+    errorCorrectionLevel: "M",
+  });
+}

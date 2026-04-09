@@ -149,6 +149,37 @@ export interface ShowtimeSyncPressResponse {
   message: string;
 }
 
+// === Missions (Player-Facing) ===
+
+export interface MissionViewerResponse {
+  id: string;
+  title: string;
+  description: string;
+  puzzleDescription: string | null;
+  act: number;
+  design: CardDesign | null;
+  requiredClueSets: { cardSetName: string; cardSetColor: string; count: number }[];
+  isCompleted: boolean;
+  completedAt: string | null;
+  lockedOut: boolean;
+  lockedOutReason: string | null;
+  isAnswerable: boolean;
+  answerTemplateType: AnswerTemplateType | null;
+  answerMeta: AnswerMeta | null;
+  houses: { id: string; name: string; color: string }[];
+}
+
+export interface MissionScanResponse {
+  alreadyCompleted: boolean;
+}
+
+export interface MissionAnswerResponse {
+  correct: boolean;
+  attemptNumber: number;
+  hint: string | null;
+  message: string;
+}
+
 // === Admin Types ===
 
 export * from "./admin-types.js";
