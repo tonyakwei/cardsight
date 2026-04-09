@@ -178,6 +178,22 @@ export interface ActBreakHouse {
   totalCount: number;
 }
 
+// === Story Sheets ===
+
+export interface AdminStorySheet {
+  id: string;
+  gameId: string;
+  houseId: string;
+  house: { id: string; name: string; color: string };
+  act: number;
+  title: string;
+  content: string;
+  notes: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // === Showtimes ===
 
 export interface AdminShowtimeSlot {

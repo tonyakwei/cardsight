@@ -54,6 +54,7 @@ model Game {
   missionScanEvents     MissionScanEvent[]
   missionAnswerAttempts MissionAnswerAttempt[]
   triggeredConsequences TriggeredConsequence[]
+  storySheets           StorySheet[]
   setReviews            SetReview[]
 
   @@map("games")
@@ -90,6 +91,7 @@ model House {
   missionHouses          MissionHouse[]
   showtimeSlots          ShowtimeSlot[]
   triggeredConsequences  TriggeredConsequence[]
+  storySheets            StorySheet[]
 
   @@unique([gameId, name])
   @@map("houses")
@@ -403,4 +405,24 @@ model ShowtimeSlot {
 
   @@unique([showtimeId, houseId])
   @@map("showtime_slots")
+}
+
+// === Story Sheets ===
+
+model StorySheet {
+  id        String   @id @default(uuid()) @db.Uuid
+  gameId    String   @map("game_id") @db.Uuid
+  game      Game     @relation(fields: [gameId], references: [id])
+  houseId   String   @map("house_id") @db.Uuid
+  house     House    @relation(fields: [houseId], references: [id])
+  act       Int
+  title     String   @default("Story Sheet")
+  content   String   @default("")
+  notes     String?
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([gameId, houseId, act])
+  @@map("story_sheets")
 }

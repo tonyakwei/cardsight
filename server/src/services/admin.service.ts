@@ -5,3 +5,4 @@ export * from "./admin/dashboard.service.js";
 export * from "./admin/game-admin.service.js";
 export * from "./admin/cardset-admin.service.js";
 export * from "./admin/house-admin.service.js";
+export * from "./admin/storysheet-admin.service.js";

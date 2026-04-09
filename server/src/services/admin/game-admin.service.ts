@@ -283,6 +283,23 @@ export async function duplicateGame(gameId: string) {
       }
     }
 
+    // 10. Duplicate Story Sheets
+    const oldStorySheets = await tx.storySheet.findMany({ where: { gameId } });
+    for (const ss of oldStorySheets) {
+      if (!houseMap.has(ss.houseId)) continue;
+      await tx.storySheet.create({
+        data: {
+          gameId: newGame.id,
+          houseId: houseMap.get(ss.houseId)!,
+          act: ss.act,
+          title: ss.title,
+          content: ss.content,
+          notes: ss.notes,
+          sortOrder: ss.sortOrder,
+        },
+      });
+    }
+
     // Return the full new game
     return tx.game.findUnique({
       where: { id: newGame.id },

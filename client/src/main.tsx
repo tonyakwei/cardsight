@@ -16,6 +16,8 @@ import { ActBreakView } from "./components/admin/ActBreakView";
 import { ConsequencePrint } from "./components/admin/ConsequencePrint";
 import { LiveDashboard } from "./components/admin/LiveDashboard";
 import { ShowtimeManager } from "./components/admin/ShowtimeManager";
+import { StorySheetManager } from "./components/admin/StorySheetManager";
+import { StorySheetPrint } from "./components/admin/StorySheetPrint";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
 const theme = createTheme({
@@ -37,6 +39,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/dashboard" element={<LiveDashboard />} />
             <Route path="games/:gameId/missions" element={<MissionManager />} />
             <Route path="games/:gameId/showtimes" element={<ShowtimeManager />} />
+            <Route path="games/:gameId/story-sheets" element={<StorySheetManager />} />
+            <Route path="games/:gameId/story-sheets/print" element={<StorySheetPrint />} />
             <Route path="games/:gameId/act-break" element={<ActBreakView />} />
             <Route path="games/:gameId/act-break/print" element={<ConsequencePrint />} />
             <Route path="games/:gameId/simulator" element={<TableSimulator />} />

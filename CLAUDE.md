@@ -76,6 +76,8 @@ cardsight/
 │   │   │       ├── MissionManager.tsx    # Mission CRUD by house tabs + act groups
 │   │   │       ├── ActBreakView.tsx      # Per-house mission results for host
 │   │   │       ├── ConsequencePrint.tsx  # Printable consequence cards, themed (Space/Explorer)
+│   │   │       ├── StorySheetManager.tsx  # Story sheet CRUD by house tabs + act groups
+│   │   │       ├── StorySheetPrint.tsx   # Printable story sheets with mission list
 │   │   │       ├── ShowtimeManager.tsx   # Showtime CRUD, live monitoring, force trigger/reset
 │   │   │       ├── LiveDashboard.tsx     # Real-time game dashboard (auto-polls 5s)
 │   │   │       └── simulator/           # Table assignment simulator
@@ -111,6 +113,7 @@ cardsight/
 │   │   │   │   ├── house-admin.service.ts    # House CRUD, simulator
 │   │   │   │   ├── mission-admin.service.ts  # Mission CRUD, act-break summary
 │   │   │   │   ├── showtime-admin.service.ts # Showtime CRUD, trigger, reset
+│   │   │   ├── storysheet-admin.service.ts # Story sheet CRUD, print data
 │   │   │   │   ├── game-admin.service.ts     # Game CRUD, duplicate, act transitions, answers, designs
 │   │   │   │   └── dashboard.service.ts      # Live dashboard aggregation
 │   │   │   └── qr.service.ts        # QR code PNG generation
@@ -142,6 +145,7 @@ cardsight/
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
 - **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, `puzzleDescription` (shown to players), required clue sets (references CardSet IDs with counts), optional mission card link, optional Design for theming, and polymorphic answer template. Player-scannable via QR codes at `/m/:missionId`. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images, and mechanical effects as JSONB (store-and-display only, not auto-processed). Can be locked with `lockedOut`/`lockedOutReason` (used by future act consequences system).
 - **MissionHouse** — join table linking missions to houses. A mission can belong to one or multiple houses.
+- **StorySheet** — narrative document per house per act. Contains the situation description and lists available missions. Has title, markdown content, admin notes. Unique constraint on game+house+act. Editable in admin with house tabs and act grouping. Print view shows content with linked missions listed. Duplicated with games.
 - **Showtime** — a synchronized reveal event (1-2 per game, at act transitions). Players discover it through mission cards — each house sees a "shared analysis console" with input slots. Phase state machine: `filling` → `syncing` → `revealed`. Has reveal content (title, markdown description) with a Design for theming. Configurable sync window (default 3s).
 - **ShowtimeSlot** — one slot per house per Showtime. Has label, description, optional answer validation (polymorphic), input value, fill/sync press timestamps. The sync press logic checks if all houses pressed within the sync window — if yes, reveal; if not, reset presses.
 - **Design** — reusable visual configuration (colors, fonts, animations, overlays). Multiple cards share designs.
@@ -206,6 +210,8 @@ Admin panel: http://localhost:5173/admin
 | `/admin` | GameList | Game cards, create/duplicate games |
 | `/admin/games/:id` | CardManager | Card list with set tabs, inline editing, set notes, mission summary per set |
 | `/admin/games/:id/missions` | MissionManager | Mission CRUD by house tabs + act groups, consequence editing, print link |
+| `/admin/games/:id/story-sheets` | StorySheetManager | Story sheet CRUD by house tabs + act groups |
+| `/admin/games/:id/story-sheets/print` | StorySheetPrint | Printable story sheets with mission lists |
 | `/admin/games/:id/act-break` | ActBreakView | Per-house mission results, consequence texts for host to read |
 | `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), switchable themes (Space/Explorer), markdown support |
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
@@ -296,6 +302,14 @@ DELETE /api/admin/games/:gameId/showtimes/:id
 POST   /api/admin/games/:gameId/showtimes/:id/trigger
 POST   /api/admin/games/:gameId/showtimes/:id/reset
 
+# Story Sheets
+GET    /api/admin/games/:gameId/story-sheets
+GET    /api/admin/games/:gameId/story-sheets/:id
+POST   /api/admin/games/:gameId/story-sheets
+PUT    /api/admin/games/:gameId/story-sheets/:id
+DELETE /api/admin/games/:gameId/story-sheets/:id
+GET    /api/admin/games/:gameId/story-sheets/print/:act
+
 # Other
 GET   /api/admin/games/:gameId/designs
 GET   /api/admin/games/:gameId/answers/:type
@@ -331,6 +345,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Showtime integrated into game reset and duplication
 - Admin authentication (HTTP Basic Auth, env-controlled via `ENV_LEVEL`)
 
+- Story sheets (per house per act narrative documents, markdown editor, print view with mission lists, duplicated with games)
 - Railway deployment (single service: Express serves API + built Vite client + ATN landing page)
 
 ## Deployment (Railway)

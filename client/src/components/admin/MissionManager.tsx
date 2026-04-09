@@ -118,6 +118,14 @@ export function MissionManager() {
           <Button
             size="xs"
             variant="light"
+            color="cyan"
+            onClick={() => navigate(`/admin/games/${gameId}/story-sheets`)}
+          >
+            Story Sheets
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
             color="yellow"
             onClick={() => navigate(`/admin/games/${gameId}/act-break/print`)}
           >

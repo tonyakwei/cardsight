@@ -6,3 +6,4 @@ export * from "./admin/showtimes.js";
 export * from "./admin/dashboard.js";
 export * from "./admin/answers.js";
 export * from "./admin/simulator.js";
+export * from "./admin/story-sheets.js";
