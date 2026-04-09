@@ -279,10 +279,7 @@ export function CardRow({
 
                   <Select label="Design" size="xs" value={current("designId") ?? ""} onChange={(v) => updateDraft("designId", v || null)} data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]} clearable />
 
-                  <Group grow>
-                    <Switch label="Entry Gate" size="xs" checked={current("hasEntryGate")} onChange={(e) => updateDraft("hasEntryGate", e.currentTarget.checked)} />
-                    <TextInput label="Gate Button Text" size="xs" value={current("entryGateText") ?? ""} onChange={(e) => updateDraft("entryGateText", e.target.value || null)} placeholder="Enter" disabled={!current("hasEntryGate")} />
-                  </Group>
+                  <TextInput label="Examine Button Text" size="xs" value={current("examineText") ?? ""} onChange={(e) => updateDraft("examineText", e.target.value || null)} placeholder="Examine (default)" />
 
                   <Group grow>
                     <NumberInput label="Self-Destruct (seconds)" size="xs" value={current("selfDestructTimer") ?? ""} onChange={(v) => updateDraft("selfDestructTimer", v || null)} min={0} />

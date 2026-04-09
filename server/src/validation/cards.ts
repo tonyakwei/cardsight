@@ -5,7 +5,7 @@ export const scanSchema = z.object({
   userAgent: z.string().optional(),
 });
 
-export const enterSchema = z.object({
+export const examineSchema = z.object({
   sessionHash: z.string().optional(),
 });
 

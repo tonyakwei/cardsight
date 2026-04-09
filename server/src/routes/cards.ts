@@ -1,5 +1,5 @@
 import { Router, type Router as RouterType } from "express";
-import { scanSchema, enterSchema, answerSchema } from "../validation/cards.js";
+import { scanSchema, examineSchema, answerSchema } from "../validation/cards.js";
 import * as cardService from "../services/card.service.js";
 import { AppError } from "../middleware/error-handler.js";
 
@@ -25,9 +25,9 @@ router.post("/:cardId/scan", async (req, res) => {
   res.json(result);
 });
 
-// POST /api/cards/:cardId/enter — Player enters the card (starts self-destruct timer)
-router.post("/:cardId/enter", async (req, res) => {
-  const result = await cardService.enterCard(req.params.cardId);
+// POST /api/cards/:cardId/examine — Player examines the card (starts self-destruct timer)
+router.post("/:cardId/examine", async (req, res) => {
+  const result = await cardService.examineCard(req.params.cardId);
   res.json(result);
 });
 

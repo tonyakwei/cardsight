@@ -43,8 +43,8 @@ export interface AdminCard {
   selfDestructTimer: number | null;
   selfDestructedAt: string | null;
   selfDestructText: string | null;
-  hasEntryGate: boolean;
-  entryGateText: string | null;
+  examinedAt: string | null;
+  examineText: string | null;
   answerVisibleAfterDestruct: boolean;
   isFinished: boolean;
   isSolved: boolean;

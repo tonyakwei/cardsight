@@ -6,7 +6,7 @@ import type {
   CardDesign,
   AnswerMeta,
   ScanResponse,
-  EnterResponse,
+  ExamineResponse,
   AnswerResponse,
 } from "@cardsight/shared";
 
@@ -87,8 +87,9 @@ export async function getCardForViewer(
       "This card's information is no longer available.",
     selfDestructedAt: card.selfDestructedAt?.toISOString() ?? null,
     selfDestructTimer: card.selfDestructTimer,
-    hasEntryGate: card.hasEntryGate,
-    entryGateText: card.entryGateText,
+    isExamined: card.examinedAt !== null,
+    examinedAt: card.examinedAt?.toISOString() ?? null,
+    examineText: card.examineText,
     isAnswerable: card.isAnswerable,
     answerTemplateType: card.answerTemplateType,
     answerMeta,
@@ -132,13 +133,14 @@ export async function recordScan(
   };
 }
 
-export async function enterCard(
+export async function examineCard(
   cardId: string,
-): Promise<EnterResponse> {
+): Promise<ExamineResponse> {
   const card = await prisma.card.findUnique({
     where: { id: cardId },
     select: {
       id: true,
+      examinedAt: true,
       selfDestructTimer: true,
       selfDestructedAt: true,
     },
@@ -148,16 +150,26 @@ export async function enterCard(
     throw new AppError(404, "Card not found");
   }
 
-  // Initialize self-destruct timer on enter (not on scan)
-  let selfDestructedAt = card.selfDestructedAt;
+  const updateData: Record<string, any> = {};
 
+  // Mark as examined if not already
+  if (!card.examinedAt) {
+    updateData.examinedAt = new Date();
+  }
+
+  // Initialize self-destruct timer on examine (not on scan)
+  let selfDestructedAt = card.selfDestructedAt;
   if (card.selfDestructTimer && !card.selfDestructedAt) {
     selfDestructedAt = new Date(
       Date.now() + card.selfDestructTimer * 1000,
     );
+    updateData.selfDestructedAt = selfDestructedAt;
+  }
+
+  if (Object.keys(updateData).length > 0) {
     await prisma.card.update({
       where: { id: card.id },
-      data: { selfDestructedAt },
+      data: updateData,
     });
   }
 

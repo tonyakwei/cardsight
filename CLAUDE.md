@@ -54,7 +54,7 @@ cardsight/
 │   │   │   │   ├── states/          # Loading, NotFound, LockedOut, SelfDestructed, AlreadyAnswered
 │   │   │   │   ├── CardViewer.tsx, CardShell.tsx, CardContent.tsx
 │   │   │   │   ├── PhysicalCardFlash.tsx  # Physical card identity flash on scan
-│   │   │   │   ├── EntryGate.tsx, SelfDestructTimer.tsx, VisibilityGuard.tsx
+│   │   │   │   ├── SplashGate.tsx, SelfDestructTimer.tsx, VisibilityGuard.tsx
 │   │   │   ├── showtime/           # Player-facing Showtime experience
 │   │   │   │   ├── ShowtimeViewer.tsx    # Main orchestrator (polling, phase state machine)
 │   │   │   │   ├── ShowtimeConsole.tsx   # Slot grid + sync button
@@ -129,7 +129,7 @@ cardsight/
 ## Data model overview
 
 - **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived). Only one active at a time.
-- **Card** — a QR-scannable unit of content. Belongs to a game. Has a design, optional answer template, optional self-destruct timer, optional entry gate. Can be assigned to a CardSet and multiple Houses. Shows `clueVisibleCategory` to players so they know what type of clue they're collecting.
+- **Card** — a QR-scannable unit of content. Belongs to a game. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Shows `clueVisibleCategory` to players so they know what type of clue they're collecting. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash.
 - **CardSet** — first-class grouping (e.g., "Signals", "Navigation"). Has name, color, admin notes (editable inline). Cards are filtered by set in the admin. Set reviews track which sets have been reviewed since last edit. Each set tab shows which missions reference it.
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
 - **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, required clue sets (references CardSet IDs with counts), optional mission card link, and polymorphic answer template. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images, and mechanical effects as JSONB (store-and-display only, not auto-processed).
@@ -144,8 +144,8 @@ cardsight/
 ## Key architectural decisions
 
 - **Polymorphic answers** — `answerId` on Card/Mission is NOT a Prisma relation. The service layer resolves it by `answerTemplateType`. Adding new answer types is purely additive.
-- **Self-destruct is server-authoritative** — timer starts when player presses the Entry Gate button (POST `/api/cards/:id/enter`), not on page load. Client counts down from server timestamp.
-- **Entry gate** — most cards show a themed button before revealing content (controlled by `hasEntryGate`). Timer starts on enter, not on scan.
+- **Self-destruct is server-authoritative** — timer starts when player presses the EXAMINE button (POST `/api/cards/:id/examine`), not on page load. Client counts down from server timestamp.
+- **Splash gate** — every card shows a splash screen on first scan displaying the clue category and an EXAMINE button with a warning. Once examined (`examinedAt` is set on Card), subsequent scans skip the splash and go straight to content. Timer starts on examine, not on scan.
 - **"Solved" is card-level** — once any player answers correctly, the card is solved for everyone. Each house gets distinct cards, so no per-house answer tracking needed.
 - **Mission auto-completion** — when a card linked as a mission's `missionCardId` is answered correctly, the mission is automatically marked complete in card.service.ts.
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
@@ -209,7 +209,7 @@ Admin panel: http://localhost:5173/admin
 # Cards
 GET   /api/cards/:cardId          # Card content (respects lockout, self-destruct, includes clueVisibleCategory)
 POST  /api/cards/:cardId/scan     # Log scan event
-POST  /api/cards/:cardId/enter    # Start self-destruct timer
+POST  /api/cards/:cardId/examine  # Examine card (starts self-destruct timer)
 POST  /api/cards/:cardId/answer   # Submit answer (auto-completes linked missions)
 
 # Showtime
@@ -285,7 +285,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 ## What's built vs. what's planned
 
 **Built:**
-- Full scan flow (QR → physical card flash → entry gate → content → self-destruct → answer → feedback)
+- Full scan flow (QR → physical card flash → splash gate (clue category + EXAMINE) → content → self-destruct → answer → feedback)
 - Physical card flash on scan — when a card's UUID matches a physical card in `physical-cards.json`, a CSS replica of the physical card (color, borders, name, icon) displays for 700ms before an exit transition reveals the game content. Transition escalates by act: Act 1 (fade, iris), Act 2 (slice, flip), Act 3 (glitch, burn — 1.8s with escalating shake/corruption). Card number determines which of the two transitions per act: 1-5 gets one, 6-9 gets the other. Runs concurrently with the API fetch, so no added latency.
 - `clueVisibleCategory` shown to players on card content (so they know what type of clue they're collecting)
 - Visual polish (4 entry animations, 4 overlay effects, self-destruct countdown)

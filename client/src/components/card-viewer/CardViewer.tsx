@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router";
-import { fetchCard, postScan, postEnter, CardNotFoundError } from "../../api/cards";
+import { fetchCard, postScan, postExamine, CardNotFoundError } from "../../api/cards";
 import { getSessionHash } from "../../utils/session";
 import { CardShell } from "./CardShell";
 import { CardContent } from "./CardContent";
-import { EntryGate } from "./EntryGate";
+import { SplashGate } from "./SplashGate";
 import { VisibilityGuard } from "./VisibilityGuard";
 import { LoadingState } from "./states/LoadingState";
 import { NotFoundState } from "./states/NotFoundState";
@@ -23,7 +23,7 @@ export function CardViewer() {
   const [card, setCard] = useState<CardViewerResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [entered, setEntered] = useState(false);
+  const [examined, setExamined] = useState(false);
   const [justSolved, setJustSolved] = useState(false);
   const [flashDone, setFlashDone] = useState(
     () => !cardId || !isPhysicalCard(cardId),
@@ -35,19 +35,9 @@ export function CardViewer() {
       const data = await fetchCard(cardId);
       setCard(data);
 
-      // Auto-enter if no gate
-      if (!data.hasEntryGate && data.status === "available") {
-        const enterResult = await postEnter(cardId);
-        if (enterResult.selfDestructedAt && !data.selfDestructedAt) {
-          data.selfDestructedAt = enterResult.selfDestructedAt;
-        }
-        setCard({ ...data });
-        setEntered(true);
-      }
-
-      // Skip gate for non-available states
-      if (data.status !== "available") {
-        setEntered(true);
+      // Skip splash for non-available states or already-examined cards
+      if (data.status !== "available" || data.isExamined) {
+        setExamined(true);
       }
     } catch (err) {
       if (err instanceof CardNotFoundError) {
@@ -62,22 +52,22 @@ export function CardViewer() {
     loadCard();
   }, [loadCard]);
 
-  // Fire scan event after card loads (always, regardless of gate)
+  // Fire scan event after card loads
   useEffect(() => {
     if (!cardId || !card || card.status === "locked_out") return;
     const session = getSessionHash();
     postScan(cardId, session).catch(() => {});
   }, [cardId, card?.status]);
 
-  const handleEnter = useCallback(async () => {
+  const handleExamine = useCallback(async () => {
     if (!cardId) return;
-    const result = await postEnter(cardId);
+    const result = await postExamine(cardId);
     setCard((prev) =>
       prev
-        ? { ...prev, selfDestructedAt: result.selfDestructedAt ?? prev.selfDestructedAt }
+        ? { ...prev, isExamined: true, selfDestructedAt: result.selfDestructedAt ?? prev.selfDestructedAt }
         : prev,
     );
-    setEntered(true);
+    setExamined(true);
   }, [cardId]);
 
   const handleSolved = useCallback(() => {
@@ -108,7 +98,7 @@ export function CardViewer() {
   return (
     <CardShell design={card.design}>
       <OverlayRenderer effect={card.design?.overlayEffect ?? null} />
-      {entered && card.status === "available" && <VisibilityGuard />}
+      {examined && card.status === "available" && <VisibilityGuard />}
 
       {/* Locked out */}
       {card.status === "locked_out" && (
@@ -142,12 +132,17 @@ export function CardViewer() {
         </AnimationWrapper>
       )}
 
-      {/* Available — show gate or content */}
-      {card.status === "available" && !entered && card.hasEntryGate && (
-        <EntryGate card={card} onEnter={handleEnter} />
+      {/* Available — show splash gate or content */}
+      {card.status === "available" && !examined && (
+        <SplashGate
+          clueCategory={card.clueVisibleCategory}
+          examineText={card.examineText}
+          selfDestructTimer={card.selfDestructTimer}
+          onExamine={handleExamine}
+        />
       )}
 
-      {card.status === "available" && entered && (
+      {card.status === "available" && examined && (
         <AnimationWrapper type={card.design?.animationIn ?? "fade"}>
           <CardContent
             title={card.title}

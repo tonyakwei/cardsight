@@ -43,9 +43,10 @@ export interface CardViewerResponse {
   selfDestructedAt: string | null; // ISO timestamp
   selfDestructTimer: number | null; // seconds
 
-  // Entry gate
-  hasEntryGate: boolean;
-  entryGateText: string | null;
+  // Examine state
+  isExamined: boolean;
+  examinedAt: string | null;
+  examineText: string | null;
 
   // Answer
   isAnswerable: boolean;
@@ -76,7 +77,7 @@ export interface ScanResponse {
   alreadyScanned: boolean;
 }
 
-export interface EnterResponse {
+export interface ExamineResponse {
   selfDestructedAt: string | null;
 }
 

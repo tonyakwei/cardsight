@@ -123,8 +123,8 @@ model Card {
   selfDestructText    String?             @map("self_destruct_text")
   designId            String?             @map("design_id") @db.Uuid
   design              Design?             @relation(fields: [designId], references: [id])
-  hasEntryGate              Boolean   @default(true) @map("has_entry_gate")
-  entryGateText             String?   @map("entry_gate_text")
+  examinedAt                DateTime? @map("examined_at")
+  examineText               String?   @map("examine_text")
   answerVisibleAfterDestruct Boolean  @default(true) @map("answer_visible_after_destruct")
   tableHouseId        String?             @map("table_house_id") @db.Uuid
   tableHouse          House?              @relation("TableAssignment", fields: [tableHouseId], references: [id])

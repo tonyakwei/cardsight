@@ -59,7 +59,7 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
     "designId", "answerTemplateType", "answerId", "isAnswerable",
     "lockedOut", "lockedOutReason",
     "selfDestructTimer", "selfDestructText",
-    "hasEntryGate", "entryGateText", "answerVisibleAfterDestruct",
+    "examineText", "answerVisibleAfterDestruct",
     "isFinished", "sortOrder",
   ];
 
@@ -223,7 +223,7 @@ export async function bulkOperation(
       await prisma.$transaction([
         prisma.card.updateMany({
           where: cardWhere,
-          data: { selfDestructedAt: null, isSolved: false },
+          data: { examinedAt: null, selfDestructedAt: null, isSolved: false },
         }),
         prisma.scanEvent.deleteMany({ where: { cardId: { in: cardIds }, gameId } }),
         prisma.answerAttempt.deleteMany({ where: { cardId: { in: cardIds }, gameId } }),
@@ -251,7 +251,7 @@ export async function resetCard(gameId: string, cardId: string) {
   await prisma.$transaction([
     prisma.card.update({
       where: { id: cardId },
-      data: { selfDestructedAt: null, isSolved: false },
+      data: { examinedAt: null, selfDestructedAt: null, isSolved: false },
     }),
     prisma.scanEvent.deleteMany({ where: { cardId } }),
     prisma.answerAttempt.deleteMany({ where: { cardId } }),
@@ -270,7 +270,7 @@ export async function resetAllCards(gameId: string) {
   await prisma.$transaction([
     prisma.card.updateMany({
       where: { gameId },
-      data: { selfDestructedAt: null, isSolved: false },
+      data: { examinedAt: null, selfDestructedAt: null, isSolved: false },
     }),
     prisma.mission.updateMany({
       where: { gameId },

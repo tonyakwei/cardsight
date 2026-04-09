@@ -1,7 +1,7 @@
 import type {
   CardViewerResponse,
   ScanResponse,
-  EnterResponse,
+  ExamineResponse,
   AnswerResponse,
 } from "@cardsight/shared";
 
@@ -29,14 +29,14 @@ export async function postScan(
   return res.json();
 }
 
-export async function postEnter(
+export async function postExamine(
   cardId: string,
-): Promise<EnterResponse> {
-  const res = await fetch(`${BASE}/${cardId}/enter`, {
+): Promise<ExamineResponse> {
+  const res = await fetch(`${BASE}/${cardId}/examine`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   });
-  if (!res.ok) throw new Error(`Failed to enter card: ${res.status}`);
+  if (!res.ok) throw new Error(`Failed to examine card: ${res.status}`);
   return res.json();
 }
 
