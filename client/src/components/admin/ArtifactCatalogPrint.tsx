@@ -17,18 +17,28 @@ import {
 const GOOGLE_FONTS =
   "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap";
 
-const TABLE_ROWS = 20;
+/** Physical card colors in deck order. */
+const CARD_COLORS: { name: string; color: string }[] = [
+  { name: "Red", color: "#c0392b" },
+  { name: "Yellow", color: "#d4a017" },
+  { name: "Green", color: "#27ae60" },
+  { name: "Blue", color: "#2e86c1" },
+  { name: "Purple", color: "#8e44ad" },
+  { name: "White", color: "#7f8c8d" },
+];
 
-const COLORS = {
+const ROWS_PER_COLOR = 7; // 7 × 6 = 42 slots, covers ~40 cards
+
+const THEME = {
   pageBg: "#f0e6d0",
   text: "#3b2f20",
   border: "#8b7355",
   borderLight: "#c4a87c",
   heading: "#2c2017",
-  tableHeader: "#5c4a35",
-  tableHeaderBg: "#e0d0b4",
+  sectionHeader: "#5c4a35",
   tableLine: "#c4a87c",
-  notesLabel: "#6b5940",
+  tableLineLight: "#d4c4a0",
+  colHeaderBg: "#e0d0b4",
 };
 
 export function ArtifactCatalogPrint() {
@@ -110,7 +120,7 @@ export function ArtifactCatalogPrint() {
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          @page { size: letter portrait; margin: 0.4in 0.5in; }
+          @page { size: letter portrait; margin: 0.35in 0.4in; }
         }
         @media screen {
           .catalog-page { margin-bottom: 2rem; }
@@ -127,7 +137,8 @@ function CatalogPage({
   house: AdminHouse;
   isLast: boolean;
 }) {
-  const rows = Array.from({ length: TABLE_ROWS });
+  const leftColors = CARD_COLORS.slice(0, 3);
+  const rightColors = CARD_COLORS.slice(3);
 
   return (
     <div
@@ -136,13 +147,13 @@ function CatalogPage({
         pageBreakAfter: isLast ? undefined : "always",
         maxWidth: "8in",
         margin: "0 auto",
-        padding: "0.5in 0.6in",
+        padding: "0.35in 0.4in",
         position: "relative",
         overflow: "hidden",
-        background: COLORS.pageBg,
-        color: COLORS.text,
+        background: THEME.pageBg,
+        color: THEME.text,
         fontFamily: "'Crimson Text', 'Georgia', serif",
-        border: `3px double ${COLORS.border}`,
+        border: `3px double ${THEME.border}`,
         borderRadius: "2px",
         printColorAdjust: "exact",
         WebkitPrintColorAdjust: "exact",
@@ -184,17 +195,17 @@ function CatalogPage({
         <div
           style={{
             textAlign: "center",
-            marginBottom: "0.35in",
-            paddingBottom: "0.15in",
-            borderBottom: `2px solid ${COLORS.borderLight}`,
+            marginBottom: "0.25in",
+            paddingBottom: "0.1in",
+            borderBottom: `2px solid ${THEME.borderLight}`,
           }}
         >
           <div
             style={{
               fontFamily: "'Cinzel', serif",
-              fontSize: "22px",
+              fontSize: "20px",
               fontWeight: 700,
-              color: COLORS.heading,
+              color: THEME.heading,
               letterSpacing: "0.06em",
             }}
           >
@@ -203,127 +214,166 @@ function CatalogPage({
           <div
             style={{
               fontFamily: "'Cinzel', serif",
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: 400,
-              color: COLORS.border,
+              color: THEME.border,
               letterSpacing: "0.25em",
               textTransform: "uppercase",
-              marginTop: "4px",
+              marginTop: "3px",
             }}
           >
             Artifact Catalog
           </div>
         </div>
 
-        {/* Table */}
-        <table
+        {/* Two-column grid */}
+        <div
           style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginBottom: "0.3in",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "0 0.3in",
           }}
         >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  fontFamily: "'Cinzel', serif",
-                  fontSize: "10px",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: COLORS.tableHeader,
-                  background: COLORS.tableHeaderBg,
-                  padding: "6px 10px",
-                  textAlign: "left",
-                  borderBottom: `2px solid ${COLORS.border}`,
-                  borderTop: `1px solid ${COLORS.border}`,
-                  width: "50%",
-                  printColorAdjust: "exact",
-                  WebkitPrintColorAdjust: "exact",
-                } as React.CSSProperties}
-              >
-                Card Name
-              </th>
-              <th
-                style={{
-                  fontFamily: "'Cinzel', serif",
-                  fontSize: "10px",
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: COLORS.tableHeader,
-                  background: COLORS.tableHeaderBg,
-                  padding: "6px 10px",
-                  textAlign: "left",
-                  borderBottom: `2px solid ${COLORS.border}`,
-                  borderTop: `1px solid ${COLORS.border}`,
-                  width: "50%",
-                  printColorAdjust: "exact",
-                  WebkitPrintColorAdjust: "exact",
-                } as React.CSSProperties}
-              >
-                Classification
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((_, i) => (
-              <tr key={i}>
-                <td
-                  style={{
-                    borderBottom: `1px solid ${COLORS.tableLine}`,
-                    padding: "0",
-                    height: "26px",
-                  }}
-                >
-                  &nbsp;
-                </td>
-                <td
-                  style={{
-                    borderBottom: `1px solid ${COLORS.tableLine}`,
-                    padding: "0",
-                    height: "26px",
-                  }}
-                >
-                  &nbsp;
-                </td>
-              </tr>
+          {/* Left column */}
+          <div>
+            {leftColors.map((c) => (
+              <ColorSection key={c.name} cardColor={c} />
             ))}
-          </tbody>
-        </table>
-
-        {/* Notes area */}
-        <div>
-          <div
-            style={{
-              fontFamily: "'Cinzel', serif",
-              fontSize: "10px",
-              fontWeight: 600,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: COLORS.notesLabel,
-              marginBottom: "8px",
-            }}
-          >
-            Field Notes
           </div>
-          <div
-            style={{
-              borderTop: `1px solid ${COLORS.tableLine}`,
-              minHeight: "1.2in",
-              backgroundImage: `repeating-linear-gradient(
-                to bottom,
-                transparent,
-                transparent 25px,
-                ${COLORS.tableLine} 25px,
-                ${COLORS.tableLine} 26px
-              )`,
-              backgroundPosition: "0 0",
-            }}
-          />
+          {/* Right column */}
+          <div>
+            {rightColors.map((c) => (
+              <ColorSection key={c.name} cardColor={c} />
+            ))}
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ColorSection({
+  cardColor,
+}: {
+  cardColor: { name: string; color: string };
+}) {
+  const rows = Array.from({ length: ROWS_PER_COLOR });
+
+  return (
+    <div style={{ marginBottom: "0.15in" }}>
+      {/* Section header with color strip */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          marginBottom: "0",
+        }}
+      >
+        <div
+          style={{
+            width: "10px",
+            height: "10px",
+            borderRadius: "2px",
+            background: cardColor.color,
+            flexShrink: 0,
+            printColorAdjust: "exact",
+            WebkitPrintColorAdjust: "exact",
+          } as React.CSSProperties}
+        />
+        <div
+          style={{
+            fontFamily: "'Cinzel', serif",
+            fontSize: "9px",
+            fontWeight: 600,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: THEME.sectionHeader,
+          }}
+        >
+          {cardColor.name}
+        </div>
+      </div>
+
+      {/* Table */}
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+        }}
+      >
+        <thead>
+          <tr>
+            <th
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: "7px",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: THEME.sectionHeader,
+                background: THEME.colHeaderBg,
+                padding: "2px 6px",
+                textAlign: "left",
+                borderBottom: `1.5px solid ${THEME.border}`,
+                borderTop: `1px solid ${THEME.border}`,
+                width: "45%",
+                printColorAdjust: "exact",
+                WebkitPrintColorAdjust: "exact",
+              } as React.CSSProperties}
+            >
+              Card
+            </th>
+            <th
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: "7px",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: THEME.sectionHeader,
+                background: THEME.colHeaderBg,
+                padding: "2px 6px",
+                textAlign: "left",
+                borderBottom: `1.5px solid ${THEME.border}`,
+                borderTop: `1px solid ${THEME.border}`,
+                width: "55%",
+                printColorAdjust: "exact",
+                WebkitPrintColorAdjust: "exact",
+              } as React.CSSProperties}
+            >
+              Item
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((_, i) => (
+            <tr key={i}>
+              <td
+                style={{
+                  borderBottom: `1px solid ${THEME.tableLineLight}`,
+                  padding: "0",
+                  height: "20px",
+                  borderLeft: `3px solid ${cardColor.color}`,
+                  printColorAdjust: "exact",
+                  WebkitPrintColorAdjust: "exact",
+                } as React.CSSProperties}
+              >
+                &nbsp;
+              </td>
+              <td
+                style={{
+                  borderBottom: `1px solid ${THEME.tableLineLight}`,
+                  padding: "0",
+                  height: "20px",
+                }}
+              >
+                &nbsp;
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
