@@ -18,6 +18,12 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/act-break/print`,
       color: "yellow",
     },
+    {
+      title: "Artifact Catalog Sheets",
+      description: "Handout for each house to record card names and clue classifications. One sheet per house.",
+      path: `/admin/games/${gameId}/print/artifact-catalog`,
+      color: "orange",
+    },
   ];
 
   return (
