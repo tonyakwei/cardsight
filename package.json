@@ -8,6 +8,7 @@
     "build": "pnpm --filter server prisma generate && pnpm --parallel --filter client --filter server build",
     "db:migrate": "pnpm --filter server prisma migrate dev",
     "db:seed": "pnpm --filter server prisma db seed",
+    "db:seed-test": "pnpm --filter server exec tsx prisma/seed-test-game.ts",
     "db:studio": "pnpm --filter server prisma studio"
   },
   "volta": {

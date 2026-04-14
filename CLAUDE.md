@@ -129,7 +129,8 @@ cardsight/
 │   │   └── lib/prisma.ts
 │   └── prisma/
 │       ├── schema.prisma
-│       └── seed.ts
+│       ├── seed.ts
+│       └── seed-test-game.ts    # "The Blackwood Files" test game (idempotent)
 ├── shared/                    # Shared TypeScript types
 │   ├── types.ts               # Player-facing types + barrel for admin-types
 │   ├── admin-types.ts         # All Admin* interfaces (single source of truth)
@@ -199,6 +200,18 @@ pnpm dev:client                   # Vite on port 5173 (proxies /api → 3001)
 ```
 
 Admin panel: http://localhost:5173/admin
+
+### Seeding a test game
+
+```bash
+pnpm db:seed-test                 # Seed "The Blackwood Files" test game (idempotent)
+```
+
+**"The Blackwood Files"** is a complete 3-act test game: three rival newspapers (The Herald, The Beacon, The Chronicle) investigate a $40M government fraud. It creates 54 cards (18 physical cards reused across 3 acts, 6 per house per act), 19 missions (2 per house per act + 1 cross-house in Act 1), 5 card sets (Sources, Documents, Photos, Money Trail, Connections), 7 complex cards with answers, 4 missions with answers, 3 consequences (warning, lock, redistribute), 9 story sheets (1 per house per act), 1 showtime (Act 3 "Press Publish" synchronized reveal), and 5 designs. The script is idempotent — it deletes any existing "The Blackwood Files" game before recreating it. Can also be run against a remote DB by setting `DATABASE_URL`:
+
+```bash
+DATABASE_URL="postgres://..." pnpm db:seed-test
+```
 
 ### Environment variables (`server/.env`)
 
