@@ -112,10 +112,11 @@ export async function createCard(gameId: string, data: Record<string, any>) {
   const houseIds: string[] = data.houseIds ?? [];
   delete data.houseIds;
 
-  // Auto-assign a random unused physical card if not provided
+  // Auto-assign a random unused physical card if not provided (scoped to act)
+  const act: number = data.act ?? 1;
   let physicalCardId = data.physicalCardId;
   if (!physicalCardId) {
-    physicalCardId = await pickRandomPhysicalCardId(gameId);
+    physicalCardId = await pickRandomPhysicalCardId(gameId, act);
   }
   delete data.physicalCardId;
 
@@ -312,19 +313,19 @@ export async function resetAllCards(gameId: string) {
 
 // === Physical Card Helpers ===
 
-async function getUsedPhysicalIds(gameId: string): Promise<Set<string>> {
+async function getUsedPhysicalIds(gameId: string, act: number): Promise<Set<string>> {
   const existing = await prisma.card.findMany({
-    where: { gameId },
+    where: { gameId, act },
     select: { physicalCardId: true },
   });
   return new Set(existing.map((c) => c.physicalCardId));
 }
 
-async function pickRandomPhysicalCardId(gameId: string): Promise<string> {
-  const used = await getUsedPhysicalIds(gameId);
+async function pickRandomPhysicalCardId(gameId: string, act: number): Promise<string> {
+  const used = await getUsedPhysicalIds(gameId, act);
   const available = ALL_PHYSICAL_IDS.filter((id) => !used.has(id));
   if (available.length === 0) {
-    throw new AppError(400, "All 54 physical cards are already assigned in this game");
+    throw new AppError(400, `All 54 physical cards are already assigned in act ${act}`);
   }
   return available[Math.floor(Math.random() * available.length)];
 }
@@ -335,29 +336,40 @@ export async function randomizePhysicalCards(gameId: string) {
 
   const cards = await prisma.card.findMany({
     where: { gameId, deletedAt: null },
-    select: { id: true },
+    select: { id: true, act: true },
     orderBy: { sortOrder: "asc" },
   });
 
-  if (cards.length > ALL_PHYSICAL_IDS.length) {
-    throw new AppError(400, `Game has ${cards.length} cards but only ${ALL_PHYSICAL_IDS.length} physical cards exist`);
+  // Group by act and shuffle independently per act
+  const byAct = new Map<number, { id: string }[]>();
+  for (const card of cards) {
+    const group = byAct.get(card.act) ?? [];
+    group.push(card);
+    byAct.set(card.act, group);
   }
 
-  // Fisher-Yates shuffle
-  const shuffled = [...ALL_PHYSICAL_IDS];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  const updates: ReturnType<typeof prisma.card.update>[] = [];
+  for (const [act, actCards] of byAct) {
+    if (actCards.length > ALL_PHYSICAL_IDS.length) {
+      throw new AppError(400, `Act ${act} has ${actCards.length} cards but only ${ALL_PHYSICAL_IDS.length} physical cards exist`);
+    }
+    // Fisher-Yates shuffle
+    const shuffled = [...ALL_PHYSICAL_IDS];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    for (let i = 0; i < actCards.length; i++) {
+      updates.push(
+        prisma.card.update({
+          where: { id: actCards[i].id },
+          data: { physicalCardId: shuffled[i] },
+        }),
+      );
+    }
   }
 
-  await prisma.$transaction(
-    cards.map((card, i) =>
-      prisma.card.update({
-        where: { id: card.id },
-        data: { physicalCardId: shuffled[i] },
-      }),
-    ),
-  );
+  await prisma.$transaction(updates);
 
   return prisma.card.findMany({
     where: { gameId, deletedAt: null },

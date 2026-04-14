@@ -20,7 +20,7 @@ export function PrintCenter() {
     },
     {
       title: "Artifact Catalog Sheets",
-      description: "Handout for each house to record card names and clue classifications. One sheet per house.",
+      description: "Handout for each house per act to record card names and clue classifications.",
       path: `/admin/games/${gameId}/print/artifact-catalog`,
       color: "orange",
     },

@@ -149,10 +149,10 @@ router.post("/games/:gameId/cards/randomize-physical", async (req, res) => {
 // === QR Code ===
 
 router.get("/games/:gameId/cards/:cardId/qr", async (req, res) => {
-  await adminService.getCard(req.params.gameId, req.params.cardId);
-  const buffer = await qrService.generateQRCode(req.params.cardId);
+  const card = await adminService.getCard(req.params.gameId, req.params.cardId);
+  const buffer = await qrService.generateQRCode(card.physicalCardId);
   res.set("Content-Type", "image/png");
-  res.set("Content-Disposition", `attachment; filename="card-${req.params.cardId}.png"`);
+  res.set("Content-Disposition", `attachment; filename="card-${card.physicalCardId}.png"`);
   res.send(buffer);
 });
 

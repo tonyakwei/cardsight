@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router";
-import { fetchCard, postScan, postExamine, CardNotFoundError } from "../../api/cards";
+import { fetchCard, postScan, postExamine, CardNotFoundError, CardWrongActError } from "../../api/cards";
 import { getSessionHash } from "../../utils/session";
 import { CardShell } from "./CardShell";
 import { CardContent } from "./CardContent";
@@ -23,6 +23,7 @@ export function CardViewer() {
   const [card, setCard] = useState<CardViewerResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [wrongAct, setWrongAct] = useState(false);
   const [examined, setExamined] = useState(false);
   const [justSolved, setJustSolved] = useState(false);
   const [flashDone, setFlashDone] = useState(
@@ -42,6 +43,8 @@ export function CardViewer() {
     } catch (err) {
       if (err instanceof CardNotFoundError) {
         setNotFound(true);
+      } else if (err instanceof CardWrongActError) {
+        setWrongAct(true);
       }
     } finally {
       setLoading(false);
@@ -87,6 +90,22 @@ export function CardViewer() {
     return <PhysicalCardFlash cardId={cardId} act={card?.act ?? undefined} onComplete={() => setFlashDone(true)} />;
   }
   if (loading) return <LoadingState />;
+  if (wrongAct) {
+    return (
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        height: "100dvh", color: "#888", fontFamily: "system-ui", padding: "2rem", textAlign: "center",
+      }}>
+        <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>~</div>
+        <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "#aaa", marginBottom: "0.5rem" }}>
+          This card is not active right now
+        </div>
+        <div style={{ fontSize: "0.85rem", color: "#666" }}>
+          Check with your host for the current act's cards.
+        </div>
+      </div>
+    );
+  }
   if (notFound || !card) return <NotFoundState />;
 
   const isComplex = card.complexity === "complex";

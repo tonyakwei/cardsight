@@ -13,6 +13,7 @@ const GAME_NAV_ITEMS = [
   { label: "Act Break", path: "/act-break", icon: "⏸" },
   { label: "Simulator", path: "/simulator", icon: "🔀" },
   { label: "Print Center", path: "/print", icon: "🖨" },
+  { label: "Host Console", path: "/console", icon: "📱" },
 ];
 
 export function AdminLayout() {

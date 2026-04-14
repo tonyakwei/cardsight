@@ -11,17 +11,70 @@ import type {
   AnswerResponse,
 } from "@cardsight/shared";
 
+/**
+ * Resolve a cardId that may be either a game card UUID or a physical card UUID.
+ * Tries game card ID first (for admin QR preview), then resolves physical card
+ * UUID via the active game's current act.
+ */
+async function resolveCard<T>(
+  cardId: string,
+  query: (id: string) => Promise<T | null>,
+): Promise<T> {
+  // 1. Try as game card ID (direct DB lookup)
+  const byId = await query(cardId);
+  if (byId) return byId;
+
+  // 2. Try as physical card UUID — find the active game
+  const activeGame = await prisma.game.findFirst({
+    where: { status: "active" },
+    select: { id: true, currentAct: true },
+  });
+
+  if (!activeGame) {
+    throw new AppError(404, "Card not found");
+  }
+
+  // Look up the card for the current act
+  const byPhysical = await prisma.card.findFirst({
+    where: {
+      physicalCardId: cardId,
+      gameId: activeGame.id,
+      act: activeGame.currentAct,
+      deletedAt: null,
+    },
+    select: { id: true },
+  });
+
+  if (byPhysical) {
+    return (await query(byPhysical.id))!;
+  }
+
+  // Check if card exists in a different act (wrong act scan)
+  const inOtherAct = await prisma.card.findFirst({
+    where: {
+      physicalCardId: cardId,
+      gameId: activeGame.id,
+      deletedAt: null,
+    },
+    select: { act: true },
+  });
+
+  if (inOtherAct) {
+    throw new AppError(410, "This card is not active in the current act");
+  }
+
+  throw new AppError(404, "Card not found");
+}
+
 export async function getCardForViewer(
   cardId: string,
 ): Promise<CardViewerResponse> {
-  const card = await prisma.card.findUnique({
-    where: { id: cardId },
-    include: { design: true },
-  });
-
-  if (!card) {
-    throw new AppError(404, "Card not found");
-  }
+  const card = await resolveCard(cardId, (id) =>
+    prisma.card.findUnique({
+      where: { id },
+      include: { design: true },
+    }),
+  );
 
   // Determine card status
   let status: CardViewerResponse["status"] = "available";
@@ -111,19 +164,17 @@ export async function recordScan(
   sessionHash?: string,
   userAgent?: string,
 ): Promise<ScanResponse> {
-  const card = await prisma.card.findUnique({
-    where: { id: cardId },
-    select: {
-      id: true,
-      gameId: true,
-      selfDestructTimer: true,
-      selfDestructedAt: true,
-    },
-  });
-
-  if (!card) {
-    throw new AppError(404, "Card not found");
-  }
+  const card = await resolveCard(cardId, (id) =>
+    prisma.card.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        gameId: true,
+        selfDestructTimer: true,
+        selfDestructedAt: true,
+      },
+    }),
+  );
 
   // Log the scan event
   await prisma.scanEvent.create({
@@ -144,19 +195,17 @@ export async function recordScan(
 export async function examineCard(
   cardId: string,
 ): Promise<ExamineResponse> {
-  const card = await prisma.card.findUnique({
-    where: { id: cardId },
-    select: {
-      id: true,
-      examinedAt: true,
-      selfDestructTimer: true,
-      selfDestructedAt: true,
-    },
-  });
-
-  if (!card) {
-    throw new AppError(404, "Card not found");
-  }
+  const card = await resolveCard(cardId, (id) =>
+    prisma.card.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        examinedAt: true,
+        selfDestructTimer: true,
+        selfDestructedAt: true,
+      },
+    }),
+  );
 
   const updateData: Record<string, any> = {};
 
@@ -191,22 +240,20 @@ export async function checkAnswer(
   answer: string | string[] | Record<string, string>,
   sessionHash?: string,
 ): Promise<AnswerResponse> {
-  const card = await prisma.card.findUnique({
-    where: { id: cardId },
-    select: {
-      id: true,
-      gameId: true,
-      isAnswerable: true,
-      isSolved: true,
-      answerTemplateType: true,
-      answerId: true,
-      lockedOut: true,
-    },
-  });
-
-  if (!card) {
-    throw new AppError(404, "Card not found");
-  }
+  const card = await resolveCard(cardId, (id) =>
+    prisma.card.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        gameId: true,
+        isAnswerable: true,
+        isSolved: true,
+        answerTemplateType: true,
+        answerId: true,
+        lockedOut: true,
+      },
+    }),
+  );
 
   if (!card.isAnswerable || !card.answerTemplateType || !card.answerId) {
     throw new AppError(400, "This card does not accept answers");

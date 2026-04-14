@@ -20,6 +20,7 @@ import { StorySheetManager } from "./components/admin/StorySheetManager";
 import { StorySheetPrint } from "./components/admin/StorySheetPrint";
 import { PrintCenter } from "./components/admin/PrintCenter";
 import { ArtifactCatalogPrint } from "./components/admin/ArtifactCatalogPrint";
+import { HostConsole } from "./components/admin/HostConsole";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
 const theme = createTheme({
@@ -48,6 +49,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/simulator" element={<TableSimulator />} />
             <Route path="games/:gameId/print" element={<PrintCenter />} />
             <Route path="games/:gameId/print/artifact-catalog" element={<ArtifactCatalogPrint />} />
+            <Route path="games/:gameId/console" element={<HostConsole />} />
           </Route>
           <Route
             path="*"

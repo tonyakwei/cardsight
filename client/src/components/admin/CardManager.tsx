@@ -13,6 +13,7 @@ import {
   ActionIcon,
   Switch,
   Checkbox,
+  Select,
 } from "@mantine/core";
 import {
   fetchGame,
@@ -38,6 +39,7 @@ import {
 import { CardRow } from "./CardRow";
 import { SetReviewBanner } from "./SetReviewBanner";
 import { BulkActionBar } from "./BulkActionBar";
+import { useSectionOpen } from "../../hooks/useSectionCollapse";
 
 export function CardManager() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -52,6 +54,7 @@ export function CardManager() {
   const [search, setSearch] = useState("");
   const [showDeleted, setShowDeleted] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [newCardAct, setNewCardAct] = useState<string>("1");
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -109,9 +112,9 @@ export function CardManager() {
 
   const handleNewCard = useCallback(async () => {
     if (!gameId) return;
-    const card = await createCard(gameId, {});
+    await createCard(gameId, { act: Number(newCardAct) });
     await loadData();
-  }, [gameId, loadData]);
+  }, [gameId, newCardAct, loadData]);
 
   const handleResetAll = useCallback(async () => {
     if (!gameId) return;
@@ -229,6 +232,18 @@ export function CardManager() {
           <Button size="xs" variant="light" color="red" onClick={handleResetAll}>
             Reset All
           </Button>
+          <Select
+            size="xs"
+            value={newCardAct}
+            onChange={(v) => setNewCardAct(v ?? "1")}
+            data={[
+              { label: "Act 1", value: "1" },
+              { label: "Act 2", value: "2" },
+              { label: "Act 3", value: "3" },
+            ]}
+            style={{ width: 90 }}
+            allowDeselect={false}
+          />
           <Button size="sm" color="yellow" onClick={handleNewCard}>
             + New Card
           </Button>
@@ -562,34 +577,85 @@ function ActGroupedCardList({
   return (
     <Stack gap="lg">
       {sortedActs.map((act) => (
-        <div key={act ?? "none"}>
-          <Group gap="sm" mb="sm" pb="xs" style={{ borderBottom: "1px solid var(--mantine-color-dark-6)" }}>
-            <Text size="sm" fw={700} c="yellow.5" tt="uppercase" lts="0.08em">
-              {act !== null ? `Act ${act}` : "No Act Assigned"}
-            </Text>
-            <Badge size="xs" variant="filled" color="dark">{groups.get(act)!.length}</Badge>
-          </Group>
-          <Stack gap={0}>
-            {groups.get(act)!.map((card) => (
-              <CardRow
-                key={card.id}
-                card={card}
-                gameId={gameId}
-                designs={designs}
-                cardSets={cardSets}
-                houses={houses}
-                selected={selectedIds.has(card.id)}
-                onToggleSelect={() => onToggleSelect(card.id)}
-                onCardUpdated={onCardUpdated}
-                onCardRemoved={onCardRemoved}
-                onHousesChanged={onHousesChanged}
-                onCardSetsChanged={onCardSetsChanged}
-                onReorder={onReorder}
-              />
-            ))}
-          </Stack>
-        </div>
+        <ActGroup
+          key={act ?? "none"}
+          act={act}
+          cards={groups.get(act)!}
+          gameId={gameId}
+          designs={designs}
+          cardSets={cardSets}
+          houses={houses}
+          selectedIds={selectedIds}
+          onToggleSelect={onToggleSelect}
+          onCardUpdated={onCardUpdated}
+          onCardRemoved={onCardRemoved}
+          onHousesChanged={onHousesChanged}
+          onCardSetsChanged={onCardSetsChanged}
+          onReorder={onReorder}
+        />
       ))}
     </Stack>
+  );
+}
+
+function ActGroup({
+  act, cards, gameId, designs, cardSets, houses, selectedIds,
+  onToggleSelect, onCardUpdated, onCardRemoved, onHousesChanged, onCardSetsChanged, onReorder,
+}: {
+  act: number | null;
+  cards: AdminCard[];
+  gameId: string;
+  designs: AdminDesign[];
+  cardSets: AdminCardSet[];
+  houses: AdminHouse[];
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onCardUpdated: (card: AdminCard) => void;
+  onCardRemoved: (id: string) => void;
+  onHousesChanged: () => void;
+  onCardSetsChanged: () => void;
+  onReorder: (id: string, dir: "up" | "down") => void;
+}) {
+  const [open, toggle] = useSectionOpen(`cardmanager-act-${act ?? "none"}`);
+
+  return (
+    <div>
+      <Group
+        gap="sm"
+        mb={open ? "sm" : 0}
+        pb="xs"
+        style={{ borderBottom: "1px solid var(--mantine-color-dark-6)", cursor: "pointer" }}
+        onClick={toggle}
+      >
+        <Text size="xs" c="dimmed" style={{ width: 16, textAlign: "center", userSelect: "none" }}>
+          {open ? "▾" : "▸"}
+        </Text>
+        <Text size="sm" fw={700} c="yellow.5" tt="uppercase" lts="0.08em">
+          {act !== null ? `Act ${act}` : "No Act Assigned"}
+        </Text>
+        <Badge size="xs" variant="filled" color="dark">{cards.length}</Badge>
+      </Group>
+      {open && (
+        <Stack gap={0}>
+          {cards.map((card) => (
+            <CardRow
+              key={card.id}
+              card={card}
+              gameId={gameId}
+              designs={designs}
+              cardSets={cardSets}
+              houses={houses}
+              selected={selectedIds.has(card.id)}
+              onToggleSelect={() => onToggleSelect(card.id)}
+              onCardUpdated={onCardUpdated}
+              onCardRemoved={onCardRemoved}
+              onHousesChanged={onHousesChanged}
+              onCardSetsChanged={onCardSetsChanged}
+              onReorder={onReorder}
+            />
+          ))}
+        </Stack>
+      )}
+    </div>
   );
 }

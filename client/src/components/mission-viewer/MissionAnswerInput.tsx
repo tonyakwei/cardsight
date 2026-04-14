@@ -1,7 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { postMissionAnswer } from "../../api/missions";
 import { getSessionHash } from "../../utils/session";
 import type { AnswerMeta } from "@cardsight/shared";
+
+function randomDelay() {
+  return 500 + Math.random() * 1000;
+}
 
 interface Props {
   missionId: string;
@@ -17,6 +21,8 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
   const [hint, setHint] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [lastResult, setLastResult] = useState<"correct" | "incorrect" | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [redFlash, setRedFlash] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async () => {
@@ -31,15 +37,20 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
         houseId,
         getSessionHash(),
       );
+
+      await new Promise((r) => setTimeout(r, randomDelay()));
+
       setAttempts(result.attemptNumber);
 
       if (result.correct) {
         setLastResult("correct");
-        setTimeout(onCompleted, 800);
+        setShowConfetti(true);
+        setTimeout(onCompleted, 2200);
       } else {
         setLastResult("incorrect");
+        setRedFlash(true);
         setShake(true);
-        setTimeout(() => setShake(false), 500);
+        setTimeout(() => { setShake(false); setRedFlash(false); }, 600);
         if (result.hint) setHint(result.hint);
         setValue("");
         inputRef.current?.focus();
@@ -56,8 +67,25 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
     !hint && answerMeta?.hintAvailable && attempts > 0 && attempts < hintThreshold;
 
   return (
-    <div style={{ marginTop: "2rem" }}>
-      <div style={{ animation: shake ? "shakeInput 0.4s ease-in-out" : undefined }}>
+    <div style={{ marginTop: "2rem", position: "relative", overflow: "hidden" }}>
+      {showConfetti && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to top, rgba(105,240,174,0.25) 0%, rgba(105,240,174,0) 100%)",
+          animation: "greenWave 1.2s ease-out forwards",
+          borderRadius: "12px", pointerEvents: "none", zIndex: 1,
+        }} />
+      )}
+      {showConfetti && <MissionConfetti />}
+      {redFlash && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "rgba(255, 82, 82, 0.15)",
+          animation: "redFlashAnim 0.6s ease-out forwards",
+          borderRadius: "12px", pointerEvents: "none", zIndex: 1,
+        }} />
+      )}
+      <div style={{ animation: shake ? "shakeInput 0.4s ease-in-out" : undefined, position: "relative", zIndex: 3 }}>
         <label style={{
           display: "block",
           fontSize: "0.75rem",
@@ -160,7 +188,58 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
           from { opacity: 0; transform: translateY(-8px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes greenWave {
+          0% { transform: translateY(100%); opacity: 0; }
+          30% { opacity: 1; }
+          100% { transform: translateY(0%); opacity: 0; }
+        }
+        @keyframes redFlashAnim {
+          0% { opacity: 1; }
+          100% { opacity: 0; }
+        }
       `}</style>
     </div>
+  );
+}
+
+const CONFETTI_COLORS = ["#69f0ae", "#00e676", "#b9f6ca", "#a5d6a7", "#66bb6a"];
+
+function MissionConfetti() {
+  const particles = useMemo(() =>
+    Array.from({ length: 24 }, (_, i) => ({
+      left: 4 + (i / 24) * 92,
+      size: i % 3 === 0 ? 6 : 4,
+      round: i % 2 === 0,
+      color: CONFETTI_COLORS[i % 5],
+      duration: 0.8 + Math.random() * 0.6,
+      delay: Math.random() * 0.3,
+      xDrift: (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 30),
+      yTravel: 80 + Math.random() * 80,
+    })),
+  []);
+
+  return (
+    <>
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute", bottom: 0, left: `${p.left}%`,
+            width: p.size, height: p.size,
+            borderRadius: p.round ? "50%" : "1px",
+            background: p.color,
+            animation: `mc-${i} ${p.duration}s ease-out ${p.delay}s forwards`,
+            opacity: 0, pointerEvents: "none", zIndex: 2,
+          }}
+        />
+      ))}
+      <style>{particles.map((p, i) => `
+        @keyframes mc-${i} {
+          0% { transform: translateY(0) scale(0); opacity: 0; }
+          20% { opacity: 1; transform: translateY(-${p.yTravel * 0.15}px) translateX(${p.xDrift * 0.2}px) scale(1); }
+          100% { transform: translateY(-${p.yTravel}px) translateX(${p.xDrift}px) scale(0.3); opacity: 0; }
+        }
+      `).join("")}</style>
+    </>
   );
 }

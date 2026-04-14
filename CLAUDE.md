@@ -2,9 +2,9 @@
 
 ## What this is
 
-CardSight is the QR code infrastructure for **Twin Tale Crossroads (TTC)**, a live social game by **All Together Now**. TTC seats 15-24 players across 3-4 teams ("houses") for an evening of collaborative puzzle-solving and consequential storytelling across three acts.
+CardSight is the QR code infrastructure for **Twisting Tales** (formerly Twin Tale Crossroads / TTC), a live social game by **All Together Now**. Twisting Tales seats 15-24 players across 3-4 teams ("houses") for an evening of collaborative puzzle-solving and consequential storytelling across three acts.
 
-Physical cards with QR codes are distributed around the room. When a player scans one on their phone, they see styled content — a clue, a puzzle, a mission briefing. The content lives in a database, not on the card, so the same physical cards can serve different games.
+Physical cards with QR codes are distributed across all houses' tables. Players scan cards to catalog their clue categories (inventory phase), trade cards between houses to acquire what they need, then examine cards to reveal clue content and solve missions. The content lives in a database, not on the card, so the same physical cards can serve different games and different acts.
 
 ## Design philosophy
 
@@ -70,6 +70,7 @@ cardsight/
 │   │   │   └── admin/              # Admin panel
 │   │   │       ├── AdminLayout.tsx       # AppShell with gold/dark theme, sidebar nav within games
 │   │   │       ├── CollapsibleSection.tsx # Reusable collapsible section with sessionStorage persistence
+│   │   │       ├── HostConsole.tsx        # Mobile host console (5-tab: pulse, activity, cards, missions, showtime)
 │   │   │       ├── PrintCenter.tsx       # Unified print hub (story sheets, consequence cards)
 │   │   │       ├── GameList.tsx          # Game cards
 │   │   │       ├── CardManager.tsx       # Card list with set tabs, act grouping, mission summary
@@ -142,8 +143,8 @@ cardsight/
 
 ## Data model overview
 
-- **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived). Only one active at a time.
-- **Card** — a QR-scannable unit of content. Belongs to a game. Has a required `physicalCardId` (UUID linking to an entry in `physical-cards.json` — unique per game) which determines which printed physical card this game card corresponds to. Three naming layers: `cardSet.name` for dev tracking/mission grouping (e.g., "Stone"), `clueVisibleCategory` for the player-facing clue category shown on scan (e.g., "Broken Stone Lettering"), and `header` (optional) for per-card narrative flavor headings shown on the card content (e.g., "The Fragment of Orion"). The physical card's permanent printed name (e.g., "Nervous Bumblebee") lives in `physical-cards.json` and is looked up by `physicalCardId`. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash. Cards have a `complexity` field: `simple` (default) shows the clue directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
+- **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived), `currentAct` (tracks which act is live, updated by `transitionAct`). Only one active at a time.
+- **Card** — a QR-scannable unit of content. Belongs to a game. Has a required `physicalCardId` (UUID linking to an entry in `physical-cards.json` — unique per game per act) and a required `act` field (Int, default 1). The same physical card can map to different game cards in different acts, enabling physical card reuse across acts (54 cards serve all 3 acts; collected and redistributed at act breaks). Three naming layers: `cardSet.name` for dev tracking/mission grouping (e.g., "Stone"), `clueVisibleCategory` for the player-facing clue category shown on scan (e.g., "Broken Stone Lettering"), and `header` (optional) for per-card narrative flavor headings shown on the card content (e.g., "The Fragment of Orion"). The physical card's permanent printed name (e.g., "Nervous Bumblebee") lives in `physical-cards.json` and is looked up by `physicalCardId`. Has a design, optional answer template, optional self-destruct timer. Can be assigned to a CardSet and multiple Houses. Every card shows a splash gate before content (showing clue category + EXAMINE button); once examined, subsequent scans skip the splash. Cards have a `complexity` field: `simple` (default) shows the clue directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
 - **CardSet** — first-class grouping (e.g., "Signals", "Navigation"). Has name, color, admin notes (editable inline). Cards are filtered by set in the admin. Set reviews track which sets have been reviewed since last edit. Each set tab shows which missions reference it.
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, color. Cards have a many-to-many relationship with houses via CardHouse join table.
 - **Mission** — a task for specific house(s) in a specific act. ~6 per house per act, teams complete 3-4. Has title, description, `puzzleDescription` (shown to players), required clue sets (references CardSet IDs with counts), optional mission card link, optional Design for theming, and polymorphic answer template. Player-scannable via QR codes at `/m/:missionId`. Many-to-many with houses via MissionHouse (supports collaborative cross-house missions). Contains consequence texts (completed/not completed) with optional images. Can be locked with `lockedOut`/`lockedOutReason` (used by future act consequences system).
@@ -158,6 +159,8 @@ cardsight/
 
 ## Key architectural decisions
 
+- **Physical card reuse across acts** — 54 physical cards serve all 3 acts (54 / 3 houses = 18 per house per act). At act breaks, the host collects all cards and redistributes. The same physical card can map to different game cards in different acts via the `@@unique([gameId, physicalCardId, act])` constraint. This design also supports future "no reuse" mode (one game card per physical card across the whole game) without code changes — it's purely a content authoring decision.
+- **QR scan resolution** — QR codes embed physical card UUIDs (`/c/<physicalCardUUID>`). The `resolveCard()` helper in `card.service.ts` first tries the ID as a game card UUID (for admin QR preview), then resolves it as a physical card UUID by finding the active game and looking up the card for `game.currentAct`. If the card exists in a different act, returns 410 ("wrong act"). All 4 player-facing card functions use this resolver.
 - **Polymorphic answers** — `answerId` on Card/Mission is NOT a Prisma relation. The service layer resolves it by `answerTemplateType`. Adding new answer types is purely additive.
 - **Self-destruct is server-authoritative** — timer starts when player presses the EXAMINE button (POST `/api/cards/:id/examine`), not on page load. Client counts down from server timestamp.
 - **Splash gate** — every card shows a splash screen on first scan displaying the clue category and an EXAMINE button with a warning. Once examined (`examinedAt` is set on Card), subsequent scans skip the splash and go straight to content. Timer starts on examine, not on scan.
@@ -168,7 +171,7 @@ cardsight/
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
 - **Act consequences are configurable per-mission** — `MissionConsequence` records define what happens when a mission succeeds or fails at act end. Types: `warning` (text shown on a target mission), `lock` (locks a target mission with explanation), `redistribute` (reminder to host about physical card redistribution). When admin hits "End Act", `transitionAct` evaluates each mission's completion per house and creates `TriggeredConsequence` records. Lock consequences immediately set `lockedOut` on the target mission. Warning consequences are fetched by the player-facing mission viewer and displayed as yellow callouts. Redistribute consequences appear in the act break view for the host. All consequences are configurable per-mission in the admin with type, target mission, trigger condition (on failure/success), and message.
 - **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a themed print preview with switchable themes (Space, Explorer), markdown rendering, Google Fonts (loaded dynamically), and `print-color-adjust: exact` for dark backgrounds. Theme system is defined in `ConsequencePrint.tsx` via a `CardTheme` interface driving fonts, colors, backgrounds, and border styles. Print link lives in MissionManager toolbar.
-- **Act transitions are explicit** — "End Act N" button locks current act's cards, unlocks next act's cards, and navigates to the act break view.
+- **Act transitions are explicit** — "End Act N" button locks current act's cards, unlocks next act's cards, updates `game.currentAct`, evaluates mission consequences, and navigates to the act break view. The `currentAct` field is the authoritative source for which act a game is in — used by the QR scan resolver and dashboard.
 - **Showtime uses polling, not WebSockets** — FILLING phase polls every 3s, SYNCING phase polls every 500ms, REVEALED phase stops. In a room of people shouting a countdown, sub-second stagger is imperceptible.
 - **Sync press is server-authoritative** — each house POSTs their press timestamp. Server checks within a Prisma transaction if all presses fall within the sync window. If not, resets all presses atomically.
 - **Answer validation is shared** — `validateAnswer()` is extracted to `server/src/services/answer-validation.ts` and used by both card.service.ts and showtime.service.ts.
@@ -221,6 +224,7 @@ Admin panel: http://localhost:5173/admin
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator with physical card name toggle |
+| `/admin/games/:id/console` | HostConsole | Mobile host console — pulse, activity feed, card/mission lock, showtime control |
 | `/admin/games/:id/print` | PrintCenter | Unified print hub (story sheets, consequence cards) |
 | `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
 | `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |
@@ -351,6 +355,8 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Admin authentication (HTTP Basic Auth, env-controlled via `ENV_LEVEL`)
 
 - Story sheets (per house per act narrative documents, markdown editor, print view with mission lists and inline QR codes with transparent backgrounds, duplicated with games)
+- Mobile host console (`/admin/games/:id/console`) — phone-optimized 5-tab interface for live game hosting: pulse (stats, discovery, mission progress, end act), activity feed (live scan/answer stream), cards (search by physical name/color/set, lock/unlock/reset), missions (per-act list, lock/unlock), showtimes (slot status, force trigger, reset). Polls every 5s, big tap targets, confirmation dialogs on destructive actions
+- Act-based physical card reuse — same 54 physical cards serve all 3 acts; `@@unique([gameId, physicalCardId, act])` constraint; QR scan resolution via `resolveCard()` (physical UUID → active game → current act); wrong-act handling (410 + client message); `game.currentAct` tracking; per-act physical card shuffling; artifact catalog sheets per house per act; act-scoped dashboard stats
 - Railway deployment (single service: Express serves API + built Vite client + ATN landing page)
 
 ## Deployment (Railway)

@@ -11,6 +11,7 @@ export async function fetchCard(cardId: string): Promise<CardViewerResponse> {
   const res = await fetch(`${BASE}/${cardId}`);
   if (!res.ok) {
     if (res.status === 404) throw new CardNotFoundError();
+    if (res.status === 410) throw new CardWrongActError();
     throw new Error(`Failed to fetch card: ${res.status}`);
   }
   return res.json();
@@ -58,5 +59,12 @@ export class CardNotFoundError extends Error {
   constructor() {
     super("Card not found");
     this.name = "CardNotFoundError";
+  }
+}
+
+export class CardWrongActError extends Error {
+  constructor() {
+    super("Card not active in current act");
+    this.name = "CardWrongActError";
   }
 }

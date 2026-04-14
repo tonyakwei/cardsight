@@ -7,7 +7,9 @@ export async function getDashboard(gameId: string) {
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) throw new AppError(404, "Game not found");
 
-  // Run all queries in parallel
+  const currentAct = game.currentAct;
+
+  // Run all queries in parallel — overview/discovery scoped to current act
   const [
     totalCards,
     scannedCardIds,
@@ -20,48 +22,48 @@ export async function getDashboard(gameId: string) {
     houses,
     missions,
   ] = await Promise.all([
-    // Total non-deleted cards
-    prisma.card.count({ where: { gameId, deletedAt: null } }),
+    // Total non-deleted cards in current act
+    prisma.card.count({ where: { gameId, act: currentAct, deletedAt: null } }),
 
-    // Distinct cards that have been scanned
+    // Distinct cards in current act that have been scanned
     prisma.scanEvent.findMany({
-      where: { gameId },
+      where: { gameId, card: { act: currentAct } },
       distinct: ["cardId"],
       select: { cardId: true },
     }),
 
-    // Total scan count
-    prisma.scanEvent.count({ where: { gameId } }),
+    // Total scan count for current act
+    prisma.scanEvent.count({ where: { gameId, card: { act: currentAct } } }),
 
-    // Total answer attempts
-    prisma.answerAttempt.count({ where: { gameId } }),
+    // Total answer attempts for current act
+    prisma.answerAttempt.count({ where: { gameId, card: { act: currentAct } } }),
 
-    // Correct answer attempts
-    prisma.answerAttempt.count({ where: { gameId, isCorrect: true } }),
+    // Correct answer attempts for current act
+    prisma.answerAttempt.count({ where: { gameId, card: { act: currentAct }, isCorrect: true } }),
 
-    // Recent scans (last 20)
+    // Recent scans (last 20, all acts for activity feed)
     prisma.scanEvent.findMany({
       where: { gameId },
       orderBy: { scannedAt: "desc" },
       take: 20,
       include: {
-        card: { select: { physicalCardId: true, header: true, cardSetId: true } },
+        card: { select: { physicalCardId: true, header: true, cardSetId: true, act: true } },
       },
     }),
 
-    // Recent answer attempts (last 20)
+    // Recent answer attempts (last 20, all acts for activity feed)
     prisma.answerAttempt.findMany({
       where: { gameId },
       orderBy: { attemptedAt: "desc" },
       take: 20,
       include: {
-        card: { select: { physicalCardId: true, header: true, cardSetId: true } },
+        card: { select: { physicalCardId: true, header: true, cardSetId: true, act: true } },
       },
     }),
 
-    // Cards grouped by set (for discovery tracking)
+    // Cards grouped by set (for discovery tracking, current act only)
     prisma.card.findMany({
-      where: { gameId, deletedAt: null },
+      where: { gameId, act: currentAct, deletedAt: null },
       select: {
         id: true,
         physicalCardId: true,
@@ -80,7 +82,7 @@ export async function getDashboard(gameId: string) {
       orderBy: { name: "asc" },
     }),
 
-    // Missions with house info
+    // Missions with house info (all acts for big-picture view)
     prisma.mission.findMany({
       where: { gameId },
       include: {
@@ -149,6 +151,7 @@ export async function getDashboard(gameId: string) {
       at: s.scannedAt.toISOString(),
       cardId: s.card.physicalCardId,
       cardTitle: s.card.header,
+      act: s.card.act,
     })),
     ...recentAnswers.map((a: any) => ({
       type: "answer" as const,
@@ -157,12 +160,14 @@ export async function getDashboard(gameId: string) {
       cardTitle: a.card.header,
       isCorrect: a.isCorrect,
       attemptNumber: a.attemptNumber,
+      act: a.card.act,
     })),
   ]
     .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
     .slice(0, 30);
 
   return {
+    currentAct,
     overview: {
       totalCards,
       cardsScanned: scannedSet.size,

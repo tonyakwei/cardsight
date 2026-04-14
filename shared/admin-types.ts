@@ -11,6 +11,7 @@ export interface GameSummary {
   name: string;
   description: string | null;
   status: GameStatus;
+  currentAct: number;
   cardCount: number;
   createdAt: string;
   updatedAt: string;
@@ -29,7 +30,7 @@ export interface AdminCard {
   physicalCardId: string;
   header: string | null;
   description: string | null;
-  act: number | null;
+  act: number;
   cardSetId: string | null;
   cardSet: { id: string; name: string; color: string } | null;
   cardHouses: { id: string; house: { id: string; name: string; color: string } }[];
@@ -242,6 +243,7 @@ export interface ActTransitionResult {
 // === Live Dashboard ===
 
 export interface DashboardData {
+  currentAct: number;
   overview: {
     totalCards: number;
     cardsScanned: number;
@@ -262,6 +264,7 @@ export interface DashboardData {
     at: string;
     cardId: string;
     cardTitle: string;
+    act: number;
     isCorrect?: boolean;
     attemptNumber?: number;
   }[];
@@ -284,7 +287,7 @@ export interface SimulatorCard {
   id: string;
   physicalCardId: string;
   header: string | null;
-  act: number | null;
+  act: number;
   tableHouseId: string | null;
   cardSet: { id: string; name: string; color: string } | null;
   cardHouses: { house: { id: string; name: string; color: string } }[];

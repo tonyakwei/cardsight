@@ -36,6 +36,7 @@ model Game {
   name            String
   description     String?
   status          GameStatus @default(draft)
+  currentAct      Int        @default(1) @map("current_act")
   duplicatedFromId String?   @map("duplicated_from_id") @db.Uuid
   duplicatedFrom  Game?      @relation("GameLineage", fields: [duplicatedFromId], references: [id])
   duplicates      Game[]     @relation("GameLineage")
@@ -113,7 +114,7 @@ model Card {
   gameId              String              @map("game_id") @db.Uuid
   game                Game                @relation(fields: [gameId], references: [id])
   physicalCardId      String              @map("physical_card_id") @db.Uuid
-  act                 Int?
+  act                 Int                 @default(1)
   cardSetId           String?             @map("card_set_id") @db.Uuid
   cardSet             CardSet?            @relation(fields: [cardSetId], references: [id])
   clueVisibleCategory String?             @map("clue_visible_category")
@@ -149,7 +150,7 @@ model Card {
   scanEvents     ScanEvent[]
   answerAttempts AnswerAttempt[]
 
-  @@unique([gameId, physicalCardId])
+  @@unique([gameId, physicalCardId, act])
   @@map("cards")
 }
 

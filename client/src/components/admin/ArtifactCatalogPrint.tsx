@@ -6,6 +6,7 @@ import {
   Loader,
   Button,
   ActionIcon,
+  SegmentedControl,
 } from "@mantine/core";
 import {
   fetchGame,
@@ -27,7 +28,7 @@ const CARD_COLORS: { name: string; color: string }[] = [
   { name: "White", color: "#7f8c8d" },
 ];
 
-const ROWS_PER_COLOR = 7; // 7 × 6 = 42 slots, covers ~40 cards
+const ROWS_PER_COLOR = 4; // 4 × 6 = 24 slots, covers ~18 cards per house per act
 
 const THEME = {
   pageBg: "#f0e6d0",
@@ -47,6 +48,7 @@ export function ArtifactCatalogPrint() {
   const [game, setGame] = useState<GameDetail | null>(null);
   const [houses, setHouses] = useState<AdminHouse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [act, setAct] = useState("1");
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -93,9 +95,21 @@ export function ArtifactCatalogPrint() {
               {game.name} — Artifact Catalog Sheets
             </Text>
           </Group>
-          <Button size="sm" color="yellow" onClick={() => window.print()}>
-            Print
-          </Button>
+          <Group gap="sm">
+            <SegmentedControl
+              size="xs"
+              value={act}
+              onChange={(v) => setAct(v)}
+              data={[
+                { label: "Act 1", value: "1" },
+                { label: "Act 2", value: "2" },
+                { label: "Act 3", value: "3" },
+              ]}
+            />
+            <Button size="sm" color="yellow" onClick={() => window.print()}>
+              Print
+            </Button>
+          </Group>
         </Group>
 
         {houses.length === 0 && (
@@ -109,8 +123,9 @@ export function ArtifactCatalogPrint() {
       <div>
         {houses.map((house, i) => (
           <CatalogPage
-            key={house.id}
+            key={`${house.id}-${act}`}
             house={house}
+            act={Number(act)}
             isLast={i === houses.length - 1}
           />
         ))}
@@ -132,9 +147,11 @@ export function ArtifactCatalogPrint() {
 
 function CatalogPage({
   house,
+  act,
   isLast,
 }: {
   house: AdminHouse;
+  act: number;
   isLast: boolean;
 }) {
   const leftColors = CARD_COLORS.slice(0, 3);
@@ -222,7 +239,7 @@ function CatalogPage({
               marginTop: "3px",
             }}
           >
-            Artifact Catalog
+            Artifact Catalog — Act {act}
           </div>
         </div>
 

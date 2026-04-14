@@ -16,6 +16,7 @@ export async function listGames() {
     name: g.name,
     description: g.description,
     status: g.status,
+    currentAct: g.currentAct,
     cardCount: g._count.cards,
     createdAt: g.createdAt.toISOString(),
     updatedAt: g.updatedAt.toISOString(),
@@ -41,6 +42,7 @@ export async function getGame(gameId: string) {
     name: game.name,
     description: game.description,
     status: game.status,
+    currentAct: game.currentAct,
     cardCount: game._count.cards,
     designCount: game._count.designs,
     finishedCount,
@@ -77,6 +79,7 @@ export async function duplicateGame(gameId: string) {
         name: game.name + " (Copy)",
         description: game.description,
         status: "draft",
+        currentAct: 1,
         duplicatedFromId: game.id,
       },
     });
@@ -401,7 +404,13 @@ export async function transitionAct(gameId: string, fromAct: number) {
     }
   }
 
-  // 3. Count affected cards
+  // 3. Update game's current act
+  await prisma.game.update({
+    where: { id: gameId },
+    data: { currentAct: toAct },
+  });
+
+  // 4. Count affected cards
   const [locked, unlocked] = await Promise.all([
     prisma.card.count({ where: { gameId, act: fromAct, lockedOut: true, deletedAt: null } }),
     prisma.card.count({ where: { gameId, act: toAct, lockedOut: false, deletedAt: null } }),

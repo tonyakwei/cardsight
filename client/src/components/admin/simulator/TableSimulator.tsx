@@ -21,6 +21,66 @@ import { TableColumn } from "./TableColumn";
 import { PreviewSidebar } from "./PreviewSidebar";
 import physicalCards from "../../../../../shared/physical-cards.json";
 
+function printDistribution(
+  act: number | null,
+  cards: SimulatorCard[],
+  houses: AdminHouse[],
+  physicalNameMap: Map<string, string>,
+) {
+  const byHouse = new Map<string | null, SimulatorCard[]>();
+  for (const card of cards) {
+    const key = card.tableHouseId;
+    if (!byHouse.has(key)) byHouse.set(key, []);
+    byHouse.get(key)!.push(card);
+  }
+
+  const win = window.open("", "_blank");
+  if (!win) return;
+
+  let html = `<!DOCTYPE html><html><head><title>Distribution — Act ${act}</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: system-ui, sans-serif; padding: 0.5in; }
+      h1 { font-size: 18px; margin-bottom: 4px; }
+      h2 { font-size: 14px; margin: 16px 0 6px; padding-bottom: 4px; border-bottom: 2px solid; }
+      .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 12px; }
+      .card { font-size: 12px; padding: 3px 0; display: flex; gap: 6px; align-items: center; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .sub { font-size: 11px; color: #888; }
+      @media print { @page { size: letter portrait; margin: 0.5in; } }
+    </style></head><body>`;
+
+  html += `<h1>Card Distribution — Act ${act}</h1>
+    <p class="sub">${cards.length} cards across ${houses.length} houses</p>`;
+
+  for (const house of houses) {
+    const houseCards = byHouse.get(house.id) ?? [];
+    html += `<h2 style="border-color: ${house.color};">${house.name} (${houseCards.length} cards)</h2>`;
+    html += `<div class="cards">`;
+    for (const card of houseCards) {
+      const name = physicalNameMap.get(card.physicalCardId) ?? card.physicalCardId.slice(0, 8);
+      const setName = card.cardSet?.name ?? "";
+      html += `<div class="card"><span class="dot" style="background:${card.cardSet?.color ?? '#666'}"></span><strong>${name}</strong> <span class="sub">${setName}</span></div>`;
+    }
+    html += `</div>`;
+  }
+
+  const unassigned = byHouse.get(null) ?? [];
+  if (unassigned.length > 0) {
+    html += `<h2 style="border-color: #888;">Unassigned (${unassigned.length})</h2><div class="cards">`;
+    for (const card of unassigned) {
+      const name = physicalNameMap.get(card.physicalCardId) ?? card.physicalCardId.slice(0, 8);
+      html += `<div class="card"><strong>${name}</strong></div>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `</body></html>`;
+  win.document.write(html);
+  win.document.close();
+  win.print();
+}
+
 export function TableSimulator() {
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<GameDetail | null>(null);
@@ -95,7 +155,7 @@ export function TableSimulator() {
     : null;
 
   // Compute distinct acts from cards
-  const acts = [...new Set(cards.map((c) => c.act).filter((a): a is number => a !== null))].sort();
+  const acts = [...new Set(cards.map((c) => c.act))].sort();
 
   if (loading) {
     return (
@@ -137,6 +197,15 @@ export function TableSimulator() {
               Auto-Distribute
             </Button>
             <Button
+              size="xs"
+              variant="light"
+              color="cyan"
+              onClick={() => printDistribution(actNum, actCards, houses, physicalNameMap)}
+              disabled={!actNum || actCards.length === 0}
+            >
+              Print Distribution
+            </Button>
+            <Button
               size="sm"
               color="yellow"
               onClick={handleSave}
@@ -156,9 +225,6 @@ export function TableSimulator() {
                 Act {act}
               </Tabs.Tab>
             ))}
-            {cards.some((c) => c.act === null) && (
-              <Tabs.Tab value="none">No Act</Tabs.Tab>
-            )}
           </Tabs.List>
         </Tabs>
 

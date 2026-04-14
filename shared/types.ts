@@ -38,7 +38,7 @@ export interface CardViewerResponse {
   clueVisibleCategory: string | null;
   complexity: CardComplexity;
   clueContent: string | null;
-  act: number | null;
+  act: number;
   design: CardDesign | null;
 
   // State

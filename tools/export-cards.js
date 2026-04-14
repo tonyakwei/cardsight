@@ -38,8 +38,8 @@ async function main() {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
-  // Card is 1050x1725 — deviceScaleFactor 2 = 2100x3450 (600 DPI at 3.5"x5.75")
-  await page.setViewport({ width: 1200, height: 1900, deviceScaleFactor: 2 });
+  // Card is 1050x1725 — deviceScaleFactor 4 = 4200x6900 (1200 DPI at 3.5"x5.75")
+  await page.setViewport({ width: 1200, height: 1900, deviceScaleFactor: 4 });
 
   const fileUrl = `file://${PREVIEW_PATH}`;
   await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 30000 });
@@ -47,6 +47,12 @@ async function main() {
   // Wait for fonts to load and initial render
   await page.waitForFunction(() => document.fonts.ready.then(() => true), { timeout: 15000 });
   await page.waitForSelector('.card');
+
+  // Remove the preview scale so the card renders at full 1050x1725 CSS pixels
+  await page.evaluate(() => {
+    document.querySelector('.preview-area').style.transform = 'none';
+    document.querySelector('.preview-area').style.marginBottom = '0';
+  });
 
   // Get total card count
   const totalCards = await page.evaluate(() => CARDS.length);
