@@ -3,7 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "outDir": "./dist",
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@cardsight/shared": ["../shared/types.ts"]
+    }
   },
   "include": ["src/**/*", "../shared/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]

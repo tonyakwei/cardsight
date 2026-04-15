@@ -4,6 +4,12 @@ import type { GameStatus, AnswerTemplateType, CardComplexity, ShowtimePhase, Con
 // Single source of truth for all admin API response shapes.
 // These are re-exported from types.ts so consumers can import from "@cardsight/shared".
 
+/** { id, name, color } — used for house/set references throughout admin types */
+export type HouseRef = { id: string; name: string; color: string };
+
+/** { id, name } — used for design references throughout admin types */
+export type DesignRef = { id: string; name: string };
+
 // === Games ===
 
 export interface GameSummary {
@@ -32,14 +38,14 @@ export interface AdminCard {
   description: string | null;
   act: number;
   cardSetId: string | null;
-  cardSet: { id: string; name: string; color: string } | null;
-  cardHouses: { id: string; house: { id: string; name: string; color: string } }[];
+  cardSet: HouseRef | null;
+  cardHouses: { id: string; house: HouseRef }[];
   clueVisibleCategory: string | null;
   complexity: CardComplexity;
   clueContent: string | null;
   notes: string | null;
   designId: string | null;
-  design: { id: string; name: string } | null;
+  design: DesignRef | null;
   answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;
   isAnswerable: boolean;
@@ -120,7 +126,7 @@ export interface AdminMission {
   answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;
   designId: string | null;
-  design: { id: string; name: string } | null;
+  design: DesignRef | null;
   isCompleted: boolean;
   lockedOut: boolean;
   lockedOutReason: string | null;
@@ -131,7 +137,7 @@ export interface AdminMission {
   consequenceImageNotCompleted: string | null;
   sortOrder: number;
   notes: string | null;
-  missionHouses: { id: string; house: { id: string; name: string; color: string } }[];
+  missionHouses: { id: string; house: HouseRef }[];
   createdAt: string;
   updatedAt: string;
 }
@@ -157,13 +163,13 @@ export interface AdminTriggeredConsequence {
     sourceMission: { id: string; title: string };
     targetMission: { id: string; title: string } | null;
   };
-  house: { id: string; name: string; color: string };
+  house: HouseRef;
   triggeredAtAct: number;
   triggeredAt: string;
 }
 
 export interface ActBreakHouse {
-  house: { id: string; name: string; color: string };
+  house: HouseRef;
   missions: {
     id: string;
     title: string;
@@ -183,7 +189,7 @@ export interface AdminStorySheet {
   id: string;
   gameId: string;
   houseId: string;
-  house: { id: string; name: string; color: string };
+  house: HouseRef;
   act: number;
   title: string;
   content: string;
@@ -198,7 +204,7 @@ export interface AdminStorySheet {
 export interface AdminShowtimeSlot {
   id: string;
   houseId: string;
-  house: { id: string; name: string; color: string };
+  house: HouseRef;
   label: string;
   description: string | null;
   answerTemplateType: AnswerTemplateType | null;
@@ -218,7 +224,7 @@ export interface AdminShowtime {
   revealTitle: string;
   revealDescription: string | null;
   designId: string | null;
-  design: { id: string; name: string } | null;
+  design: DesignRef | null;
   phase: ShowtimePhase;
   showHouseLabels: boolean;
   syncWindowMs: number;
@@ -269,7 +275,7 @@ export interface DashboardData {
     attemptNumber?: number;
   }[];
   missionProgress: {
-    house: { id: string; name: string; color: string };
+    house: HouseRef;
     total: number;
     completed: number;
     missions: {
@@ -290,7 +296,7 @@ export interface SimulatorCard {
   act: number;
   tableHouseId: string | null;
   cardSet: { id: string; name: string; color: string } | null;
-  cardHouses: { house: { id: string; name: string; color: string } }[];
+  cardHouses: { house: HouseRef }[];
 }
 
 export interface SimulatorData {
