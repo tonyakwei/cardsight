@@ -413,7 +413,7 @@ The All Together Now landing page (previously hosted on GitHub Pages at `tonyakw
 | 4 | Compass Rose |
 | 5 | Shield |
 | 6 | Six-pointed Star (Crown) |
-| 7 | Key |
+| 7 | Flame |
 | 8 | Hourglass |
 | 9 | All-seeing Eye |
 
