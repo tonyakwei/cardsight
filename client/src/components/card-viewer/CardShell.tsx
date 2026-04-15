@@ -24,7 +24,8 @@ export function CardShell({ design, children }: Props) {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: "2rem 1.25rem",
+    padding:
+      "max(1.5rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left))",
     position: "relative",
     overflow: "hidden",
 
@@ -48,6 +49,8 @@ export function CardShell({ design, children }: Props) {
           maxWidth: "420px",
           position: "relative",
           zIndex: 1,
+          marginTop: "auto",
+          marginBottom: "auto",
         }}
       >
         {children}
