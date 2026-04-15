@@ -51,7 +51,7 @@ const GLYPHS: { label: string; svg: string }[] = [
   },
   {
     label: "Hexagram",
-    svg: '<polygon points="50,8 62,35 95,35 68,55 78,85 50,67 22,85 32,55 5,35 38,35"/>',
+    svg: '<path d="M50,5 L58,30 L85,15 L72,40 L97,50 L72,60 L85,85 L58,70 L50,95 L42,70 L15,85 L28,60 L3,50 L28,40 L15,15 L42,30 Z"/>',
   },
   {
     label: "Key",
