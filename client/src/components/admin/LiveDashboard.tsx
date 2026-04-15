@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useParams } from "react-router";
 import {
   Group,
@@ -16,6 +16,7 @@ import {
   type GameDetail,
   type DashboardData,
 } from "../../api/admin";
+import { usePolling } from "../../hooks/usePolling";
 import { StatCard } from "./live-dashboard/StatCard";
 import { ActivitySection } from "./live-dashboard/ActivitySection";
 import { ActTransitionButton } from "./live-dashboard/ActTransitionButton";
@@ -28,7 +29,6 @@ export function LiveDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -45,13 +45,7 @@ export function LiveDashboard() {
     }
   }, [gameId]);
 
-  useEffect(() => {
-    loadData();
-    intervalRef.current = setInterval(loadData, POLL_INTERVAL);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [loadData]);
+  usePolling(loadData, POLL_INTERVAL);
 
   if (loading) {
     return (

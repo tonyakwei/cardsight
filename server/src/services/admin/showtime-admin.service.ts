@@ -1,14 +1,14 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { pickAllowedFields } from "../../utils/pick-fields.js";
+import { houseSelect, designSelect } from "./prisma-includes.js";
 
 // === Showtimes ===
 
 const showtimeInclude = {
-  design: { select: { id: true, name: true } },
+  design: { select: designSelect },
   slots: {
-    include: {
-      house: { select: { id: true, name: true, color: true } },
-    },
+    include: { house: { select: houseSelect } },
     orderBy: { sortOrder: "asc" as const },
   },
 };
@@ -80,15 +80,10 @@ export async function updateShowtime(gameId: string, showtimeId: string, data: R
   const st = await prisma.showtime.findUnique({ where: { id: showtimeId } });
   if (!st || st.gameId !== gameId) throw new AppError(404, "Showtime not found");
 
-  const allowed = [
+  const updateData = pickAllowedFields(data, [
     "act", "title", "revealTitle", "revealDescription",
     "designId", "showHouseLabels", "syncWindowMs", "sortOrder", "notes",
-  ];
-
-  const updateData: Record<string, any> = {};
-  for (const key of allowed) {
-    if (key in data) updateData[key] = data[key];
-  }
+  ]);
 
   await prisma.showtime.update({ where: { id: showtimeId }, data: updateData });
 
@@ -96,11 +91,9 @@ export async function updateShowtime(gameId: string, showtimeId: string, data: R
   if (data.slots && Array.isArray(data.slots)) {
     for (const slotData of data.slots) {
       if (!slotData.id) continue;
-      const slotAllowed = ["label", "description", "answerTemplateType", "answerId", "sortOrder"];
-      const slotUpdate: Record<string, any> = {};
-      for (const key of slotAllowed) {
-        if (key in slotData) slotUpdate[key] = slotData[key];
-      }
+      const slotUpdate = pickAllowedFields(slotData, [
+        "label", "description", "answerTemplateType", "answerId", "sortOrder",
+      ]);
       await prisma.showtimeSlot.update({ where: { id: slotData.id }, data: slotUpdate });
     }
   }

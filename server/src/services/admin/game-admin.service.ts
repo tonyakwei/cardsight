@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { pickAllowedFields } from "../../utils/pick-fields.js";
 
 // === Games ===
 
@@ -426,14 +427,10 @@ export async function updateAnswerTemplate(gameId: string, type: string, id: str
       throw new AppError(404, "Answer template not found");
     }
 
-    const allowed = [
+    const updateData = pickAllowedFields(data, [
       "correctAnswer", "caseSensitive", "trimWhitespace",
       "acceptAlternatives", "hint", "hintAfterAttempts", "maxAttempts",
-    ];
-    const updateData: Record<string, any> = {};
-    for (const key of allowed) {
-      if (key in data) updateData[key] = data[key];
-    }
+    ]);
 
     return prisma.singleAnswer.update({ where: { id }, data: updateData });
   }

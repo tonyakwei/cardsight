@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { pickAllowedFields } from "../../utils/pick-fields.js";
 
 // === Houses ===
 
@@ -25,11 +26,7 @@ export async function updateHouse(gameId: string, id: string, data: Record<strin
   const house = await prisma.house.findUnique({ where: { id } });
   if (!house || house.gameId !== gameId) throw new AppError(404, "House not found");
 
-  const allowed = ["name", "color"];
-  const updateData: Record<string, any> = {};
-  for (const key of allowed) {
-    if (key in data) updateData[key] = data[key];
-  }
+  const updateData = pickAllowedFields(data, ["name", "color"]);
 
   return prisma.house.update({ where: { id }, data: updateData });
 }

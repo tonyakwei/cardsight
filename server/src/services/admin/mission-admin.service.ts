@@ -1,16 +1,16 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { pickAllowedFields } from "../../utils/pick-fields.js";
+import { houseSelect, designSelect } from "./prisma-includes.js";
 
 // === Missions ===
 
 const missionInclude = {
   missionHouses: {
-    include: {
-      house: { select: { id: true, name: true, color: true } },
-    },
+    include: { house: { select: houseSelect } },
   },
   missionCard: { select: { id: true, physicalCardId: true, header: true } },
-  design: { select: { id: true, name: true } },
+  design: { select: designSelect },
 };
 
 export async function listMissions(
@@ -58,18 +58,16 @@ export async function createMission(gameId: string, data: Record<string, any>) {
     _max: { sortOrder: true },
   });
 
-  const allowed = [
-    "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
-    "requiredClueSets", "answerTemplateType", "answerId", "designId",
-    "consequenceCompleted", "consequenceNotCompleted",
-    "consequenceImageCompleted", "consequenceImageNotCompleted",
-    "sortOrder", "notes",
-  ];
-
-  const createData: Record<string, any> = { gameId };
-  for (const key of allowed) {
-    if (key in data) createData[key] = data[key];
-  }
+  const createData: Record<string, any> = {
+    gameId,
+    ...pickAllowedFields(data, [
+      "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
+      "requiredClueSets", "answerTemplateType", "answerId", "designId",
+      "consequenceCompleted", "consequenceNotCompleted",
+      "consequenceImageCompleted", "consequenceImageNotCompleted",
+      "sortOrder", "notes",
+    ]),
+  };
   if (!("sortOrder" in data)) {
     createData.sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
   }
@@ -100,19 +98,14 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
   const houseIds: string[] | undefined = data.houseIds;
   delete data.houseIds;
 
-  const allowed = [
+  const updateData = pickAllowedFields(data, [
     "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
     "requiredClueSets", "answerTemplateType", "answerId", "designId",
     "isCompleted", "completedAt", "lockedOut", "lockedOutReason",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
     "sortOrder", "notes",
-  ];
-
-  const updateData: Record<string, any> = {};
-  for (const key of allowed) {
-    if (key in data) updateData[key] = data[key];
-  }
+  ]);
 
   // If marking as completed, set completedAt
   if (data.isCompleted === true && !mission.isCompleted) {
@@ -253,15 +246,10 @@ export async function updateConsequence(consequenceId: string, data: Record<stri
   const consequence = await prisma.missionConsequence.findUnique({ where: { id: consequenceId } });
   if (!consequence) throw new AppError(404, "Consequence not found");
 
-  const allowed = [
+  const updateData = pickAllowedFields(data, [
     "targetMissionId", "triggerOnFailure", "triggerOnSuccess",
     "type", "message", "sortOrder",
-  ];
-
-  const updateData: Record<string, any> = {};
-  for (const key of allowed) {
-    if (key in data) updateData[key] = data[key];
-  }
+  ]);
 
   return prisma.missionConsequence.update({
     where: { id: consequenceId },

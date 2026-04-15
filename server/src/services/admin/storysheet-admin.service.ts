@@ -1,8 +1,10 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { pickAllowedFields } from "../../utils/pick-fields.js";
+import { houseSelect } from "./prisma-includes.js";
 
 const storySheetInclude = {
-  house: { select: { id: true, name: true, color: true } },
+  house: { select: houseSelect },
 };
 
 export async function listStorySheets(
@@ -55,11 +57,9 @@ export async function updateStorySheet(gameId: string, storySheetId: string, dat
     throw new AppError(404, "Story sheet not found");
   }
 
-  const allowed = ["title", "content", "notes", "act", "houseId", "sortOrder"];
-  const updateData: Record<string, any> = {};
-  for (const key of allowed) {
-    if (key in data) updateData[key] = data[key];
-  }
+  const updateData = pickAllowedFields(data, [
+    "title", "content", "notes", "act", "houseId", "sortOrder",
+  ]);
 
   return prisma.storySheet.update({
     where: { id: storySheetId },

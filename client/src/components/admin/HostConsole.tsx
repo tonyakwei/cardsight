@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useParams } from "react-router";
 import {
   Group,
@@ -29,6 +29,7 @@ import {
   type AdminShowtime,
 } from "../../api/admin";
 import { pcName } from "../../utils/physicalCards";
+import { usePolling } from "../../hooks/usePolling";
 import { PulseTab } from "./host-console/PulseTab";
 import { ActivityTab } from "./host-console/ActivityTab";
 import { CardsTab } from "./host-console/CardsTab";
@@ -55,7 +56,6 @@ export function HostConsole() {
     message: string;
     onConfirm: () => void;
   } | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -77,13 +77,7 @@ export function HostConsole() {
     }
   }, [gameId]);
 
-  useEffect(() => {
-    loadData();
-    intervalRef.current = setInterval(loadData, POLL_INTERVAL);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [loadData]);
+  usePolling(loadData, POLL_INTERVAL);
 
   // === Actions ===
 

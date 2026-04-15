@@ -1,5 +1,7 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { pickAllowedFields } from "../../utils/pick-fields.js";
+import { houseSelect, designSelect } from "./prisma-includes.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const physicalCards: { id: string; name: string; color: string; number: number }[] = require("../../../../shared/physical-cards.json");
@@ -9,12 +11,10 @@ const ALL_PHYSICAL_IDS = physicalCards.map((pc) => pc.id);
 // === Cards ===
 
 const cardInclude = {
-  design: { select: { id: true, name: true } },
-  cardSet: { select: { id: true, name: true, color: true } },
+  design: { select: designSelect },
+  cardSet: { select: houseSelect },
   cardHouses: {
-    include: {
-      house: { select: { id: true, name: true, color: true } },
-    },
+    include: { house: { select: houseSelect } },
   },
 };
 
@@ -58,7 +58,7 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
   const houseIds: string[] | undefined = data.houseIds;
 
   // Filter to only allowed scalar fields
-  const allowed = [
+  const updateData = pickAllowedFields(data, [
     "physicalCardId", "header", "description", "clueContent", "complexity", "act",
     "cardSetId", "clueVisibleCategory", "notes",
     "designId", "answerTemplateType", "answerId", "isAnswerable",
@@ -66,14 +66,7 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
     "selfDestructTimer", "selfDestructText",
     "examineText", "answerVisibleAfterDestruct",
     "isFinished", "sortOrder",
-  ];
-
-  const updateData: Record<string, any> = {};
-  for (const key of allowed) {
-    if (key in data) {
-      updateData[key] = data[key];
-    }
-  }
+  ]);
 
   // Update card fields
   await prisma.card.update({
