@@ -50,8 +50,8 @@ export function AlreadyAnsweredState({ card, justSolved }: Props) {
           }}
         >
           {justSolved
-            ? isComplex ? "Correct! Here's your clue." : "Correct!"
-            : isComplex ? "This puzzle has been solved — clue revealed" : "This puzzle has been solved"}
+            ? isComplex ? "Item unlocked." : "Correct!"
+            : isComplex ? "Item already unlocked." : "This puzzle has been solved"}
         </div>
         {!justSolved && (
           <div

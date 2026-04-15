@@ -77,7 +77,7 @@ export function SplashGate({ clueCategory, examineText, selfDestructTimer, onExa
           lineHeight: 1.6,
         }}
       >
-        Do not examine unless you're sure you need this clue!
+        Do not examine unless you're sure you need this item!
       </div>
 
       {selfDestructTimer && (

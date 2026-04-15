@@ -13,7 +13,7 @@ export function RequiredClues({ clueSets }: Props) {
         opacity: 0.5,
         marginBottom: "0.75rem",
       }}>
-        Required Clues
+        Required Items
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         {clueSets.map((cs, i) => (
