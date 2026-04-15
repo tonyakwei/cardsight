@@ -1,13 +1,13 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../middleware/error-handler.js";
 import { validateAnswer } from "./answer-validation.js";
+import { buildDesign } from "./design-builder.js";
 import type {
   ShowtimePlayerResponse,
   ShowtimePollResponse,
   ShowtimeSlotView,
   ShowtimeSlotSubmitResponse,
   ShowtimeSyncPressResponse,
-  CardDesign,
 } from "@cardsight/shared";
 
 // === Helpers ===
@@ -30,24 +30,6 @@ function buildSlotView(slot: any, houseId: string, phase: string, showHouseLabel
     inputValue: isMySlot || isRevealed ? slot.inputValue : null,
     isCorrect: isRevealed ? slot.isCorrect : null,
     syncPressed: !!slot.syncPressedAt,
-  };
-}
-
-function buildDesign(d: any): CardDesign | null {
-  if (!d) return null;
-  return {
-    bgColor: d.bgColor,
-    bgGradient: d.bgGradient,
-    bgImageUrl: d.bgImageUrl,
-    textColor: d.textColor,
-    accentColor: d.accentColor,
-    secondaryColor: d.secondaryColor,
-    fontFamily: d.fontFamily,
-    cardStyle: d.cardStyle,
-    animationIn: d.animationIn,
-    borderStyle: d.borderStyle,
-    overlayEffect: d.overlayEffect,
-    customCss: d.customCss,
   };
 }
 

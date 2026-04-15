@@ -1,9 +1,9 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../middleware/error-handler.js";
 import { validateAnswer } from "./answer-validation.js";
+import { buildDesign } from "./design-builder.js";
 import type {
   CardViewerResponse,
-  CardDesign,
   CardComplexity,
   AnswerMeta,
   ScanResponse,
@@ -91,24 +91,7 @@ export async function getCardForViewer(
   }
 
   // Build design object
-  let design: CardDesign | null = null;
-  if (card.design) {
-    const d = card.design;
-    design = {
-      bgColor: d.bgColor,
-      bgGradient: d.bgGradient,
-      bgImageUrl: d.bgImageUrl,
-      textColor: d.textColor,
-      accentColor: d.accentColor,
-      secondaryColor: d.secondaryColor,
-      fontFamily: d.fontFamily,
-      cardStyle: d.cardStyle,
-      animationIn: d.animationIn,
-      borderStyle: d.borderStyle,
-      overlayEffect: d.overlayEffect,
-      customCss: d.customCss,
-    };
-  }
+  const design = buildDesign(card.design);
 
   // Build answer metadata (without revealing correct answers)
   // Complex cards are always answerable; simple cards never show answer input

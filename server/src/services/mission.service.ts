@@ -1,11 +1,11 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../middleware/error-handler.js";
 import { validateAnswer } from "./answer-validation.js";
+import { buildDesign } from "./design-builder.js";
 import type {
   MissionViewerResponse,
   MissionScanResponse,
   MissionAnswerResponse,
-  CardDesign,
   AnswerMeta,
   AnswerTemplateType,
 } from "@cardsight/shared";
@@ -33,24 +33,7 @@ export async function getMissionForViewer(
   }
 
   // Build design object
-  let design: CardDesign | null = null;
-  if (mission.design) {
-    const d = mission.design;
-    design = {
-      bgColor: d.bgColor,
-      bgGradient: d.bgGradient,
-      bgImageUrl: d.bgImageUrl,
-      textColor: d.textColor,
-      accentColor: d.accentColor,
-      secondaryColor: d.secondaryColor,
-      fontFamily: d.fontFamily,
-      cardStyle: d.cardStyle,
-      animationIn: d.animationIn,
-      borderStyle: d.borderStyle,
-      overlayEffect: d.overlayEffect,
-      customCss: d.customCss,
-    };
-  }
+  const design = buildDesign(mission.design);
 
   // Resolve required clue sets to names/colors
   const clueSets = (mission.requiredClueSets as { cardSetId: string; count: number }[]) || [];

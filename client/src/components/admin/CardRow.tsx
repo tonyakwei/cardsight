@@ -33,30 +33,7 @@ import {
 import { PhonePreview } from "./PhonePreview";
 import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 import { CollapsibleSection } from "./CollapsibleSection";
-import physicalCards from "../../../../shared/physical-cards.json";
-
-const physicalCardMap = new Map(physicalCards.map((pc) => [pc.id, pc]));
-const physicalCardOptions = (() => {
-  const groups = new Map<string, { value: string; label: string }[]>();
-  for (const pc of physicalCards) {
-    const group = pc.color.charAt(0).toUpperCase() + pc.color.slice(1);
-    if (!groups.has(group)) groups.set(group, []);
-    groups.get(group)!.push({
-      value: pc.id,
-      label: `${group} ${pc.number} — ${pc.name}`,
-    });
-  }
-  return [...groups.entries()].map(([group, items]) => ({ group, items }));
-})();
-
-function physicalLabel(physicalCardId: string): string {
-  const pc = physicalCardMap.get(physicalCardId);
-  return pc ? `${pc.color[0].toUpperCase()}${pc.number}` : physicalCardId.slice(0, 8);
-}
-
-function physicalName(physicalCardId: string): string {
-  return physicalCardMap.get(physicalCardId)?.name ?? physicalCardId.slice(0, 8);
-}
+import { pcLabel as physicalLabel, pcName as physicalName, physicalCardOptions } from "../../utils/physicalCards";
 
 interface Props {
   card: AdminCard;

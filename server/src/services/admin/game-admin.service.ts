@@ -73,7 +73,6 @@ export async function duplicateGame(gameId: string) {
   if (!game) throw new AppError(404, "Game not found");
 
   return prisma.$transaction(async (tx: any) => {
-    // 1. Create the new game
     const newGame = await tx.game.create({
       data: {
         name: game.name + " (Copy)",
@@ -84,232 +83,203 @@ export async function duplicateGame(gameId: string) {
       },
     });
 
-    // 2. Duplicate CardSets
-    const oldCardSets = await tx.cardSet.findMany({ where: { gameId } });
-    const cardSetMap = new Map<string, string>();
-    for (const cs of oldCardSets) {
-      const newCS = await tx.cardSet.create({
-        data: {
-          gameId: newGame.id,
-          name: cs.name,
-          color: cs.color,
-          notes: cs.notes,
-        },
-      });
-      cardSetMap.set(cs.id, newCS.id);
-    }
+    const cardSetMap = await dupCardSets(tx, gameId, newGame.id);
+    const houseMap = await dupHouses(tx, gameId, newGame.id);
+    const designMap = await dupDesigns(tx, gameId, newGame.id);
+    const answerMap = await dupAnswers(tx, gameId, newGame.id);
+    const cardMap = await dupCards(tx, gameId, newGame.id, { cardSetMap, designMap, answerMap });
+    await dupCardHouses(tx, gameId, cardMap, houseMap);
+    await dupMissions(tx, gameId, newGame.id, { cardMap, houseMap, designMap, answerMap });
+    await dupShowtimes(tx, gameId, newGame.id, { houseMap, designMap, answerMap });
+    await dupStorySheets(tx, gameId, newGame.id, houseMap);
 
-    // 3. Duplicate Houses
-    const oldHouses = await tx.house.findMany({ where: { gameId } });
-    const houseMap = new Map<string, string>();
-    for (const h of oldHouses) {
-      const newH = await tx.house.create({
-        data: {
-          gameId: newGame.id,
-          name: h.name,
-          color: h.color,
-        },
-      });
-      houseMap.set(h.id, newH.id);
-    }
-
-    // 4. Duplicate Designs
-    const oldDesigns = await tx.design.findMany({ where: { gameId } });
-    const designMap = new Map<string, string>();
-    for (const d of oldDesigns) {
-      const newD = await tx.design.create({
-        data: {
-          gameId: newGame.id,
-          name: d.name,
-          bgColor: d.bgColor,
-          bgGradient: d.bgGradient,
-          bgImageUrl: d.bgImageUrl,
-          textColor: d.textColor,
-          accentColor: d.accentColor,
-          secondaryColor: d.secondaryColor,
-          fontFamily: d.fontFamily,
-          cardStyle: d.cardStyle,
-          animationIn: d.animationIn,
-          borderStyle: d.borderStyle,
-          overlayEffect: d.overlayEffect,
-          customCss: d.customCss,
-        },
-      });
-      designMap.set(d.id, newD.id);
-    }
-
-    // 5. Duplicate SingleAnswers
-    const oldAnswers = await tx.singleAnswer.findMany({ where: { gameId } });
-    const answerMap = new Map<string, string>();
-    for (const a of oldAnswers) {
-      const newA = await tx.singleAnswer.create({
-        data: {
-          gameId: newGame.id,
-          correctAnswer: a.correctAnswer,
-          caseSensitive: a.caseSensitive,
-          trimWhitespace: a.trimWhitespace,
-          acceptAlternatives: a.acceptAlternatives,
-          hint: a.hint,
-          hintAfterAttempts: a.hintAfterAttempts,
-        },
-      });
-      answerMap.set(a.id, newA.id);
-    }
-
-    // 6. Duplicate Cards
-    const oldCards = await tx.card.findMany({ where: { gameId } });
-    const cardMap = new Map<string, string>();
-    for (const c of oldCards) {
-      const newCard = await tx.card.create({
-        data: {
-          gameId: newGame.id,
-          physicalCardId: c.physicalCardId,
-          act: c.act,
-          cardSetId: c.cardSetId ? cardSetMap.get(c.cardSetId) ?? null : null,
-          clueVisibleCategory: c.clueVisibleCategory,
-          complexity: c.complexity,
-          header: c.header,
-          description: c.description,
-          clueContent: c.clueContent,
-          answerTemplateType: c.answerTemplateType,
-          answerId: c.answerId ? answerMap.get(c.answerId) ?? null : null,
-          isAnswerable: c.isAnswerable,
-          lockedOut: c.lockedOut,
-          lockedOutReason: c.lockedOutReason,
-          selfDestructTimer: c.selfDestructTimer,
-          selfDestructedAt: null,
-          selfDestructText: c.selfDestructText,
-          designId: c.designId ? designMap.get(c.designId) ?? null : null,
-          examineText: c.examineText,
-          answerVisibleAfterDestruct: c.answerVisibleAfterDestruct,
-          sortOrder: c.sortOrder,
-          notes: c.notes,
-          isFinished: c.isFinished,
-          isSolved: false,
-          deletedAt: null,
-        },
-      });
-      cardMap.set(c.id, newCard.id);
-    }
-
-    // 7. Duplicate CardHouse rows
-    const oldCardHouses = await tx.cardHouse.findMany({
-      where: { cardId: { in: oldCards.map((c: any) => c.id) } },
-    });
-    if (oldCardHouses.length > 0) {
-      await tx.cardHouse.createMany({
-        data: oldCardHouses
-          .filter((ch: any) => cardMap.has(ch.cardId) && houseMap.has(ch.houseId))
-          .map((ch: any) => ({
-            cardId: cardMap.get(ch.cardId)!,
-            houseId: houseMap.get(ch.houseId)!,
-          })),
-      });
-    }
-
-    // 8. Duplicate Missions
-    const oldMissions = await tx.mission.findMany({
-      where: { gameId },
-      include: { missionHouses: true },
-    });
-    for (const m of oldMissions) {
-      const newMission = await tx.mission.create({
-        data: {
-          gameId: newGame.id,
-          act: m.act,
-          missionCardId: m.missionCardId ? cardMap.get(m.missionCardId) ?? null : null,
-          title: m.title,
-          sheetLetter: m.sheetLetter,
-          description: m.description,
-          puzzleDescription: m.puzzleDescription,
-          requiredClueSets: m.requiredClueSets ?? [],
-          answerTemplateType: m.answerTemplateType,
-          answerId: m.answerId ? answerMap.get(m.answerId) ?? null : null,
-          designId: m.designId ? designMap.get(m.designId) ?? null : null,
-          isCompleted: false,
-          completedAt: null,
-          consequenceCompleted: m.consequenceCompleted,
-          consequenceNotCompleted: m.consequenceNotCompleted,
-          consequenceImageCompleted: m.consequenceImageCompleted,
-          consequenceImageNotCompleted: m.consequenceImageNotCompleted,
-          sortOrder: m.sortOrder,
-          notes: m.notes,
-        },
-      });
-      if (m.missionHouses.length > 0) {
-        await tx.missionHouse.createMany({
-          data: m.missionHouses
-            .filter((mh: any) => houseMap.has(mh.houseId))
-            .map((mh: any) => ({
-              missionId: newMission.id,
-              houseId: houseMap.get(mh.houseId)!,
-            })),
-        });
-      }
-    }
-
-    // 9. Duplicate Showtimes
-    const oldShowtimes = await tx.showtime.findMany({
-      where: { gameId },
-      include: { slots: true },
-    });
-    for (const st of oldShowtimes) {
-      const newSt = await tx.showtime.create({
-        data: {
-          gameId: newGame.id,
-          act: st.act,
-          title: st.title,
-          revealTitle: st.revealTitle,
-          revealDescription: st.revealDescription,
-          designId: st.designId ? designMap.get(st.designId) ?? null : null,
-          phase: "filling",
-          syncWindowMs: st.syncWindowMs,
-          revealedAt: null,
-          sortOrder: st.sortOrder,
-          notes: st.notes,
-        },
-      });
-      for (const slot of st.slots) {
-        if (!houseMap.has(slot.houseId)) continue;
-        await tx.showtimeSlot.create({
-          data: {
-            showtimeId: newSt.id,
-            houseId: houseMap.get(slot.houseId)!,
-            label: slot.label,
-            description: slot.description,
-            sortOrder: slot.sortOrder,
-            answerTemplateType: slot.answerTemplateType,
-            answerId: slot.answerId ? answerMap.get(slot.answerId) ?? null : null,
-          },
-        });
-      }
-    }
-
-    // 10. Duplicate Story Sheets
-    const oldStorySheets = await tx.storySheet.findMany({ where: { gameId } });
-    for (const ss of oldStorySheets) {
-      if (!houseMap.has(ss.houseId)) continue;
-      await tx.storySheet.create({
-        data: {
-          gameId: newGame.id,
-          houseId: houseMap.get(ss.houseId)!,
-          act: ss.act,
-          title: ss.title,
-          content: ss.content,
-          notes: ss.notes,
-          sortOrder: ss.sortOrder,
-        },
-      });
-    }
-
-    // Return the full new game
     return tx.game.findUnique({
       where: { id: newGame.id },
-      include: {
-        _count: { select: { cards: true, designs: true } },
-      },
+      include: { _count: { select: { cards: true, designs: true } } },
     });
   });
+}
+
+type IdMap = Map<string, string>;
+
+function remapId(map: IdMap, id: string | null): string | null {
+  return id ? map.get(id) ?? null : null;
+}
+
+async function dupCardSets(tx: any, gameId: string, newGameId: string): Promise<IdMap> {
+  const old = await tx.cardSet.findMany({ where: { gameId } });
+  const map = new Map<string, string>();
+  for (const cs of old) {
+    const n = await tx.cardSet.create({
+      data: { gameId: newGameId, name: cs.name, color: cs.color, notes: cs.notes },
+    });
+    map.set(cs.id, n.id);
+  }
+  return map;
+}
+
+async function dupHouses(tx: any, gameId: string, newGameId: string): Promise<IdMap> {
+  const old = await tx.house.findMany({ where: { gameId } });
+  const map = new Map<string, string>();
+  for (const h of old) {
+    const n = await tx.house.create({
+      data: { gameId: newGameId, name: h.name, color: h.color },
+    });
+    map.set(h.id, n.id);
+  }
+  return map;
+}
+
+async function dupDesigns(tx: any, gameId: string, newGameId: string): Promise<IdMap> {
+  const old = await tx.design.findMany({ where: { gameId } });
+  const map = new Map<string, string>();
+  for (const d of old) {
+    const n = await tx.design.create({
+      data: {
+        gameId: newGameId, name: d.name,
+        bgColor: d.bgColor, bgGradient: d.bgGradient, bgImageUrl: d.bgImageUrl,
+        textColor: d.textColor, accentColor: d.accentColor, secondaryColor: d.secondaryColor,
+        fontFamily: d.fontFamily, cardStyle: d.cardStyle, animationIn: d.animationIn,
+        borderStyle: d.borderStyle, overlayEffect: d.overlayEffect, customCss: d.customCss,
+      },
+    });
+    map.set(d.id, n.id);
+  }
+  return map;
+}
+
+async function dupAnswers(tx: any, gameId: string, newGameId: string): Promise<IdMap> {
+  const old = await tx.singleAnswer.findMany({ where: { gameId } });
+  const map = new Map<string, string>();
+  for (const a of old) {
+    const n = await tx.singleAnswer.create({
+      data: {
+        gameId: newGameId, correctAnswer: a.correctAnswer,
+        caseSensitive: a.caseSensitive, trimWhitespace: a.trimWhitespace,
+        acceptAlternatives: a.acceptAlternatives,
+        hint: a.hint, hintAfterAttempts: a.hintAfterAttempts,
+      },
+    });
+    map.set(a.id, n.id);
+  }
+  return map;
+}
+
+async function dupCards(
+  tx: any, gameId: string, newGameId: string,
+  maps: { cardSetMap: IdMap; designMap: IdMap; answerMap: IdMap },
+): Promise<IdMap> {
+  const old = await tx.card.findMany({ where: { gameId } });
+  const map = new Map<string, string>();
+  for (const c of old) {
+    const n = await tx.card.create({
+      data: {
+        gameId: newGameId, physicalCardId: c.physicalCardId, act: c.act,
+        cardSetId: remapId(maps.cardSetMap, c.cardSetId),
+        clueVisibleCategory: c.clueVisibleCategory, complexity: c.complexity,
+        header: c.header, description: c.description, clueContent: c.clueContent,
+        answerTemplateType: c.answerTemplateType,
+        answerId: remapId(maps.answerMap, c.answerId),
+        isAnswerable: c.isAnswerable, lockedOut: c.lockedOut, lockedOutReason: c.lockedOutReason,
+        selfDestructTimer: c.selfDestructTimer, selfDestructedAt: null,
+        selfDestructText: c.selfDestructText,
+        designId: remapId(maps.designMap, c.designId),
+        examineText: c.examineText, answerVisibleAfterDestruct: c.answerVisibleAfterDestruct,
+        sortOrder: c.sortOrder, notes: c.notes, isFinished: c.isFinished,
+        isSolved: false, deletedAt: null,
+      },
+    });
+    map.set(c.id, n.id);
+  }
+  return map;
+}
+
+async function dupCardHouses(tx: any, gameId: string, cardMap: IdMap, houseMap: IdMap) {
+  const old = await tx.cardHouse.findMany({
+    where: { card: { gameId } },
+  });
+  const rows = old
+    .filter((ch: any) => cardMap.has(ch.cardId) && houseMap.has(ch.houseId))
+    .map((ch: any) => ({ cardId: cardMap.get(ch.cardId)!, houseId: houseMap.get(ch.houseId)! }));
+  if (rows.length > 0) {
+    await tx.cardHouse.createMany({ data: rows });
+  }
+}
+
+async function dupMissions(
+  tx: any, gameId: string, newGameId: string,
+  maps: { cardMap: IdMap; houseMap: IdMap; designMap: IdMap; answerMap: IdMap },
+) {
+  const old = await tx.mission.findMany({ where: { gameId }, include: { missionHouses: true } });
+  for (const m of old) {
+    const n = await tx.mission.create({
+      data: {
+        gameId: newGameId, act: m.act,
+        missionCardId: remapId(maps.cardMap, m.missionCardId),
+        title: m.title, sheetLetter: m.sheetLetter,
+        description: m.description, puzzleDescription: m.puzzleDescription,
+        requiredClueSets: m.requiredClueSets ?? [],
+        answerTemplateType: m.answerTemplateType,
+        answerId: remapId(maps.answerMap, m.answerId),
+        designId: remapId(maps.designMap, m.designId),
+        isCompleted: false, completedAt: null,
+        consequenceCompleted: m.consequenceCompleted,
+        consequenceNotCompleted: m.consequenceNotCompleted,
+        consequenceImageCompleted: m.consequenceImageCompleted,
+        consequenceImageNotCompleted: m.consequenceImageNotCompleted,
+        sortOrder: m.sortOrder, notes: m.notes,
+      },
+    });
+    const houseRows = m.missionHouses
+      .filter((mh: any) => maps.houseMap.has(mh.houseId))
+      .map((mh: any) => ({ missionId: n.id, houseId: maps.houseMap.get(mh.houseId)! }));
+    if (houseRows.length > 0) {
+      await tx.missionHouse.createMany({ data: houseRows });
+    }
+  }
+}
+
+async function dupShowtimes(
+  tx: any, gameId: string, newGameId: string,
+  maps: { houseMap: IdMap; designMap: IdMap; answerMap: IdMap },
+) {
+  const old = await tx.showtime.findMany({ where: { gameId }, include: { slots: true } });
+  for (const st of old) {
+    const n = await tx.showtime.create({
+      data: {
+        gameId: newGameId, act: st.act, title: st.title,
+        revealTitle: st.revealTitle, revealDescription: st.revealDescription,
+        designId: remapId(maps.designMap, st.designId),
+        phase: "filling", syncWindowMs: st.syncWindowMs, revealedAt: null,
+        sortOrder: st.sortOrder, notes: st.notes,
+      },
+    });
+    for (const slot of st.slots) {
+      if (!maps.houseMap.has(slot.houseId)) continue;
+      await tx.showtimeSlot.create({
+        data: {
+          showtimeId: n.id, houseId: maps.houseMap.get(slot.houseId)!,
+          label: slot.label, description: slot.description, sortOrder: slot.sortOrder,
+          answerTemplateType: slot.answerTemplateType,
+          answerId: remapId(maps.answerMap, slot.answerId),
+        },
+      });
+    }
+  }
+}
+
+async function dupStorySheets(tx: any, gameId: string, newGameId: string, houseMap: IdMap) {
+  const old = await tx.storySheet.findMany({ where: { gameId } });
+  for (const ss of old) {
+    if (!houseMap.has(ss.houseId)) continue;
+    await tx.storySheet.create({
+      data: {
+        gameId: newGameId, houseId: houseMap.get(ss.houseId)!,
+        act: ss.act, title: ss.title, content: ss.content,
+        notes: ss.notes, sortOrder: ss.sortOrder,
+      },
+    });
+  }
 }
 
 // === Act Transitions ===
