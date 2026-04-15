@@ -11,12 +11,12 @@ export function AlreadyAnsweredState({ card, justSolved }: Props) {
 
   return (
     <div>
-      {/* For complex cards that were just solved, show the revealed clue prominently */}
+      {/* For complex cards that were just solved, show the revealed item prominently */}
       {isComplex && card.clueContent ? (
         <CardContent
           header={card.header}
           description={card.clueContent}
-          clueVisibleCategory={card.clueVisibleCategory}
+          itemName={card.clueVisibleCategory}
         />
       ) : (
         <CardContent header={card.header} description={card.description} />

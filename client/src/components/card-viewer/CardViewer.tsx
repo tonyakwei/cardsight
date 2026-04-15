@@ -158,7 +158,7 @@ export function CardViewer() {
       {/* Available — show splash gate or content */}
       {card.status === "available" && !examined && (
         <SplashGate
-          clueCategory={card.clueVisibleCategory}
+          itemName={card.clueVisibleCategory}
           examineText={card.examineText}
           selfDestructTimer={card.selfDestructTimer}
           onExamine={handleExamine}
@@ -170,7 +170,7 @@ export function CardViewer() {
           <CardContent
             header={card.header}
             description={card.description}
-            clueVisibleCategory={card.clueVisibleCategory}
+            itemName={card.clueVisibleCategory}
           />
 
           {card.selfDestructedAt && (

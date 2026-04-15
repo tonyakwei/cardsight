@@ -3,13 +3,13 @@ import ReactMarkdown from "react-markdown";
 interface Props {
   header: string | null;
   description: string | null;
-  clueVisibleCategory?: string | null;
+  itemName?: string | null;
 }
 
-export function CardContent({ header, description, clueVisibleCategory }: Props) {
+export function CardContent({ header, description, itemName }: Props) {
   return (
     <div>
-      {clueVisibleCategory && (
+      {itemName && (
         <div
           style={{
             fontSize: "0.7rem",
@@ -21,7 +21,7 @@ export function CardContent({ header, description, clueVisibleCategory }: Props)
             marginBottom: "0.5rem",
           }}
         >
-          {clueVisibleCategory}
+          {itemName}
         </div>
       )}
       {header && (

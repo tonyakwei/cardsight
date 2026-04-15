@@ -7,7 +7,7 @@ import { CardContent } from "../card-viewer/CardContent";
 import { AnimationWrapper } from "../card-viewer/animations/AnimationWrapper";
 import { OverlayRenderer } from "../card-viewer/overlays/OverlayRenderer";
 import { MissionAnswerInput } from "./MissionAnswerInput";
-import { RequiredClues } from "./RequiredClues";
+import { RequiredItems } from "./RequiredItems";
 import type { MissionViewerResponse } from "@cardsight/shared";
 
 const HOUSE_STORAGE_KEY = "cardsight_house";
@@ -199,7 +199,7 @@ export function MissionViewer() {
         )}
 
         {mission.requiredClueSets.length > 0 && (
-          <RequiredClues clueSets={mission.requiredClueSets} />
+          <RequiredItems itemSets={mission.requiredClueSets} />
         )}
 
         {mission.isCompleted && (

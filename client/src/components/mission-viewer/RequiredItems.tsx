@@ -1,8 +1,8 @@
 interface Props {
-  clueSets: { cardSetName: string; cardSetColor: string; count: number }[];
+  itemSets: { cardSetName: string; cardSetColor: string; count: number }[];
 }
 
-export function RequiredClues({ clueSets }: Props) {
+export function RequiredItems({ itemSets }: Props) {
   return (
     <div style={{ marginTop: "1.5rem" }}>
       <div style={{
@@ -16,7 +16,7 @@ export function RequiredClues({ clueSets }: Props) {
         Required Items
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {clueSets.map((cs, i) => (
+        {itemSets.map((cs, i) => (
           <div
             key={i}
             style={{
