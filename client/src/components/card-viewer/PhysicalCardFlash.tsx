@@ -102,6 +102,11 @@ export function PhysicalCardFlash({ cardId, act, onComplete }: PhysicalCardFlash
   const transition = card ? getTransition(act ?? 1, card.number) : "fade";
   const exitMs = EXIT_DURATION[transition];
 
+  // Scale card to fill ~80% of viewport width (base card is 200px wide)
+  const scale = typeof window !== "undefined"
+    ? Math.min(window.innerWidth * 0.8 / 200, 2.5)
+    : 1;
+
   useEffect(() => {
     if (!card) {
       onComplete();
@@ -146,19 +151,21 @@ export function PhysicalCardFlash({ cardId, act, onComplete }: PhysicalCardFlash
 
   return (
     <div style={styles.backdrop}>
-      {!exiting && (
-        <div style={{ ...styles.card, ...cssVars }}>
-          <CardInner {...cardProps} />
-        </div>
-      )}
+      <div style={{ position: "relative", width: 200, height: 330, transform: `scale(${scale})` }}>
+        {!exiting && (
+          <div style={{ ...styles.card, ...cssVars }}>
+            <CardInner {...cardProps} />
+          </div>
+        )}
 
-      {exiting && (
-        <ExitAnimation
-          transition={transition}
-          cssVars={cssVars}
-          cardProps={cardProps}
-        />
-      )}
+        {exiting && (
+          <ExitAnimation
+            transition={transition}
+            cssVars={cssVars}
+            cardProps={cardProps}
+          />
+        )}
+      </div>
 
       <style>{allKeyframes}</style>
     </div>
