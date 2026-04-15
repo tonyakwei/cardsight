@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AppShell, Group, Text, ActionIcon, Tooltip, NavLink, Burger } from "@mantine/core";
+import { AppShell, Group, Text, ActionIcon, Tooltip, NavLink, Burger, Overlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet, useParams, useNavigate, useLocation } from "react-router";
 import { adminFetch, clearAdminToken, BASE } from "../../api/admin/common";
@@ -58,6 +58,7 @@ export function AdminLayout() {
         navbar: {
           backgroundColor: "var(--mantine-color-dark-9)",
           borderRight: "1px solid var(--mantine-color-dark-6)",
+          zIndex: 200,
         },
       }}
     >
@@ -131,6 +132,14 @@ export function AdminLayout() {
       )}
 
       <AppShell.Main>
+        {mobileOpened && (
+          <Overlay
+            onClick={closeMobile}
+            backgroundOpacity={0.5}
+            zIndex={99}
+            hiddenFrom="sm"
+          />
+        )}
         <Outlet />
       </AppShell.Main>
     </AppShell>
