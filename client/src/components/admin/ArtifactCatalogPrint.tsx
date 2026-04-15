@@ -8,12 +8,7 @@ import {
   ActionIcon,
   SegmentedControl,
 } from "@mantine/core";
-import {
-  fetchGame,
-  fetchHouses,
-  type GameDetail,
-  type AdminHouse,
-} from "../../api/admin";
+import { fetchGame, type GameDetail } from "../../api/admin";
 
 const GOOGLE_FONTS =
   "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap";
@@ -28,7 +23,49 @@ const CARD_COLORS: { name: string; color: string }[] = [
   { name: "White", color: "#7f8c8d" },
 ];
 
-const ROWS_PER_COLOR = 4; // 4 × 6 = 24 slots, covers ~18 cards per house per act
+/**
+ * The 9 card glyphs in order (card numbers 1-9).
+ * Each glyph maps to a physical card's number.
+ * SVG paths are simplified for clean small-size print rendering.
+ */
+const GLYPHS: { label: string; svg: string }[] = [
+  {
+    label: "Star",
+    svg: '<polygon points="50,8 61,38 95,38 67,56 78,88 50,70 22,88 33,56 5,38 39,38"/>',
+  },
+  {
+    label: "Diamond",
+    svg: '<polygon points="50,8 92,50 50,92 8,50"/>',
+  },
+  {
+    label: "Crescent",
+    svg: '<path d="M55,10 A40,40 0 1,1 55,90 A52,52 0 0,0 55,10 Z"/>',
+  },
+  {
+    label: "Compass",
+    svg: '<polygon points="50,6 56,44 94,50 56,56 50,94 44,56 6,50 44,44"/><circle cx="50" cy="50" r="6" fill="none" stroke="currentColor" stroke-width="3"/>',
+  },
+  {
+    label: "Shield",
+    svg: '<path d="M50,92 C28,76 12,58 12,32 L12,18 L50,8 L88,18 L88,32 C88,58 72,76 50,92 Z M50,82 C32,70 22,55 22,35 L22,24 L50,16 L78,24 L78,35 C78,55 68,70 50,82 Z"/>',
+  },
+  {
+    label: "Hexagram",
+    svg: '<polygon points="50,8 62,35 95,35 68,55 78,85 50,67 22,85 32,55 5,35 38,35"/>',
+  },
+  {
+    label: "Key",
+    svg: '<circle cx="50" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="7"/><rect x="46" y="45" width="8" height="38" rx="2"/><rect x="54" y="62" width="12" height="6" rx="1"/><rect x="54" y="74" width="9" height="6" rx="1"/>',
+  },
+  {
+    label: "Hourglass",
+    svg: '<path d="M25,10 L75,10 L75,16 L60,48 L75,80 L75,90 L25,90 L25,80 L40,48 L25,16 Z M32,16 L68,16 L56,44 L44,44 Z M32,80 L68,80 L56,52 L44,52 Z"/>',
+  },
+  {
+    label: "Eye",
+    svg: '<path d="M5,50 C5,50 25,20 50,20 C75,20 95,50 95,50 C95,50 75,80 50,80 C25,80 5,50 5,50 Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="50" cy="50" r="14"/><circle cx="50" cy="50" r="6" fill="none" stroke="currentColor" stroke-width="4"/>',
+  },
+];
 
 const THEME = {
   pageBg: "#f0e6d0",
@@ -40,25 +77,21 @@ const THEME = {
   tableLine: "#c4a87c",
   tableLineLight: "#d4c4a0",
   colHeaderBg: "#e0d0b4",
+  glyphColor: "#4a3a28",
 };
 
 export function ArtifactCatalogPrint() {
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
   const [game, setGame] = useState<GameDetail | null>(null);
-  const [houses, setHouses] = useState<AdminHouse[]>([]);
   const [loading, setLoading] = useState(true);
   const [act, setAct] = useState("1");
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
     setLoading(true);
-    const [g, h] = await Promise.all([
-      fetchGame(gameId),
-      fetchHouses(gameId),
-    ]);
+    const g = await fetchGame(gameId);
     setGame(g);
-    setHouses(h);
     setLoading(false);
   }, [gameId]);
 
@@ -92,7 +125,7 @@ export function ArtifactCatalogPrint() {
               ←
             </ActionIcon>
             <Text size="xl" fw={700}>
-              {game.name} — Artifact Catalog Sheets
+              {game.name} — Item Catalog Sheets
             </Text>
           </Group>
           <Group gap="sm">
@@ -112,30 +145,20 @@ export function ArtifactCatalogPrint() {
           </Group>
         </Group>
 
-        {houses.length === 0 && (
-          <Text c="dimmed" ta="center" py="xl">
-            No houses configured. Add houses to your game first.
-          </Text>
-        )}
+        <Text size="sm" c="dimmed" mb="md">
+          Universal sheet — all 54 physical cards. Print one per team per act.
+          Players find their card's color and glyph, then write the item classification next to it.
+        </Text>
       </div>
 
-      {/* Printable sheets */}
-      <div>
-        {houses.map((house, i) => (
-          <CatalogPage
-            key={`${house.id}-${act}`}
-            house={house}
-            act={Number(act)}
-            isLast={i === houses.length - 1}
-          />
-        ))}
-      </div>
+      {/* Printable sheet */}
+      <CatalogPage act={Number(act)} />
 
       <style>{`
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          @page { size: letter portrait; margin: 0.35in 0.4in; }
+          @page { size: letter portrait; margin: 0.3in; }
         }
         @media screen {
           .catalog-page { margin-bottom: 2rem; }
@@ -145,15 +168,7 @@ export function ArtifactCatalogPrint() {
   );
 }
 
-function CatalogPage({
-  house,
-  act,
-  isLast,
-}: {
-  house: AdminHouse;
-  act: number;
-  isLast: boolean;
-}) {
+function CatalogPage({ act }: { act: number }) {
   const leftColors = CARD_COLORS.slice(0, 3);
   const rightColors = CARD_COLORS.slice(3);
 
@@ -161,10 +176,9 @@ function CatalogPage({
     <div
       className="catalog-page"
       style={{
-        pageBreakAfter: isLast ? undefined : "always",
         maxWidth: "8in",
         margin: "0 auto",
-        padding: "0.35in 0.4in",
+        padding: "0.3in 0.35in",
         position: "relative",
         overflow: "hidden",
         background: THEME.pageBg,
@@ -208,38 +222,60 @@ function CatalogPage({
 
       {/* Content */}
       <div style={{ position: "relative" }}>
-        {/* Title */}
+        {/* Title + house write-in */}
         <div
           style={{
             textAlign: "center",
-            marginBottom: "0.25in",
-            paddingBottom: "0.1in",
+            marginBottom: "0.2in",
+            paddingBottom: "0.08in",
             borderBottom: `2px solid ${THEME.borderLight}`,
           }}
         >
           <div
             style={{
               fontFamily: "'Cinzel', serif",
-              fontSize: "20px",
+              fontSize: "18px",
               fontWeight: 700,
               color: THEME.heading,
               letterSpacing: "0.06em",
             }}
           >
-            {house.name}
+            Item Catalog
           </div>
           <div
             style={{
-              fontFamily: "'Cinzel', serif",
-              fontSize: "10px",
-              fontWeight: 400,
-              color: THEME.border,
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              marginTop: "3px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "baseline",
+              gap: "0.3in",
+              marginTop: "4px",
             }}
           >
-            Artifact Catalog — Act {act}
+            <span
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: "9px",
+                fontWeight: 400,
+                color: THEME.border,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+              }}
+            >
+              Act {act}
+            </span>
+            <span
+              style={{
+                fontFamily: "'Crimson Text', serif",
+                fontSize: "11px",
+                color: THEME.sectionHeader,
+              }}
+            >
+              House: <span style={{
+                display: "inline-block",
+                width: "1.5in",
+                borderBottom: `1px solid ${THEME.tableLine}`,
+              }}>&nbsp;</span>
+            </span>
           </div>
         </div>
 
@@ -269,22 +305,40 @@ function CatalogPage({
   );
 }
 
+function GlyphIcon({ index, size = 16 }: { index: number; size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      width={size}
+      height={size}
+      style={{
+        fill: THEME.glyphColor,
+        color: THEME.glyphColor,
+        flexShrink: 0,
+        printColorAdjust: "exact",
+        WebkitPrintColorAdjust: "exact",
+      } as React.CSSProperties}
+      dangerouslySetInnerHTML={{ __html: GLYPHS[index].svg }}
+    />
+  );
+}
+
 function ColorSection({
   cardColor,
 }: {
   cardColor: { name: string; color: string };
 }) {
-  const rows = Array.from({ length: ROWS_PER_COLOR });
-
   return (
-    <div style={{ marginBottom: "0.15in" }}>
-      {/* Section header with color strip */}
+    <div style={{ marginBottom: "0.12in" }}>
+      {/* Section header */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           gap: "6px",
-          marginBottom: "0",
+          marginBottom: "1px",
+          paddingBottom: "2px",
+          borderBottom: `1.5px solid ${THEME.border}`,
         }}
       >
         <div
@@ -312,85 +366,33 @@ function ColorSection({
         </div>
       </div>
 
-      {/* Table */}
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-        }}
-      >
-        <thead>
-          <tr>
-            <th
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: "7px",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: THEME.sectionHeader,
-                background: THEME.colHeaderBg,
-                padding: "2px 6px",
-                textAlign: "left",
-                borderBottom: `1.5px solid ${THEME.border}`,
-                borderTop: `1px solid ${THEME.border}`,
-                width: "45%",
-                printColorAdjust: "exact",
-                WebkitPrintColorAdjust: "exact",
-              } as React.CSSProperties}
-            >
-              Card
-            </th>
-            <th
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: "7px",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: THEME.sectionHeader,
-                background: THEME.colHeaderBg,
-                padding: "2px 6px",
-                textAlign: "left",
-                borderBottom: `1.5px solid ${THEME.border}`,
-                borderTop: `1px solid ${THEME.border}`,
-                width: "55%",
-                printColorAdjust: "exact",
-                WebkitPrintColorAdjust: "exact",
-              } as React.CSSProperties}
-            >
-              Item
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((_, i) => (
-            <tr key={i}>
-              <td
-                style={{
-                  borderBottom: `1px solid ${THEME.tableLineLight}`,
-                  padding: "0",
-                  height: "20px",
-                  borderLeft: `3px solid ${cardColor.color}`,
-                  printColorAdjust: "exact",
-                  WebkitPrintColorAdjust: "exact",
-                } as React.CSSProperties}
-              >
-                &nbsp;
-              </td>
-              <td
-                style={{
-                  borderBottom: `1px solid ${THEME.tableLineLight}`,
-                  padding: "0",
-                  height: "20px",
-                }}
-              >
-                &nbsp;
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* 9 glyph rows */}
+      {GLYPHS.map((glyph, i) => (
+        <div
+          key={i}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            height: "22px",
+            borderBottom: `1px solid ${THEME.tableLineLight}`,
+            borderLeft: `3px solid ${cardColor.color}`,
+            paddingLeft: "5px",
+            printColorAdjust: "exact",
+            WebkitPrintColorAdjust: "exact",
+          } as React.CSSProperties}
+        >
+          <GlyphIcon index={i} size={14} />
+          <div
+            style={{
+              flex: 1,
+              borderBottom: `1px dotted ${THEME.tableLine}`,
+              height: "14px",
+              marginTop: "4px",
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }

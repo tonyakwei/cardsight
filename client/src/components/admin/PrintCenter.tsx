@@ -19,8 +19,8 @@ export function PrintCenter() {
       color: "yellow",
     },
     {
-      title: "Artifact Catalog Sheets",
-      description: "Handout for each house per act to record card names and clue classifications.",
+      title: "Item Catalog Sheets",
+      description: "Universal handout with all 54 card glyphs organized by color. Players find their card's glyph and write the item classification. Print one per team per act.",
       path: `/admin/games/${gameId}/print/artifact-catalog`,
       color: "orange",
     },
