@@ -41,6 +41,7 @@ import {
 import { useAdminList } from "../../hooks/useAdminList";
 import { CollapsibleSection } from "./CollapsibleSection";
 import { PhonePreview } from "./PhonePreview";
+import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 
 export function MissionManager() {
   const {
@@ -414,6 +415,47 @@ function MissionRow({
                 cardSets={cardSets}
                 onChange={(val) => save({ requiredClueSets: val })}
               />
+            </Stack>
+          </CollapsibleSection>
+
+          <CollapsibleSection sectionKey="mission-answer" label="Answer">
+            <Stack gap="sm">
+              <Group grow>
+                <Switch
+                  label="Has answer"
+                  size="xs"
+                  color="cyan"
+                  checked={!!mission.answerTemplateType}
+                  onChange={(e) => {
+                    if (!e.currentTarget.checked) {
+                      save({ answerTemplateType: null, answerId: null });
+                    } else {
+                      save({ answerTemplateType: "single_answer" });
+                    }
+                  }}
+                />
+                {mission.answerTemplateType && (
+                  <Select
+                    label="Answer type"
+                    size="xs"
+                    value={mission.answerTemplateType ?? ""}
+                    onChange={(v) => save({ answerTemplateType: v || null })}
+                    data={[
+                      { value: "single_answer", label: "Text input" },
+                    ]}
+                  />
+                )}
+              </Group>
+              {mission.answerTemplateType === "single_answer" && (
+                <AnswerTemplateEditor
+                  gameId={gameId}
+                  answerTemplateType={mission.answerTemplateType}
+                  answerId={mission.answerId}
+                  onAnswerCreated={(type, id) => {
+                    save({ answerTemplateType: type, answerId: id });
+                  }}
+                />
+              )}
             </Stack>
           </CollapsibleSection>
 
