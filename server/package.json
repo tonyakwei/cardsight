@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/shared && cp ../shared/physical-cards.json dist/shared/",
     "start": "node dist/server/src/index.js",
     "prisma": "prisma"
   },
