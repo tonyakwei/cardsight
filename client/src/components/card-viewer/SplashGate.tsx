@@ -58,15 +58,21 @@ interface Props {
   onExamine: () => Promise<void>;
 }
 
-const EXAMINE_DELAY_MS = 2000;
+const EXAMINE_DELAY_MS = 4000;
+const WARNING_DELAY_MS = 1200;
 
 export function SplashGate({ itemName, examineText, selfDestructTimer, onExamine }: Props) {
   const [examining, setExamining] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [showExamine, setShowExamine] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowExamine(true), EXAMINE_DELAY_MS);
-    return () => clearTimeout(timer);
+    const warningTimer = setTimeout(() => setShowWarning(true), WARNING_DELAY_MS);
+    const examineTimer = setTimeout(() => setShowExamine(true), EXAMINE_DELAY_MS);
+    return () => {
+      clearTimeout(warningTimer);
+      clearTimeout(examineTimer);
+    };
   }, []);
 
   const handleExamine = async () => {
@@ -119,6 +125,22 @@ export function SplashGate({ itemName, examineText, selfDestructTimer, onExamine
         </div>
       )}
 
+      {showWarning && (
+        <div
+          style={{
+            fontSize: "0.8rem",
+            opacity: 0.5,
+            fontStyle: "italic",
+            maxWidth: "260px",
+            lineHeight: 1.6,
+            marginTop: "1rem",
+            animation: "examineReveal 0.8s ease-out",
+          }}
+        >
+          Only examine if you're sure you want to use this item for your mission.
+        </div>
+      )}
+
       {showExamine && (
         <div
           style={{
@@ -126,7 +148,6 @@ export function SplashGate({ itemName, examineText, selfDestructTimer, onExamine
             flexDirection: "column",
             alignItems: "center",
             gap: "1.5rem",
-            marginTop: "1rem",
             animation: "examineReveal 0.8s ease-out",
           }}
         >
@@ -155,18 +176,6 @@ export function SplashGate({ itemName, examineText, selfDestructTimer, onExamine
               examineText || "Examine"
             )}
           </button>
-
-          <div
-            style={{
-              fontSize: "0.8rem",
-              opacity: 0.5,
-              fontStyle: "italic",
-              maxWidth: "260px",
-              lineHeight: 1.6,
-            }}
-          >
-            Only examine if you're sure you want to use this item for your mission.
-          </div>
 
           {selfDestructTimer && (
             <div

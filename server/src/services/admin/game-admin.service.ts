@@ -47,6 +47,7 @@ export async function getGame(gameId: string) {
     cardCount: game._count.cards,
     designCount: game._count.designs,
     finishedCount,
+    blurNudgeEnabled: game.blurNudgeEnabled,
     createdAt: game.createdAt.toISOString(),
     updatedAt: game.updatedAt.toISOString(),
   };
@@ -281,6 +282,25 @@ async function dupStorySheets(tx: any, gameId: string, newGameId: string, houseM
       },
     });
   }
+}
+
+// === Game Settings ===
+
+export async function updateGameSettings(
+  gameId: string,
+  data: { blurNudgeEnabled?: boolean },
+) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const updateData = pickAllowedFields(data, ["blurNudgeEnabled"]);
+
+  const updated = await prisma.game.update({
+    where: { id: gameId },
+    data: updateData,
+  });
+
+  return { blurNudgeEnabled: updated.blurNudgeEnabled };
 }
 
 // === Act Transitions ===

@@ -37,6 +37,7 @@ model Game {
   description     String?
   status          GameStatus @default(draft)
   currentAct      Int        @default(1) @map("current_act")
+  blurNudgeEnabled Boolean   @default(false) @map("blur_nudge_enabled")
   duplicatedFromId String?   @map("duplicated_from_id") @db.Uuid
   duplicatedFrom  Game?      @relation("GameLineage", fields: [duplicatedFromId], references: [id])
   duplicates      Game[]     @relation("GameLineage")

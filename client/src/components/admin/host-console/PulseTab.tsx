@@ -6,6 +6,7 @@ import {
   Stack,
   Paper,
   Progress,
+  Switch,
   Box,
 } from "@mantine/core";
 import type { DashboardData } from "../../../api/admin";
@@ -15,9 +16,11 @@ interface Props {
   activeAct: number;
   onEndAct: (act: number) => void;
   actionLoading: string | null;
+  blurNudgeEnabled: boolean;
+  onToggleBlurNudge: (enabled: boolean) => void;
 }
 
-export function PulseTab({ dashboard, activeAct, onEndAct, actionLoading }: Props) {
+export function PulseTab({ dashboard, activeAct, onEndAct, actionLoading, blurNudgeEnabled, onToggleBlurNudge }: Props) {
   const { overview, cardDiscovery, missionProgress } = dashboard;
   const discoveryPct =
     overview.totalCards > 0
@@ -111,6 +114,21 @@ export function PulseTab({ dashboard, activeAct, onEndAct, actionLoading }: Prop
             );
           })}
         </Stack>
+      </Paper>
+
+      <Paper bg="dark.7" p="md" radius="md">
+        <Group justify="space-between">
+          <div>
+            <Text size="sm" fw={500}>Blur Nudge</Text>
+            <Text size="xs" c="dimmed">Remind players to write things down</Text>
+          </div>
+          <Switch
+            checked={blurNudgeEnabled}
+            onChange={(e) => onToggleBlurNudge(e.currentTarget.checked)}
+            color="yellow"
+            size="md"
+          />
+        </Group>
       </Paper>
 
       {activeAct < 3 && (

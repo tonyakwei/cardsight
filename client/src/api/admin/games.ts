@@ -26,3 +26,15 @@ export async function duplicateGame(gameId: string): Promise<GameSummary> {
   const res = await adminFetch(`${BASE}/games/${gameId}/duplicate`, { method: "POST" });
   return res.json();
 }
+
+export async function updateGameSettings(
+  gameId: string,
+  data: { blurNudgeEnabled?: boolean },
+): Promise<{ blurNudgeEnabled: boolean }> {
+  const res = await adminFetch(`${BASE}/games/${gameId}/settings`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}

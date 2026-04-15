@@ -26,6 +26,7 @@ export interface GameSummary {
 export interface GameDetail extends GameSummary {
   designCount: number;
   finishedCount: number;
+  blurNudgeEnabled: boolean;
 }
 
 // === Cards ===

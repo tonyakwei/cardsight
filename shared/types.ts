@@ -63,6 +63,9 @@ export interface CardViewerResponse {
 
   // If already solved
   isSolved: boolean;
+
+  // Game-level settings
+  blurNudgeEnabled: boolean;
 }
 
 export interface AnswerMeta {

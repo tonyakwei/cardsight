@@ -121,7 +121,9 @@ export function CardViewer() {
   return (
     <CardShell design={card.design}>
       <OverlayRenderer effect={card.design?.overlayEffect ?? null} />
-      {examined && card.status === "available" && <VisibilityGuard />}
+      {examined && card.status === "available" && (
+        <VisibilityGuard nudgeEnabled={card.blurNudgeEnabled} />
+      )}
 
       {/* Locked out */}
       {card.status === "locked_out" && (

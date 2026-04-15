@@ -45,3 +45,7 @@ Questions to ask (or at least think about) after the first playtest of Twisting 
 - What was the single highest-energy moment of the night?
 - What moment felt most confusing?
 - Would you play again? Would you bring different friends?
+
+## Design Ideas (Not Yet Committed)
+
+(None currently — blur nudge was implemented and is toggleable from host console.)

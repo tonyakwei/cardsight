@@ -19,6 +19,7 @@ import {
   updateCard,
   resetCard,
   updateMission,
+  updateGameSettings,
   transitionAct,
   triggerShowtime,
   resetShowtime,
@@ -135,6 +136,12 @@ export function HostConsole() {
     });
   }
 
+  function doToggleBlurNudge(enabled: boolean) {
+    doAction("blur-nudge", () =>
+      updateGameSettings(gameId!, { blurNudgeEnabled: enabled }).then(() => {}),
+    );
+  }
+
   function doTriggerShowtime(st: AdminShowtime) {
     setConfirmModal({
       title: "Force Trigger Reveal",
@@ -220,6 +227,8 @@ export function HostConsole() {
             activeAct={activeAct}
             onEndAct={doEndAct}
             actionLoading={actionLoading}
+            blurNudgeEnabled={game.blurNudgeEnabled}
+            onToggleBlurNudge={doToggleBlurNudge}
           />
         )}
         {tab === "activity" && <ActivityTab dashboard={dashboard} />}

@@ -72,7 +72,7 @@ export async function getCardForViewer(
   const card = await resolveCard(cardId, (id) =>
     prisma.card.findUnique({
       where: { id },
-      include: { design: true },
+      include: { design: true, game: { select: { blurNudgeEnabled: true } } },
     }),
   );
 
@@ -139,6 +139,7 @@ export async function getCardForViewer(
     answerMeta,
     answerVisibleAfterDestruct: card.answerVisibleAfterDestruct,
     isSolved: card.isSolved,
+    blurNudgeEnabled: card.game.blurNudgeEnabled,
   };
 }
 

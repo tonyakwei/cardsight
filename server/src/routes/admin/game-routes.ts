@@ -25,6 +25,16 @@ router.post("/games/:gameId/duplicate", async (req, res) => {
   res.status(201).json(game);
 });
 
+// === Game Settings ===
+
+router.patch("/games/:gameId/settings", async (req, res) => {
+  const result = await adminService.updateGameSettings(
+    req.params.gameId,
+    req.body,
+  );
+  res.json(result);
+});
+
 // === Act Transitions ===
 
 router.post("/games/:gameId/transition-act", async (req, res) => {
