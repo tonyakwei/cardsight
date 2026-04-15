@@ -43,7 +43,7 @@ const GLYPHS: { label: string; svg: string }[] = [
   },
   {
     label: "Compass",
-    svg: '<circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="5"/><polygon points="50,12 56,44 50,50 44,44"/><polygon points="50,88 56,56 50,50 44,56" opacity="0.35"/><line x1="10" y1="50" x2="90" y2="50" stroke="currentColor" stroke-width="2" opacity="0.25"/><circle cx="50" cy="50" r="4"/>',
+    svg: '<circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="5"/><line x1="10" y1="50" x2="90" y2="50" stroke="currentColor" stroke-width="2.5" opacity="0.4"/><line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" stroke-width="2.5" opacity="0.4"/><polygon points="50,12 56,44 50,50 44,44"/><polygon points="50,88 56,56 50,50 44,56" opacity="0.35"/><circle cx="50" cy="50" r="4"/>',
   },
   {
     label: "Shield",
@@ -55,7 +55,7 @@ const GLYPHS: { label: string; svg: string }[] = [
   },
   {
     label: "Flame",
-    svg: '<path d="M50,5 C42,20 25,40 25,60 C25,74 36,90 50,95 C64,90 75,74 75,60 C75,40 58,20 50,5 Z M38,18 C32,30 28,42 35,38 C40,35 36,24 38,18 Z M62,22 C68,32 72,44 65,40 C60,37 60,28 62,22 Z"/><path d="M50,30 C55,45 62,55 62,63 C62,72 57,82 50,86 C43,82 38,72 38,63 C38,55 45,45 50,30 Z" fill="none" stroke="currentColor" stroke-width="3"/>',
+    svg: '<path d="M50,5 C42,20 25,40 25,60 C25,74 36,90 50,95 C64,90 75,74 75,60 C75,40 58,20 50,5 Z M38,18 C32,30 28,42 35,38 C40,35 36,24 38,18 Z M62,22 C68,32 72,44 65,40 C60,37 60,28 62,22 Z M50,8 C48,14 44,10 46,5 C48,8 50,6 50,8 Z"/><path d="M50,30 C55,45 62,55 62,63 C62,72 57,82 50,86 C43,82 38,72 38,63 C38,55 45,45 50,30 Z" fill="none" stroke="currentColor" stroke-width="3"/>',
   },
   {
     label: "Hourglass",
