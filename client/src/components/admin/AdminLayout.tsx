@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { AppShell, Group, Text, ActionIcon, Tooltip, NavLink } from "@mantine/core";
+import { AppShell, Group, Text, ActionIcon, Tooltip, NavLink, Burger } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Outlet, useParams, useNavigate, useLocation } from "react-router";
 import { adminFetch, clearAdminToken, BASE } from "../../api/admin/common";
 import { AdminLogin } from "./AdminLogin";
@@ -18,6 +19,7 @@ const GAME_NAV_ITEMS = [
 
 export function AdminLayout() {
   const [authed, setAuthed] = useState<boolean | null>(null);
+  const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure();
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,7 +47,7 @@ export function AdminLayout() {
   return (
     <AppShell
       header={{ height: 56 }}
-      navbar={inGame ? { width: 200, breakpoint: "sm" } : undefined}
+      navbar={inGame ? { width: 200, breakpoint: "sm", collapsed: { mobile: !mobileOpened } } : undefined}
       padding="lg"
       styles={{
         main: { backgroundColor: "var(--mantine-color-dark-8)" },
@@ -62,6 +64,15 @@ export function AdminLayout() {
       <AppShell.Header>
         <Group h="100%" px="lg" justify="space-between">
           <Group gap="xs">
+            {inGame && (
+              <Burger
+                opened={mobileOpened}
+                onClick={toggleMobile}
+                hiddenFrom="sm"
+                size="sm"
+                color="gray"
+              />
+            )}
             <Text
               size="lg"
               fw={700}
@@ -88,7 +99,7 @@ export function AdminLayout() {
           <NavLink
             label="All Games"
             leftSection={<span style={{ fontSize: "0.9rem" }}>←</span>}
-            onClick={() => navigate("/admin")}
+            onClick={() => { navigate("/admin"); closeMobile(); }}
             variant="subtle"
             color="gray"
             mb="xs"
@@ -106,7 +117,7 @@ export function AdminLayout() {
                 label={item.label}
                 leftSection={<span style={{ fontSize: "0.85rem" }}>{item.icon}</span>}
                 active={isActive}
-                onClick={() => navigate(fullPath)}
+                onClick={() => { navigate(fullPath); closeMobile(); }}
                 variant="light"
                 color="yellow"
                 styles={{
