@@ -1,4 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
+function StaticNoise() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Small canvas, scaled up via CSS for grainy look
+    const W = 128;
+    const H = 128;
+    canvas.width = W;
+    canvas.height = H;
+
+    const imageData = ctx.createImageData(W, H);
+    const data = imageData.data;
+    let raf: number;
+
+    function draw() {
+      for (let i = 0; i < data.length; i += 4) {
+        const v = Math.random() * 255;
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 18; // very subtle
+      }
+      ctx!.putImageData(imageData, 0, 0);
+      raf = requestAnimationFrame(draw);
+    }
+
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 0,
+        opacity: 0.6,
+      }}
+    />
+  );
+}
 
 interface Props {
   clueCategory: string | null;
@@ -26,8 +77,11 @@ export function SplashGate({ clueCategory, examineText, selfDestructTimer, onExa
         textAlign: "center",
         gap: "2.5rem",
         animation: "splashFadeIn 0.6s ease-out",
+        position: "relative",
+        zIndex: 1,
       }}
     >
+      <StaticNoise />
       {clueCategory && (
         <div
           style={{
