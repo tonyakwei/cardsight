@@ -55,7 +55,7 @@ const GLYPHS: { label: string; svg: string }[] = [
   },
   {
     label: "Flame",
-    svg: '<path d="M50,5 C50,5 25,40 25,60 C25,74 36,90 50,95 C64,90 75,74 75,60 C75,40 50,5 50,5 Z"/><path d="M50,30 C55,45 62,55 62,63 C62,72 57,82 50,86 C43,82 38,72 38,63 C38,55 45,45 50,30 Z" fill="none" stroke="currentColor" stroke-width="3"/>',
+    svg: '<path d="M50,5 C42,20 25,40 25,60 C25,74 36,90 50,95 C64,90 75,74 75,60 C75,40 58,20 50,5 Z M38,18 C32,30 28,42 35,38 C40,35 36,24 38,18 Z M62,22 C68,32 72,44 65,40 C60,37 60,28 62,22 Z"/><path d="M50,30 C55,45 62,55 62,63 C62,72 57,82 50,86 C43,82 38,72 38,63 C38,55 45,45 50,30 Z" fill="none" stroke="currentColor" stroke-width="3"/>',
   },
   {
     label: "Hourglass",
