@@ -61,3 +61,15 @@ Language decipherment in reverse — players work from English back into glyphs.
 ## L — Temporal Glyphs
 
 Players encounter glyphs and must realize they describe time. The "aha" moment is recognizing that the symbols aren't spatial or linguistic — they're temporal. The puzzle mechanic is built around that realization and whatever decoding follows from it.
+
+## M — Corrupted Reconstruction
+
+Players receive multiple versions of the same inscription from different clue cards. Each version has different parts missing or altered. By cross-referencing all versions, players reconstruct the original message. In the simpler form (Act 1), corruption is just gaps — missing characters filled in by other sources. In the harder form (Act 2+), some characters are actively *wrong* — changed by the Source's influence — and players must use majority-rules or contextual reasoning to identify the true version at each position.
+
+## N — Pattern Completion
+
+A sequence of glyphs follows a transformational rule — rotation, addition of elements, mirroring, progressive complexity. Some positions in the sequence are blank. Players must identify the rule and fill in the missing glyphs. The completed sequence provides the answer. Very "IQ test" in feel — thematically perfect for a civilization obsessed with mathematical order.
+
+## O — Fragment Assembly
+
+Players receive partial shapes, images, or symbol fragments described on clue cards. They draw each fragment on an index card and physically arrange, overlap, or connect them to form a complete image or symbol. Like reassembling a torn document. The complete image reveals the answer — a glyph, a word, a symbol. Scissors may be needed for precise assembly.
