@@ -13,7 +13,7 @@ The water is rising. You have what you have. Move.
 **MISSIONS**
 
 **1. Secure the Fuse Charges**
-Your handy-dandy Drake-trademarked precision explosives are dead weight without the fuse charges, and you see the floodwater creeping towards them. You could commit time and effort to retrieve them — but precision explosives inside a temple could bring it all down on your heads.
+Your precision explosives are dead weight without the fuse charges, and the components are scattered — Whisper Pins, Dragon Teeth, Ember Dust, Striker Plates, Coil Segments, Ghost Shells, Fang Clips. The assembly manual went under with the bag. You'll have to reconstruct the sequence from memory. Some of the components have already been picked up by the other teams — they won't know what they're holding. You could trade for them back...
 
 **2. Operate the Stone Wheel**
 Set into the far wall — a heavy stone wheel, seized with age. Channels are carved into the floor below it, radiating outward. Your tactical eyes read it immediately: this thing controls the water flow. It won't budge by force alone. If you could figure out how to release it, you might be able to redirect the flooding itself!

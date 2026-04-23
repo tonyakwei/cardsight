@@ -156,11 +156,11 @@ async function main() {
       title: "Secure the Fuse Charges",
       sheetLetter: "A",
       description:
-        "Your handy-dandy Drake-trademarked precision explosives are dead weight without the fuse charges, and you see the floodwater creeping towards them. You could commit time and effort to retrieve them — but precision explosives inside a temple could bring it all down on your heads.",
+        "Your precision explosives are dead weight without the fuse charges, and the components are scattered — Whisper Pins, Dragon Teeth, Ember Dust, Striker Plates, Coil Segments, Ghost Shells, Fang Clips. The assembly manual went under with the bag. You'll have to reconstruct the sequence from memory. Some of the components have already been picked up by the other teams — they won't know what they're holding. You could trade for them back...",
       consequenceCompleted:
-        "The fuse charges are secure. The precision explosives are live and ready. Whether that's a comfort or a liability remains to be seen — but at least you have options.",
+        "The charges are assembled and secured. The team moves with a little more swagger — you're the only crew in this temple with a real ace up your sleeve. Whatever's ahead, you can blow through it. Literally.",
       consequenceNotCompleted:
-        "The floodwater swallowed the fuse charges. Your precision explosives are paperweights now. The one thing that made you Drake is gone, and the temple ahead doesn't care...",
+        "The components are scattered, some lost to the water, some in the hands of teams who think they're holding QRian trinkets. Your precision explosives are gone. Drake without firepower is just... people in balaclavas. Morale takes a serious hit...",
       sortOrder: 1,
     },
   });

@@ -22,17 +22,39 @@ This pattern reinforces house identity, creates meaningful tradeoffs, and builds
 
 ### Drake Delegation — Act 1
 
-#### Crew Mission: The Epoxy Decision
+#### Crew Mission: Secure the Fuse Charges
 
-Drake's precision explosives are useless without the **fuse charges** that make them ignite. The fuse charges are at risk of being submerged by the rising floodwater, which would render them — and by extension, all their precision explosives — inert.
+Drake's precision explosives need 7 components to assemble: Whisper Pins, Dragon Teeth, Ember Dust, Striker Plates, Coil Segments, Ghost Shells, Fang Clips. The blast scattered them across the chamber. Other teams have picked some up — the codenames mean nothing to them.
 
-**The dilemma:** Explosives inside an ancient temple are genuinely dangerous. Using them could bring the temple down on everyone. But Drake Delegation is defined by their willingness to use dynamite, and leaving the fuse charges behind means losing that capability entirely for the rest of the expedition.
+**Puzzle type:** G — Sequence Ordering
 
-**Consequence if saved:** Drake carries active explosive capability into Act 2 (potential tool for clearing sealed passages, but also a risk).
+**Required clue cards:** 3 cards across different sets (2+3+2 distribution).
 
-**Consequence if lost:** Drake enters Act 2 without their signature capability. A desperate, mercenary crew without their tools.
+| Card | Components |
+|------|-----------|
+| Card 1 | Whisper Pins & Dragon Teeth |
+| Card 2 | Ember Dust, Striker Plates & Coil Segments |
+| Card 3 | Ghost Shells & Fang Clips |
 
-*Puzzle type: TBD.*
+Each component description hints at assembly position:
+1. **Whisper Pins** — *"Delicate. These seat into the base before anything else."*
+2. **Ghost Shells** — *"The outer housing. Nothing goes on after these."*
+3. **Dragon Teeth** — *"The heavy cores. They nest right on top of the pins."*
+4. **Ember Dust** — *"Volatile. Packed between the cores and the plates. Don't sneeze."*
+5. **Striker Plates** — *"Press flat against the dust layer. Takes the initial impact."*
+6. **Fang Clips** — *"Lock the plates in place. Snaps onto the strikers before you seal."*
+7. **Coil Segments** — *"The ignition thread. Winds through the clips and connects to the shell trigger."*
+
+**Answer:** `1345672` (Whisper Pins → Dragon Teeth → Ember Dust → Striker Plates → Fang Clips → Coil Segments → Ghost Shells)
+
+**Correct answer reveal:**
+"Click. Click. Click. Seven components, locked in sequence, just like training. The precision explosives are live. Whether you'll need them down here is another question — but up ahead, in whatever comes next, you'll have options the other teams don't. You just hope they never find out what those codenames actually meant."
+
+**Success consequence:**
+"The charges are assembled and secured. The team moves with a little more swagger — you're the only crew in this temple with a real ace up your sleeve. Whatever's ahead, you can blow through it. Literally."
+
+**Failure consequence:**
+"The components are scattered, some lost to the water, some in the hands of teams who think they're holding QRian trinkets. Your precision explosives are gone. Drake without firepower is just... people in balaclavas. Morale takes a serious hit..."
 
 ---
 
