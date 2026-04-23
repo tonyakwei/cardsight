@@ -128,6 +128,19 @@ async function main() {
     },
   });
 
+  const ansSlidingPanels = await prisma.singleAnswer.create({
+    data: {
+      gameId: game.id,
+      correctAnswer: "489627153",
+      acceptAlternatives: [
+        "4 8 9 6 2 7 1 5 3",
+        "4-8-9-6-2-7-1-5-3",
+      ],
+      hint: "The sentence reads: THOSE WHO STAYED TOO LONG WERE SEALED AWAY FOREVER. Match each word to its panel number.",
+      hintAfterAttempts: 3,
+    },
+  });
+
   // TODO: Add answers for other missions as they are designed
 
   // ═══════════════════════════════════════════════════════════════════
@@ -286,10 +299,14 @@ async function main() {
       sheetLetter: "D",
       description:
         "Peering straight across the haze of the chamber — small flat rocks, so precisely placed and stacked on one another that they form a grid in the wall. They can clearly be slid around. And there, at the center: a dark, hand-shaped hollow, worn silk-smooth by what must have been hundreds of palms pressed into it over centuries. This is exactly the kind of mechanism Dr. Jones described in his 42nd lecture. You could try the activation sequence...",
+      puzzleDescription:
+        "You'll need translation fragments found elsewhere in the temple to decode the panel glyphs. Each fragment reveals translated words for specific numbered panels. Write each word on an index card and rearrange until the sentence forms. Enter the panel numbers in the correct order.\n\n| Panel | Word |\n|-------|------|\n| 1 | SEALED |\n| 2 | TOO |\n| 3 | FOREVER |\n| 4 | THOSE |\n| 5 | AWAY |\n| 6 | LONG |\n| 7 | WERE |\n| 8 | WHO |\n| 9 | STAYED |",
+      answerTemplateType: "single_answer",
+      answerId: ansSlidingPanels.id,
       consequenceCompleted:
-        "The panels opened. What you found behind them... you wish you hadn't. Someone was kept here. Their carvings started as words and ended as spirals. The team is quiet. This temple is not what you thought it was.",
+        "You opened something the QRians wanted kept shut. The team is rattled — but also electrified. Whatever this temple was built to contain, you're getting closer to understanding it. Dr. Jones never mentioned anything like this in his lectures. You all feel like you are going to be historical legends, right when your careers start.",
       consequenceNotCompleted:
-        "The panels wouldn't move. The hand-shaped hollow just sat there, smooth and dark, waiting for someone who knew the right sequence. It wasn't you. Not this time...",
+        "The panels sit there, immovable, mocking. The hand-shaped hollow stares back at you — worn smooth by centuries of palms that knew the answer. Yours wasn't one of them. Dr. Jones would have had this in minutes. The team tries not to say that out loud, but everyone's thinking it. Morale takes a massive hit...",
       sortOrder: 4,
     },
   });

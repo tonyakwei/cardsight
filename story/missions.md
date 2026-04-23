@@ -243,13 +243,38 @@ Each house gets one of each sight type (artifact, utility, path).
 
 **Sight:** Peering straight across the haze of the chamber, a section of wall that looks *wrong* — the stone is divided into panels with thin, precise grooves between them, like a puzzle box built into the architecture. One panel has a dark, hand-shaped hollow worn smooth by use. Someone pressed their palm here, many times.
 
-**Challenge:** Decipher the glyph instructions on the surrounding wall to find the correct activation sequence. Classic Jones — read first, touch second.
+**Challenge:** Collect translation fragments from elsewhere in the temple to decode what the panel glyphs mean. Write each translated word on an index card, rearrange until the sentence forms. Enter the panel numbers in correct order.
 
-**Evidence:** QRian suffering. The panels open to reveal a hidden chamber. Inside: a small room with walls covered in carvings — not official inscriptions, but personal ones. The early carvings are desperate pleas for release. Then obsessive repeating patterns. Then pure geometric fractals. Someone's mind unraveled in this cell, their thoughts collapsing into nothing but shape and order.
+**Puzzle type:** A — Anagram Assembly
 
-**Danger:** What were they being held away from? And why does the pattern of their madness look so... organized? (Players see evidence that *the QRians* were being changed by something — but do not yet feel it themselves.)
+**Required clue cards:** 3 cards across different sets — Fragment 1 (3 panel translations), Fragment 2 (3 panel translations), Fragment 3 (3 panel translations). 9 translations total. *(Card set assignment TBD.)*
 
-**Puzzle candidates:** B (Glyph Cipher) to decode the panel instructions, then G (Sequence Ordering) to read the cell carvings chronologically
+| Panel | Word | Fragment |
+|-------|------|----------|
+| 1 | SEALED | 1 |
+| 2 | TOO | 1 |
+| 3 | FOREVER | 1 |
+| 4 | THOSE | 2 |
+| 5 | AWAY | 2 |
+| 6 | LONG | 2 |
+| 7 | WERE | 3 |
+| 8 | WHO | 3 |
+| 9 | STAYED | 3 |
+
+**Answer:** `489627153` (THOSE WHO STAYED TOO LONG WERE SEALED AWAY FOREVER)
+
+**Correct answer reveal:**
+"The panels slide open. Behind them — a small, sealed chamber. The walls are covered in carvings. Not official inscriptions — personal ones. Someone lived in here. The markings are dense, obsessive, but you can't decipher them yet. Whatever happened to this person, the QRians thought sealing them away was the answer. The chamber smells like dust and centuries."
+
+**Evidence:** QRian suffering. People were sealed in this temple. The carvings hint at something deeper but remain undecipherable in Act 1 — a seed planted for Act 2.
+
+**Danger:** The QRians sealed their own people away. Why? What did they do — or what was done to them?
+
+**Success consequence:**
+"You opened something the QRians wanted kept shut. The team is rattled — but also electrified. Whatever this temple was built to contain, you're getting closer to understanding it. Dr. Jones never mentioned anything like this in his lectures. You all feel like you are going to be historical legends, right when your careers start."
+
+**Failure consequence:**
+"The panels sit there, immovable, mocking. The hand-shaped hollow stares back at you — worn smooth by centuries of palms that knew the answer. Yours wasn't one of them. Dr. Jones would have had this in minutes. The team tries not to say that out loud, but everyone's thinking it. Morale takes a massive hit..."
 
 ---
 
