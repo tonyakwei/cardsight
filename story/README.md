@@ -11,3 +11,4 @@ Files here are the source of truth for story decisions. They're meant to be read
 - `lore-the-source.md` — Core mythology: the Source, the Chaotic Order, and why the temple was sealed
 - `act-structure.md` — Per-act knowledge progression, mission categories, showtime endgame, design notes
 - `houses.md` — The three expedition teams: Drake Delegation, Jones Junket, Croft Company
+- `missions.md` — Mission designs per act per house (work in progress)

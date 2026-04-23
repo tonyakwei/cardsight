@@ -15,6 +15,8 @@ What players should know entering the temple:
 
 **Act break:** Host narrates what occurs, collects cards, delivers mission consequences, allows inter-house talk, then transitions to Act 2.
 
+**Open design question:** How do all three houses narratively get from the flooded lower chambers up to the upper chambers for Act 2? The temple is designed so all paths lead down, and the lower level is now underwater. The transition needs a believable mechanism — perhaps the rising water forces them up through a passage they hadn't noticed, or the flood itself triggers an opening in the architecture. TBD.
+
 **Baseline knowledge players should have by end of Act 1:**
 - It's NOT a religious temple. It was built for a strange cautionary purpose, and there is danger involved
 - The QRian language changed a lot during their civilization's existence
