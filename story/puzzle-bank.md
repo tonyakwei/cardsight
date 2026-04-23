@@ -12,6 +12,8 @@ Alphabetized catalog of puzzle mechanics for Temple of the QRians. Each type can
 
 Players receive discrete chunks of letters and must rearrange them to form correct phrases or sentences.
 
+**Variant — Boundary-Break Assembly:** The letter chunks do NOT respect word boundaries. Spaces are removed before chunking, so players must figure out both the correct order AND where the words begin and end. Example: the phrase "THOSE WHO ENTER" might arrive as `THO | SEWHO | EN | TER`. Significantly harder than standard assembly — a good escalation for later acts.
+
 ## B — Glyph Cipher
 
 Glyphs represent individual letters. Teams must crack the mapping from geometric symbols to the alphabet.

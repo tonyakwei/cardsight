@@ -37,3 +37,13 @@ Evergreen principles for designing missions and story card briefs across all act
 15. **House voice and humor.** Each house's briefs should sound like *that house* wrote them. Drake = dry mercenary pragmatism. Humor is injected into the briefs, not the intro.
 
 16. **House intro notices other teams.** The story card intro names the other houses with brief, character-revealing visual descriptions and locations in the room.
+
+## Mission Consequences
+
+17. **Consequences are personal, not informational.** Don't write "you learned X" or "you missed information Y." Write about morale, team dynamics, relationships, what their patron would think. The consequence should affect how the *house feels about itself*.
+
+18. **Success ends with forward momentum.** Pride, confidence, possessiveness, excitement. The team should feel like they've earned something and are ready for more. End with an active emotional beat — "you guard it jealously," "confidence is high."
+
+19. **Failure ends with dread about what's ahead.** Not just "you failed" but "...and the next part is going to be harder because of it." The ellipsis, the trailing worry, the weight of what's coming. End looking forward into the dark, not backward at the mistake.
+
+20. **Name the loss concretely.** If something was lost, say what — "the floodwater swallowed the device forever." Abstract failure ("you didn't succeed") has no sting. Concrete loss ("it's gone, and everyone saw you fail") hurts.

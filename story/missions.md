@@ -279,7 +279,31 @@ Each house gets one of each sight type (artifact, utility, path).
 
 **Danger:** This isn't just a building with no exit. It's a trap engineered to be inescapable — one that tricks you into thinking you can get out.
 
-**Puzzle candidates:** E (Grid Phrasal Reconstruction) to decode the map labels, or I (Symbol Word Search) to trace the path layout
+**Puzzle type:** A — Anagram Assembly
+
+**Required clue cards:** 3 cards across different sets — Bundle 1 (2 spokes), Bundle 2 (3 spokes), Bundle 3 (4 spokes). 9 metal spokes total. The team already has a hammer.
+
+**How it works:** Each spoke is numbered and has a translated QRian word inscribed on it. The QRians designed the spokes to be driven in a specific order — top to bottom, they read a QRian sentence. Players write each word on an index card and rearrange until the sentence forms. They enter the spoke numbers in correct order.
+
+| Spoke | Word | Bundle |
+|-------|------|--------|
+| 1 | FIND | 1 |
+| 2 | EVER | 1 |
+| 3 | WHO | 2 |
+| 4 | WAY | 2 |
+| 5 | WILL | 2 |
+| 6 | THOSE | 3 |
+| 7 | NO | 3 |
+| 8 | ENTER | 3 |
+| 9 | OUT | 3 |
+
+**Answer:** `638517492` (THOSE WHO ENTER WILL FIND NO WAY OUT EVER)
+
+**Success consequence:**
+"The climb was clean. The team moved like one body — boost, grip, pull. Lara would have been proud. Confidence is high, and you've already bagged something that should make this whole expedition historically monumental. You all guard it jealously."
+
+**Failure consequence:**
+"Fifteen feet. You couldn't make fifteen feet. And now the floodwater has slowly swallowed the priceless, mysterious device forever. Every other team probably saw you try. What would Lara say? Morale takes a serious hit, and you all wonder how you'll fare with the next chambers to come..."
 
 ---
 
