@@ -243,11 +243,11 @@ Each house gets one of each sight type (artifact, utility, path).
 
 **Sight:** Peering straight across the haze of the chamber, a section of wall that looks *wrong* — the stone is divided into panels with thin, precise grooves between them, like a puzzle box built into the architecture. One panel has a dark, hand-shaped hollow worn smooth by use. Someone pressed their palm here, many times.
 
-**Challenge:** Collect translation fragments from elsewhere in the temple to decode what the panel glyphs mean. Write each translated word on an index card, rearrange until the sentence forms. Enter the panel numbers in correct order.
+**Challenge:** The wall has spaces for 9 panels, but several have been dislodged and scattered across the chamber floor. Some of the missing panels appear to have been picked up by the other expedition teams. You'll need to trade to get them back. Each panel has a QRian glyph on one side — scanning reveals the translated word. Write each word on an index card, rearrange until the sentence forms. Enter the panel numbers in correct order.
 
 **Puzzle type:** A — Anagram Assembly
 
-**Required clue cards:** 3 cards across different sets — Fragment 1 (3 panel translations), Fragment 2 (3 panel translations), Fragment 3 (3 panel translations). 9 translations total. *(Card set assignment TBD.)*
+**Required clue cards:** 3 cards across different sets — Panel Set 1 (3 panels), Panel Set 2 (3 panels), Panel Set 3 (3 panels). 9 panels total. Other houses have found some of the scattered panels. *(Card set assignment TBD.)*
 
 | Panel | Word | Fragment |
 |-------|------|----------|

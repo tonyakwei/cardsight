@@ -298,7 +298,7 @@ async function main() {
       title: "Examine the Sliding Panels",
       sheetLetter: "D",
       description:
-        "Peering straight across the haze of the chamber — small flat rocks, so precisely placed and stacked on one another that they form a grid in the wall. They can clearly be slid around. And there, at the center: a dark, hand-shaped hollow, worn silk-smooth by what must have been hundreds of palms pressed into it over centuries. This is exactly the kind of mechanism Dr. Jones described in his 42nd lecture. You could try the activation sequence...",
+        "Peering straight across the haze of the chamber — small flat rocks, so precisely placed and stacked on one another that they form a grid in the wall. They can clearly be slid around. But several panels are missing — dislodged and scattered across the chamber floor. You can see that the other teams have already picked some up. At the grid's center: a dark, hand-shaped hollow, worn silk-smooth by what must have been hundreds of palms pressed into it over centuries. This is exactly the kind of mechanism Dr. Jones described in his 42nd lecture. If you could recover the missing panels, you could try the activation sequence...",
       puzzleDescription:
         "You'll need translation fragments found elsewhere in the temple to decode the panel glyphs. Each fragment reveals translated words for specific numbered panels. Write each word on an index card and rearrange until the sentence forms. Enter the panel numbers in the correct order.\n\n| Panel | Word |\n|-------|------|\n| 1 | SEALED |\n| 2 | TOO |\n| 3 | FOREVER |\n| 4 | THOSE |\n| 5 | AWAY |\n| 6 | LONG |\n| 7 | WERE |\n| 8 | WHO |\n| 9 | STAYED |",
       answerTemplateType: "single_answer",
@@ -376,7 +376,7 @@ async function main() {
       title: "Reach the Shadow Astrolabe",
       sheetLetter: "C",
       description:
-        "Deep in the far corner, high up — a glint in the dark, like a single star in a black sky. As your eyes focus, you see concentric rings, dark as iron, catching torchlight in flashes — etched with markings so fine they shimmer. It's by far the most beautiful thing in this entire temple, and it's sitting on a ledge fifteen feet above the floor. Fifteen feet is nothing for this crew. You could get up there...",
+        "Deep in the far corner, high up — a glint in the dark, like a single star in a black sky. As your eyes focus, you see concentric rings, dark as iron, catching torchlight in flashes — etched with markings so fine they shimmer. It's by far the most beautiful thing in this entire temple, and it's sitting on a ledge fifteen feet above the floor. You'll need to find QRian metal spokes scattered around the chamber to use as footholds — you've spotted some nearby, but others seem to have ended up near the other teams. Fifteen feet is nothing for this crew. You could get up there...",
       puzzleDescription:
         "You'll need metal spokes to drive into the wall as footholds. The QRians designed these spokes to be driven in a specific order — top to bottom, they read a translated QRian sentence. Write each spoke's word on an index card and rearrange until the sentence forms. Enter the spoke numbers in the correct order.\n\n| Spoke | Word |\n|-------|------|\n| 1 | FIND |\n| 2 | EVER |\n| 3 | WHO |\n| 4 | WAY |\n| 5 | WILL |\n| 6 | THOSE |\n| 7 | NO |\n| 8 | ENTER |\n| 9 | OUT |",
       answerTemplateType: "single_answer",
