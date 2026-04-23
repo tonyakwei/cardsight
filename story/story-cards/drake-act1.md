@@ -4,7 +4,7 @@
 
 You are the Drake Delegation — relic hunters by trade, mercenaries by reputation. Your outfit has built a career recovering the priceless knowledge of ancient civilizations, by any means necessary. But your last string of jobs has ended in failure, and the funds are running dry. This temple — recently discovered, untouched, the biggest find in years — is the job that saves the outfit. Or buries it.
 
-You had no time for pleasantries. You blasted your way in with dynamite. Across the chamber, a group with whips and pencils behind their ears is already crouched over inscriptions — the Jones Junket. Near the far wall, a crew in jorts and immaculate hair is prying at the stone — the Croft Company. You didn't expect them. That changes nothing.
+You had no time for pleasantries. You blasted your way in with dynamite. Maybe it caused this flood. Doesn't matter now. Got a job to do. Across the chamber, a group with whips and pencils behind their ears is already crouched over inscriptions — the Jones Junket. Near the far wall, a crew in jorts and immaculate hair is prying at the stone — the Croft Company. You didn't expect them. That changes nothing.
 
 The water is rising. You have what you have. Move.
 
