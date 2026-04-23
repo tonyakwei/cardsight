@@ -9,6 +9,7 @@
     "db:migrate": "pnpm --filter server prisma migrate dev",
     "db:seed": "pnpm --filter server prisma db seed",
     "db:seed-test": "pnpm --filter server exec tsx prisma/seed-test-game.ts",
+    "db:seed-qrians": "pnpm --filter server exec tsx prisma/seed-qrians.ts",
     "db:studio": "pnpm --filter server prisma studio"
   },
   "volta": {
