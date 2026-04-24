@@ -286,15 +286,52 @@ R3   │      └───R  │  L───────R  │  L───○   
 
 ---
 
-### Croft — The Stone Jigsaw (pitch)
+### Croft — The Stone Jigsaw
 
-Croft's physical mindset: plug the leak with their hands. Water is pouring through a crack in the wall that used to be a blocked passage. The stones that originally sealed it are scattered on the floor, partially in the water. The team has to physically fit them back together — but there are extra pieces, edges don't match obvious neighbors, and each has a QRian glyph that indicates its correct position.
+**Puzzle type:** O — Fragment Assembly
 
-**The puzzle:** Match stone fragments based on glyph markings and edge shapes (Type J for finding markers, Type A for arrangement, or a hybrid). Could also work as Type G — putting fragments in the correct stacking order.
+**Required clue cards:** 3 cards (2+2+1 tile distribution). Clue category: "Seal Stone."
 
-**What they discover:** When the stones are assembled correctly, they form what initially looks like a religious mosaic — a scene of worship, figures in prayer. But the glyphs embedded in the image are mathematical formulas. The "prayer" is an equation. The "worship scene" is a construction diagram. What looked like a religious mural was actually a functional engineering document dressed in sacred imagery. Religion and mathematics were indistinguishable to the QRians — and the "temple" was never purely religious.
+**Narrative:** Water pours through a crack where a sealed passage gave way. Five flat stone fragments that originally sealed it are scattered on the floor. Each fragment has a carved symbol on its left edge, a different symbol on its right edge, and a letter on its face. Adjacent fragments must have matching edge symbols. When correctly assembled in a line, the letters spell the answer. The assembled mosaic also reveals that a "worship scene" is actually an engineering diagram — math disguised as sacred imagery.
 
-**Reinforces house identity:** Physical, hands-on, excavation-adjacent. They dug in; now they're un-digging to save themselves. The stones feel like artifacts, which lets them stay Lara-coded even in a defensive mission.
+**The 5 tiles:**
+
+| Tile | Left edge | Right edge | Letter |
+|------|-----------|------------|--------|
+| 1 | ☆ | ● | S |
+| 2 | ● | ▲ | T |
+| 3 | ▲ | ◆ | O |
+| 4 | ◆ | ◗ | N |
+| 5 | ◗ | ♦ | E |
+
+**Edge-matching forces unique order:** ☆ appears only on tile 1's left (no tile has ☆ as a right edge). ♦ appears only on tile 5's right (no tile has ♦ as a left edge). The chain is forced: 1→2→3→4→5.
+
+**Answer:** `stone`
+
+**Clue card distribution:**
+
+| Card | Tiles |
+|------|-------|
+| Card 1 | Tiles 1 (S) and 2 (T) |
+| Card 2 | Tiles 3 (O) and 4 (N) |
+| Card 3 | Tile 5 (E) |
+
+Each card describes the tile's edge symbols and letter. Players draw them on index cards and physically arrange by matching edges.
+
+**Why other teams have them:** The fragments were blasted from the wall by water pressure and scattered across the chamber. Other teams picked up the smooth, carved stones.
+
+**Hint:** "Match the edge symbols — each tile's right symbol must match the next tile's left symbol. Start with the tile whose left edge has no match."
+
+**Correct answer reveal:**
+*"The fragments lock together. The crack seals. And across the assembled surface — what looked like figures in prayer are actually construction diagrams. The 'worship scene' is a blueprint. The QRians dressed their engineering in sacred imagery."*
+
+**Success consequence:**
+*"The passage holds. Whatever route Croft planned through here stays open. And the blueprint on the stones — that's worth studying later."*
+
+**Failure consequence:**
+*"The passage is impassable. You'll have to route around, losing time."*
+
+**Reinforces house identity:** Physical, hands-on, excavation-adjacent. Croft solves with their hands. The stones feel like artifacts — staying Lara-coded even in a defensive mission.
 
 ---
 
@@ -777,15 +814,77 @@ A note on the mission card reads: *"Your team's training tells you something imp
 
 #### Croft T2 — The Teaching Stone *(Unreachable Utility)*
 
-**Sight:** In the dead center of the chamber, a wide stone disc sits on a pedestal — pale, smooth, almost luminous against the dark walls. A perfect circle is carved into its face, and around the rim, small rectangular slots are cut at precise intervals, like teeth on a gear. It looks like it's waiting for something to be inserted. Behind it, an entire wall of glyphs — dense, deliberate, instructional.
+**Puzzle type:** N — Pattern Completion
 
-**Challenge:** Find or construct the correct inserts for the slots from gathered clue cards, then activate the mechanism.
+**Required clue cards:** 3 cards (1 insert each). Clue category: "Stone Insert."
 
-**Evidence:** QRian culture. The "altar" is a teaching machine. When activated, moving stone pieces mechanically demonstrate a mathematical principle. The QRians didn't just use math — they built physical devices to venerate it. This wasn't a temple of worship. It was a school of obsessive mathematical devotion. The instruction glyphs treat "to calculate" and "to pray" as the same verb.
+**Sight:** Dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face. Some positions are filled, some empty. Small rectangular inserts lie scattered near the base.
+
+**Challenge:** The disc is a mathematical teaching machine with two concentric rings. Players must discover the transformation rule between inner and outer rings, then calculate the missing outer values.
+
+**Evidence:** QRian culture. The "altar" is a teaching device that mechanically demonstrates a mathematical principle. The QRians built physical devices to venerate math. "To calculate" and "to pray" = same verb. This wasn't a temple of worship — it was a school.
 
 **Danger:** There's a line between reverence for knowledge and compulsive worship of order. The QRians crossed it — but the players don't yet know why.
 
-**Puzzle candidates:** C (Conceptual Decipherment) for the glyph instructions, or H (Glyph Arithmetic) to operate the teaching mechanism
+**How it works:** The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete (both inner and outer values visible). 3 positions are missing their inner inserts — and both inner AND outer values are blank.
+
+The clue cards are the 3 missing inner ring inserts (Stone Inserts scattered near the pedestal, picked up by other teams). Once players have all 8 inner values, they can see the inner pattern AND derive the inner-to-outer transformation rule from the 5 complete pairs.
+
+**The disc (8 positions clockwise):**
+
+| Position | Inner | Outer | Status |
+|----------|-------|-------|--------|
+| 1 | 1 | 3 | Complete |
+| 2 | 3 | 8 | Complete |
+| 3 | **?** | **?** | Missing — Card 1 provides inner: **5** |
+| 4 | 7 | 18 | Complete |
+| 5 | **?** | **?** | Missing — Card 2 provides inner: **9** |
+| 6 | 11 | 28 | Complete |
+| 7 | 13 | 33 | Complete |
+| 8 | **?** | **?** | Missing — Card 3 provides inner: **15** |
+
+**Inner ring pattern:** 1, 3, 5, 7, 9, 11, 13, 15 (odd numbers, +2 each)
+
+**Inner-to-outer rule:** outer = inner × 2 + position number
+
+**Verification of complete pairs:**
+- Pos 1: (1, 3): 1×2+1=3 ✓
+- Pos 2: (3, 8): 3×2+2=8 ✓
+- Pos 4: (7, 18): 7×2+4=18 ✓
+- Pos 6: (11, 28): 11×2+6=28 ✓
+- Pos 7: (13, 33): 13×2+7=33 ✓
+
+**Missing outer values:**
+- Position 3: inner 5 → 5×2+3 = **13**
+- Position 5: inner 9 → 9×2+5 = **23**
+- Position 8: inner 15 → 15×2+8 = **38**
+
+**Answer:** `13 23 38`
+
+**Accepted alternatives:** `13, 23, 38` / `132338`
+
+**Why the rule isn't obvious:** Players see 5 pairs: 1→3, 3→8, 7→18, 11→28, 13→33. Simple addition (+2, +5, +11, +17, +20) is inconsistent. Simple multiplication (×3, ×2.67, ×2.57) is inconsistent. Even ×2 leaves varying remainders: 1, 2, 4, 6, 7. The spatial insight: those remainders ARE the position numbers. The rule uses WHERE the pair sits on the disc, not just the numbers. This makes it a genuinely spatial puzzle — fitting for Croft's hands-on identity.
+
+**Clue card distribution:**
+
+| Card | Content |
+|------|---------|
+| Card 1 | Stone insert with number **5** carved into it |
+| Card 2 | Stone insert with number **9** carved into it |
+| Card 3 | Stone insert with number **15** carved into it |
+
+**Why other teams have these:** The inserts were dislodged from the disc and scattered across the chamber floor. Other teams pocketed the smooth, carved stones as interesting objects.
+
+**Hint:** "Try doubling each inner number. The outer is always a bit more than double — but by how much? Does the extra amount relate to where the pair sits on the disc?"
+
+**Correct answer reveal:**
+*"The outer numbers click into place. The disc hums — stone pieces shift and rotate, mechanically demonstrating the principle. The QRians didn't just use math. They built physical devotions to it. This wasn't an altar. It was a classroom — and you just passed the entrance exam to a school that's been closed for centuries."*
+
+**Success consequence:**
+*"The teaching machine works. The QRians worshipped mathematics with carved stone. Every equation was a prayer, every proof a hymn. Lara would have recognized this instantly."*
+
+**Failure consequence:**
+*"The disc sits incomplete, its lesson unlearned. Whatever the QRians carved into this machine, the classroom stays closed."*
 
 ---
 
