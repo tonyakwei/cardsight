@@ -62,5 +62,6 @@ Before presenting a puzzle design, run these checks:
 - **Adversarial test each answer.** For every answer, ask: "What OTHER answer could a reasonable player give?" If there's a plausible alternative, flag it as ambiguous.
 - **Diegetic sentence.** State in one sentence why solving the puzzle enables the physical action. If that sentence doesn't exist, the connection is broken.
 - **Simplest setup first.** What's the simplest physical object that delivers this puzzle? Start there, not with the most dramatic one.
+- **Clue category name check.** The category name (e.g., "Inscribed Stone", "Carved Vessel") is what *all* teams see when they scan the card — not just the house that needs it. It must be (1) visually evocative so players can picture the object, (2) narratively neutral so it doesn't reveal what the item is actually for, and (3) specific enough that the owning house can ask other teams for it by name during trading. If the category name gives away the puzzle or contradicts the narrative ("Detonator Component" when the story says other teams don't know what they're holding), rename it.
 - **Don't invent constraints.** If a rule or conflict isn't written down, ask — don't assert.
 - **Fact-check physical descriptions.** If naming a real material or object, verify basic properties.

@@ -28,7 +28,9 @@ Drake's precision explosives need 7 components to assemble: Whisper Pins, Dragon
 
 **Puzzle type:** G — Sequence Ordering
 
-**Required clue cards:** 3 cards across different sets (2+3+2 distribution).
+**Required clue cards:** 3 cards across different sets (2+3+2 distribution). Clue category: "Small Mechanical Part."
+
+**Why other teams have these:** The blast scattered small metal components across the chamber floor. Other teams picked them up as interesting precision instruments — springs, pins, shells, clips. They have no idea what they assemble into.
 
 | Card | Components |
 |------|-----------|
@@ -72,9 +74,9 @@ In the rush through the hidden passage, the ceremonial whips were left behind. T
 
 **Puzzle type:** B — Glyph Cipher
 
-**Required clue cards:** 3 cards (distribution TBD). Clue category: "Strange Carved Stone."
+**Required clue cards:** 3 cards (distribution TBD). Clue category: "Coded Clay Tablet."
 
-**Why other teams have these:** A large QRian translation tablet was smashed during the flood. Fragments scattered across the chamber floor. Each fragment shows a few glyph-to-letter pairings. Other teams grabbed them as interesting carved stones.
+**Why other teams have these:** A large QRian translation tablet — clay, like cuneiform — was smashed during the flood. Fragments scattered across the chamber floor. Each fragment shows a few glyph-to-letter pairings. Other teams grabbed them as interesting clay tablets with coded markings.
 
 **How it works:** The mission card (on phone) shows the corridor entrances with QRian glyph labels rendered in the custom QRian font. A larger glyph inscription is displayed on the wall nearby. Players collect Strange Carved Stone fragments from other teams, each providing 1-2 glyph-to-letter mappings. Using these mappings, they decipher:
 1. The corridor labels (e.g., STONE, SILENCE, ANCIENT, OCEAN, TIME)
@@ -115,9 +117,9 @@ Croft's signature grappling rigs — high-tension cable, Croft-issue hooks, spri
 
 **Puzzle type:** G — Sequence Ordering
 
-**Required clue cards:** 3 cards across different sets (3+2+2 distribution). Clue category: "Misc. Tools."
+**Required clue cards:** 3 cards across different sets (3+2+2 distribution). Clue category: "Unmarked Steel Hardware."
 
-**Why other teams have these:** The route-setting kit spilled out of Croft's gear bag during the initial flood surge and scattered across the chamber floor. Other teams picked up the steel components — threaded bolts, clamps, pulleys, clips — as potentially useful tools or interesting metal objects.
+**Why other teams have these:** The route-setting kit spilled out of Croft's gear bag during the initial flood surge and scattered across the chamber floor. Other teams picked up the steel components — bolts, clamps, pulleys, clips — unmarked, no labels or manufacturer stamps. Conspicuously anonymous equipment.
 
 | Card | Items |
 |------|-------|
@@ -127,27 +129,29 @@ Croft's signature grappling rigs — high-tension cable, Croft-issue hooks, spri
 
 Each item's description hints at its position in the rigging sequence:
 
-1. **Wall Studs** (item #5) — *"Threaded steel bolts. First into bare rock. Nothing holds without them."*
-2. **Anchor Plate** (item #2) — *"Flat bracket. Bolts flush to the starting anchor for a tie-off point."*
-3. **Fixed Line** (item #8) — *"Stiff rope. Ties off at the base, hangs the full height."*
-4. **Rope Clamps** (item #4) — *"Toothed grips. Bite the rope going up, lock tight coming down."*
-5. **Top Bolts** (item #1) — *"Expansion bolts for the alcove. Useless until someone climbs up."*
-6. **Haul Pulley** (item #6) — *"Wheeled block. Mounts at the top to run the haul line through."*
-7. **Cargo Hook** (item #3) — *"Heavy clip. The last thing on the line. Gear bags attach here."*
+| # | Component | Description |
+|---|-----------|-------------|
+| 1 | Rope Clamps | *"Toothed grips. Bite the rope going up, lock tight coming down."* |
+| 2 | Cargo Hook | *"Heavy clip. The last thing on the line. Gear bags attach here."* |
+| 3 | Anchor Plate | *"Flat bracket. Bolts flush to the starting anchor for a tie-off point."* |
+| 4 | Haul Pulley | *"Wheeled block. Mounts at the top to run the haul line through."* |
+| 5 | Wall Studs | *"Threaded steel bolts. First into bare rock. Nothing holds without them."* |
+| 6 | Top Bolts | *"Expansion bolts for the alcove. Useless until someone climbs up."* |
+| 7 | Fixed Line | *"Stiff rope. Ties off at the base, hangs the full height."* |
 
-**Answer:** `5284163` (Wall Studs → Anchor Plate → Fixed Line → Rope Clamps → Top Bolts → Haul Pulley → Cargo Hook)
+**Answer:** `5371642` (Wall Studs → Anchor Plate → Fixed Line → Rope Clamps → Top Bolts → Haul Pulley → Cargo Hook)
 
 **Step-by-step logic:**
 
 | Step | Item # | Name | Forced dependency |
 |------|--------|------|-------------------|
 | 1 | 5 | Wall Studs | "First into bare rock. Nothing holds without them." Explicitly first — the base anchor drilled into the wall at the starting ledge. |
-| 2 | 2 | Anchor Plate | "Bolts flush to the starting anchor." Needs the wall studs as mounting points. "Starting anchor" echoes the studs' description. |
-| 3 | 8 | Fixed Line | "Ties off at the base, hangs the full height." Needs the anchor plate as its bottom tie-off point. "The base" refers to the plate. |
-| 4 | 4 | Rope Clamps | "Bite the rope going up, lock tight coming down." Needs the fixed line to exist. The mechanism for ascending. |
-| 5 | 1 | Top Bolts | "Useless until someone climbs up." Someone must have ascended (via clamps on the fixed line) to reach the alcove and drill these. |
-| 6 | 6 | Haul Pulley | "Mounts at the top to run the haul line through." Needs the top bolts as its anchor point at the alcove. |
-| 7 | 3 | Cargo Hook | "The last thing on the line." Clips to the end of the haul line running through the pulley. Explicitly last. |
+| 2 | 3 | Anchor Plate | "Bolts flush to the starting anchor." Needs the wall studs as mounting points. "Starting anchor" echoes the studs' description. |
+| 3 | 7 | Fixed Line | "Ties off at the base, hangs the full height." Needs the anchor plate as its bottom tie-off point. "The base" refers to the plate. |
+| 4 | 1 | Rope Clamps | "Bite the rope going up, lock tight coming down." Needs the fixed line to exist. The mechanism for ascending. |
+| 5 | 6 | Top Bolts | "Useless until someone climbs up." Someone must have ascended (via clamps on the fixed line) to reach the alcove and drill these. |
+| 6 | 4 | Haul Pulley | "Mounts at the top to run the haul line through." Needs the top bolts as its anchor point at the alcove. |
+| 7 | 2 | Cargo Hook | "The last thing on the line." Clips to the end of the haul line running through the pulley. Explicitly last. |
 
 **Correct answer reveal:**
 "Stud. Plate. Line. Clamp. Climb. Bolt. Pulley. Hook. Seven steps, no hesitation — your hands know this sequence the way your lungs know breathing. The route goes up clean: twenty feet of ancient stone, the fixed line humming with tension, the haul pulley spinning true. The grappling rigs come up heavy and swinging, and when they settle on the alcove floor, the whole team just stands there for a second, catching their breath. Down below, the water swallows the entry ledge. Another few minutes and the rigs would have been gone. They're heavy. They're going to slow you down. And you wouldn't trade them for anything."
@@ -168,11 +172,13 @@ One per house. Each house approaches the flood problem through the lens of their
 
 **Puzzle type:** B — Glyph Cipher
 
-**Required clue cards:** 3 cards (2+2+1 mapping distribution). Clue category: "Wheel Fragment."
+**Required clue cards:** 3 cards (2+2+1 mapping distribution). Clue category: "Inscribed Chunk of Stone."
+
+**Why other teams have these:** Chunks of inscribed stone broke free from the wheel's base during the flood and scattered across the chamber. Other teams picked them up as heavy, interesting carved stones.
 
 **Narrative:** All houses blame Drake's dynamite for the flooding. Drake finds a heavy stone wheel embedded in the wall — channels radiate across the floor. Their tactical eye reads it instantly: this controls the water flow. But it won't budge by force. Five QRian glyphs are carved into the wheel's face — the unlock command.
 
-**How it works:** The wheel's face shows 6 groups of glyphs separated by carved dividers. Clue cards ("Wheel Fragments") provide glyph-to-letter mappings. Players decode each group, getting letter chunks that cross word boundaries:
+**How it works:** The wheel's face shows 6 groups of glyphs separated by carved dividers. Clue cards ("Inscribed Chunk of Stones") provide glyph-to-letter mappings. Players decode each group, getting letter chunks that cross word boundaries:
 
 **PUR | GET | HE | F | LO | OR**
 
@@ -221,7 +227,7 @@ The QRians designed the flood as a ritual purge — a designed cleansing, not a 
 
 **Puzzle type:** O — Fragment Assembly
 
-**Required clue cards:** 3 cards (3+2+2 tile distribution). Clue category: "Channel Stone."
+**Required clue cards:** 3 cards (3+2+2 tile distribution). Clue category: "Grooved Ceramic Tile."
 
 **Narrative:** Jones recognizes valve controls disguised as decorative inscriptions along the walls. The drainage system is a 3×3 pipe network — 9 sections arranged in a grid. SOURCE (top-left) and DRAIN (bottom-right) are visible, but 7 connecting sections are missing — their carved stone tiles scattered across the chamber.
 
@@ -280,7 +286,7 @@ R3   │      └───R  │  L───────R  │  L───○   
 **Failure consequence:**
 *"The upper chamber inscriptions were partially washed away. Key context is missing. Whatever those walls said, the flood took it."*
 
-**Why other teams have tiles:** The carved stone pipe tiles were dislodged from the wall by centuries of water damage and scattered across the chamber. Other teams picked up the decorative-looking carved stones.
+**Why other teams have tiles:** The ceramic pipe tiles were dislodged from the wall by centuries of water damage and scattered across the chamber. Other teams picked up the decorative-looking grooved tiles.
 
 **Reinforces house identity:** Scholarly, patient, rewarded by careful analysis. Jones reads infrastructure the way other teams read treasure — three months of schematics trained them for exactly this. The sabotage discovery is the gut punch: Jones solved the puzzle correctly, but the QRians anticipated that someone would.
 
@@ -290,7 +296,7 @@ R3   │      └───R  │  L───────R  │  L───○   
 
 **Puzzle type:** O — Fragment Assembly
 
-**Required clue cards:** 3 cards (2+2+1 tile distribution). Clue category: "Seal Stone."
+**Required clue cards:** 3 cards (2+2+1 tile distribution). Clue category: "Odd Edge-Marked Block."
 
 **Narrative:** Water pours through a crack where a sealed passage gave way. Five flat stone fragments that originally sealed it are scattered on the floor. Each fragment has a carved symbol on its left edge, a different symbol on its right edge, and a letter on its face. Adjacent fragments must have matching edge symbols. When correctly assembled in a line, the letters spell the answer. The assembled mosaic also reveals that a "worship scene" is actually an engineering diagram — math disguised as sacred imagery.
 
@@ -318,7 +324,7 @@ R3   │      └───R  │  L───────R  │  L───○   
 
 Each card describes the tile's edge symbols and letter. Players draw them on index cards and physically arrange by matching edges.
 
-**Why other teams have them:** The fragments were blasted from the wall by water pressure and scattered across the chamber. Other teams picked up the smooth, carved stones.
+**Why other teams have them:** The fragments were blasted from the wall by water pressure and scattered across the chamber. Other teams picked up the odd blocks with their unusual edge markings.
 
 **Hint:** "Match the edge symbols — each tile's right symbol must match the next tile's left symbol. Start with the tile whose left edge has no match."
 
@@ -418,7 +424,7 @@ Each house gets one of each sight type (artifact, utility, path).
 
 **Puzzle type:** N — Pattern Completion
 
-**Required clue cards:** 5 cards across different sets (distribution TBD). Clue category: "Strange Discs."
+**Required clue cards:** 5 cards across different sets (distribution TBD). Clue category: "Strange Painted Disc."
 
 **How it works:** The dome's base has five slots, each with a dial of colors. Five stone discs are scattered across the chamber — each has a color sequence with one color missing, and a single word etched beneath. Each sequence represents something real that changes color. Players figure out what each sequence represents, determine the missing color, and set the corresponding dial. Enter the five missing colors in disc order.
 
@@ -457,9 +463,9 @@ Each house gets one of each sight type (artifact, utility, path).
 
 **Puzzle type:** A — Anagram Assembly
 
-**Required clue cards:** 3 cards across different sets (3+3+3 distribution). Clue category: "Hoist Marking."
+**Required clue cards:** 3 cards across different sets (3+3+3 distribution). Clue category: "Inscribed Metal Fragment."
 
-**Why other teams have these:** The hoist's chain links and pulley components broke apart when the mechanism seized. Metal fragments with glyph inscriptions scattered across the chamber. Other teams picked them up as potentially useful salvage.
+**Why other teams have these:** The hoist's chain links and pulley components broke apart when the mechanism seized. Corroded metal fragments with QRian glyphs scratched into them scattered across the chamber. Other teams picked them up as interesting inscribed salvage.
 
 **How it works:** The mission card describes the hoist and its 9 marked positions. Drake can see the positions (numbered 1-9) but can't read the QRian inscriptions. The clue cards are "Hoist Markings" — translated glyph guides found on fallen metal fragments. Each card translates 3 positions. Players collect all translations, write each word on an index card, rearrange into a sentence, and enter the position numbers in sentence order.
 
@@ -518,9 +524,9 @@ Card 3: *"Three pulley housing fragments with translations. Position 8: LET. Pos
 
 **Puzzle type:** O — Fragment Assembly
 
-**Required clue cards:** 3 cards (3+2+2 distribution). Clue category: "Journal Fragment."
+**Required clue cards:** 3 cards (3+2+2 distribution). Clue category: "Mysterious Damp Page."
 
-**Why other teams have these:** The flood surge scattered journal pages out of the gap and across the chamber floor. Other teams picked up waterlogged old paper as curiosities.
+**Why other teams have these:** The flood surge scattered old waterlogged pages out of the gap and across the chamber floor. Other teams picked up the mysterious damp pages as curiosities — too soggy to read without care, but clearly old and significant.
 
 **How it works:** The mission card describes the camp, the locked trunk, and a note pinned to the lid explaining the 7-letter alphabetic combination is hidden at specific character positions in the journal entries, scrambled. Players extract one character per entry, then anagram the 7 letters.
 
@@ -594,9 +600,9 @@ Card 3: *"Three pulley housing fragments with translations. Position 8: LET. Pos
 
 **Puzzle type:** F — QRian Connections (Grouping/Categorizing)
 
-**Required clue cards:** 3 cards across different sets. Clue category: "Carved Vessel."
+**Required clue cards:** 3 cards across different sets. Clue category: "Sealed Stone Vessel."
 
-**Why other teams have these:** The flood knocked the vessels from their alcoves and scattered them. Drake and Croft picked up the small stone cups as curiosities.
+**Why other teams have these:** The flood knocked the vessels from their alcoves and scattered them. Drake and Croft picked up the sealed stone vessels as curiosities — whatever is sealed inside them clearly piqued their interest.
 
 **The six vessels:**
 
@@ -678,7 +684,7 @@ The following mission was originally designed for this slot (Type N — Pattern 
 
 **Puzzle type:** N — Pattern Completion
 
-**Required clue cards:** 3 cards across different sets. Clue category: "Proof Fragment."
+**Required clue cards:** 3 cards across different sets. Clue category: "Proof Fragment." *(Note: this category name has not been audited for the new naming standards — will need updating when this mission is placed in Act 2.)*
 
 **The Two Rites:**
 
@@ -723,7 +729,9 @@ The seven tablets follow two distinct mathematical traditions:
 
 **Puzzle type:** A — Anagram Assembly
 
-**Required clue cards:** 3 cards across different sets — Panel Set 1 (3 panels), Panel Set 2 (3 panels), Panel Set 3 (3 panels). 9 panels total. Other houses have found some of the scattered panels. *(Card set assignment TBD.)*
+**Required clue cards:** 3 cards across different sets — Panel Set 1 (3 slates), Panel Set 2 (3 slates), Panel Set 3 (3 slates). 9 slates total. Clue category: "Flat Inscribed Slate."
+
+**Why other teams have these:** The smooth slate pieces were dislodged from the wall grid and scattered across the chamber floor. Other teams picked up the flat inscribed slates — each with a QRian symbol etched into one side — as interesting writing surfaces.
 
 | Panel | Word | Fragment |
 |-------|------|----------|
@@ -766,9 +774,9 @@ The seven tablets follow two distinct mathematical traditions:
 
 **Puzzle type:** G — Sequence Ordering
 
-**Required clue cards:** 3 cards across different sets. Clue category: "Corridor Stone."
+**Required clue cards:** 3 cards across different sets. Clue category: "Worn Stone Marker."
 
-**Why other teams have these:** Carved waymarkers fell from the corridor walls and scattered across the chamber floor. Other teams grabbed them as interesting carved stones.
+**Why other teams have these:** Worn waymarkers fell from the corridor walls and scattered across the chamber floor — visibly handled over centuries, edges rounded by countless passing hands. Other teams grabbed them as interesting old stones.
 
 **The 7 Waymarkers:**
 
@@ -829,7 +837,9 @@ The seven tablets follow two distinct mathematical traditions:
 
 **Puzzle type:** A — Anagram Assembly
 
-**Required clue cards:** 3 cards across different sets — Bundle 1 (2 spokes), Bundle 2 (3 spokes), Bundle 3 (4 spokes). 9 metal spokes total. The team already has a hammer.
+**Required clue cards:** 3 cards across different sets — Bundle 1 (2 spokes), Bundle 2 (3 spokes), Bundle 3 (4 spokes). 9 metal spokes total. Clue category: "Inscribed Metal Spoke."
+
+**Why other teams have these:** Metal spokes with QRian inscriptions etched into them were scattered across the chamber floor. Other teams picked them up as interesting metal rods — the inscriptions clearly deliberate but unreadable. The team already has a hammer.
 
 **How it works:** Each spoke is numbered and has a translated QRian word inscribed on it. The QRians designed the spokes to be driven in a specific order — top to bottom, they read a QRian sentence. Players write each word on an index card and rearrange until the sentence forms. They enter the spoke numbers in correct order.
 
@@ -862,7 +872,7 @@ The seven tablets follow two distinct mathematical traditions:
 
 **Puzzle type:** N — Pattern Completion
 
-**Required clue cards:** 3 cards (1 insert each). Clue category: "Stone Insert."
+**Required clue cards:** 3 cards (1 token each). Clue category: "Numbered Bone Token."
 
 **Sight:** Dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face. Some positions are filled, some empty. Small rectangular inserts lie scattered near the base.
 
@@ -919,7 +929,7 @@ The clue cards are the 3 missing inner ring inserts (Stone Inserts scattered nea
 | Card 2 | Stone insert with number **9** carved into it |
 | Card 3 | Stone insert with number **15** carved into it |
 
-**Why other teams have these:** The inserts were dislodged from the disc and scattered across the chamber floor. Other teams pocketed the smooth, carved stones as interesting objects.
+**Why other teams have these:** The bone tokens were dislodged from the disc and scattered across the chamber floor. Other teams pocketed the small, smooth numbered tokens as interesting objects — palm-sized, clearly meant to fit into something.
 
 **Hint:** "Try doubling each inner number. The outer is always a bit more than double — but by how much? Does the extra amount relate to where the pair sits on the disc?"
 
@@ -946,9 +956,9 @@ The clue cards are the 3 missing inner ring inserts (Stone Inserts scattered nea
 
 **Puzzle type:** B — Glyph Cipher
 
-**Required clue cards:** 3 cards (4+4+4 letter mappings). Clue category: "Etched Fragment."
+**Required clue cards:** 3 cards (4+4+4 letter mappings). Clue category: "Ancient Pottery Shard."
 
-**Why other teams have these:** The sealed chamber's wall partially collapsed centuries ago, scattering pottery fragments — glyph teaching shards the builders used — across the chamber floor. Other teams picked them up as interesting etched pottery.
+**Why other teams have these:** The sealed chamber's wall partially collapsed centuries ago, scattering ancient pottery shards — glyph teaching fragments the builders used — across the chamber floor. Other teams picked them up as interesting old pottery with strange etchings.
 
 **The Plea:** "TELL MY CHILD I LOVED THEM STILL"
 
