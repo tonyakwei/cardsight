@@ -1,6 +1,6 @@
 # Puzzle Type Distribution by Act
 
-Each puzzle type is used once. All 3 houses use the same puzzle type per mission category, with different answers and narrative framing.
+Each puzzle type is used once per house per act — no repeats within the same house's mission set. Different houses may use different puzzle types for the same mission category.
 
 ## Act 1 — Accessible, First Contact
 
@@ -10,22 +10,29 @@ Players are encountering the temple for the first time. No glyph literacy needed
 |------|-------------|-----------|
 | 1 | **A** — Anagram Assembly | Pure letter rearrangement, no glyphs needed |
 | 2 | **B** — Glyph Cipher | Introduces the central glyph system for the first time |
-| 3 | **G** — Sequence Ordering | Arrange items in correct order, accessible |
-| 4 | **N** — Pattern Completion | Spot the rule and fill gaps, accessible |
-| 5 | **O** — Fragment Assembly | Spatial/visual reconstruction, no glyph knowledge needed |
+| 3 | **F** — QRian Connections | Grouping/categorizing — accessible, no glyph knowledge needed |
+| 4 | **G** — Sequence Ordering | Arrange items in correct order, accessible |
+| 5 | **N** — Pattern Completion | Spot the rule and fill gaps, accessible (Drake + Croft only) |
+| 6 | **O** — Fragment Assembly | Spatial/visual reconstruction, no glyph knowledge needed |
 
-## Act 2 — Deeper, Corruption Theme
+> **Change:** Type F moved from Act 2 to Act 1 for Jones T1 (Sort the Scattered Offerings). Type N (Elevated Archive) moved from Jones Act 1 to Act 2. Jones uses types A, B, F, G, O in Act 1. Drake and Croft still use A, B, G, N, O.
+
+## Act 2 — Deeper, Corruption Theme (5 missions per house)
 
 Players have glyph knowledge from Act 1. The corruption is happening — glyphs shift, translations become unreliable. Puzzles require accumulated knowledge and deal with corrupted information.
+
+6 types available for 5 mission slots — each house uses 5 of 6, skipping a different type. This gives design flexibility per house.
 
 | Slot | Puzzle Type | Why Act 2 |
 |------|-------------|-----------|
 | 1 | **C** — Conceptual Decipherment | Glyphs as concepts, not just letters — deeper |
-| 2 | **F** — QRian Connections | Grouping/categorizing glyph knowledge |
-| 3 | **M** — Corrupted Reconstruction | Cross-reference corrupted inscriptions — corruption is literal in the mechanic |
-| 4 | **H** — Glyph Arithmetic | Glyphs as math — the QRian obsession |
-| 5 | **D** — Maze Routing | Constraint-based navigation through the sealing temple |
-| 6 | **J** — Hidden Symbol Hunt | Find concealed glyphs — visual/physical variety |
+| 2 | **D** — Maze Routing | Constraint-based navigation through the sealing temple |
+| 3 | **H** — Glyph Arithmetic | Glyphs as math — the QRian obsession |
+| 4 | **J** — Hidden Symbol Hunt | Find concealed glyphs — visual/physical variety |
+| 5 | **M** — Corrupted Reconstruction | Cross-reference corrupted inscriptions — corruption is literal in the mechanic |
+| 6 | **N** — Pattern Completion | Elevated Archive moved here from Act 1 — deeper math fits Act 2's difficulty |
+
+> **Changes:** Reduced from 6 to 5 missions per house. Type N added (Elevated Archive from Act 1). Type F removed (moved to Act 1). 6 types available for 5 slots — each house skips one type. Also drafted for Act 2: "Verify the Archive Records" (contradiction/forgery detection puzzle for Jones).
 
 ## Act 3 — Hardest, Synthesis, Endgame
 
@@ -46,6 +53,8 @@ Players have full glyph literacy. Puzzles require mastery and synthesis of every
 
 ## Notes
 
-- All 15 types (A-O) used exactly once — zero reuse
-- Puzzle types are not yet assigned to specific mission categories within each act (crew, flood, temple artifact, etc.)
+- All 15 types (A-O) used exactly once across the game — zero reuse across acts
+- Within a single act, each house's 5 missions must use 5 different puzzle types
+- Different houses may share a puzzle type in the same act (e.g., both Croft and Jones can use Type A in Act 1, on different missions)
+- Not all houses need the same set of types per act (Jones uses F instead of N in Act 1; Drake and Croft still use N)
 - Physical printed materials: avoided in Act 1 (index cards only); D (Maze Routing) in Act 2 may require a printed sheet; Act 3 TBD

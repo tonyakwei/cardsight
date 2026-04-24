@@ -582,7 +582,91 @@ Card 3: *"Three pulley housing fragments with translations. Position 8: LET. Pos
 
 ### Jones Junket — Temple Investigation
 
-#### Jones T1 — The Elevated Archive *(Unreachable Artifact)*
+#### Jones T1 — Sort the Scattered Offerings *(Unreachable Artifact)*
+
+> **Note:** The original mission for this slot ("The Elevated Archive," Type N — Pattern Completion, answer `109`) has been moved to Act 2. It was too hard for Act 1 (12-20 min estimated solve time). The full design is preserved below in the "Deferred to Act 2" section. This replacement uses Type F (QRian Connections) pulled from the Act 2 type pool, keeping Act 2 at 6 types for 6 missions.
+
+**Sight:** High on the far wall, where the torchlight barely reaches, three deep alcoves are carved into the stone in a row. Each alcove's inner surface is stained a different color from centuries of use — the left one deep blue, the center one amber-gold, the right one dark green. Below them, six small stone vessels lie scattered across the floor, clearly knocked from the alcoves by the flood. Each vessel has a letter carved into its underside.
+
+**Challenge:** Match the vessels to their alcoves. Each vessel's interior holds traces of a dried residue — whatever substance was offered here centuries ago. The residue color matches the alcove's stain.
+
+**Evidence:** QRian culture + institutional organization. The temple was organized like a university with distinct departments of knowledge: blue for sky-reading (astronomy), amber for building (engineering), green for earth-work (agriculture/medicine). The offerings weren't sacrifices — they were materials. This wasn't a temple. It was a school.
+
+**Puzzle type:** F — QRian Connections (Grouping/Categorizing)
+
+**Required clue cards:** 3 cards across different sets. Clue category: "Carved Vessel."
+
+**Why other teams have these:** The flood knocked the vessels from their alcoves and scattered them. Drake and Croft picked up the small stone cups as curiosities.
+
+**The six vessels:**
+
+| Vessel | Shape | Exterior Scene | Interior Residue | Color | Letter | Alcove |
+|--------|-------|---------------|-----------------|-------|--------|--------|
+| 1 | Squat bowl | Figures kneeling before a star pattern | Fine powder — unmistakably lapis lazuli, ground to dust | Blue | S | Left (Blue) |
+| 2 | Shallow saucer | A terraced structure with tiny figures building | Thick, glassy resin — hardened tree sap, amber-colored where the light catches it | Amber | H | Center (Amber) |
+| 3 | Wide dish | Hands reaching toward a flowering branch | Chalky dust with a bright metallic sheen — crushed malachite | Green | O | Right (Green) |
+| 4 | Narrow chalice | A spiral descending into dark earth | A thin green-blue patina — verdigris, the residue left when copper corrodes | Green | L | Right (Green) |
+| 5 | Tall cup | Figures arranged in a circle with arms raised | Crystallized residue, translucent and faintly sweet-smelling — ancient honey, hardened to glass | Amber | O | Center (Amber) |
+| 6 | Round pot | Waves crashing against carved cliffs | Ground mineral powder with a deep, vivid sheen — cobalt ore, unmistakable | Blue | C | Left (Blue) |
+
+**The solve:**
+
+1. Players note each vessel's number, residue, and letter on paper.
+2. Alcoves are described by COLOR (blue, amber-gold, green). Residues are described as SUBSTANCES. The key insight: "What color *is* each substance?"
+3. Lapis lazuli → blue. Hardened tree sap → amber. Crushed malachite → green. Verdigris (corroded copper) → green. Crystallized honey → amber/gold. Cobalt ore → blue.
+4. Match to alcoves: Left (Blue) = Vessels 1, 6. Center (Amber) = Vessels 2, 5. Right (Green) = Vessels 3, 4.
+5. Read letters left-to-right, lower-numbered vessel first within each pair: 1(S), 6(C), 2(H), 5(O), 3(O), 4(L) → **SCHOOL**.
+
+**Red herring:** The exterior scenes suggest thematic groupings (worship/construction/nature) that don't produce clean pairs. The actual connection is the interior residue color.
+
+**Clue card distribution:**
+
+Each card mixes alcove assignments so no single card gives a complete pair:
+
+| Card | Content |
+|------|---------|
+| Card 1 | Carved Vessel (Pair A): Vessel 1 (blue/S) + Vessel 5 (amber/O) |
+| Card 2 | Carved Vessel (Pair B): Vessel 3 (green/O) + Vessel 2 (amber/H) |
+| Card 3 | Carved Vessel (Pair C): Vessel 6 (blue/C) + Vessel 4 (green/L) |
+
+**Card 1 — "Carved Vessel (Pair A)":**
+*Two small stone vessels, each about the size of a clenched fist. Numbered on their bases.*
+*Vessel 1 — A squat bowl. Exterior: figures kneeling before a star pattern. Interior: fine powder caked into the stone. Unmistakably lapis lazuli, ground to dust. Letter carved underneath: S*
+*Vessel 5 — A tall cup. Exterior: figures arranged in a circle with arms raised. Interior: crystallized residue, translucent and faintly sweet-smelling. Ancient honey, hardened to glass. Letter carved underneath: O*
+
+**Card 2 — "Carved Vessel (Pair B)":**
+*Two small stone vessels, smooth and heavy. Numbered on their bases.*
+*Vessel 3 — A wide dish. Exterior: hands reaching toward a flowering branch. Interior: chalky dust with a bright metallic sheen. Crushed malachite. Letter carved underneath: O*
+*Vessel 2 — A shallow saucer. Exterior: a terraced structure with tiny figures building. Interior: thick, glassy resin caked into the bowl. Hardened tree sap, amber-colored where the light catches it. Letter carved underneath: H*
+
+**Card 3 — "Carved Vessel (Pair C)":**
+*Two small stone vessels, chipped but intact. Numbered on their bases.*
+*Vessel 6 — A round pot. Exterior: waves crashing against carved cliffs. Interior: ground mineral powder with a deep, vivid sheen. Cobalt ore, unmistakable. Letter carved underneath: C*
+*Vessel 4 — A narrow chalice. Exterior: a spiral descending into dark earth. Interior: a thin green-blue patina. Verdigris — the residue left when copper corrodes. Letter carved underneath: L*
+
+**Answer:** `school`
+
+**Accepted alternatives:** `SCHOOL`, `a school`, `the school`
+
+**Hint (after 2 wrong attempts):** "Don't focus on the scenes carved on the outside of the vessels. Focus on what's INSIDE them. What color would each of those substances actually be?"
+
+**Correct answer reveal:**
+*"The vessels settle into place with a satisfying click, each residue matching its alcove's ancient stain. The letters read left to right across the wall: S-C-H-O-O-L. This wasn't a temple. It was a school. Three alcoves, three departments of knowledge — the blue for sky-reading, the amber for building, the green for earth-work. The QRians didn't come here to worship. They came here to learn. And the offerings weren't sacrifices — they were materials. Lapis for pigment, resin for binding, malachite for dye. What looked like ritual devotion was a curriculum."*
+
+**Success consequence:**
+*"The vessels are placed correctly and the word hangs in the air like a held breath. SCHOOL. Dr. Jones spent thirty years calling this a temple. His students just proved it was a university. Nobody says 'career-defining discovery' out loud, but everyone is thinking it. The other teams are exploring a temple. You're standing in a lecture hall."*
+
+**Failure consequence:**
+*"The six vessels sit on the floor, unsorted, their residues slowly flaking away in the damp air. Whatever those alcoves were trying to tell you, the message goes unread. The other teams are moving faster now, and your scholarly advantage — the thing that makes Jones different from people who just break down walls — didn't deliver when it mattered. Dr. Jones's first expedition, and the reading went wrong."*
+
+---
+
+##### Deferred to Act 2: The Elevated Archive (original Jones T1)
+
+The following mission was originally designed for this slot (Type N — Pattern Completion, answer `109`). Moved to Act 2 because 12-20 min estimated solve time was too hard for Act 1 when players are getting their bearings. The mathematical rites puzzle and "QRian religion = mathematics" revelation fit better as a deeper discovery once players have warmed up. See Act 2 mission planning for placement.
+
+<details>
+<summary>Original Elevated Archive design (click to expand)</summary>
 
 **Sight:** Seven pale stone tablets set into an arc of niches near the ceiling — their glyphs flowing and round, nothing like the rigid carvings below. Below the arc, a prayer ledger holds six numbered discs in seven slots — the fourth empty, its tablet shattered across the floor long ago.
 
@@ -596,8 +680,6 @@ Card 3: *"Three pulley housing fragments with translations. Position 8: LET. Pos
 
 **Required clue cards:** 3 cards across different sets. Clue category: "Proof Fragment."
 
-**Why other teams have these:** The fourth tablet shattered centuries ago and its fragments scattered across the chamber floor. Drake kicked through rubble and pocketed interesting carved stones. Croft found a shard wedged into a structural crack.
-
 **The Two Rites:**
 
 The seven tablets follow two distinct mathematical traditions:
@@ -605,8 +687,6 @@ The seven tablets follow two distinct mathematical traditions:
 - **Flowing Rite** (early-period, Tablets I, II, IV, VI): Each number advances by the **sum of its own digits**. The prayer sustains itself.
 - **Angular Rite** (late-period, Tablets III, V, VII): A rigid **three-phase cycle** repeats: **double, add 3, subtract 5**.
 - **Cascade:** Tablet IV begins from Tablet II's final value (disc).
-
-**Mission card display:**
 
 | Tablet | Sequence | Disc |
 |--------|----------|------|
@@ -618,45 +698,9 @@ The seven tablets follow two distinct mathematical traditions:
 | VI | 29, 40, 44, 52, 59 | 73 |
 | VII | 5, 10, 13, 8, 16 | 19 |
 
-A note on the mission card reads: *"Your team's training tells you something important: not all the tablets follow the same mathematical rule. You're certain at least two different patterns are at work here."*
-
-**Arithmetic verification — Flowing Rite (add digit sum):**
-
-| Tablet | Start | +d.s. | +d.s. | +d.s. | +d.s. | +d.s. = Disc |
-|--------|-------|-------|-------|-------|-------|-------------|
-| I | 16 | +7=23 | +5=28 | +10=38 | +11=49 | +13=**62** |
-| II | 13 | +4=17 | +8=25 | +7=32 | +5=37 | +10=**47** |
-| VI | 29 | +11=40 | +4=44 | +8=52 | +7=59 | +14=**73** |
-| IV | 47 | +11=58 | +13=71 | +8=79 | +16=95 | +14=**109** |
-
-**Arithmetic verification — Angular Rite (cycle: ×2, +3, −5, ×2, +3):**
-
-| Tablet | Start | ×2 | +3 | −5 | ×2 | +3 = Disc |
-|--------|-------|----|----|----|----|----------|
-| III | 4 | 8 | 11 | 6 | 12 | **15** |
-| V | 7 | 14 | 17 | 12 | 24 | **27** |
-| VII | 5 | 10 | 13 | 8 | 16 | **19** |
-
-**Clue card distribution:**
-
-| Card | Content |
-|------|---------|
-| Card 1 | Fragment A (Flowing Rite) |
-| Card 2 | Fragment B (Angular Rite) |
-| Card 3 | Fragment C (Assignments + Cascade) |
-
-**Fragment A** (Flowing Rite):
-*"In the flowing way, each proof carries its own breath forward. A truth of twenty-nine reaches eleven further, for its marks weigh two and nine together. The prayer sustains itself — each step determined by the weight of the step before it."*
-
-**Fragment B** (Angular Rite):
-*"The later proofs are severe. They do not breathe — they march. A truth is doubled, then three steps forward, then five steps back. This is the cycle that repeats: doubling, offering three, reclaiming five. The Angular Rite speaks in sharp edges where the old prayers once flowed."*
-
-**Fragment C** (Assignments + Cascade):
-*"The Fourth Proof was the last to be composed — a coda to the arc. It takes its first breath from the Second Proof's final word, and follows the old flowing way. Of the seven prayers: the First, Second, Fourth, and Sixth flow. The Third, Fifth, and Seventh march."*
-
 **Answer:** `109`
 
-**Hint (after 2 wrong attempts):** "The Proof Fragments describe two mathematical rites. For the flowing way, look within each number — the digits themselves. For the angular way, count the rhythm of the march."
+**Hint:** "The Proof Fragments describe two mathematical rites. For the flowing way, look within each number — the digits themselves. For the angular way, count the rhythm of the march."
 
 **Correct answer reveal:**
 *"The disc clicks into place. The prayer ledger hums. The arc tilts forward on hidden hinges, revealing copper scrolls sealed for centuries. Your team unrolls the first with trembling hands — unmistakably a prayer, but with mathematical proofs woven into its structure. Each verse is an equation. 'To calculate' and 'to pray' are the same glyph. The QRians didn't worship gods. They worshipped mathematics."*
@@ -666,6 +710,8 @@ A note on the mission card reads: *"Your team's training tells you something imp
 
 **Failure consequence:**
 *"The empty fourth slot stares back. Through the alcove you can see the copper scrolls, still sealed, still holding whatever truth the QRians buried here. You had the fragments and couldn't hear what the prayers were saying. Dr. Jones would have had them sorted in minutes. His students couldn't get the disc to the ledger."*
+
+</details>
 
 ---
 
@@ -963,7 +1009,7 @@ Card 3: *"A cracked shard with final teaching pairs: [glyph]=O, [glyph]=V, [glyp
 |---|----------|-----------------|--------------|---------------|
 | 1 | **Crew** | Secure the Fuse Charges | Retrieve the Ceremonial Whips | Retrieve the Grappling Gear |
 | 2 | **Flood** | The Stone Wheel | Read the Ancient Drainage | The Stone Jigsaw |
-| 3 | **Temple: Artifact** | The Shadow Astrolabe | The Elevated Archive | The Impossible Vase |
+| 3 | **Temple: Artifact** | The Shadow Astrolabe | Sort the Scattered Offerings | The Impossible Vase |
 | 4 | **Temple: Utility** | The Construction Hoist | The Sliding Panels | The Teaching Stone |
 | 5 | **Temple: Path** | The Scraped Gap | The False Exit | The Drag Marks |
 
@@ -972,7 +1018,7 @@ Card 3: *"A cracked shard with final teaching pairs: [glyph]=O, [glyph]=V, [glyp
 | House | Artifact | Utility | Path |
 |-------|----------|---------|------|
 | Drake | Shadow Astrolabe | Construction Hoist | Scraped Gap |
-| Jones | Elevated Archive | Sliding Panels | False Exit |
+| Jones | Scattered Offerings | Sliding Panels | False Exit |
 | Croft | Impossible Vase | Teaching Stone | Drag Marks |
 
 #### Evidence types (Temple Investigation only)
@@ -982,7 +1028,7 @@ Card 3: *"A cracked shard with final teaching pairs: [glyph]=O, [glyph]=V, [glyp
 | Drake T1 — Shadow Astrolabe | QRian technological might + built to trap |
 | Drake T2 — Construction Hoist | QRian technological might |
 | Drake T3 — Scraped Gap | Previous expedition |
-| Jones T1 — Elevated Archive | QRian culture |
+| Jones T1 — Scattered Offerings | QRian culture + institutional organization |
 | Jones T2 — Sliding Panels | QRian suffering |
 | Jones T3 — False Exit | *(architectural — no artifact/evidence, the trap itself is the discovery)* |
 | Croft T1 — Impossible Vase | QRian technological might |
@@ -994,8 +1040,9 @@ Card 3: *"A cracked shard with final teaching pairs: [glyph]=O, [glyph]=V, [glyp
 | Revelation | Hit by |
 |------------|--------|
 | Not religious / cautionary | Jones T2, Croft T2, Croft Flood |
-| Language changed | Jones T1, Drake T1 |
-| Math / religion / literacy intertwined | Jones T1, Croft T2, Croft Flood |
+| Language changed | Drake T1 |
+| Math / religion / literacy intertwined | Croft T2, Croft Flood |
+| Organized like a school/university | Jones T1, Croft T2 |
 | Built extremely quickly | Drake T2, Croft T3 |
 | Built to trap | Drake T1, Drake T3, Jones T3, Croft T3 |
 

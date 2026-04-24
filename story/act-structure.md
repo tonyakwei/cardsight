@@ -59,13 +59,13 @@ In 20 minutes, the upper chambers will be permanently entombed. The teams must n
 - Being in the temple is exposing the teams to whatever danger exists here, and it's time-bound — there's a limit to how long they can safely remain
 - **By end of Act 2:** The full truth about the Source (see `lore-the-source.md`)
 
-### Act 2 Missions (6 per house)
+### Act 2 Missions (5 per house)
 
 | # | Category | Description |
 |---|----------|-------------|
 | 1 | **Securing Tools** | Acquiring/preparing resources or finding routes needed to escape upward |
-| 2-3 | **Hazard** | Navigating the sealing temple — finding alternate routes, deciphering mechanisms, clearing blocked passages |
-| 4-6 | **Temple Investigation** | Deeper exploration of the QRian story, the Source, and why the civilization fell |
+| 2 | **Hazard** | Navigating the sealing temple — finding alternate routes, deciphering mechanisms, clearing blocked passages |
+| 3-5 | **Temple Investigation** | Deeper exploration of the QRian story, the Source, and why the civilization fell |
 
 ## Act 3 — The Dying Light
 

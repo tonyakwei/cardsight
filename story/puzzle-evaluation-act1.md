@@ -11,7 +11,7 @@
 | Scraped Gap | Drake | O | 5 | 3 | 10-15 | 5 | 4 | No |
 | Ceremonial Whips | Jones | B | 5 | 3 | 8-12 | 4 | 5 | GLYPH FONT |
 | Ancient Drainage | Jones | O | 5 | 4 | 10-15 | 5 | 5 | PIPE GRID VISUAL |
-| Elevated Archive | Jones | N | 4 | 4 | 12-20 | 5 | 5 | No |
+| Scattered Offerings | Jones | F | 4 | 4 | 5-7 | 2 | 5 | No |
 | Sliding Panels | Jones | A | 5 | 4 | 4-6 | 2 | 5 | No |
 | False Exit | Jones | G | 4 | 4 | 6-9 | 3 | 5 | No |
 | Grappling Rigs | Croft | G | 4 | 4 | 5-7 | 3 | 5 | No |
@@ -19,6 +19,8 @@
 | Impossible Vase | Croft | A | 5 | 4 | 4-6 | 2 | 5 | No |
 | Teaching Stone | Croft | N | 4 | 4 | 12-18 | 5 | 4 | DISC VISUAL |
 | Drag Marks | Croft | B | 5 | 5 | 6-10 | 3 | 5 | GLYPH FONT |
+
+> **Change log:** Elevated Archive (Jones, Type N, 12-20 min) moved to Act 2. Replaced by Sort the Scattered Offerings (Type F — QRian Connections, 5-7 min). Type F pulled from Act 2 pool; Act 2 gains Type N, keeping 6 types for 6 missions. The Elevated Archive puzzle ("Verify the Archive Records" — contradiction/forgery detection) is also drafted for Act 2.
 
 ## Top 5 Concerns
 
@@ -39,11 +41,11 @@
 - One miscount = wrong letter = unsolvable anagram
 - **Action:** Consider switching to word-position extraction, or add verification hint ("all letters should be lowercase English")
 
-### 4. Two Pattern Completion puzzles may be too hard for time budget
-- Elevated Archive: 12-20 min estimated. Two mathematical rules from prose + cascade.
+### 4. Teaching Stone may be too hard for time budget
 - Teaching Stone: 12-18 min estimated. Position-dependent rule discovery.
-- In a 20-minute act with 5 missions, one of these could consume the whole act.
-- **Action:** Ensure hints arrive quickly. This may be intentional (3-4 of 5 missions expected).
+- In a 25-minute act where teams complete 3-4 of 5 missions, this is the expected sacrifice for Croft.
+- Shadow Astrolabe (12-18 min) is the expected sacrifice for Drake.
+- **Action:** Ensure hints arrive quickly. Acceptable that these are the "skip" missions for their respective houses.
 
 ### 5. Answer format inconsistency
 - Most answers are clean digit strings or single words
@@ -54,11 +56,12 @@
 
 | Metric | Drake | Jones | Croft |
 |--------|:---:|:---:|:---:|
-| Total solve time | 39-58 min | 40-62 min | 31-47 min |
+| Total solve time | 39-58 min | 33-49 min | 31-47 min |
+| Missions | 5 | 5 | 5 |
 | Avg fragment dependency | 4.4 | 4.6 | 4.6 |
 | Avg ambiguity risk | 3.4 | 3.8 | 4.4 |
 
-**Croft is significantly easier** (31-47 min total vs 39-62 for others). Three fast puzzles (Grappling Rigs, Stone Jigsaw, Impossible Vase) all at 4-7 min. Jones is hardest (Elevated Archive 12-20 min + Ancient Drainage 10-15 min). Drake has worst ambiguity (Astrolabe at 2/5).
+**Balance significantly improved.** Jones dropped from 40-62 min to 33-49 min with the Elevated Archive → Scattered Offerings swap. At 25 minutes, expected completions: Croft 3-4, Drake 3, Jones 3. Drake is now the hardest house (Scraped Gap 10-15 + Astrolabe 12-18 as the two long missions). Jones and Croft are comparable.
 
 ## Glyph System Audit
 
@@ -77,17 +80,17 @@
 4. Stone Jigsaw (Croft, O) — 4-6 min
 5. Fuse Charges (Drake, G) — 5-7 min
 6. Grappling Rigs (Croft, G) — 5-7 min
-7. False Exit (Jones, G) — 6-9 min
-8. Drag Marks (Croft, B) — 6-10 min
-9. Ceremonial Whips (Jones, B) — 8-12 min
-10. Stone Wheel (Drake, B) — 8-12 min
-11. Ancient Drainage (Jones, O) — 10-15 min
-12. Scraped Gap (Drake, O) — 10-15 min
-13. Teaching Stone (Croft, N) — 12-18 min
-14. Shadow Astrolabe (Drake, N) — 12-18 min
-15. Elevated Archive (Jones, N) — 12-20 min
+7. **Scattered Offerings (Jones, F) — 5-7 min** *(new — replaced Elevated Archive)*
+8. False Exit (Jones, G) — 6-9 min
+9. Drag Marks (Croft, B) — 6-10 min
+10. Ceremonial Whips (Jones, B) — 8-12 min
+11. Stone Wheel (Drake, B) — 8-12 min
+12. Ancient Drainage (Jones, O) — 10-15 min
+13. Scraped Gap (Drake, O) — 10-15 min
+14. Teaching Stone (Croft, N) — 12-18 min
+15. Shadow Astrolabe (Drake, N) — 12-18 min
 
-**Pattern:** Type A (Anagram) = easiest. Type G (Sequence) = moderate. Type B (Glyph) = medium. Type O (Fragment) = medium-hard. Type N (Pattern) = hardest. Every house's hardest puzzle is Type N.
+**Pattern:** Type A (Anagram) = easiest. Type F/G (Connections/Sequence) = moderate. Type B (Glyph) = medium. Type O (Fragment) = medium-hard. Type N (Pattern) = hardest. Drake and Croft each have one Type N as their hardest puzzle. Jones's hardest is now Ancient Drainage (10-15 min) — a significant improvement.
 
 ## Visual Content Needs
 
@@ -99,3 +102,4 @@
 | Jones Flood: Ancient Drainage | 3x3 pipe grid diagram | HIGH (needs ASCII art or image) |
 | Croft T2: Teaching Stone | Concentric ring disc layout | MEDIUM (works as table but loses spatial quality) |
 | Drake T1: Shadow Astrolabe | Color sequence display | LOW (text works, colors would help) |
+| Jones T1: Scattered Offerings | None — text-only puzzle | None |
