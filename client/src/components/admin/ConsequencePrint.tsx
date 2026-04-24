@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router";
 import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import { processQrianText } from "../../utils/qrian-text";
 import {
   Group,
   Text,
@@ -515,7 +517,7 @@ export function ConsequencePrint() {
                   }}
                   className="consequence-text"
                 >
-                  <Markdown>{card.consequence}</Markdown>
+                  <Markdown rehypePlugins={[rehypeRaw]}>{card.consequence ? processQrianText(card.consequence) : ""}</Markdown>
                 </div>
               </div>
             </div>

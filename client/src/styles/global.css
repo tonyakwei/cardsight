@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Qrian';
+  src: url('/fonts/Qrian-Regular.woff2') format('woff2'),
+       url('/fonts/Qrian-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.qrian-glyph {
+  font-family: 'Qrian', serif;
+  letter-spacing: 0.08em;
+}
+
 *,
 *::before,
 *::after {

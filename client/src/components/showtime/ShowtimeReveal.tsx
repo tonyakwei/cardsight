@@ -1,5 +1,7 @@
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import type { ShowtimeSlotView } from "@cardsight/shared";
+import { processQrianText } from "../../utils/qrian-text";
 
 interface Props {
   revealTitle: string;
@@ -35,6 +37,7 @@ export function ShowtimeReveal({ revealTitle, revealDescription, slots }: Props)
           className="card-description"
         >
           <ReactMarkdown
+            rehypePlugins={[rehypeRaw]}
             components={{
               strong: ({ children }) => (
                 <strong style={{ color: "var(--card-accent-color)", fontWeight: 600 }}>
@@ -64,7 +67,7 @@ export function ShowtimeReveal({ revealTitle, revealDescription, slots }: Props)
               ),
             }}
           >
-            {revealDescription}
+            {processQrianText(revealDescription)}
           </ReactMarkdown>
         </div>
       )}

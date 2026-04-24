@@ -1,4 +1,6 @@
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import { processQrianText } from "../../utils/qrian-text";
 
 interface Props {
   header: string | null;
@@ -49,6 +51,7 @@ export function CardContent({ header, description, itemName }: Props) {
           className="card-description"
         >
           <ReactMarkdown
+            rehypePlugins={[rehypeRaw]}
             components={{
               strong: ({ children }) => (
                 <strong style={{ color: "var(--card-accent-color)", fontWeight: 600 }}>
@@ -117,7 +120,7 @@ export function CardContent({ header, description, itemName }: Props) {
               ),
             }}
           >
-            {description}
+            {processQrianText(description)}
           </ReactMarkdown>
         </div>
       )}
