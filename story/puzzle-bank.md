@@ -68,10 +68,22 @@ Players encounter glyphs and must realize they describe time. The "aha" moment i
 
 Players receive multiple versions of the same inscription from different clue cards. Each version has different parts missing or altered. By cross-referencing all versions, players reconstruct the original message. In the simpler form (Act 1), corruption is just gaps — missing characters filled in by other sources. In the harder form (Act 2+), some characters are actively *wrong* — changed by the Source's influence — and players must use majority-rules or contextual reasoning to identify the true version at each position.
 
-## N — Pattern Completion
+## N — Conceptual Procedure (formerly "Pattern Completion")
 
-A sequence of glyphs follows a transformational rule — rotation, addition of elements, mirroring, progressive complexity. Some positions in the sequence are blank. Players must identify the rule and fill in the missing glyphs. The completed sequence provides the answer. Very "IQ test" in feel — thematically perfect for a civilization obsessed with mathematical order.
+Two flavors:
+
+1. **Conceptual Procedure** (Act 2, what's actually been built): A 4-word sequence where the first 3 words establish a process and the 4th is a blank for the player to derive. Multiple alternative answers accepted as long as they fit the implied procedure. Cards expose the visible 3 words at sequential positions; players pool them to read all 3 before guessing the 4th. Used in Act 2's N-trio (The Three Compartments). Easy to author and fun to solve.
+
+2. **Pattern Completion** (theoretical, unused): A sequence of glyphs follows a transformational rule — rotation, addition of elements, mirroring, progressive complexity. Some positions in the sequence are blank. Players must identify the rule and fill in the missing glyphs. Very "IQ test" in feel.
 
 ## O — Fragment Assembly
 
 Players receive partial shapes, images, or symbol fragments described on clue cards. They draw each fragment on an index card and physically arrange, overlap, or connect them to form a complete image or symbol. Like reassembling a torn document. The complete image reveals the answer — a glyph, a word, a symbol. Scissors may be needed for precise assembly.
+
+## R — Riddle / Cryptic Wordplay
+
+Cards each carry a self-contained cryptic riddle (anagram, homophone, double-definition, charade, hidden-word, etc.). Players solve each riddle independently and submit answers — typically a small set per mission, all of which must be correct to unlock a compartment. Diegetic framing: ancient QRian wordplay rendered into English-equivalent forms with a translator's note (*"Translated from QRian wordplay; the original puns are English-equivalent in form"*). No inter-house trading required. Best for tight 1-2 cards per house. Used in Act 2's R-trio (The Three Theorists). Fast to author. Optional **failure-hint mechanic**: if the natural first guess is wrong (e.g., a deliberately pessimist riddle that traps the optimistic answer), the post-failure hint flips the player's frame.
+
+## J variant — Hidden Symbol Hunt with Emergent Composition
+
+Used in Act 2's J-trio. Extension of base J: players hunt instances of specific symbols on a printed grid, then connect the marked instances in a numbered sequence-order. The connecting line traces a *super-glyph* — a single QRian letter. Multiple cards each name one symbol-class to hunt; multiple super-glyphs form a word. The "answer-as-subject" design principle: the assembled word names the puzzle's investigative subject (Drake A2M1 BYE, Croft A2M1 TIME, Jones Crew JAW). See `feedback_puzzle_design_principles.md` for the design rules.

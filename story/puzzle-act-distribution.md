@@ -17,22 +17,27 @@ Players are encountering the temple for the first time. No glyph literacy needed
 
 > **Change:** Type F moved from Act 2 to Act 1 for Jones T1 (Sort the Scattered Offerings). Type N (Elevated Archive) moved from Jones Act 1 to Act 2. Jones uses types A, B, F, G, O in Act 1. Drake and Croft still use A, B, G, N, O.
 
-## Act 2 — Deeper, Corruption Theme (5 missions per house)
+## Act 2 — Deeper, Corruption Theme (5 missions per house) — DESIGN LOCKED 2026-04-25
 
 Players have glyph knowledge from Act 1. The corruption is happening — glyphs shift, translations become unreliable. Puzzles require accumulated knowledge and deal with corrupted information.
 
-6 types available for 5 mission slots — each house uses 5 of 6, skipping a different type. This gives design flexibility per house.
+**Final structure**: 5 puzzle-type "trios" — each puzzle type appears once per house (one mission per house per type). Each house uses identical 5-type coverage: J / M / R / C / N. Types H and D do not appear in Act 2.
 
-| Slot | Puzzle Type | Why Act 2 |
-|------|-------------|-----------|
-| 1 | **C** — Conceptual Decipherment | Glyphs as concepts, not just letters — deeper |
-| 2 | **D** — Maze Routing | Constraint-based navigation through the sealing temple |
-| 3 | **H** — Glyph Arithmetic | Glyphs as math — the QRian obsession |
-| 4 | **J** — Hidden Symbol Hunt | Find concealed glyphs — visual/physical variety |
-| 5 | **M** — Corrupted Reconstruction | Cross-reference corrupted inscriptions — corruption is literal in the mechanic |
-| 6 | **N** — Pattern Completion | Elevated Archive moved here from Act 1 — deeper math fits Act 2's difficulty |
+| Trio | Puzzle Type | Missions | Status |
+|------|-------------|----------|--------|
+| 1 | **J** — Hidden Symbol Hunt (emergent composition) | Powder of the Quiet Bed (Drake) / Reckoning Floor (Croft) / Hanging Garden of Names (Jones Crew) | ✅ Designed |
+| 2 | **M** — Corrupted Reconstruction | Wall of Repetitions trio (co-located): Red (Drake) / Amber (Jones) / Purple (Croft) | ✅ Designed |
+| 3 | **R** — Riddle / Cryptic Wordplay (NEW type) | The Three Theorists: Reinforced Bunker / High Ledge / Ceiling Inscription | ✅ Designed |
+| 4 | **N** — Conceptual Procedure (renamed from Pattern Completion) | The Three Compartments: Drevu / Vesh / Krane | ✅ Designed |
+| 5 | **C** — Conceptual Decipherment | Sealed Pantry (Jones) / Sighting Wall (Croft) / Reagent Alcove (Drake) | 🚧 In progress (5 concepts each TBD) |
 
-> **Changes:** Reduced from 6 to 5 missions per house. Type N added (Elevated Archive from Act 1). Type F removed (moved to Act 1). 6 types available for 5 slots — each house skips one type. Also drafted for Act 2: "Verify the Archive Records" (contradiction/forgery detection puzzle for Jones).
+> **Changes from earlier draft:** Type R added as a new puzzle type (cryptic wordplay). Type N renamed to "Conceptual Procedure." Types H and D dropped. The "5 of 6, each house skips one" rule replaced with "every house uses the same 5 types" — each puzzle type forms a co-designed trio across all three houses, simplifying authoring and giving players a unified narrative beat per type.
+
+**Mission design patterns adopted in Act 2** (see `feedback_mission_design_rhythm.md`):
+- **Triptych shared-skeleton**: when a puzzle type calls for one mission per house, design as a parallel triptych with one shared mechanic and three house-flavored variants. Examples: Wall of Repetitions, Three Theorists, Three Compartments.
+- **Co-located vs. separate chambers**: M-trio and R-trio are co-located in shared chambers (visible parallel play). N-trio uses separate alcoves per house (independent discovery). C-trio uses separate side-rooms.
+
+**See also**: `act2-missions-printout.md` for the full Act 2 mission reference (15 missions, briefs, mechanics, reveals, consequences).
 
 ## Act 3 — Hardest, Synthesis, Endgame
 
