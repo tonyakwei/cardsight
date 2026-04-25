@@ -18,6 +18,7 @@ import {
   updateAnswerTemplate,
   type SingleAnswerTemplate,
 } from "../../api/admin";
+import { MultipleAnswerEditor } from "./MultipleAnswerEditor";
 
 interface Props {
   gameId: string;
@@ -46,23 +47,24 @@ export function AnswerTemplateEditor({
   const [hintAfterAttempts, setHintAfterAttempts] = useState(3);
   const [maxAttempts, setMaxAttempts] = useState<number | null>(null);
 
-  // Load existing template
+  // Load existing template (only for single_answer — multiple_text uses its own editor)
   useEffect(() => {
-    if (!answerTemplateType || !answerId) {
+    if (answerTemplateType !== "single_answer" || !answerId) {
       setTemplate(null);
       return;
     }
     setLoading(true);
     fetchAnswerTemplate(gameId, answerTemplateType, answerId)
       .then((t) => {
-        setTemplate(t);
-        setCorrectAnswer(t.correctAnswer);
-        setAlternatives(t.acceptAlternatives);
-        setCaseSensitive(t.caseSensitive);
-        setTrimWhitespace(t.trimWhitespace);
-        setHint(t.hint ?? "");
-        setHintAfterAttempts(t.hintAfterAttempts);
-        setMaxAttempts(t.maxAttempts);
+        const tt = t as SingleAnswerTemplate;
+        setTemplate(tt);
+        setCorrectAnswer(tt.correctAnswer);
+        setAlternatives(tt.acceptAlternatives);
+        setCaseSensitive(tt.caseSensitive);
+        setTrimWhitespace(tt.trimWhitespace);
+        setHint(tt.hint ?? "");
+        setHintAfterAttempts(tt.hintAfterAttempts);
+        setMaxAttempts(tt.maxAttempts);
       })
       .catch(() => setTemplate(null))
       .finally(() => setLoading(false));
@@ -82,11 +84,11 @@ export function AnswerTemplateEditor({
 
     if (template && answerId) {
       // Update existing
-      const updated = await updateAnswerTemplate(gameId, "single_answer", answerId, data);
+      const updated = (await updateAnswerTemplate(gameId, "single_answer", answerId, data)) as SingleAnswerTemplate;
       setTemplate(updated);
     } else {
       // Create new
-      const created = await createAnswerTemplate(gameId, "single_answer", data);
+      const created = (await createAnswerTemplate(gameId, "single_answer", data)) as SingleAnswerTemplate;
       setTemplate(created);
       onAnswerCreated("single_answer", created.id);
     }
@@ -107,6 +109,16 @@ export function AnswerTemplateEditor({
   const removeAlternative = (idx: number) => {
     setAlternatives(alternatives.filter((_, i) => i !== idx));
   };
+
+  if (answerTemplateType === "multiple_text") {
+    return (
+      <MultipleAnswerEditor
+        gameId={gameId}
+        answerId={answerId}
+        onAnswerCreated={onAnswerCreated}
+      />
+    );
+  }
 
   if (answerTemplateType !== "single_answer") return null;
   if (loading) return <Loader size="xs" color="yellow" />;

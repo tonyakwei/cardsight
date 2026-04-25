@@ -111,6 +111,29 @@ export interface SingleAnswerTemplate {
   maxAttempts: number | null;
 }
 
+/**
+ * One sub-answer in a MultipleAnswer template. Each field is independently
+ * validated against its own correctAnswer (and acceptAlternatives) — players
+ * must answer ALL fields correctly to solve the puzzle.
+ */
+export interface MultipleAnswerField {
+  /** Optional label shown above this input (e.g. "First derived concept") */
+  prompt: string | null;
+  correctAnswer: string;
+  acceptAlternatives: string[];
+  caseSensitive: boolean;
+  trimWhitespace: boolean;
+}
+
+export interface MultipleAnswerTemplate {
+  id: string;
+  gameId: string;
+  fields: MultipleAnswerField[];
+  hint: string | null;
+  hintAfterAttempts: number;
+  maxAttempts: number | null;
+}
+
 // === Missions ===
 
 export interface AdminMission {

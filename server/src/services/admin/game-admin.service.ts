@@ -437,6 +437,18 @@ export async function createAnswerTemplate(gameId: string, type: string, data: R
     });
   }
 
+  if (type === "multiple_text") {
+    return prisma.multipleAnswer.create({
+      data: {
+        gameId,
+        fields: data.fields ?? [],
+        hint: data.hint ?? null,
+        hintAfterAttempts: data.hintAfterAttempts ?? 3,
+        maxAttempts: data.maxAttempts ?? null,
+      },
+    });
+  }
+
   throw new AppError(400, `Unknown answer template type: ${type}`);
 }
 
@@ -455,12 +467,33 @@ export async function updateAnswerTemplate(gameId: string, type: string, id: str
     return prisma.singleAnswer.update({ where: { id }, data: updateData });
   }
 
+  if (type === "multiple_text") {
+    const template = await prisma.multipleAnswer.findUnique({ where: { id } });
+    if (!template || template.gameId !== gameId) {
+      throw new AppError(404, "Answer template not found");
+    }
+
+    const updateData = pickAllowedFields(data, [
+      "fields", "hint", "hintAfterAttempts", "maxAttempts",
+    ]);
+
+    return prisma.multipleAnswer.update({ where: { id }, data: updateData });
+  }
+
   throw new AppError(400, `Unknown answer template type: ${type}`);
 }
 
 export async function getAnswerTemplate(gameId: string, type: string, id: string) {
   if (type === "single_answer") {
     const template = await prisma.singleAnswer.findUnique({ where: { id } });
+    if (!template || template.gameId !== gameId) {
+      throw new AppError(404, "Answer template not found");
+    }
+    return template;
+  }
+
+  if (type === "multiple_text") {
+    const template = await prisma.multipleAnswer.findUnique({ where: { id } });
     if (!template || template.gameId !== gameId) {
       throw new AppError(404, "Answer template not found");
     }
@@ -484,6 +517,12 @@ export async function listDesigns(gameId: string) {
 export async function listAnswerTemplates(gameId: string, type: string) {
   if (type === "single_answer") {
     return prisma.singleAnswer.findMany({
+      where: { gameId },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+  if (type === "multiple_text") {
+    return prisma.multipleAnswer.findMany({
       where: { gameId },
       orderBy: { createdAt: "desc" },
     });

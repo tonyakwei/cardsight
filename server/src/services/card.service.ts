@@ -344,6 +344,20 @@ export async function checkAnswer(
       });
       lockedOut = true;
     }
+  } else if (card.answerTemplateType === "multiple_text") {
+    const template = await prisma.multipleAnswer.findUnique({
+      where: { id: card.answerId },
+    });
+    if (template?.hint && attemptNumber >= template.hintAfterAttempts) {
+      hint = template.hint;
+    }
+    if (template?.maxAttempts && attemptNumber >= template.maxAttempts) {
+      await prisma.card.update({
+        where: { id: card.id },
+        data: { lockedOut: true, lockedOutReason: "Too many incorrect attempts." },
+      });
+      lockedOut = true;
+    }
   }
 
   return {
@@ -372,6 +386,19 @@ async function buildAnswerMeta(
     });
     return {
       type: "single_answer",
+      hintAvailable: !!template?.hint,
+      hintAfterAttempts: template?.hintAfterAttempts ?? 3,
+    };
+  }
+
+  if (type === "multiple_text") {
+    const template = await prisma.multipleAnswer.findUnique({
+      where: { id: answerId },
+    });
+    const fields = (template?.fields as unknown as { prompt?: string | null }[]) ?? [];
+    return {
+      type: "multiple_text",
+      labels: fields.map((f) => f.prompt ?? ""),
       hintAvailable: !!template?.hint,
       hintAfterAttempts: template?.hintAfterAttempts ?? 3,
     };

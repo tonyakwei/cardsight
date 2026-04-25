@@ -12,6 +12,7 @@ import { LockedOutState } from "./states/LockedOutState";
 import { SelfDestructedState } from "./states/SelfDestructedState";
 import { AlreadyAnsweredState } from "./states/AlreadyAnsweredState";
 import { SingleAnswerInput } from "./answers/SingleAnswerInput";
+import { MultipleAnswerInput } from "./answers/MultipleAnswerInput";
 import { SelfDestructTimer } from "./SelfDestructTimer";
 import { AnimationWrapper } from "./animations/AnimationWrapper";
 import { OverlayRenderer } from "./overlays/OverlayRenderer";
@@ -114,9 +115,30 @@ export function CardViewer() {
   const showAnswerInput =
     isComplex &&
     card.isAnswerable &&
-    card.answerTemplateType === "single_answer" &&
+    (card.answerTemplateType === "single_answer" ||
+      card.answerTemplateType === "multiple_text") &&
     cardId &&
     !card.isSolved;
+
+  const renderAnswerInput = () => {
+    if (!cardId) return null;
+    if (card.answerTemplateType === "multiple_text") {
+      return (
+        <MultipleAnswerInput
+          cardId={cardId}
+          answerMeta={card.answerMeta}
+          onSolved={handleSolved}
+        />
+      );
+    }
+    return (
+      <SingleAnswerInput
+        cardId={cardId}
+        answerMeta={card.answerMeta}
+        onSolved={handleSolved}
+      />
+    );
+  };
 
   return (
     <CardShell design={card.design}>
@@ -146,13 +168,7 @@ export function CardViewer() {
             text={card.selfDestructText}
             header={card.answerVisibleAfterDestruct ? card.header : undefined}
           >
-            {card.answerVisibleAfterDestruct && showAnswerInput && (
-              <SingleAnswerInput
-                cardId={cardId!}
-                answerMeta={card.answerMeta}
-                onSolved={handleSolved}
-              />
-            )}
+            {card.answerVisibleAfterDestruct && showAnswerInput && renderAnswerInput()}
           </SelfDestructedState>
         </AnimationWrapper>
       )}
@@ -182,13 +198,7 @@ export function CardViewer() {
             />
           )}
 
-          {showAnswerInput && (
-            <SingleAnswerInput
-              cardId={cardId!}
-              answerMeta={card.answerMeta}
-              onSolved={handleSolved}
-            />
-          )}
+          {showAnswerInput && renderAnswerInput()}
         </AnimationWrapper>
       )}
     </CardShell>

@@ -51,6 +51,7 @@ model Game {
   missions       Mission[]
   showtimes      Showtime[]
   singleAnswers  SingleAnswer[]
+  multipleAnswers MultipleAnswer[]
   scanEvents            ScanEvent[]
   answerAttempts        AnswerAttempt[]
   missionScanEvents     MissionScanEvent[]
@@ -197,6 +198,28 @@ model SingleAnswer {
   updatedAt         DateTime @updatedAt @map("updated_at")
 
   @@map("single_answers")
+}
+
+model MultipleAnswer {
+  id                String   @id @default(uuid()) @db.Uuid
+  gameId            String   @map("game_id") @db.Uuid
+  game              Game     @relation(fields: [gameId], references: [id])
+  fields            Json     @default("[]")
+  // fields = array of:
+  // {
+  //   prompt: string | null,           // optional label/title shown above this input
+  //   correctAnswer: string,
+  //   acceptAlternatives: string[],
+  //   caseSensitive: boolean,
+  //   trimWhitespace: boolean
+  // }
+  hint              String?
+  hintAfterAttempts Int      @default(3) @map("hint_after_attempts")
+  maxAttempts       Int?     @map("max_attempts")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("multiple_answers")
 }
 
 model ScanEvent {
