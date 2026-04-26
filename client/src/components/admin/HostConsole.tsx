@@ -20,9 +20,12 @@ import {
   resetCard,
   updateMission,
   updateGameSettings,
+  armHistoryTimeline,
+  resetHistoryTimeline,
   transitionAct,
   triggerShowtime,
   resetShowtime,
+  updateFinaleSelection,
   type GameDetail,
   type DashboardData,
   type AdminCard,
@@ -36,10 +39,12 @@ import { ActivityTab } from "./host-console/ActivityTab";
 import { CardsTab } from "./host-console/CardsTab";
 import { MissionsTab } from "./host-console/MissionsTab";
 import { ShowtimeTab } from "./host-console/ShowtimeTab";
+import { FinaleTab } from "./host-console/FinaleTab";
+import type { FinaleClauseId, FinaleOutcomeId } from "@cardsight/shared";
 
 const POLL_INTERVAL = 5000;
 
-type Tab = "pulse" | "activity" | "cards" | "missions" | "showtime";
+type Tab = "pulse" | "activity" | "cards" | "missions" | "showtime" | "finale";
 
 export function HostConsole() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -142,6 +147,44 @@ export function HostConsole() {
     );
   }
 
+  function doArmHistoryTimeline() {
+    doAction("history-arm", () =>
+      armHistoryTimeline(gameId!).then(() => {}),
+    );
+  }
+
+  function doResetHistoryTimeline() {
+    setConfirmModal({
+      title: "Reset Timeline Check",
+      message: "This clears the solved state and any in-progress timeline verification.",
+      onConfirm: () => {
+        setConfirmModal(null);
+        doAction("history-reset", () =>
+          resetHistoryTimeline(gameId!).then(() => {}),
+        );
+      },
+    });
+  }
+
+  function doSelectFinaleOutcome(outcomeId: FinaleOutcomeId | null) {
+    doAction("finale", async () => {
+      const finale = await updateFinaleSelection(gameId!, { outcomeId });
+      setGame((prev) => (prev ? { ...prev, finale } : prev));
+    });
+  }
+
+  function doToggleFinaleClause(clauseId: FinaleClauseId) {
+    const currentClauseIds = game?.finale.clauseIds ?? [];
+    const nextClauseIds = currentClauseIds.includes(clauseId)
+      ? currentClauseIds.filter((id) => id !== clauseId)
+      : [...currentClauseIds, clauseId];
+
+    doAction("finale", async () => {
+      const finale = await updateFinaleSelection(gameId!, { clauseIds: nextClauseIds });
+      setGame((prev) => (prev ? { ...prev, finale } : prev));
+    });
+  }
+
   function doTriggerShowtime(st: AdminShowtime) {
     setConfirmModal({
       title: "Force Trigger Reveal",
@@ -216,6 +259,7 @@ export function HostConsole() {
             { label: "Cards", value: "cards" },
             { label: "Missions", value: "missions" },
             { label: "Showtime", value: "showtime" },
+            { label: "Finale", value: "finale" },
           ]}
         />
       </Box>
@@ -229,6 +273,12 @@ export function HostConsole() {
             actionLoading={actionLoading}
             blurNudgeEnabled={game.blurNudgeEnabled}
             onToggleBlurNudge={doToggleBlurNudge}
+            historyTimelineArmed={game.historyTimelineArmed}
+            historyTimelineAttemptIndex={game.historyTimelineAttemptIndex}
+            historyTimelineSolvedAt={game.historyTimelineSolvedAt}
+            historyTimelineCardCount={game.historyTimelineCardCount}
+            onArmHistoryTimeline={doArmHistoryTimeline}
+            onResetHistoryTimeline={doResetHistoryTimeline}
           />
         )}
         {tab === "activity" && <ActivityTab dashboard={dashboard} />}
@@ -254,6 +304,14 @@ export function HostConsole() {
             showtimes={showtimes}
             onTrigger={doTriggerShowtime}
             onReset={doResetShowtime}
+            actionLoading={actionLoading}
+          />
+        )}
+        {tab === "finale" && (
+          <FinaleTab
+            finale={game.finale}
+            onSelectOutcome={doSelectFinaleOutcome}
+            onToggleClause={doToggleFinaleClause}
             actionLoading={actionLoading}
           />
         )}

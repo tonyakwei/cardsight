@@ -18,9 +18,28 @@ interface Props {
   actionLoading: string | null;
   blurNudgeEnabled: boolean;
   onToggleBlurNudge: (enabled: boolean) => void;
+  historyTimelineArmed: boolean;
+  historyTimelineAttemptIndex: number;
+  historyTimelineSolvedAt: string | null;
+  historyTimelineCardCount: number;
+  onArmHistoryTimeline: () => void;
+  onResetHistoryTimeline: () => void;
 }
 
-export function PulseTab({ dashboard, activeAct, onEndAct, actionLoading, blurNudgeEnabled, onToggleBlurNudge }: Props) {
+export function PulseTab({
+  dashboard,
+  activeAct,
+  onEndAct,
+  actionLoading,
+  blurNudgeEnabled,
+  onToggleBlurNudge,
+  historyTimelineArmed,
+  historyTimelineAttemptIndex,
+  historyTimelineSolvedAt,
+  historyTimelineCardCount,
+  onArmHistoryTimeline,
+  onResetHistoryTimeline,
+}: Props) {
   const { overview, cardDiscovery, missionProgress } = dashboard;
   const discoveryPct =
     overview.totalCards > 0
@@ -129,6 +148,67 @@ export function PulseTab({ dashboard, activeAct, onEndAct, actionLoading, blurNu
             size="md"
           />
         </Group>
+      </Paper>
+
+      <Paper bg="dark.7" p="md" radius="md">
+        <Stack gap="xs">
+          <Group justify="space-between" align="flex-start">
+            <div>
+              <Text size="sm" fw={500}>History Timeline Check</Text>
+              <Text size="xs" c="dimmed">
+                {historyTimelineCardCount > 0
+                  ? `${historyTimelineCardCount} configured history cards`
+                  : "No history cards configured yet"}
+              </Text>
+            </div>
+            <Badge
+              color={
+                historyTimelineSolvedAt
+                  ? "green"
+                  : historyTimelineArmed
+                    ? "yellow"
+                    : "gray"
+              }
+              variant="light"
+            >
+              {historyTimelineSolvedAt
+                ? "Solved"
+                : historyTimelineArmed
+                  ? "Armed"
+                  : "Disarmed"}
+            </Badge>
+          </Group>
+
+          <Text size="xs" c="dimmed">
+            Progress: {historyTimelineAttemptIndex}/{historyTimelineCardCount}
+          </Text>
+          {historyTimelineSolvedAt && (
+            <Text size="xs" c="green.3">
+              Verified and solved.
+            </Text>
+          )}
+
+          <Group grow>
+            <Button
+              color="yellow"
+              variant="light"
+              disabled={historyTimelineCardCount === 0 || !!historyTimelineSolvedAt}
+              loading={actionLoading === "history-arm"}
+              onClick={onArmHistoryTimeline}
+            >
+              Arm Timeline Check
+            </Button>
+            <Button
+              color="gray"
+              variant="light"
+              disabled={!historyTimelineArmed && !historyTimelineSolvedAt && historyTimelineAttemptIndex === 0}
+              loading={actionLoading === "history-reset"}
+              onClick={onResetHistoryTimeline}
+            >
+              Reset Timeline Check
+            </Button>
+          </Group>
+        </Stack>
       </Paper>
 
       {activeAct < 3 && (

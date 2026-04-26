@@ -9,6 +9,7 @@ export type AnswerTemplateType =
   | "photo_select";
 
 export type CardComplexity = "simple" | "complex";
+export type CardSubtype = "standard" | "history" | "reference";
 
 export type CardStatus = "available" | "locked_out" | "self_destructed" | "answered";
 
@@ -37,6 +38,7 @@ export interface CardViewerResponse {
   description: string | null;
   clueVisibleCategory: string | null;
   complexity: CardComplexity;
+  subtype: CardSubtype;
   clueContent: string | null;
   act: number;
   design: CardDesign | null;
@@ -66,6 +68,16 @@ export interface CardViewerResponse {
 
   // Game-level settings
   blurNudgeEnabled: boolean;
+
+  // History timeline
+  historyTimeline: HistoryTimelineCardState | null;
+}
+
+export interface HistoryTimelineCardState {
+  order: number | null;
+  totalCards: number;
+  isArmed: boolean;
+  isSolved: boolean;
 }
 
 export interface AnswerMeta {
@@ -85,6 +97,15 @@ export interface AnswerMeta {
 export interface ScanResponse {
   selfDestructedAt: string | null;
   alreadyScanned: boolean;
+  historyTimeline: HistoryTimelineScanResult | null;
+}
+
+export interface HistoryTimelineScanResult {
+  result: "correct" | "failed" | "solved";
+  currentIndex: number;
+  totalCards: number;
+  expectedOrder: number;
+  message: string;
 }
 
 export interface ExamineResponse {
@@ -188,3 +209,4 @@ export interface MissionAnswerResponse {
 // === Admin Types ===
 
 export * from "./admin-types.js";
+export * from "./finale.js";

@@ -35,6 +35,26 @@ router.patch("/games/:gameId/settings", async (req, res) => {
   res.json(result);
 });
 
+router.patch("/games/:gameId/finale", async (req, res) => {
+  const result = await adminService.updateFinaleSelection(
+    req.params.gameId,
+    req.body,
+  );
+  res.json(result);
+});
+
+// === History Timeline ===
+
+router.post("/games/:gameId/history-timeline/arm", async (req, res) => {
+  const result = await adminService.armHistoryTimeline(req.params.gameId);
+  res.json(result);
+});
+
+router.post("/games/:gameId/history-timeline/reset", async (req, res) => {
+  const result = await adminService.resetHistoryTimeline(req.params.gameId);
+  res.json(result);
+});
+
 // === Act Transitions ===
 
 router.post("/games/:gameId/transition-act", async (req, res) => {

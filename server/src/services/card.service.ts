@@ -9,6 +9,7 @@ import type {
   ScanResponse,
   ExamineResponse,
   AnswerResponse,
+  HistoryTimelineScanResult,
 } from "@cardsight/shared";
 
 /**
@@ -72,9 +73,32 @@ export async function getCardForViewer(
   const card = await resolveCard(cardId, (id) =>
     prisma.card.findUnique({
       where: { id },
-      include: { design: true, game: { select: { blurNudgeEnabled: true } } },
+      include: {
+        design: true,
+        game: {
+          select: {
+            blurNudgeEnabled: true,
+            historyTimelineArmed: true,
+            historyTimelineSolvedAt: true,
+          },
+        },
+      },
     }),
   );
+
+  const isHistoryCard = card.subtype === "history";
+  const isReferenceCard = card.subtype === "reference";
+  const isDirectViewCard = isHistoryCard || isReferenceCard;
+  const historyTimelineTotalCards = isHistoryCard
+    ? await prisma.card.count({
+      where: {
+        gameId: card.gameId,
+        subtype: "history",
+        historyTimelineOrder: { not: null },
+        deletedAt: null,
+      },
+    })
+    : 0;
 
   // Determine card status
   let status: CardViewerResponse["status"] = "available";
@@ -82,11 +106,12 @@ export async function getCardForViewer(
   if (card.lockedOut) {
     status = "locked_out";
   } else if (
+    !isDirectViewCard &&
     card.selfDestructedAt &&
     new Date() > new Date(card.selfDestructedAt)
   ) {
     status = "self_destructed";
-  } else if (card.isSolved) {
+  } else if (!isDirectViewCard && card.isSolved) {
     status = "answered";
   }
 
@@ -98,7 +123,7 @@ export async function getCardForViewer(
   // Show answer meta when available, OR when self-destructed but answer should remain visible
   let answerMeta: AnswerMeta | null = null;
   const isComplex = card.complexity === "complex";
-  const isAnswerable = isComplex && card.isAnswerable;
+  const isAnswerable = !isDirectViewCard && isComplex && card.isAnswerable;
   const showAnswer =
     status === "available" ||
     (status === "self_destructed" && card.answerVisibleAfterDestruct);
@@ -112,7 +137,7 @@ export async function getCardForViewer(
   }
 
   // For complex cards that are solved, reveal the clueContent
-  const clueContent = (isComplex && card.isSolved) ? card.clueContent : null;
+  const clueContent = !isDirectViewCard && isComplex && card.isSolved ? card.clueContent : null;
 
   return {
     id: card.id,
@@ -121,6 +146,7 @@ export async function getCardForViewer(
       status === "self_destructed" ? null : card.description,
     clueVisibleCategory: card.clueVisibleCategory,
     complexity: card.complexity as CardComplexity,
+    subtype: card.subtype,
     clueContent,
     act: card.act,
     design,
@@ -129,17 +155,133 @@ export async function getCardForViewer(
     selfDestructText:
       card.selfDestructText ??
       "This card's information is no longer available.",
-    selfDestructedAt: card.selfDestructedAt?.toISOString() ?? null,
-    selfDestructTimer: card.selfDestructTimer,
-    isExamined: card.examinedAt !== null,
+    selfDestructedAt: isDirectViewCard ? null : card.selfDestructedAt?.toISOString() ?? null,
+    selfDestructTimer: isDirectViewCard ? null : card.selfDestructTimer,
+    isExamined: isDirectViewCard || card.examinedAt !== null,
     examinedAt: card.examinedAt?.toISOString() ?? null,
     examineText: card.examineText,
     isAnswerable,
-    answerTemplateType: card.answerTemplateType,
+    answerTemplateType: isDirectViewCard ? null : card.answerTemplateType,
     answerMeta,
-    answerVisibleAfterDestruct: card.answerVisibleAfterDestruct,
+    answerVisibleAfterDestruct: isDirectViewCard ? false : card.answerVisibleAfterDestruct,
     isSolved: card.isSolved,
     blurNudgeEnabled: card.game.blurNudgeEnabled,
+    historyTimeline: isHistoryCard
+      ? {
+        order: card.historyTimelineOrder,
+        totalCards: historyTimelineTotalCards,
+        isArmed: card.game.historyTimelineArmed,
+        isSolved: card.game.historyTimelineSolvedAt !== null,
+      }
+      : null,
+  };
+}
+
+async function getHistoryTimelineResult(
+  gameId: string,
+  cardId: string,
+  historyTimelineOrder: number | null,
+): Promise<HistoryTimelineScanResult | null> {
+  const game = await prisma.game.findUnique({
+    where: { id: gameId },
+    select: {
+      historyTimelineArmed: true,
+      historyTimelineAttemptIndex: true,
+      historyTimelineSolvedAt: true,
+    },
+  });
+
+  if (!game || !game.historyTimelineArmed || historyTimelineOrder === null) {
+    return null;
+  }
+
+  const orderedCards = await prisma.card.findMany({
+    where: {
+      gameId,
+      subtype: "history",
+      historyTimelineOrder: { not: null },
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      historyTimelineOrder: true,
+    },
+    orderBy: [
+      { historyTimelineOrder: "asc" },
+      { sortOrder: "asc" },
+    ],
+  });
+
+  const totalCards = orderedCards.length;
+  const expectedIndex = game.historyTimelineAttemptIndex;
+  const expectedCard = orderedCards[expectedIndex];
+
+  if (!expectedCard) {
+    await prisma.game.update({
+      where: { id: gameId },
+      data: {
+        historyTimelineArmed: false,
+        historyTimelineAttemptIndex: 0,
+      },
+    });
+    return {
+      result: "failed",
+      currentIndex: 0,
+      totalCards,
+      expectedOrder: 1,
+      message: "Timeline configuration is invalid.",
+    };
+  }
+
+  if (expectedCard.id !== cardId) {
+    await prisma.game.update({
+      where: { id: gameId },
+      data: {
+        historyTimelineArmed: false,
+        historyTimelineAttemptIndex: 0,
+      },
+    });
+    return {
+      result: "failed",
+      currentIndex: expectedIndex,
+      totalCards,
+      expectedOrder: expectedIndex + 1,
+      message: "History chronology failed. The host must re-arm the check.",
+    };
+  }
+
+  const nextIndex = expectedIndex + 1;
+  if (nextIndex >= totalCards) {
+    await prisma.game.update({
+      where: { id: gameId },
+      data: {
+        historyTimelineArmed: false,
+        historyTimelineAttemptIndex: 0,
+        historyTimelineSolvedAt: new Date(),
+      },
+    });
+    return {
+      result: "solved",
+      currentIndex: totalCards,
+      totalCards,
+      expectedOrder: nextIndex,
+      message: "HISTORY VERIFIED",
+    };
+  }
+
+  await prisma.game.update({
+    where: { id: gameId },
+    data: {
+      historyTimelineAttemptIndex: nextIndex,
+    },
+  });
+
+  return {
+    result: "correct",
+    currentIndex: nextIndex,
+    totalCards,
+    expectedOrder: nextIndex,
+    message: "History fragment verified.",
   };
 }
 
@@ -154,6 +296,8 @@ export async function recordScan(
       select: {
         id: true,
         gameId: true,
+        subtype: true,
+        historyTimelineOrder: true,
         selfDestructTimer: true,
         selfDestructedAt: true,
       },
@@ -170,9 +314,15 @@ export async function recordScan(
     },
   });
 
+  const historyTimeline =
+    card.subtype === "history"
+      ? await getHistoryTimelineResult(card.gameId, card.id, card.historyTimelineOrder)
+      : null;
+
   return {
     selfDestructedAt: card.selfDestructedAt?.toISOString() ?? null,
     alreadyScanned: card.selfDestructedAt !== null,
+    historyTimeline,
   };
 }
 

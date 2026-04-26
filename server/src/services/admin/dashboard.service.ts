@@ -12,6 +12,7 @@ export async function getDashboard(gameId: string) {
   // Run all queries in parallel — overview/discovery scoped to current act
   const [
     totalCards,
+    historyTimelineCardCount,
     scannedCardIds,
     totalScans,
     totalAttempts,
@@ -24,6 +25,15 @@ export async function getDashboard(gameId: string) {
   ] = await Promise.all([
     // Total non-deleted cards in current act
     prisma.card.count({ where: { gameId, act: currentAct, deletedAt: null } }),
+
+    prisma.card.count({
+      where: {
+        gameId,
+        subtype: "history",
+        historyTimelineOrder: { not: null },
+        deletedAt: null,
+      },
+    }),
 
     // Distinct cards in current act that have been scanned
     prisma.scanEvent.findMany({
@@ -168,6 +178,12 @@ export async function getDashboard(gameId: string) {
 
   return {
     currentAct,
+    historyTimeline: {
+      cardCount: historyTimelineCardCount,
+      armed: game.historyTimelineArmed,
+      attemptIndex: game.historyTimelineAttemptIndex,
+      solvedAt: game.historyTimelineSolvedAt?.toISOString() ?? null,
+    },
     overview: {
       totalCards,
       cardsScanned: scannedSet.size,

@@ -230,8 +230,15 @@ export function CardRow({
               {card.cardSet.name}
             </Badge>
           )}
-          {card.isAnswerable && <Badge size="xs" variant="dot" color="cyan">Answer</Badge>}
-          {card.selfDestructTimer && <Badge size="xs" variant="dot" color="red">{card.selfDestructTimer}s</Badge>}
+          {card.subtype === "history" && <Badge size="xs" variant="dot" color="violet">History</Badge>}
+          {card.subtype === "reference" && <Badge size="xs" variant="dot" color="blue">Reference</Badge>}
+          {card.historyTimelineOrder !== null && (
+            <Badge size="xs" variant="outline" color="violet">
+              Order {card.historyTimelineOrder}
+            </Badge>
+          )}
+          {card.isAnswerable && card.subtype !== "history" && <Badge size="xs" variant="dot" color="cyan">Answer</Badge>}
+          {card.selfDestructTimer && card.subtype !== "history" && <Badge size="xs" variant="dot" color="red">{card.selfDestructTimer}s</Badge>}
           {card.isSolved && <Badge size="xs" variant="filled" color="green">Solved</Badge>}
           {card.selfDestructedAt && <Badge size="xs" variant="filled" color="orange">Destructed</Badge>}
           <Text size="xs" c="dimmed" style={{ minWidth: "50px", textAlign: "right" }}>
@@ -277,6 +284,27 @@ export function CardRow({
                     <Select label="Card Set" size="xs" value={current("cardSetId") ?? ""} onChange={handleCardSetChange} data={cardSetData} clearable />
                     <MultiSelect label="Houses" size="xs" value={currentHouseIds} onChange={handleHousesChange} data={houseData} placeholder="Select houses..." />
                   </Group>
+                  <Group grow>
+                    <Select
+                      label="Subtype"
+                      size="xs"
+                      value={current("subtype") ?? "standard"}
+                      onChange={(v) => updateDraft("subtype", v || "standard")}
+                      data={[
+                        { value: "standard", label: "Standard" },
+                        { value: "history", label: "History" },
+                        { value: "reference", label: "Reference" },
+                      ]}
+                    />
+                    <NumberInput
+                      label="Timeline Order"
+                      size="xs"
+                      value={current("historyTimelineOrder") ?? ""}
+                      onChange={(v) => updateDraft("historyTimelineOrder", v || null)}
+                      min={1}
+                      disabled={current("subtype") !== "history"}
+                    />
+                  </Group>
 
                   <CollapsibleSection sectionKey="card-content" label="Content">
                     <Stack gap="sm">
@@ -285,8 +313,8 @@ export function CardRow({
                         <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
                         <Select label="Complexity" size="xs" value={current("complexity") ?? "simple"} onChange={(v) => updateDraft("complexity", v || "simple")} data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]} />
                       </Group>
-                      <Textarea label={current("complexity") === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"} size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
-                      {current("complexity") === "complex" && (
+                      <Textarea label={current("subtype") === "history" ? "History Text (Markdown)" : current("subtype") === "reference" ? "Reference Text (Markdown)" : current("complexity") === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"} size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
+                      {current("complexity") === "complex" && current("subtype") === "standard" && (
                         <Textarea label="Revealed Clue (shown after solve)" size="xs" minRows={3} maxRows={8} autosize value={current("clueContent") ?? ""} onChange={(e) => updateDraft("clueContent", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem", background: "rgba(105, 240, 174, 0.04)", borderColor: "rgba(105, 240, 174, 0.15)" } }} />
                       )}
                       <Textarea label="Admin Notes" size="xs" minRows={2} maxRows={5} autosize value={current("notes") ?? ""} onChange={(e) => updateDraft("notes", e.target.value || null)} styles={{ input: { background: "rgba(212, 168, 67, 0.04)", borderColor: "rgba(212, 168, 67, 0.15)" } }} />
@@ -296,12 +324,22 @@ export function CardRow({
                   <CollapsibleSection sectionKey="card-behavior" label="Behavior">
                     <Stack gap="sm">
                       <Select label="Design" size="xs" value={current("designId") ?? ""} onChange={(v) => updateDraft("designId", v || null)} data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]} clearable />
-                      <TextInput label="Examine Button Text" size="xs" value={current("examineText") ?? ""} onChange={(e) => updateDraft("examineText", e.target.value || null)} placeholder="Examine (default)" />
-                      <Group grow>
-                        <NumberInput label="Self-Destruct (seconds)" size="xs" value={current("selfDestructTimer") ?? ""} onChange={(v) => updateDraft("selfDestructTimer", v || null)} min={0} />
-                        <Switch label="Answer visible after destruct" size="xs" checked={current("answerVisibleAfterDestruct")} onChange={(e) => updateDraft("answerVisibleAfterDestruct", e.currentTarget.checked)} />
-                      </Group>
-                      <TextInput label="Self-Destruct Text" size="xs" value={current("selfDestructText") ?? ""} onChange={(e) => updateDraft("selfDestructText", e.target.value || null)} placeholder="This card's information is no longer available." />
+                      {current("subtype") === "standard" ? (
+                        <>
+                          <TextInput label="Examine Button Text" size="xs" value={current("examineText") ?? ""} onChange={(e) => updateDraft("examineText", e.target.value || null)} placeholder="Examine (default)" />
+                          <Group grow>
+                            <NumberInput label="Self-Destruct (seconds)" size="xs" value={current("selfDestructTimer") ?? ""} onChange={(v) => updateDraft("selfDestructTimer", v || null)} min={0} />
+                            <Switch label="Answer visible after destruct" size="xs" checked={current("answerVisibleAfterDestruct")} onChange={(e) => updateDraft("answerVisibleAfterDestruct", e.currentTarget.checked)} />
+                          </Group>
+                          <TextInput label="Self-Destruct Text" size="xs" value={current("selfDestructText") ?? ""} onChange={(e) => updateDraft("selfDestructText", e.target.value || null)} placeholder="This card's information is no longer available." />
+                        </>
+                      ) : (
+                        <Text size="xs" c="dimmed">
+                          {current("subtype") === "history"
+                            ? "History cards skip the examine gate, never show the blur nudge, and go straight to their text unless the host has armed the timeline check."
+                            : "Reference cards skip the examine gate, never show the blur nudge, and always open directly to their text."}
+                        </Text>
+                      )}
                       <Group grow>
                         <Switch label="Locked Out" size="xs" color="red" checked={current("lockedOut")} onChange={(e) => updateDraft("lockedOut", e.currentTarget.checked)} />
                         <TextInput label="Lock Reason" size="xs" value={current("lockedOutReason") ?? ""} onChange={(e) => updateDraft("lockedOutReason", e.target.value || null)} disabled={!current("lockedOut")} />
@@ -309,7 +347,7 @@ export function CardRow({
                     </Stack>
                   </CollapsibleSection>
 
-                  {current("complexity") === "complex" && (
+                  {current("complexity") === "complex" && current("subtype") === "standard" && (
                     <CollapsibleSection sectionKey="card-answer" label="Answer">
                       <Stack gap="sm">
                         <Group grow>

@@ -1,4 +1,16 @@
-import type { GameStatus, AnswerTemplateType, CardComplexity, ShowtimePhase, ConsequenceType } from "./types.js";
+import type {
+  GameStatus,
+  AnswerTemplateType,
+  CardComplexity,
+  CardSubtype,
+  ShowtimePhase,
+  ConsequenceType,
+} from "./types.js";
+import type {
+  FinaleClauseId,
+  FinaleEvaluation,
+  FinaleOutcomeId,
+} from "./finale.js";
 
 // === Admin Types ===
 // Single source of truth for all admin API response shapes.
@@ -27,6 +39,11 @@ export interface GameDetail extends GameSummary {
   designCount: number;
   finishedCount: number;
   blurNudgeEnabled: boolean;
+  historyTimelineArmed: boolean;
+  historyTimelineAttemptIndex: number;
+  historyTimelineSolvedAt: string | null;
+  historyTimelineCardCount: number;
+  finale: FinaleAdminState;
 }
 
 // === Cards ===
@@ -38,6 +55,7 @@ export interface AdminCard {
   header: string | null;
   description: string | null;
   act: number;
+  subtype: CardSubtype;
   cardSetId: string | null;
   cardSet: HouseRef | null;
   cardHouses: { id: string; house: HouseRef }[];
@@ -58,6 +76,7 @@ export interface AdminCard {
   examinedAt: string | null;
   examineText: string | null;
   answerVisibleAfterDestruct: boolean;
+  historyTimelineOrder: number | null;
   isFinished: boolean;
   isSolved: boolean;
   sortOrder: number;
@@ -274,6 +293,12 @@ export interface ActTransitionResult {
 
 export interface DashboardData {
   currentAct: number;
+  historyTimeline: {
+    cardCount: number;
+    armed: boolean;
+    attemptIndex: number;
+    solvedAt: string | null;
+  };
   overview: {
     totalCards: number;
     cardsScanned: number;
@@ -309,6 +334,12 @@ export interface DashboardData {
       isCompleted: boolean;
     }[];
   }[];
+}
+
+export interface FinaleAdminState {
+  outcomeId: FinaleOutcomeId | null;
+  clauseIds: FinaleClauseId[];
+  evaluation: FinaleEvaluation;
 }
 
 // === Simulator ===

@@ -3,6 +3,11 @@ import type {
   AdminMission,
   AdminShowtime,
 } from "../../../api/admin";
+import type {
+  FinaleAdminState,
+  FinaleClauseId,
+  FinaleOutcomeId,
+} from "@cardsight/shared";
 
 export interface TabActionProps {
   actionLoading: string | null;
@@ -25,4 +30,10 @@ export interface ShowtimeTabProps extends TabActionProps {
   showtimes: AdminShowtime[];
   onTrigger: (st: AdminShowtime) => void;
   onReset: (st: AdminShowtime) => void;
+}
+
+export interface FinaleTabProps extends TabActionProps {
+  finale: FinaleAdminState;
+  onSelectOutcome: (outcomeId: FinaleOutcomeId | null) => void;
+  onToggleClause: (clauseId: FinaleClauseId) => void;
 }

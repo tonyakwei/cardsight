@@ -8,6 +8,29 @@ const physicalCards: { id: string; name: string; color: string; number: number }
 
 const ALL_PHYSICAL_IDS = physicalCards.map((pc) => pc.id);
 
+async function assertUniqueHistoryTimelineOrder(
+  gameId: string,
+  historyTimelineOrder: number | null | undefined,
+  excludingCardId?: string,
+) {
+  if (historyTimelineOrder === null || historyTimelineOrder === undefined) return;
+
+  const existing = await prisma.card.findFirst({
+    where: {
+      gameId,
+      subtype: "history",
+      historyTimelineOrder,
+      deletedAt: null,
+      ...(excludingCardId ? { id: { not: excludingCardId } } : {}),
+    },
+    select: { id: true },
+  });
+
+  if (existing) {
+    throw new AppError(400, `History timeline order ${historyTimelineOrder} is already in use`);
+  }
+}
+
 // === Cards ===
 
 const cardInclude = {
@@ -60,13 +83,24 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
   // Filter to only allowed scalar fields
   const updateData = pickAllowedFields(data, [
     "physicalCardId", "header", "description", "clueContent", "complexity", "act",
-    "cardSetId", "clueVisibleCategory", "notes",
+    "cardSetId", "clueVisibleCategory", "notes", "subtype", "historyTimelineOrder",
     "designId", "answerTemplateType", "answerId", "isAnswerable",
     "lockedOut", "lockedOutReason",
     "selfDestructTimer", "selfDestructText",
     "examineText", "answerVisibleAfterDestruct",
     "isFinished", "sortOrder",
   ]);
+
+  const nextSubtype = updateData.subtype ?? card.subtype;
+  if (nextSubtype !== "history") {
+    updateData.historyTimelineOrder = null;
+  } else {
+    await assertUniqueHistoryTimelineOrder(
+      gameId,
+      updateData.historyTimelineOrder ?? card.historyTimelineOrder,
+      cardId,
+    );
+  }
 
   // Update card fields
   await prisma.card.update({
@@ -113,14 +147,34 @@ export async function createCard(gameId: string, data: Record<string, any>) {
   }
   delete data.physicalCardId;
 
+  const scalarData = pickAllowedFields(data, [
+    "header", "description", "clueContent", "complexity", "act",
+    "cardSetId", "clueVisibleCategory", "notes", "subtype", "historyTimelineOrder",
+    "designId", "answerTemplateType", "answerId", "isAnswerable",
+    "lockedOut", "lockedOutReason",
+    "selfDestructTimer", "selfDestructText",
+    "examineText", "answerVisibleAfterDestruct",
+    "isFinished", "sortOrder",
+  ]);
+
+  const subtype = scalarData.subtype ?? "standard";
+  const historyTimelineOrder =
+    subtype === "history" ? scalarData.historyTimelineOrder ?? null : null;
+
+  if (subtype === "history") {
+    await assertUniqueHistoryTimelineOrder(gameId, historyTimelineOrder);
+  }
+
   const card = await prisma.card.create({
     data: {
       gameId,
       physicalCardId,
-      header: data.header ?? null,
-      description: data.description,
+      header: scalarData.header ?? null,
+      description: scalarData.description,
+      subtype,
+      historyTimelineOrder,
       sortOrder: (maxSort._max.sortOrder ?? 0) + 1,
-      ...data,
+      ...scalarData,
     },
   });
 
@@ -274,6 +328,14 @@ export async function resetAllCards(gameId: string) {
   if (!game) throw new AppError(404, "Game not found");
 
   await prisma.$transaction([
+    prisma.game.update({
+      where: { id: gameId },
+      data: {
+        historyTimelineArmed: false,
+        historyTimelineAttemptIndex: 0,
+        historyTimelineSolvedAt: null,
+      },
+    }),
     prisma.card.updateMany({
       where: { gameId },
       data: { examinedAt: null, selfDestructedAt: null, isSolved: false },

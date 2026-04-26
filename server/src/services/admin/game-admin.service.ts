@@ -1,6 +1,25 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { pickAllowedFields } from "../../utils/pick-fields.js";
+import {
+  evaluateFinaleSelection,
+  type FinaleClauseId,
+  type FinaleOutcomeId,
+} from "@cardsight/shared";
+
+function buildFinaleState(game: {
+  finaleOutcome: string | null;
+  finaleClauseIds: string[];
+}) {
+  const outcomeId = (game.finaleOutcome as FinaleOutcomeId | null) ?? null;
+  const clauseIds = (game.finaleClauseIds ?? []) as FinaleClauseId[];
+
+  return {
+    outcomeId,
+    clauseIds,
+    evaluation: evaluateFinaleSelection({ outcomeId, clauseIds }),
+  };
+}
 
 // === Games ===
 
@@ -38,6 +57,15 @@ export async function getGame(gameId: string) {
     where: { gameId, isFinished: true },
   });
 
+  const historyTimelineCardCount = await prisma.card.count({
+    where: {
+      gameId,
+      subtype: "history",
+      historyTimelineOrder: { not: null },
+      deletedAt: null,
+    },
+  });
+
   return {
     id: game.id,
     name: game.name,
@@ -48,6 +76,11 @@ export async function getGame(gameId: string) {
     designCount: game._count.designs,
     finishedCount,
     blurNudgeEnabled: game.blurNudgeEnabled,
+    historyTimelineArmed: game.historyTimelineArmed,
+    historyTimelineAttemptIndex: game.historyTimelineAttemptIndex,
+    historyTimelineSolvedAt: game.historyTimelineSolvedAt?.toISOString() ?? null,
+    historyTimelineCardCount,
+    finale: buildFinaleState(game),
     createdAt: game.createdAt.toISOString(),
     updatedAt: game.updatedAt.toISOString(),
   };
@@ -68,6 +101,39 @@ export async function createGame(data: { name: string; description?: string }) {
   });
 }
 
+export async function updateFinaleSelection(
+  gameId: string,
+  data: { outcomeId?: FinaleOutcomeId | null; clauseIds?: FinaleClauseId[] },
+) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const outcomeId =
+    data.outcomeId !== undefined
+      ? data.outcomeId
+      : (game.finaleOutcome as FinaleOutcomeId | null) ?? null;
+  const clauseIds =
+    data.clauseIds !== undefined
+      ? data.clauseIds
+      : (game.finaleClauseIds as FinaleClauseId[]);
+
+  const evaluation = evaluateFinaleSelection({ outcomeId, clauseIds });
+
+  const updated = await prisma.game.update({
+    where: { id: gameId },
+    data: {
+      finaleOutcome: outcomeId,
+      finaleClauseIds: clauseIds,
+    },
+  });
+
+  return {
+    outcomeId: (updated.finaleOutcome as FinaleOutcomeId | null) ?? null,
+    clauseIds: updated.finaleClauseIds as FinaleClauseId[],
+    evaluation,
+  };
+}
+
 // === Duplicate Game ===
 
 export async function duplicateGame(gameId: string) {
@@ -81,6 +147,11 @@ export async function duplicateGame(gameId: string) {
         description: game.description,
         status: "draft",
         currentAct: 1,
+        historyTimelineArmed: false,
+        historyTimelineAttemptIndex: 0,
+        historyTimelineSolvedAt: null,
+        finaleOutcome: game.finaleOutcome,
+        finaleClauseIds: game.finaleClauseIds,
         duplicatedFromId: game.id,
       },
     });
@@ -177,6 +248,7 @@ async function dupCards(
     const n = await tx.card.create({
       data: {
         gameId: newGameId, physicalCardId: c.physicalCardId, act: c.act,
+        subtype: c.subtype,
         cardSetId: remapId(maps.cardSetMap, c.cardSetId),
         clueVisibleCategory: c.clueVisibleCategory, complexity: c.complexity,
         header: c.header, description: c.description, clueContent: c.clueContent,
@@ -187,6 +259,7 @@ async function dupCards(
         selfDestructText: c.selfDestructText,
         designId: remapId(maps.designMap, c.designId),
         examineText: c.examineText, answerVisibleAfterDestruct: c.answerVisibleAfterDestruct,
+        historyTimelineOrder: c.historyTimelineOrder,
         sortOrder: c.sortOrder, notes: c.notes, isFinished: c.isFinished,
         isSolved: false, deletedAt: null,
       },
@@ -301,6 +374,89 @@ export async function updateGameSettings(
   });
 
   return { blurNudgeEnabled: updated.blurNudgeEnabled };
+}
+
+async function getConfiguredHistoryTimelineCards(gameId: string) {
+  return prisma.card.findMany({
+    where: {
+      gameId,
+      subtype: "history",
+      historyTimelineOrder: { not: null },
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      historyTimelineOrder: true,
+    },
+    orderBy: [
+      { historyTimelineOrder: "asc" },
+      { sortOrder: "asc" },
+    ],
+  });
+}
+
+function assertHistoryTimelineIsValid(cards: { id: string; historyTimelineOrder: number | null }[]) {
+  if (cards.length === 0) {
+    throw new AppError(400, "Configure at least one history card before arming the timeline check");
+  }
+
+  const seen = new Set<number>();
+  for (const card of cards) {
+    if (card.historyTimelineOrder === null) continue;
+    if (seen.has(card.historyTimelineOrder)) {
+      throw new AppError(400, `Duplicate history timeline order: ${card.historyTimelineOrder}`);
+    }
+    seen.add(card.historyTimelineOrder);
+  }
+}
+
+export async function armHistoryTimeline(gameId: string) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+  if (game.historyTimelineSolvedAt) {
+    throw new AppError(409, "History timeline already solved. Reset it before arming again.");
+  }
+
+  const cards = await getConfiguredHistoryTimelineCards(gameId);
+  assertHistoryTimelineIsValid(cards);
+
+  const updated = await prisma.game.update({
+    where: { id: gameId },
+    data: {
+      historyTimelineArmed: true,
+      historyTimelineAttemptIndex: 0,
+    },
+  });
+
+  return {
+    armed: updated.historyTimelineArmed,
+    attemptIndex: updated.historyTimelineAttemptIndex,
+    solvedAt: updated.historyTimelineSolvedAt?.toISOString() ?? null,
+    cardCount: cards.length,
+  };
+}
+
+export async function resetHistoryTimeline(gameId: string) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const updated = await prisma.game.update({
+    where: { id: gameId },
+    data: {
+      historyTimelineArmed: false,
+      historyTimelineAttemptIndex: 0,
+      historyTimelineSolvedAt: null,
+    },
+  });
+
+  const cards = await getConfiguredHistoryTimelineCards(gameId);
+
+  return {
+    armed: updated.historyTimelineArmed,
+    attemptIndex: updated.historyTimelineAttemptIndex,
+    solvedAt: updated.historyTimelineSolvedAt?.toISOString() ?? null,
+    cardCount: cards.length,
+  };
 }
 
 // === Act Transitions ===

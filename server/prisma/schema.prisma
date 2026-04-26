@@ -38,6 +38,11 @@ model Game {
   status          GameStatus @default(draft)
   currentAct      Int        @default(1) @map("current_act")
   blurNudgeEnabled Boolean   @default(false) @map("blur_nudge_enabled")
+  historyTimelineArmed Boolean @default(false) @map("history_timeline_armed")
+  historyTimelineAttemptIndex Int @default(0) @map("history_timeline_attempt_index")
+  historyTimelineSolvedAt DateTime? @map("history_timeline_solved_at")
+  finaleOutcome String?      @map("finale_outcome")
+  finaleClauseIds String[]   @default([]) @map("finale_clause_ids")
   duplicatedFromId String?   @map("duplicated_from_id") @db.Uuid
   duplicatedFrom  Game?      @relation("GameLineage", fields: [duplicatedFromId], references: [id])
   duplicates      Game[]     @relation("GameLineage")
@@ -117,6 +122,7 @@ model Card {
   game                Game                @relation(fields: [gameId], references: [id])
   physicalCardId      String              @map("physical_card_id") @db.Uuid
   act                 Int                 @default(1)
+  subtype             CardSubtype         @default(standard)
   cardSetId           String?             @map("card_set_id") @db.Uuid
   cardSet             CardSet?            @relation(fields: [cardSetId], references: [id])
   clueVisibleCategory String?             @map("clue_visible_category")
@@ -137,6 +143,7 @@ model Card {
   examinedAt                DateTime? @map("examined_at")
   examineText               String?   @map("examine_text")
   answerVisibleAfterDestruct Boolean  @default(true) @map("answer_visible_after_destruct")
+  historyTimelineOrder Int?           @map("history_timeline_order")
   tableHouseId        String?             @map("table_house_id") @db.Uuid
   tableHouse          House?              @relation("TableAssignment", fields: [tableHouseId], references: [id])
   sortOrder           Int                 @default(0) @map("sort_order")
@@ -154,6 +161,12 @@ model Card {
 
   @@unique([gameId, physicalCardId, act])
   @@map("cards")
+}
+
+enum CardSubtype {
+  standard
+  history
+  reference
 }
 
 model Design {
