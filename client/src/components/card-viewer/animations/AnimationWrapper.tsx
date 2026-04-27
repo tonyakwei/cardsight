@@ -3,6 +3,7 @@ import { FadeIn } from "./FadeIn";
 import { SlideUp } from "./SlideUp";
 import { GlitchIn } from "./GlitchIn";
 import { DecryptIn } from "./DecryptIn";
+import { ZoomIn } from "./ZoomIn";
 
 interface Props {
   type: string;
@@ -14,6 +15,7 @@ const animationMap: Record<string, React.ComponentType<{ children: ReactNode }>>
   "slide-up": SlideUp,
   glitch: GlitchIn,
   decrypt: DecryptIn,
+  "zoom-in": ZoomIn,
 };
 
 export function AnimationWrapper({ type, children }: Props) {

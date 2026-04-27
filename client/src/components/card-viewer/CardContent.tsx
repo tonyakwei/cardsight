@@ -13,14 +13,15 @@ export function CardContent({ header, description, itemName }: Props) {
     <div>
       {itemName && (
         <div
+          className="card-item-tag"
           style={{
-            fontSize: "0.7rem",
+            fontSize: "0.95rem",
             fontWeight: 700,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             color: "var(--card-accent-color)",
             opacity: 0.6,
-            marginBottom: "0.5rem",
+            marginBottom: "0.6rem",
           }}
         >
           {itemName}
@@ -28,12 +29,13 @@ export function CardContent({ header, description, itemName }: Props) {
       )}
       {header && (
         <h1
+          className="card-header"
           style={{
-            fontSize: "1.5rem",
+            fontSize: "3.5rem",
             fontWeight: 700,
-            marginBottom: "1.25rem",
+            marginBottom: "1.5rem",
             color: "var(--card-accent-color)",
-            lineHeight: 1.3,
+            lineHeight: 1.15,
           }}
         >
           {header}
@@ -43,8 +45,8 @@ export function CardContent({ header, description, itemName }: Props) {
       {description && (
         <div
           style={{
-            fontSize: "0.95rem",
-            lineHeight: 1.7,
+            fontSize: "1.25rem",
+            lineHeight: 1.55,
             color: "var(--card-text-color)",
             opacity: 0.92,
           }}

@@ -391,6 +391,80 @@ async function main() {
     },
   });
 
+  // Per-house Settlement designs — for Act 3 outcomes + clauses, themed to
+  // the house that holds them. Bigger headline, drop shadow, instant zoom-in
+  // (no "hacker" decrypt intro).
+  const settlementCustomCss = `
+    .card-header {
+      font-size: 4.5rem !important;
+      letter-spacing: 0.02em;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(0, 0, 0, 0.5);
+    }
+    .card-description {
+      font-size: 1.4rem !important;
+    }
+    .card-item-tag {
+      opacity: 0.8 !important;
+    }
+  `;
+
+  const designDrakeSettlement = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Drake Settlement",
+      bgColor: "#3a0a08",
+      bgGradient: "linear-gradient(160deg, #5a1410 0%, #3a0a08 55%, #1c0504 100%)",
+      textColor: "#fce6dc",
+      accentColor: "#ff8a72",
+      secondaryColor: "#c0392b",
+      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      cardStyle: "standard",
+      animationIn: "zoom-in",
+      borderStyle: "1px solid rgba(220, 38, 38, 0.45)",
+      customCss: settlementCustomCss,
+    },
+  });
+
+  const designJonesSettlement = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Jones Settlement",
+      bgColor: "#2c1f06",
+      bgGradient: "linear-gradient(160deg, #5a3e0f 0%, #3a280a 55%, #1a1305 100%)",
+      textColor: "#fbeed0",
+      accentColor: "#ffd56a",
+      secondaryColor: "#ca8a04",
+      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      cardStyle: "standard",
+      animationIn: "zoom-in",
+      borderStyle: "1px solid rgba(202, 138, 4, 0.55)",
+      customCss: settlementCustomCss,
+    },
+  });
+
+  const designCroftSettlement = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Croft Settlement",
+      bgColor: "#1f0a3a",
+      bgGradient: "linear-gradient(160deg, #321558 0%, #1f0a3a 55%, #0c0418 100%)",
+      textColor: "#ece0fc",
+      accentColor: "#c8a7ff",
+      secondaryColor: "#7c3aed",
+      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      cardStyle: "standard",
+      animationIn: "zoom-in",
+      borderStyle: "1px solid rgba(124, 58, 237, 0.55)",
+      customCss: settlementCustomCss,
+    },
+  });
+
+  const settlementDesignByHouseId: Record<string, string> = {
+    [drake.id]: designDrakeSettlement.id,
+    [jones.id]: designJonesSettlement.id,
+    [croft.id]: designCroftSettlement.id,
+  };
+
   // CardSet → Design assignment table
   designByCardSet = {
     // Eroded Stone (stone-family)
@@ -1180,7 +1254,7 @@ async function main() {
     clueVisibleCategory: "Small Mechanical Part",
     header: "Detonator Components, Set II",
     description:
-      "Three more precision instruments, recovered together.\n\n**Ember Dust:** *\"Volatile. Packed between the cores and the plates. Don't sneeze.\"*\n\n**Striker Plates:** *\"Press flat against the dust layer. Takes the initial impact.\"*\n\n**Coil Segments:** *\"The ignition thread. Winds through the clips and connects to the shell trigger.\"*",
+      "Three precision instruments, recovered together.\n\n**Ember Dust:** *\"Volatile. Packed between the cores and the plates. Don't sneeze.\"*\n\n**Striker Plates:** *\"Press flat against the dust layer. Takes the initial impact.\"*\n\n**Coil Segments:** *\"The ignition thread. Winds through the clips and connects to the shell trigger.\"*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1188,7 +1262,7 @@ async function main() {
     clueVisibleCategory: "Small Mechanical Part",
     header: "Detonator Components, Set III",
     description:
-      "The last two pieces, picked out of the muck.\n\n**Ghost Shells:** *\"The outer housing. Nothing goes on after these.\"*\n\n**Fang Clips:** *\"Lock the plates in place. Snaps onto the strikers before you seal.\"*",
+      "Two pieces, picked out of the muck.\n\n**Ghost Shells:** *\"The outer housing. Nothing goes on after these.\"*\n\n**Fang Clips:** *\"Lock the plates in place. Snaps onto the strikers before you seal.\"*",
     houseIds: [drake.id],
   });
 
@@ -1206,7 +1280,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Chunk of Stone",
     header: "Inscribed Chunk of Stone, Fragment II",
     description:
-      "Another keystone, half-buried in silt.\n\n{{{R}}} = R\n{{{G}}} = G\n{{{L}}} = L\n{{{O}}} = O",
+      "A keystone, half-buried in silt.\n\n{{{R}}} = R\n{{{G}}} = G\n{{{L}}} = L\n{{{O}}} = O",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1214,7 +1288,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Chunk of Stone",
     header: "Inscribed Chunk of Stone, Fragment III",
     description:
-      "The smallest fragment of the three.\n\n{{{H}}} = H\n{{{F}}} = F",
+      "A small fragment, no bigger than a fist.\n\n{{{H}}} = H\n{{{F}}} = F",
     houseIds: [drake.id],
   });
 
@@ -1274,7 +1348,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Fragment",
     header: "Hoist Marking, Set II",
     description:
-      "Three more fragments, pulled from a tangled chain.\n\n**Position 4:** {{{NEVER}}} = NEVER\n\n**Position 5:** {{{WE}}} = WE\n\n**Position 6:** {{{THEM}}} = THEM",
+      "Three fragments, pulled from a tangled chain.\n\n**Position 4:** {{{NEVER}}} = NEVER\n\n**Position 5:** {{{WE}}} = WE\n\n**Position 6:** {{{THEM}}} = THEM",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1282,7 +1356,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Fragment",
     header: "Hoist Marking, Set III",
     description:
-      "The last three, scratched and corroded.\n\n**Position 7:** {{{BUILT}}} = BUILT\n\n**Position 8:** {{{LET}}} = LET\n\n**Position 9:** {{{WILL}}} = WILL",
+      "Three fragments, scratched and corroded.\n\n**Position 7:** {{{BUILT}}} = BUILT\n\n**Position 8:** {{{LET}}} = LET\n\n**Position 9:** {{{WILL}}} = WILL",
     houseIds: [drake.id],
   });
 
@@ -1326,7 +1400,7 @@ async function main() {
     clueVisibleCategory: "Coded Clay Tablet",
     header: "Coded Clay Tablet, II",
     description:
-      "Another fragment, etched in a steadier hand.\n\n{{{S}}} = S\n{{{O}}} = O\n{{{N}}} = N\n{{{C}}} = C",
+      "A clay-tablet fragment, etched in a steady hand.\n\n{{{S}}} = S\n{{{O}}} = O\n{{{N}}} = N\n{{{C}}} = C",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1334,7 +1408,7 @@ async function main() {
     clueVisibleCategory: "Coded Clay Tablet",
     header: "Coded Clay Tablet, III",
     description:
-      "The last fragment.\n\n{{{A}}} = A\n{{{L}}} = L\n{{{V}}} = V\n{{{H}}} = H",
+      "A small clay fragment, edges chipped.\n\n{{{A}}} = A\n{{{L}}} = L\n{{{V}}} = V\n{{{H}}} = H",
     houseIds: [jones.id],
   });
 
@@ -1549,7 +1623,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csEdgeBlock.id, act: 1,
     clueVisibleCategory: "Odd Edge-Marked Block",
-    header: "Odd Edge-Marked Block, Last Fragment",
+    header: "Odd Edge-Marked Block, Lone Fragment",
     description:
       "**Tile 5:** Left edge ◗, right edge ♦. Letter on face: **E**.",
     houseIds: [croft.id],
@@ -1595,7 +1669,7 @@ async function main() {
     clueVisibleCategory: "Numbered Bone Token",
     header: "Numbered Bone Token, Second",
     description:
-      "Another bone disc.\n\n**Number: 9**\n\n*The slot is at Position 5.*",
+      "A bone disc, smooth and pale.\n\n**Number: 9**\n\n*The slot is at Position 5.*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1603,7 +1677,7 @@ async function main() {
     clueVisibleCategory: "Numbered Bone Token",
     header: "Numbered Bone Token, Third",
     description:
-      "**Number: 15**\n\n*The slot is at Position 8.*",
+      "A bone disc, smooth and pale.\n\n**Number: 15**\n\n*The slot is at Position 8.*",
     houseIds: [croft.id],
   });
 
@@ -2721,6 +2795,7 @@ I know only that we chose to leave the future a danger behind stone, not a world
   };
 
   for (const outcome of FINALE_OUTCOMES) {
+    const ownerHouseId = outcomeHouseByOutcomeId[outcome.id];
     const card = await prisma.card.create({
       data: {
         gameId: game.id,
@@ -2728,7 +2803,9 @@ I know only that we chose to leave the future a danger behind stone, not a world
         act: 3,
         subtype: "reference",
         cardSetId: csAct3Outcome.id,
-        designId: designByCardSet[csAct3Outcome.id],
+        designId:
+          (ownerHouseId && settlementDesignByHouseId[ownerHouseId]) ||
+          designByCardSet[csAct3Outcome.id],
         clueVisibleCategory: "Major Decision",
         complexity: "simple",
         header: outcome.label,
@@ -2736,13 +2813,13 @@ I know only that we chose to leave the future a danger behind stone, not a world
         notes: `Act 3 outcome reference card (${outcome.id}).`,
       },
     });
-    const ownerHouseId = outcomeHouseByOutcomeId[outcome.id];
     if (ownerHouseId) {
       await assignCardHouses(card.id, [ownerHouseId]);
     }
   }
 
   for (const clause of FINALE_CLAUSES) {
+    const ownerHouseId = clauseHouseByClauseId[clause.id];
     const card = await prisma.card.create({
       data: {
         gameId: game.id,
@@ -2750,7 +2827,9 @@ I know only that we chose to leave the future a danger behind stone, not a world
         act: 3,
         subtype: "reference",
         cardSetId: csAct3Clause.id,
-        designId: designByCardSet[csAct3Clause.id],
+        designId:
+          (ownerHouseId && settlementDesignByHouseId[ownerHouseId]) ||
+          designByCardSet[csAct3Clause.id],
         clueVisibleCategory: "Settlement Clause",
         complexity: "simple",
         header: clause.label,
@@ -2758,7 +2837,6 @@ I know only that we chose to leave the future a danger behind stone, not a world
         notes: `Act 3 clause reference card (${clause.id}).`,
       },
     });
-    const ownerHouseId = clauseHouseByClauseId[clause.id];
     if (ownerHouseId) {
       await assignCardHouses(card.id, [ownerHouseId]);
     }
@@ -2815,7 +2893,7 @@ Croft's instinct is stewardship. Some discoveries are real and beautiful and sti
   // ═══════════════════════════════════════════════════════════════════
 
   console.log(
-    `\n✓ Created "${GAME_NAME}" with 3 houses, 33 card sets, 7 designs, 30 answers, 15 Act 1 missions, 15 Act 2 missions, 47 Act 1 cards, 43 Act 2 cards, 27 Act 3 cards, 3 Act 1→Act 2 lock gates, and 9 story sheets.\n`,
+    `\n✓ Created "${GAME_NAME}" with 3 houses, 33 card sets, 10 designs, 30 answers, 15 Act 1 missions, 15 Act 2 missions, 47 Act 1 cards, 43 Act 2 cards, 27 Act 3 cards, 3 Act 1→Act 2 lock gates, and 9 story sheets.\n`,
   );
   console.log("Game ID:", game.id);
 }
