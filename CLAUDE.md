@@ -130,7 +130,10 @@ cardsight/
 │   └── prisma/
 │       ├── schema.prisma
 │       ├── seed.ts
-│       └── seed-test-game.ts    # "The Blackwood Files" test game (idempotent)
+│       ├── seed-test-game.ts    # "The Blackwood Files" test game (idempotent)
+│       └── seed-qrians.ts       # "Temple of the QRians" playtest game (idempotent, randomizes physical-card distribution per run)
+│   └── scripts/
+│       └── seed-qrians-prod.ts  # Confirmation-gated wrapper that runs seed-qrians against Railway production
 ├── shared/                    # Shared TypeScript types
 │   ├── types.ts               # Player-facing types + barrel for admin-types
 │   ├── admin-types.ts         # All Admin* interfaces (single source of truth)
@@ -222,6 +225,35 @@ pnpm db:seed-test                 # Seed "The Blackwood Files" test game (idempo
 ```bash
 DATABASE_URL="postgres://..." pnpm db:seed-test
 ```
+
+### Seeding the QRians playtest game
+
+The live playtest game (`Temple of the QRians`) lives in `server/prisma/seed-qrians.ts`. It creates 3 houses, 33 card sets, 7 themed designs, 30 answers, 30 missions across Acts 1–2, 90 clue cards, 27 Act 3 history/reference cards, 3 Act 1 → Act 2 lock gates, and 9 story sheets. It's idempotent (deletes the existing "Temple of the QRians" game first) and Fisher-Yates-shuffles the physical-card pool every run, so each reseed produces a different physical-card-to-set distribution.
+
+**Local:**
+```bash
+pnpm --filter server db:seed-qrians
+```
+
+**Production (Railway):** there's a confirmation-gated wrapper to avoid wiping live game state by accident.
+
+One-time setup:
+1. Get the production `DATABASE_URL` from the Railway dashboard → Postgres plugin → Connect tab.
+2. Copy the example file and paste the URL into it (the file is gitignored):
+   ```bash
+   cp server/.env.production.example server/.env.production
+   # then edit server/.env.production and paste the URL
+   ```
+
+To reseed production:
+```bash
+pnpm --filter server db:seed-qrians:prod
+```
+The script prints the target host with the password redacted, requires you to type `RESEED` to confirm, and then runs `seed-qrians.ts` against Railway. Any other input cancels.
+
+The seed is destructive — it deletes the existing production "Temple of the QRians" game (and all attached cards, scans, answers, missions, story sheets, …) before recreating it. Don't run it during a live playtest.
+
+Code changes deploy automatically — Railway watches `main` and rebuilds on push. Only the seed needs the manual gate.
 
 ### Environment variables (`server/.env`)
 
