@@ -410,11 +410,28 @@ export function CardRow({
               <Grid.Col span={{ base: 12, md: 5 }}>
                 <Stack align="center" gap="md">
                   <PhonePreview cardId={card.id} />
-                  <Tooltip label="Download QR code PNG">
-                    <Button size="xs" variant="light" color="yellow" onClick={downloadQR} fullWidth style={{ maxWidth: "280px" }}>
-                      Download QR Code
-                    </Button>
-                  </Tooltip>
+                  <Stack align="center" gap={6} style={{ width: "100%", maxWidth: 280 }}>
+                    <Tooltip label="Click to download the QR code PNG">
+                      <img
+                        src={getQRUrl(gameId, card.id)}
+                        alt={`QR code for ${physicalLabel(card.physicalCardId)}`}
+                        onClick={downloadQR}
+                        style={{
+                          width: "100%",
+                          maxWidth: 220,
+                          aspectRatio: "1 / 1",
+                          background: "#fff",
+                          padding: 8,
+                          borderRadius: 6,
+                          cursor: "pointer",
+                          display: "block",
+                        }}
+                      />
+                    </Tooltip>
+                    <Text size="xs" c="dimmed">
+                      Encodes <code>alltogethernow.land/c/{card.physicalCardId.slice(0, 8)}…</code>
+                    </Text>
+                  </Stack>
                 </Stack>
               </Grid.Col>
             </Grid>
