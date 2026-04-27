@@ -262,6 +262,7 @@ Code changes deploy automatically — Railway watches `main` and rebuilds on pus
 | `DATABASE_URL` | (local Postgres) | Prisma connection string |
 | `PORT` | `3001` | Express server port |
 | `ENV_LEVEL` | `development` | `development` skips admin auth; `production` requires it |
+| `ADMIN_AUTH_DISABLED` | (unset) | Set to `true` to bypass admin auth regardless of `ENV_LEVEL`. Used to disable the password gate on Railway without flipping `ENV_LEVEL`. |
 | `ADMIN_USER` | `anthony` | Admin login username (used when `ENV_LEVEL=production`) |
 | `ADMIN_PASS` | `niceday100` | Admin login password (used when `ENV_LEVEL=production`) |
 

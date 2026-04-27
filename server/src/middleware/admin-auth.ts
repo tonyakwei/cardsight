@@ -1,6 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 
 export function adminAuth(req: Request, res: Response, next: NextFunction) {
+  if (process.env.ADMIN_AUTH_DISABLED === "true") {
+    return next();
+  }
   if (process.env.ENV_LEVEL !== "production") {
     return next();
   }
