@@ -2201,7 +2201,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Folded",
     description:
-      "*Folded note in the pharmacist's hand.*\n\n**Batch A — Soporific base compound.** Mark all Batch A specimens on the printed grid. Connect them in harvest-sequence order. The path traces the first letter of the answer.",
+      "*Folded note in the pharmacist's hand.*\n\n**Batch A — Soporific base compound.** *The pink flowers.* Mark every Batch A specimen on the printed grid. Connect them in harvest-sequence order. The path traces the first letter of the answer.",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2209,7 +2209,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Ink-stained",
     description:
-      "*Ink-stained note from the same hand.*\n\n**Batch B — Activating agent.** Mark all Batch B specimens. Connect in harvest order. The shape is the second letter.",
+      "*Ink-stained note from the same hand.*\n\n**Batch B — Activating agent.** *The purple flowers.* Mark every Batch B specimen on the printed grid. Connect in harvest order. The shape is the second letter.",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2217,7 +2217,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Torn",
     description:
-      "*Torn note. The bottom edge is missing.*\n\n**Batch C — Terminal compound.** Mark all Batch C specimens. Connect in harvest order. The shape is the third and last letter.",
+      "*Torn note. The bottom edge is missing.*\n\n**Batch C — Terminal compound.** *The wilting flowers.* Mark every Batch C specimen on the printed grid. Connect in harvest order. The shape is the third and last letter.",
     houseIds: [drake.id],
   });
 
