@@ -1382,7 +1382,7 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"",
+      "Damp journal pages, ink bleeding at the edges.\n\n**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1390,7 +1390,7 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"",
+      "Damp journal pages, water-stained but still legible.\n\n**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"",
     houseIds: [drake.id],
   });
 
@@ -1521,7 +1521,7 @@ async function main() {
     clueVisibleCategory: "Sealed Stone Vessel",
     header: "Sealed Stone Vessel",
     description:
-      "**Vessel 3 — wide dish:** carved hands reach toward a flowering branch. Inside: chalky dust with a bright metallic sheen — crushed malachite. Letter: **O**.\n\n**Vessel 2 — shallow saucer:** carved terraced structure with figures building. Inside: thick, glassy resin — hardened tree sap, amber-colored where the light catches it. Letter: **H**.",
+      "Two stone vessels, scattered across the alcove floor.\n\n**Vessel 3 — wide dish:** carved hands reach toward a flowering branch. Inside: chalky dust with a bright metallic sheen — crushed malachite. Letter: **O**.\n\n**Vessel 2 — shallow saucer:** carved terraced structure with figures building. Inside: thick, glassy resin — hardened tree sap, amber-colored where the light catches it. Letter: **H**.",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1529,7 +1529,7 @@ async function main() {
     clueVisibleCategory: "Sealed Stone Vessel",
     header: "Sealed Stone Vessel",
     description:
-      "**Vessel 6 — round pot:** carved waves crashing against cliffs. Inside: ground mineral powder with a deep, vivid sheen — cobalt ore. Letter: **C**.\n\n**Vessel 4 — narrow chalice:** carved spiral descending into earth. Inside: thin green-blue patina — verdigris, the residue left when copper corrodes. Letter: **L**.",
+      "Two stone vessels, recovered from the silt.\n\n**Vessel 6 — round pot:** carved waves crashing against cliffs. Inside: ground mineral powder with a deep, vivid sheen — cobalt ore. Letter: **C**.\n\n**Vessel 4 — narrow chalice:** carved spiral descending into earth. Inside: thin green-blue patina — verdigris, the residue left when copper corrodes. Letter: **L**.",
     houseIds: [jones.id],
   });
 
@@ -1547,7 +1547,7 @@ async function main() {
     clueVisibleCategory: "Flat Inscribed Slate",
     header: "Flat Inscribed Slate",
     description:
-      "**Panel 4:** {{{THOSE}}} = THOSE\n\n**Panel 5:** {{{AWAY}}} = AWAY\n\n**Panel 6:** {{{LONG}}} = LONG",
+      "Three slates, dust-caked, knocked loose from the wall grid.\n\n**Panel 4:** {{{THOSE}}} = THOSE\n\n**Panel 5:** {{{AWAY}}} = AWAY\n\n**Panel 6:** {{{LONG}}} = LONG",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1555,7 +1555,7 @@ async function main() {
     clueVisibleCategory: "Flat Inscribed Slate",
     header: "Flat Inscribed Slate",
     description:
-      "**Panel 7:** {{{WERE}}} = WERE\n\n**Panel 8:** {{{WHO}}} = WHO\n\n**Panel 9:** {{{STAYED}}} = STAYED",
+      "Three slates, edges chipped from the fall.\n\n**Panel 7:** {{{WERE}}} = WERE\n\n**Panel 8:** {{{WHO}}} = WHO\n\n**Panel 9:** {{{STAYED}}} = STAYED",
     houseIds: [jones.id],
   });
 
@@ -1573,7 +1573,7 @@ async function main() {
     clueVisibleCategory: "Worn Stone Marker",
     header: "Worn Stone Marker",
     description:
-      "**Marker 1:** \"The slope levels off. A draft from above. On the ceiling, a crack admits a thin shaft of light. The passage continues straight.\"\n\n**Marker 5:** \"A right turn. The shaft of light falls behind. The passage begins to slope downward. The walls are bare stone.\"\n\n**Marker 6:** \"The passage turns sharply right. After the bare stone, angular glyphs reappear — and they are the same. You are seeing the backs of the same carvings.\"",
+      "Three waymarkers, fallen from the corridor wall.\n\n**Marker 1:** \"The slope levels off. A draft from above. On the ceiling, a crack admits a thin shaft of light. The passage continues straight.\"\n\n**Marker 5:** \"A right turn. The shaft of light falls behind. The passage begins to slope downward. The walls are bare stone.\"\n\n**Marker 6:** \"The passage turns sharply right. After the bare stone, angular glyphs reappear — and they are the same. You are seeing the backs of the same carvings.\"",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1581,7 +1581,7 @@ async function main() {
     clueVisibleCategory: "Worn Stone Marker",
     header: "Worn Stone Marker",
     description:
-      "**Marker 2:** \"Past the carvings, the downward slope steepens. The air grows warmer. A carved sun on the right wall — identical to one seen before, but on the wrong side.\"\n\n**Marker 4:** \"The slope levels off. The passage opens into a chamber. Your lamplight reveals familiar shapes — your own equipment, your own markings. You have not climbed. You have descended.\"",
+      "Two waymarkers, half-buried in dust.\n\n**Marker 2:** \"Past the carvings, the downward slope steepens. The air grows warmer. A carved sun on the right wall — identical to one seen before, but on the wrong side.\"\n\n**Marker 4:** \"The slope levels off. The passage opens into a chamber. Your lamplight reveals familiar shapes — your own equipment, your own markings. You have not climbed. You have descended.\"",
     houseIds: [jones.id],
   });
 
@@ -1599,7 +1599,7 @@ async function main() {
     clueVisibleCategory: "Unmarked Steel Hardware",
     header: "Unmarked Steel Hardware",
     description:
-      "**#2 Cargo Hook:** *\"Heavy clip. The last thing on the line. Gear bags attach here.\"*\n\n**#4 Haul Pulley:** *\"Wheeled block. Mounts at the top to run the haul line through.\"*",
+      "Two pieces of climbing kit, recovered from the chamber floor.\n\n**#2 Cargo Hook:** *\"Heavy clip. The last thing on the line. Gear bags attach here.\"*\n\n**#4 Haul Pulley:** *\"Wheeled block. Mounts at the top to run the haul line through.\"*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1607,7 +1607,7 @@ async function main() {
     clueVisibleCategory: "Unmarked Steel Hardware",
     header: "Unmarked Steel Hardware",
     description:
-      "**#6 Top Bolts:** *\"Expansion bolts for the alcove. Useless until someone climbs up.\"*\n\n**#7 Fixed Line:** *\"Stiff rope. Ties off at the base, hangs the full height.\"*",
+      "Two pieces of climbing kit, picked out of the silt.\n\n**#6 Top Bolts:** *\"Expansion bolts for the alcove. Useless until someone climbs up.\"*\n\n**#7 Fixed Line:** *\"Stiff rope. Ties off at the base, hangs the full height.\"*",
     houseIds: [croft.id],
   });
 
@@ -1625,7 +1625,7 @@ async function main() {
     clueVisibleCategory: "Odd Edge-Marked Block",
     header: "Odd Edge-Marked Block, Pair II",
     description:
-      "**Tile 3:** Left edge ▲, right edge ◆. Letter on face: **O**.\n\n**Tile 4:** Left edge ◆, right edge ◗. Letter on face: **N**.",
+      "Two stone fragments, jagged at the edges.\n\n**Tile 3:** Left edge ▲, right edge ◆. Letter on face: **O**.\n\n**Tile 4:** Left edge ◆, right edge ◗. Letter on face: **N**.",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1633,7 +1633,7 @@ async function main() {
     clueVisibleCategory: "Odd Edge-Marked Block",
     header: "Odd Edge-Marked Block, Lone Fragment",
     description:
-      "**Tile 5:** Left edge ◗, right edge ♦. Letter on face: **E**.",
+      "A stone fragment, edges scarred.\n\n**Tile 5:** Left edge ◗, right edge ♦. Letter on face: **E**.",
     houseIds: [croft.id],
   });
 
@@ -1651,7 +1651,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Spoke",
     header: "Inscribed Metal Spoke",
     description:
-      "**Spoke 3:** {{{WHO}}} = WHO\n\n**Spoke 4:** {{{WAY}}} = WAY\n\n**Spoke 5:** {{{WILL}}} = WILL",
+      "Three iron spokes, dust-caked from the fall.\n\n**Spoke 3:** {{{WHO}}} = WHO\n\n**Spoke 4:** {{{WAY}}} = WAY\n\n**Spoke 5:** {{{WILL}}} = WILL",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1659,7 +1659,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Spoke",
     header: "Inscribed Metal Spoke",
     description:
-      "**Spoke 6:** {{{THOSE}}} = THOSE\n\n**Spoke 7:** {{{NO}}} = NO\n\n**Spoke 8:** {{{ENTER}}} = ENTER\n\n**Spoke 9:** {{{OUT}}} = OUT",
+      "Four iron spokes, corroded green at their tips.\n\n**Spoke 6:** {{{THOSE}}} = THOSE\n\n**Spoke 7:** {{{NO}}} = NO\n\n**Spoke 8:** {{{ENTER}}} = ENTER\n\n**Spoke 9:** {{{OUT}}} = OUT",
     houseIds: [croft.id],
   });
 
@@ -2213,7 +2213,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Bark Label",
     header: "Bark Label",
     description:
-      "**Station 3 (2 reagents):** FAT, ASH\n\n**Station 4 (2 reagents):** PLANT, STAIN",
+      "Bark labels, torn from beneath an apparatus.\n\n**Station 3 (2 reagents):** FAT, ASH\n\n**Station 4 (2 reagents):** PLANT, STAIN",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2221,7 +2221,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Bark Label",
     header: "Bark Label",
     description:
-      "**Station 5 (2 reagents):** FLOWER, SPIRIT",
+      "A bark label, torn from beneath a station's apparatus.\n\n**Station 5 (2 reagents):** FLOWER, SPIRIT",
     houseIds: [drake.id],
   });
 
@@ -2257,7 +2257,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Painted Clay Shelf-Label",
     header: "Painted Clay Shelf-Label",
     description:
-      "**Shelf 3 (2 ingredients):** PLANT, GREASE\n\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
+      "Painted clay shelf-labels, fallen from the pantry shelves.\n\n**Shelf 3 (2 ingredients):** PLANT, GREASE\n\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2265,7 +2265,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Painted Clay Shelf-Label",
     header: "Painted Clay Shelf-Label",
     description:
-      "**Shelf 5 (2 ingredients):** CREATURE, DRINK",
+      "A painted clay shelf-label, knocked from a pantry shelf.\n\n**Shelf 5 (2 ingredients):** CREATURE, DRINK",
     houseIds: [jones.id],
   });
 
@@ -2413,7 +2413,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label",
     description:
-      "**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN",
+      "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2421,7 +2421,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label",
     description:
-      "**Cluster 5 (2 lenses):** DAY, DEATH",
+      "A lens-label, fallen from the sighting wall.\n\n**Cluster 5 (2 lenses):** DAY, DEATH",
     houseIds: [croft.id],
   });
 
