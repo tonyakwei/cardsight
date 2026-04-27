@@ -1828,7 +1828,7 @@ Tie your hair back. Let's go.`,
       description:
         "Sweeping across the far wall bedded in vines, you stop. What looked like a garden — dozens of flower and leaf arrangements pinned to the vine surface — is actually a grid. The same few shapes, repeating in patterns. Your medic says it first: it's writing. The whole wall is writing. Scattered across the chamber floor are loose working notes — the pharmacist's own records. You'll want to gather those before the wall means anything.",
       puzzleDescription:
-        "The pharmacist's working notes describe three batches — A, B, and C — pinned across the wall as QRian glyphs. For each batch, find every specimen of that glyph that bears a harvest-sequence number. Mark them on the printed grid, then connect the numbered instances in order — the connecting line traces a single QRian super-glyph, one letter per batch. Three super-glyphs spell a single English word.\n\nWhat does the wall say?",
+        "The pharmacist's working notes describe three batches — A, B, and C — each pinned across the wall as one specific variety of flower. For each batch, find every specimen of that flower-type that bears a harvest-sequence number. Mark them on the printed grid, then connect the numbered instances in order — the connecting line traces a single letter, one per batch. Three letters spell a single English word.\n\nWhat does the wall say?",
       requiredClueSets: [{ cardSetId: csApothecaryNote.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPowderQuietBed.id,
@@ -2201,7 +2201,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Folded",
     description:
-      "*Folded note in the pharmacist's hand.*\n\n**Batch A — Soporific base compound.** Mark all Batch A specimens on the canopy grid. Connect them in harvest-sequence order. The path traces the first letter of the answer.",
+      "*Folded note in the pharmacist's hand.*\n\n**Batch A — Soporific base compound.** Mark all Batch A specimens on the printed grid. Connect them in harvest-sequence order. The path traces the first letter of the answer.",
     houseIds: [drake.id],
   });
   await createClueCard({
