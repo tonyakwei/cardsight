@@ -1252,7 +1252,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csMechanicalPart.id, act: 1,
     clueVisibleCategory: "Small Mechanical Part",
-    header: "Detonator Components, Set I",
+    header: "Detonator Components",
     description:
       "Two precision instruments, scattered in the silt. Each is etched with a part-name and a fitter's note.\n\n**Whisper Pins:** *\"Delicate. These seat into the base before anything else.\"*\n\n**Dragon Teeth:** *\"The heavy cores. They nest right on top of the pins.\"*",
     houseIds: [drake.id],
@@ -1260,7 +1260,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csMechanicalPart.id, act: 1,
     clueVisibleCategory: "Small Mechanical Part",
-    header: "Detonator Components, Set II",
+    header: "Detonator Components",
     description:
       "Three precision instruments, recovered together.\n\n**Ember Dust:** *\"Volatile. Packed between the cores and the plates. Don't sneeze.\"*\n\n**Striker Plates:** *\"Press flat against the dust layer. Takes the initial impact.\"*\n\n**Coil Segments:** *\"The ignition thread. Winds through the clips and connects to the shell trigger.\"*",
     houseIds: [drake.id],
@@ -1268,7 +1268,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csMechanicalPart.id, act: 1,
     clueVisibleCategory: "Small Mechanical Part",
-    header: "Detonator Components, Set III",
+    header: "Detonator Components",
     description:
       "Two pieces, picked out of the muck.\n\n**Ghost Shells:** *\"The outer housing. Nothing goes on after these.\"*\n\n**Fang Clips:** *\"Lock the plates in place. Snaps onto the strikers before you seal.\"*",
     houseIds: [drake.id],
@@ -1278,25 +1278,25 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csInscribedStone.id, act: 1,
     clueVisibleCategory: "Inscribed Chunk of Stone",
-    header: "Inscribed Chunk of Stone, Fragment I",
+    header: "Inscribed Chunk of Stone",
     description:
-      "A heavy chunk of carved stone, pulled from beneath a fallen pillar. Translation key etched into one face.\n\n{{{P}}} = P\n{{{U}}} = U\n{{{T}}} = T\n{{{E}}} = E",
+      "A heavy chunk of carved stone, pulled from beneath a fallen pillar. Translation key etched into one face.\n\n{{{P}}} = P\n\n{{{U}}} = U\n\n{{{T}}} = T\n\n{{{E}}} = E",
     houseIds: [drake.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csInscribedStone.id, act: 1,
     clueVisibleCategory: "Inscribed Chunk of Stone",
-    header: "Inscribed Chunk of Stone, Fragment II",
+    header: "Inscribed Chunk of Stone",
     description:
-      "A keystone, half-buried in silt.\n\n{{{R}}} = R\n{{{G}}} = G\n{{{L}}} = L\n{{{O}}} = O",
+      "A keystone, half-buried in silt.\n\n{{{R}}} = R\n\n{{{G}}} = G\n\n{{{L}}} = L\n\n{{{O}}} = O",
     houseIds: [drake.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csInscribedStone.id, act: 1,
     clueVisibleCategory: "Inscribed Chunk of Stone",
-    header: "Inscribed Chunk of Stone, Fragment III",
+    header: "Inscribed Chunk of Stone",
     description:
-      "A small fragment, no bigger than a fist.\n\n{{{H}}} = H\n{{{F}}} = F",
+      "A small fragment, no bigger than a fist.\n\n{{{H}}} = H\n\n{{{F}}} = F",
     houseIds: [drake.id],
   });
 
@@ -1372,7 +1372,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csDampPage.id, act: 1,
     clueVisibleCategory: "Mysterious Damp Page",
-    header: "Mysterious Damp Page, Bundle I",
+    header: "Mysterious Damp Page",
     description:
       "Three damp pages from a torn journal, recovered from the trunk.\n\n**Day 1 (Entry 1):** \"We found the entrance today. Discovery of a lifetime.\"\n\n**Day 3 (Entry 2):** \"Architecture beyond anything in the textbooks.\"\n\n**Day 5 (Entry 3):** \"Found a camp from decades ago. No skeletons.\"",
     houseIds: [drake.id],
@@ -1380,7 +1380,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csDampPage.id, act: 1,
     clueVisibleCategory: "Mysterious Damp Page",
-    header: "Mysterious Damp Page, Bundle II",
+    header: "Mysterious Damp Page",
     description:
       "**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"",
     houseIds: [drake.id],
@@ -1388,7 +1388,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csDampPage.id, act: 1,
     clueVisibleCategory: "Mysterious Damp Page",
-    header: "Mysterious Damp Page, Bundle III",
+    header: "Mysterious Damp Page",
     description:
       "**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"",
     houseIds: [drake.id],
@@ -1398,25 +1398,25 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csClayTablet.id, act: 1,
     clueVisibleCategory: "Coded Clay Tablet",
-    header: "Coded Clay Tablet, I",
+    header: "Coded Clay Tablet",
     description:
-      "A fragment of a translator's tablet, slick with floodwater.\n\n{{{T}}} = T\n{{{I}}} = I\n{{{M}}} = M\n{{{E}}} = E",
+      "A fragment of a translator's tablet, slick with floodwater.\n\n{{{T}}} = T\n\n{{{I}}} = I\n\n{{{M}}} = M\n\n{{{E}}} = E",
     houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csClayTablet.id, act: 1,
     clueVisibleCategory: "Coded Clay Tablet",
-    header: "Coded Clay Tablet, II",
+    header: "Coded Clay Tablet",
     description:
-      "A clay-tablet fragment, etched in a steady hand.\n\n{{{S}}} = S\n{{{O}}} = O\n{{{N}}} = N\n{{{C}}} = C",
+      "A clay-tablet fragment, etched in a steady hand.\n\n{{{S}}} = S\n\n{{{O}}} = O\n\n{{{N}}} = N\n\n{{{C}}} = C",
     houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csClayTablet.id, act: 1,
     clueVisibleCategory: "Coded Clay Tablet",
-    header: "Coded Clay Tablet, III",
+    header: "Coded Clay Tablet",
     description:
-      "A small clay fragment, edges chipped.\n\n{{{A}}} = A\n{{{L}}} = L\n{{{V}}} = V\n{{{H}}} = H",
+      "A small clay fragment, edges chipped.\n\n{{{A}}} = A\n\n{{{L}}} = L\n\n{{{V}}} = V\n\n{{{H}}} = H",
     houseIds: [jones.id],
   });
 
@@ -1424,7 +1424,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
     clueVisibleCategory: "Grooved Ceramic Tile",
-    header: "Grooved Ceramic Tile, Bundle I",
+    header: "Grooved Ceramic Tile",
     description: `Three pipe-tiles, scattered by the flood.
 
 **V1 — Straight (L↔R):** Standard pass-through.
@@ -1460,7 +1460,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
     clueVisibleCategory: "Grooved Ceramic Tile",
-    header: "Grooved Ceramic Tile, Bundle II",
+    header: "Grooved Ceramic Tile",
     description: `**V3 — T-junction (L, R, T):** Three openings; the top is a dead-end.
 
 \`\`\`text
@@ -1486,7 +1486,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
     clueVisibleCategory: "Grooved Ceramic Tile",
-    header: "Grooved Ceramic Tile, Bundle III",
+    header: "Grooved Ceramic Tile",
     description: `**V6 — Elbow (T, R):** Comes in from above, exits right.
 
 \`\`\`text
@@ -1511,7 +1511,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csStoneVessel.id, act: 1,
     clueVisibleCategory: "Sealed Stone Vessel",
-    header: "Sealed Stone Vessel, Pair A",
+    header: "Sealed Stone Vessel",
     description:
       "Two stone vessels, knocked from the wall by the flood.\n\n**Vessel 1 — squat bowl:** carved figures kneel before stars. Inside: fine powder, unmistakably lapis lazuli, ground to dust. Letter on underside: **S**.\n\n**Vessel 5 — tall cup:** carved figures stand in a circle, arms raised. Inside: crystallized residue, translucent and faintly sweet — ancient honey, hardened to glass. Letter: **O**.",
     houseIds: [jones.id],
@@ -1519,7 +1519,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csStoneVessel.id, act: 1,
     clueVisibleCategory: "Sealed Stone Vessel",
-    header: "Sealed Stone Vessel, Pair B",
+    header: "Sealed Stone Vessel",
     description:
       "**Vessel 3 — wide dish:** carved hands reach toward a flowering branch. Inside: chalky dust with a bright metallic sheen — crushed malachite. Letter: **O**.\n\n**Vessel 2 — shallow saucer:** carved terraced structure with figures building. Inside: thick, glassy resin — hardened tree sap, amber-colored where the light catches it. Letter: **H**.",
     houseIds: [jones.id],
@@ -1527,7 +1527,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csStoneVessel.id, act: 1,
     clueVisibleCategory: "Sealed Stone Vessel",
-    header: "Sealed Stone Vessel, Pair C",
+    header: "Sealed Stone Vessel",
     description:
       "**Vessel 6 — round pot:** carved waves crashing against cliffs. Inside: ground mineral powder with a deep, vivid sheen — cobalt ore. Letter: **C**.\n\n**Vessel 4 — narrow chalice:** carved spiral descending into earth. Inside: thin green-blue patina — verdigris, the residue left when copper corrodes. Letter: **L**.",
     houseIds: [jones.id],
@@ -1537,7 +1537,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csSlate.id, act: 1,
     clueVisibleCategory: "Flat Inscribed Slate",
-    header: "Flat Inscribed Slate, Set I",
+    header: "Flat Inscribed Slate",
     description:
       "Three slates dislodged from the wall grid.\n\n**Panel 1:** {{{SEALED}}} = SEALED\n\n**Panel 2:** {{{TOO}}} = TOO\n\n**Panel 3:** {{{FOREVER}}} = FOREVER",
     houseIds: [jones.id],
@@ -1545,7 +1545,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csSlate.id, act: 1,
     clueVisibleCategory: "Flat Inscribed Slate",
-    header: "Flat Inscribed Slate, Set II",
+    header: "Flat Inscribed Slate",
     description:
       "**Panel 4:** {{{THOSE}}} = THOSE\n\n**Panel 5:** {{{AWAY}}} = AWAY\n\n**Panel 6:** {{{LONG}}} = LONG",
     houseIds: [jones.id],
@@ -1553,7 +1553,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csSlate.id, act: 1,
     clueVisibleCategory: "Flat Inscribed Slate",
-    header: "Flat Inscribed Slate, Set III",
+    header: "Flat Inscribed Slate",
     description:
       "**Panel 7:** {{{WERE}}} = WERE\n\n**Panel 8:** {{{WHO}}} = WHO\n\n**Panel 9:** {{{STAYED}}} = STAYED",
     houseIds: [jones.id],
@@ -1563,7 +1563,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csStoneMarker.id, act: 1,
     clueVisibleCategory: "Worn Stone Marker",
-    header: "Worn Stone Marker, Set I",
+    header: "Worn Stone Marker",
     description:
       "Two waymarkers from the corridor wall.\n\n**Marker 3:** \"The archway opens into a passage that slopes gently upward. The air grows warmer. On the left wall, a carved sun — the first hopeful symbol in this place.\"\n\n**Marker 7:** \"The passage turns sharply left. The carved sun is gone, replaced by repeating angular glyphs. The upward slope continues.\"",
     houseIds: [jones.id],
@@ -1571,7 +1571,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csStoneMarker.id, act: 1,
     clueVisibleCategory: "Worn Stone Marker",
-    header: "Worn Stone Marker, Set II",
+    header: "Worn Stone Marker",
     description:
       "**Marker 1:** \"The slope levels off. A draft from above. On the ceiling, a crack admits a thin shaft of light. The passage continues straight.\"\n\n**Marker 5:** \"A right turn. The shaft of light falls behind. The passage begins to slope downward. The walls are bare stone.\"\n\n**Marker 6:** \"The passage turns sharply right. After the bare stone, angular glyphs reappear — and they are the same. You are seeing the backs of the same carvings.\"",
     houseIds: [jones.id],
@@ -1579,7 +1579,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csStoneMarker.id, act: 1,
     clueVisibleCategory: "Worn Stone Marker",
-    header: "Worn Stone Marker, Set III",
+    header: "Worn Stone Marker",
     description:
       "**Marker 2:** \"Past the carvings, the downward slope steepens. The air grows warmer. A carved sun on the right wall — identical to one seen before, but on the wrong side.\"\n\n**Marker 4:** \"The slope levels off. The passage opens into a chamber. Your lamplight reveals familiar shapes — your own equipment, your own markings. You have not climbed. You have descended.\"",
     houseIds: [jones.id],
@@ -1589,7 +1589,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csSteelHardware.id, act: 1,
     clueVisibleCategory: "Unmarked Steel Hardware",
-    header: "Unmarked Steel Hardware, Bundle I",
+    header: "Unmarked Steel Hardware",
     description:
       "Three pieces of climbing kit, scattered when the bag burst.\n\n**#1 Rope Clamps:** *\"Toothed grips. Bite the rope going up, lock tight coming down.\"*\n\n**#3 Anchor Plate:** *\"Flat bracket. Bolts flush to the starting anchor for a tie-off point.\"*\n\n**#5 Wall Studs:** *\"Threaded steel bolts. First into bare rock. Nothing holds without them.\"*",
     houseIds: [croft.id],
@@ -1597,7 +1597,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csSteelHardware.id, act: 1,
     clueVisibleCategory: "Unmarked Steel Hardware",
-    header: "Unmarked Steel Hardware, Bundle II",
+    header: "Unmarked Steel Hardware",
     description:
       "**#2 Cargo Hook:** *\"Heavy clip. The last thing on the line. Gear bags attach here.\"*\n\n**#4 Haul Pulley:** *\"Wheeled block. Mounts at the top to run the haul line through.\"*",
     houseIds: [croft.id],
@@ -1605,7 +1605,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csSteelHardware.id, act: 1,
     clueVisibleCategory: "Unmarked Steel Hardware",
-    header: "Unmarked Steel Hardware, Bundle III",
+    header: "Unmarked Steel Hardware",
     description:
       "**#6 Top Bolts:** *\"Expansion bolts for the alcove. Useless until someone climbs up.\"*\n\n**#7 Fixed Line:** *\"Stiff rope. Ties off at the base, hangs the full height.\"*",
     houseIds: [croft.id],
@@ -1641,7 +1641,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csMetalSpoke.id, act: 1,
     clueVisibleCategory: "Inscribed Metal Spoke",
-    header: "Inscribed Metal Spoke, Bundle I",
+    header: "Inscribed Metal Spoke",
     description:
       "Two iron spokes, scattered at the base of the wall.\n\n**Spoke 1:** {{{FIND}}} = FIND\n\n**Spoke 2:** {{{EVER}}} = EVER",
     houseIds: [croft.id],
@@ -1649,7 +1649,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csMetalSpoke.id, act: 1,
     clueVisibleCategory: "Inscribed Metal Spoke",
-    header: "Inscribed Metal Spoke, Bundle II",
+    header: "Inscribed Metal Spoke",
     description:
       "**Spoke 3:** {{{WHO}}} = WHO\n\n**Spoke 4:** {{{WAY}}} = WAY\n\n**Spoke 5:** {{{WILL}}} = WILL",
     houseIds: [croft.id],
@@ -1657,7 +1657,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csMetalSpoke.id, act: 1,
     clueVisibleCategory: "Inscribed Metal Spoke",
-    header: "Inscribed Metal Spoke, Bundle III",
+    header: "Inscribed Metal Spoke",
     description:
       "**Spoke 6:** {{{THOSE}}} = THOSE\n\n**Spoke 7:** {{{NO}}} = NO\n\n**Spoke 8:** {{{ENTER}}} = ENTER\n\n**Spoke 9:** {{{OUT}}} = OUT",
     houseIds: [croft.id],
@@ -1667,7 +1667,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csBoneToken.id, act: 1,
     clueVisibleCategory: "Numbered Bone Token",
-    header: "Numbered Bone Token, First",
+    header: "Numbered Bone Token",
     description:
       "A bone disc, palm-smooth from centuries of handling. A single number carved into the face: **5**.\n\n*The slot it fits is at Position 3 of the disc.*",
     houseIds: [croft.id],
@@ -1675,7 +1675,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csBoneToken.id, act: 1,
     clueVisibleCategory: "Numbered Bone Token",
-    header: "Numbered Bone Token, Second",
+    header: "Numbered Bone Token",
     description:
       "A bone disc, smooth and pale.\n\n**Number: 9**\n\n*The slot is at Position 5.*",
     houseIds: [croft.id],
@@ -1683,7 +1683,7 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csBoneToken.id, act: 1,
     clueVisibleCategory: "Numbered Bone Token",
-    header: "Numbered Bone Token, Third",
+    header: "Numbered Bone Token",
     description:
       "A bone disc, smooth and pale.\n\n**Number: 15**\n\n*The slot is at Position 8.*",
     houseIds: [croft.id],
@@ -1693,25 +1693,25 @@ async function main() {
   await createClueCard({
     gameId: game.id, cardSetId: csPotteryShard.id, act: 1,
     clueVisibleCategory: "Ancient Pottery Shard",
-    header: "Ancient Pottery Shard, Fragment I",
+    header: "Large Ancient Pottery Shard",
     description:
-      "A pottery shard scratched with QRian-letter pairings — a builder's teaching aid.\n\n{{{T}}} = T\n{{{E}}} = E\n{{{L}}} = L\n{{{M}}} = M",
+      "A pottery shard scratched with QRian-letter pairings — a builder's teaching aid.\n\n{{{T}}} = T\n\n{{{E}}} = E\n\n{{{L}}} = L\n\n{{{M}}} = M",
     houseIds: [croft.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csPotteryShard.id, act: 1,
     clueVisibleCategory: "Ancient Pottery Shard",
-    header: "Ancient Pottery Shard, Fragment II",
+    header: "Crooked Ancient Pottery Shard",
     description:
-      "{{{C}}} = C\n{{{H}}} = H\n{{{I}}} = I\n{{{D}}} = D",
+      "A crooked sliver of pottery, more curve than flat. Letter-pairings are scratched along its outer face.\n\n{{{C}}} = C\n\n{{{H}}} = H\n\n{{{I}}} = I\n\n{{{D}}} = D",
     houseIds: [croft.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csPotteryShard.id, act: 1,
     clueVisibleCategory: "Ancient Pottery Shard",
-    header: "Ancient Pottery Shard, Fragment III",
+    header: "Painted Ancient Pottery Shard",
     description:
-      "{{{O}}} = O\n{{{V}}} = V\n{{{S}}} = S\n{{{Y}}} = Y",
+      "A pottery shard with traces of red glaze still clinging to its edge. Letter-pairings are scratched through the paint.\n\n{{{O}}} = O\n\n{{{V}}} = V\n\n{{{S}}} = S\n\n{{{Y}}} = Y",
     houseIds: [croft.id],
   });
 
@@ -2203,7 +2203,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csBarkLabel.id, act: 2,
     clueVisibleCategory: "Bark Label",
-    header: "Bark Label, Bundle I",
+    header: "Bark Label",
     description:
       "Bark labels torn loose when the alcove panel slammed. Each label was pinned beneath a station's apparatus.\n\n**Station 1 (2 reagents):** COPPER, TIN\n\n**Station 2 (2 reagents):** SAND, HEAT",
     houseIds: [drake.id],
@@ -2211,7 +2211,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csBarkLabel.id, act: 2,
     clueVisibleCategory: "Bark Label",
-    header: "Bark Label, Bundle II",
+    header: "Bark Label",
     description:
       "**Station 3 (2 reagents):** FAT, ASH\n\n**Station 4 (2 reagents):** PLANT, STAIN",
     houseIds: [drake.id],
@@ -2219,7 +2219,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csBarkLabel.id, act: 2,
     clueVisibleCategory: "Bark Label",
-    header: "Bark Label, Bundle III",
+    header: "Bark Label",
     description:
       "**Station 5 (2 reagents):** FLOWER, SPIRIT",
     houseIds: [drake.id],
@@ -2247,7 +2247,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csClayShelfLabel.id, act: 2,
     clueVisibleCategory: "Painted Clay Shelf-Label",
-    header: "Painted Clay Shelf-Label, Bundle I",
+    header: "Painted Clay Shelf-Label",
     description:
       "Painted clay shelf-labels, fallen and scattered when the vines breached the pantry. Each label once sat beneath a sealed jar.\n\n**Shelf 1 (2 ingredients):** FRUIT, FIRE\n\n**Shelf 2 (2 ingredients):** OATS, STEW",
     houseIds: [jones.id],
@@ -2255,7 +2255,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csClayShelfLabel.id, act: 2,
     clueVisibleCategory: "Painted Clay Shelf-Label",
-    header: "Painted Clay Shelf-Label, Bundle II",
+    header: "Painted Clay Shelf-Label",
     description:
       "**Shelf 3 (2 ingredients):** PLANT, GREASE\n\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
     houseIds: [jones.id],
@@ -2263,7 +2263,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csClayShelfLabel.id, act: 2,
     clueVisibleCategory: "Painted Clay Shelf-Label",
-    header: "Painted Clay Shelf-Label, Bundle III",
+    header: "Painted Clay Shelf-Label",
     description:
       "**Shelf 5 (2 ingredients):** CREATURE, DRINK",
     houseIds: [jones.id],
@@ -2403,7 +2403,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csLensLabel.id, act: 2,
     clueVisibleCategory: "Lens-Label",
-    header: "Lens-Label, Bundle I",
+    header: "Lens-Label",
     description:
       "Lens-labels fallen from the sighting wall and scattered to the chamber below. Each label once sat beside a polished amber lens.\n\n**Cluster 1 (2 lenses):** NIGHT, SURRENDER\n\n**Cluster 2 (2 lenses):** DARK, THRONE",
     houseIds: [croft.id],
@@ -2411,7 +2411,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csLensLabel.id, act: 2,
     clueVisibleCategory: "Lens-Label",
-    header: "Lens-Label, Bundle II",
+    header: "Lens-Label",
     description:
       "**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN",
     houseIds: [croft.id],
@@ -2419,7 +2419,7 @@ Tie your hair back. Let's go.`,
   await createClueCard({
     gameId: game.id, cardSetId: csLensLabel.id, act: 2,
     clueVisibleCategory: "Lens-Label",
-    header: "Lens-Label, Bundle III",
+    header: "Lens-Label",
     description:
       "**Cluster 5 (2 lenses):** DAY, DEATH",
     houseIds: [croft.id],
