@@ -376,6 +376,26 @@ export async function updateGameSettings(
   return { blurNudgeEnabled: updated.blurNudgeEnabled };
 }
 
+// Activate one game and demote any other active game to "completed".
+// Enforces the one-active-at-a-time invariant the QR scan resolver relies on.
+export async function setGameActive(gameId: string) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  await prisma.$transaction([
+    prisma.game.updateMany({
+      where: { status: "active", id: { not: gameId } },
+      data: { status: "completed" },
+    }),
+    prisma.game.update({
+      where: { id: gameId },
+      data: { status: "active" },
+    }),
+  ]);
+
+  return { id: gameId, status: "active" as const };
+}
+
 async function getConfiguredHistoryTimelineCards(gameId: string) {
   return prisma.card.findMany({
     where: {

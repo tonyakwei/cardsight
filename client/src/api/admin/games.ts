@@ -40,6 +40,13 @@ export async function duplicateGame(gameId: string): Promise<GameSummary> {
   return res.json();
 }
 
+export async function activateGame(
+  gameId: string,
+): Promise<{ id: string; status: "active" }> {
+  const res = await adminFetch(`${BASE}/games/${gameId}/activate`, { method: "POST" });
+  return res.json();
+}
+
 export async function updateGameSettings(
   gameId: string,
   data: { blurNudgeEnabled?: boolean },

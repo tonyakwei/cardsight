@@ -13,7 +13,7 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { fetchGames, createGame, duplicateGame, type GameSummary } from "../../api/admin";
+import { fetchGames, createGame, duplicateGame, activateGame, type GameSummary } from "../../api/admin";
 
 export function GameList() {
   const [games, setGames] = useState<GameSummary[]>([]);
@@ -52,6 +52,13 @@ export function GameList() {
   const handleDuplicate = async (e: React.MouseEvent, gameId: string) => {
     e.stopPropagation();
     const duped = await duplicateGame(gameId);
+    load();
+  };
+
+  const handleActivate = async (e: React.MouseEvent, gameId: string, name: string) => {
+    e.stopPropagation();
+    if (!window.confirm(`Set "${name}" as the active game? Any other active game will be marked completed.`)) return;
+    await activateGame(gameId);
     load();
   };
 
@@ -127,14 +134,26 @@ export function GameList() {
                       value={new Date(game.createdAt).toLocaleDateString()}
                     />
                   </Group>
-                  <Button
-                    size="xs"
-                    variant="subtle"
-                    color="gray"
-                    onClick={(e) => handleDuplicate(e, game.id)}
-                  >
-                    Duplicate
-                  </Button>
+                  <Group gap="xs">
+                    {game.status !== "active" && (
+                      <Button
+                        size="xs"
+                        variant="light"
+                        color="yellow"
+                        onClick={(e) => handleActivate(e, game.id, game.name)}
+                      >
+                        Set Active
+                      </Button>
+                    )}
+                    <Button
+                      size="xs"
+                      variant="subtle"
+                      color="gray"
+                      onClick={(e) => handleDuplicate(e, game.id)}
+                    >
+                      Duplicate
+                    </Button>
+                  </Group>
                 </Group>
               </Stack>
             </Card>

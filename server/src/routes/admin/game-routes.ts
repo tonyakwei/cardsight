@@ -25,6 +25,11 @@ router.post("/games/:gameId/duplicate", async (req, res) => {
   res.status(201).json(game);
 });
 
+router.post("/games/:gameId/activate", async (req, res) => {
+  const result = await adminService.setGameActive(req.params.gameId);
+  res.json(result);
+});
+
 // === Game Settings ===
 
 router.patch("/games/:gameId/settings", async (req, res) => {
