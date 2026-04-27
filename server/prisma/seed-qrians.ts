@@ -88,6 +88,8 @@ async function createClueCard(opts: {
   description: string;
   houseIds: string[];
   designId?: string;
+  selfDestructTimer?: number;
+  selfDestructText?: string;
 }) {
   const designId = opts.designId ?? designByCardSet[opts.cardSetId] ?? null;
   const card = await prisma.card.create({
@@ -101,6 +103,8 @@ async function createClueCard(opts: {
       complexity: "simple",
       header: opts.header,
       description: opts.description,
+      selfDestructTimer: opts.selfDestructTimer ?? null,
+      selfDestructText: opts.selfDestructText ?? null,
     },
   });
   await assignCardHouses(card.id, opts.houseIds);
@@ -1404,7 +1408,9 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "Three damp pages from a torn journal, recovered from the trunk.\n\n**Day 1 (Entry 1):** \"We found the entrance today. Discovery of a lifetime.\"\n\n**Day 3 (Entry 2):** \"Architecture beyond anything in the textbooks.\"\n\n**Day 5 (Entry 3):** \"Found a camp from decades ago. No skeletons.\"",
+      "Three damp pages from a torn journal, recovered from the trunk.\n\n**Day 1 (Entry 1):** \"We found the entrance today. Discovery of a lifetime.\"\n\n**Day 3 (Entry 2):** \"Architecture beyond anything in the textbooks.\"\n\n**Day 5 (Entry 3):** \"Found a camp from decades ago. No skeletons.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1412,7 +1418,9 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "Damp journal pages, ink bleeding at the edges.\n\n**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"",
+      "Damp journal pages, ink bleeding at the edges.\n\n**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1420,7 +1428,9 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "Damp journal pages, water-stained but still legible.\n\n**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"",
+      "Damp journal pages, water-stained but still legible.\n\n**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
   });
 
@@ -2387,7 +2397,9 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Burial-Rite Fragment",
     header: "Burial-Rite Fragment, Folded",
     description:
-      "*A folded scrap of inscribed bark — sorting instructions for the canopy.*\n\n\"Strike first the **speakers** — every glyph that closes the mouth. The dead spoke our names back to us in the order we forgot them; we wrote each name on the bone that had carried it. Crack each in turn.\"\n\n*(Use the printed canopy map. Mark every closer-class glyph with a sequence number, then crack them in numerical order. The path traces a single letter.)*",
+      "*A folded scrap of inscribed bark — sorting instructions for the canopy.*\n\n\"Strike first the **speakers** — every glyph that closes the mouth. The dead spoke our names back to us in the order we forgot them; we wrote each name on the bone that had carried it. Crack each in turn.\"\n\n*(Use the printed canopy map. Mark every closer-class glyph with a sequence number, then crack them in numerical order. The path traces a single letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The fragment crumbles to ash between your fingers.",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2395,7 +2407,9 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Burial-Rite Fragment",
     header: "Burial-Rite Fragment, Charred",
     description:
-      "*A charred scrap, edges blackened.*\n\n\"Then the **openers** — glyphs that part the lips. We did not bury our scholars. To bury would have meant we stopped recording. We hung them instead, where the wind could still move through what they had said. Crack in turn; let each one fall.\"\n\n*(Mark every opener-class glyph; crack in sequence. The path traces a second letter.)*",
+      "*A charred scrap, edges blackened.*\n\n\"Then the **openers** — glyphs that part the lips. We did not bury our scholars. To bury would have meant we stopped recording. We hung them instead, where the wind could still move through what they had said. Crack in turn; let each one fall.\"\n\n*(Mark every opener-class glyph; crack in sequence. The path traces a second letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The fragment crumbles to ash between your fingers.",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2403,7 +2417,9 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Burial-Rite Fragment",
     header: "Burial-Rite Fragment, Half-Erased",
     description:
-      "*A half-erased scrap; some text remains legible.*\n\n\"Last, the **carriers** — glyphs that ride the breath out. A name is only the shape the jaw makes when the body is gone. Strike them in the order the breath leaves.\"\n\n*(Mark every carrier-class glyph; crack in sequence. The path traces the third and final letter.)*",
+      "*A half-erased scrap; some text remains legible.*\n\n\"Last, the **carriers** — glyphs that ride the breath out. A name is only the shape the jaw makes when the body is gone. Strike them in the order the breath leaves.\"\n\n*(Mark every carrier-class glyph; crack in sequence. The path traces the third and final letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The fragment crumbles to ash between your fingers.",
     houseIds: [jones.id],
   });
 
@@ -2465,7 +2481,9 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label",
     description:
-      "Lens-labels fallen from the sighting wall and scattered to the chamber below. Each label once sat beside a polished amber lens.\n\n**Cluster 1 (2 lenses):** NIGHT, SURRENDER\n\n**Cluster 2 (2 lenses):** DARK, THRONE",
+      "Lens-labels fallen from the sighting wall and scattered to the chamber below. Each label once sat beside a polished amber lens.\n\n**Cluster 1 (2 lenses):** NIGHT, SURRENDER\n\n**Cluster 2 (2 lenses):** DARK, THRONE\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2473,7 +2491,9 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label",
     description:
-      "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN",
+      "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2481,7 +2501,9 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label",
     description:
-      "A lens-label, fallen from the sighting wall.\n\n**Cluster 5 (2 lenses):** DAY, DEATH",
+      "A lens-label, fallen from the sighting wall.\n\n**Cluster 5 (2 lenses):** DAY, DEATH\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
+    selfDestructTimer: 60,
+    selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
     houseIds: [croft.id],
   });
 
