@@ -4,7 +4,6 @@ import {
   Text,
   Badge,
   Switch,
-  Collapse,
   TextInput,
   Textarea,
   Select,
@@ -264,9 +263,9 @@ export function CardRow({
         </Group>
       </Group>
 
-      {/* Expanded editor */}
-      {!isDeleted && (
-        <Collapse in={expanded}>
+      {/* Expanded editor — lazy-mounted to avoid loading PhonePreview iframe for every collapsed row */}
+      {!isDeleted && expanded && (
+        <div>
           <div style={{
             padding: "1rem 1.25rem",
             borderTop: "1px solid var(--mantine-color-dark-6)",
@@ -420,7 +419,7 @@ export function CardRow({
               </Grid.Col>
             </Grid>
           </div>
-        </Collapse>
+        </div>
       )}
     </div>
   );

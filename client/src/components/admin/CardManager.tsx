@@ -50,7 +50,8 @@ export function CardManager() {
   const [houses, setHouses] = useState<AdminHouse[]>([]);
   const [missions, setMissions] = useState<AdminMission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>("all");
+  const [activeAct, setActiveAct] = useState<string>("all");
+  const [activeSetByAct, setActiveSetByAct] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [showDeleted, setShowDeleted] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -172,11 +173,35 @@ export function CardManager() {
 
   // Filter cards
   const activeCards = showDeleted ? cards : cards.filter((c) => !c.deletedAt);
-  let filtered = activeCards;
-  if (activeTab === "__none__") {
-    filtered = activeCards.filter((c) => !c.cardSetId);
-  } else if (activeTab !== "all") {
-    filtered = activeCards.filter((c) => c.cardSetId === activeTab);
+
+  // Determine which acts contain cards (for outer tab visibility)
+  const actsWithCards = Array.from(
+    new Set(activeCards.map((c) => (c.act != null ? String(c.act) : "none"))),
+  ).sort((a, b) => {
+    if (a === "none") return 1;
+    if (b === "none") return -1;
+    return Number(a) - Number(b);
+  });
+
+  // Per-act card lists (used for inner set tabs)
+  const cardsForActiveAct =
+    activeAct === "all"
+      ? activeCards
+      : activeAct === "none"
+        ? activeCards.filter((c) => c.act == null)
+        : activeCards.filter((c) => String(c.act) === activeAct);
+
+  // Set tab (inner) — only shown when a specific act is selected
+  const activeSet = activeAct === "all" ? "all" : (activeSetByAct[activeAct] ?? "all");
+
+  // Filter by set when inside a specific act tab
+  let filtered = activeAct === "all" ? activeCards : cardsForActiveAct;
+  if (activeAct !== "all") {
+    if (activeSet === "__none__") {
+      filtered = filtered.filter((c) => !c.cardSetId);
+    } else if (activeSet !== "all") {
+      filtered = filtered.filter((c) => c.cardSetId === activeSet);
+    }
   }
   if (search) {
     const q = search.toLowerCase();
@@ -188,9 +213,20 @@ export function CardManager() {
     );
   }
 
-  const currentSet = activeTab !== "all" && activeTab !== "__none__"
-    ? cardSets.find((s) => s.id === activeTab)
-    : null;
+  // Card sets that have at least one card in the currently-selected act
+  const setsForActiveAct =
+    activeAct === "all"
+      ? []
+      : cardSets.filter((s) =>
+          cardsForActiveAct.some((c) => c.cardSetId === s.id),
+        );
+  const noSetCountForActiveAct =
+    activeAct === "all" ? 0 : cardsForActiveAct.filter((c) => !c.cardSetId).length;
+
+  const currentSet =
+    activeAct !== "all" && activeSet !== "all" && activeSet !== "__none__"
+      ? cardSets.find((s) => s.id === activeSet)
+      : null;
 
   const allFilteredSelected = filtered.length > 0 && filtered.every((c) => selectedIds.has(c.id));
 
@@ -250,8 +286,8 @@ export function CardManager() {
         </Group>
       </Group>
 
-      {/* Set tabs */}
-      <Tabs value={activeTab} onChange={(v) => setActiveTab(v ?? "all")} mb="md">
+      {/* Outer tabs: All / Act 1 / Act 2 / Act 3 / (no act) */}
+      <Tabs value={activeAct} onChange={(v) => setActiveAct(v ?? "all")} mb="xs">
         <Tabs.List>
           <Tabs.Tab value="all">
             <Group gap={6}>
@@ -259,29 +295,65 @@ export function CardManager() {
               <Badge size="xs" variant="filled" color="dark">{activeCards.length}</Badge>
             </Group>
           </Tabs.Tab>
-          {cardSets.map((set) => (
-            <Tabs.Tab key={set.id} value={set.id}>
-              <Group gap={6}>
-                <span style={{ color: set.color, fontWeight: 600 }}>{set.name}</span>
-                <Badge size="xs" variant="filled" color="dark">{set.cardCount}</Badge>
-                {set.modifiedSinceReview > 0 && (
-                  <Badge size="xs" variant="filled" color="yellow">{set.modifiedSinceReview}</Badge>
-                )}
-              </Group>
-            </Tabs.Tab>
-          ))}
-          {activeCards.some((c) => !c.cardSetId) && (
-            <Tabs.Tab value="__none__">
-              <Group gap={6}>
-                (No set)
-                <Badge size="xs" variant="filled" color="dark">
-                  {activeCards.filter((c) => !c.cardSetId).length}
-                </Badge>
-              </Group>
-            </Tabs.Tab>
-          )}
+          {actsWithCards.map((act) => {
+            const count = activeCards.filter((c) =>
+              act === "none" ? c.act == null : String(c.act) === act,
+            ).length;
+            return (
+              <Tabs.Tab key={act} value={act}>
+                <Group gap={6}>
+                  {act === "none" ? "No act" : `Act ${act}`}
+                  <Badge size="xs" variant="filled" color="dark">{count}</Badge>
+                </Group>
+              </Tabs.Tab>
+            );
+          })}
         </Tabs.List>
       </Tabs>
+
+      {/* Inner tabs: card sets scoped to the selected act */}
+      {activeAct !== "all" && (setsForActiveAct.length > 0 || noSetCountForActiveAct > 0) && (
+        <Tabs
+          value={activeSet}
+          onChange={(v) =>
+            setActiveSetByAct((prev) => ({ ...prev, [activeAct]: v ?? "all" }))
+          }
+          mb="md"
+          variant="pills"
+          color="yellow"
+        >
+          <Tabs.List>
+            <Tabs.Tab value="all">
+              <Group gap={6}>
+                All
+                <Badge size="xs" variant="filled" color="dark">{cardsForActiveAct.length}</Badge>
+              </Group>
+            </Tabs.Tab>
+            {setsForActiveAct.map((set) => {
+              const count = cardsForActiveAct.filter((c) => c.cardSetId === set.id).length;
+              return (
+                <Tabs.Tab key={set.id} value={set.id}>
+                  <Group gap={6}>
+                    <span style={{ color: set.color, fontWeight: 600 }}>{set.name}</span>
+                    <Badge size="xs" variant="filled" color="dark">{count}</Badge>
+                    {set.modifiedSinceReview > 0 && (
+                      <Badge size="xs" variant="filled" color="yellow">{set.modifiedSinceReview}</Badge>
+                    )}
+                  </Group>
+                </Tabs.Tab>
+              );
+            })}
+            {noSetCountForActiveAct > 0 && (
+              <Tabs.Tab value="__none__">
+                <Group gap={6}>
+                  (No set)
+                  <Badge size="xs" variant="filled" color="dark">{noSetCountForActiveAct}</Badge>
+                </Group>
+              </Tabs.Tab>
+            )}
+          </Tabs.List>
+        </Tabs>
+      )}
 
       {/* Set notes + missions + review banner */}
       {currentSet && (
@@ -336,7 +408,7 @@ export function CardManager() {
         <Text c="dimmed" ta="center" py="xl">
           No cards match your filters.
         </Text>
-      ) : activeTab === "all" ? (
+      ) : activeAct === "all" ? (
         <ActGroupedCardList
           cards={filtered}
           gameId={gameId!}
