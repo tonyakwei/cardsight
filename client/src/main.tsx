@@ -32,7 +32,7 @@ const theme = createTheme({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="dark">
+    <MantineProvider theme={theme} forceColorScheme="dark">
       <BrowserRouter>
         <Routes>
           <Route path="/c/:cardId" element={<CardViewer />} />
