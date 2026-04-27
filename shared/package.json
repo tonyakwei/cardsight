@@ -3,6 +3,23 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "./types.ts",
-  "types": "./types.ts"
+  "main": "./dist/types.js",
+  "types": "./dist/types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./finale": {
+      "types": "./dist/finale.d.ts",
+      "import": "./dist/finale.js"
+    },
+    "./physical-cards.json": "./physical-cards.json"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
 }
