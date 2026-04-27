@@ -124,13 +124,21 @@ async function main() {
   // GAME
   // ═══════════════════════════════════════════════════════════════════
 
+  // Demote any other active game so the new one is the unique active.
+  // The QR scan resolver does findFirst({ status: "active" }) and would
+  // pick whichever it finds first, so we enforce the invariant up front.
+  await prisma.game.updateMany({
+    where: { status: "active" },
+    data: { status: "completed" },
+  });
+
   console.log("Creating game...");
   const game = await prisma.game.create({
     data: {
       name: GAME_NAME,
       description:
         "Three expedition teams enter a sealed temple built by the QRians — a civilization that fused mathematics and religion. The temple was sealed centuries ago with warnings carved into every surface. Three acts: The Flood, The Corruption, The Dying Light.",
-      status: "draft",
+      status: "active",
     },
   });
 
