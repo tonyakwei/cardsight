@@ -2693,8 +2693,35 @@ I know only that we chose to leave the future a danger behind stone, not a world
 
   console.log("Creating Act 3 reference cards...");
 
+  // Each Act 3 outcome lives with the house that would propose it.
+  const outcomeHouseByOutcomeId: Record<string, string> = {
+    destroy_source: drake.id,       // Drake — finality / settle the threat
+    recontain_source: croft.id,     // Croft — stewardship / contain don't open
+    open_for_research: jones.id,    // Jones — knowledge / publish + access
+  };
+
+  // Each Act 3 clause lives with the house whose platform would propose it.
+  // Other houses can agree or refuse; only the holder can put it on the table.
+  const clauseHouseByClauseId: Record<string, string> = {
+    // Jones — Knowledge platform: writing survives, world hears, museums get pieces.
+    copy_inscriptions: jones.id,
+    publish_discovery: jones.id,
+    preserve_some_artifacts: jones.id,
+    // Croft — Stewardship platform: shared, supervised, glory-free, future warned.
+    open_under_guard: croft.id,
+    three_house_custody: croft.id,
+    no_house_takes_credit: croft.id,
+    leave_unmistakable_warning: croft.id,
+    // Drake — Containment platform: lock it down forever, nothing leaves.
+    falsify_reports: drake.id,
+    no_artifacts_leave: drake.id,
+    suppress_location: drake.id,
+    archive_everything_then_destroy: drake.id,
+    bury_approach: drake.id,
+  };
+
   for (const outcome of FINALE_OUTCOMES) {
-    await prisma.card.create({
+    const card = await prisma.card.create({
       data: {
         gameId: game.id,
         physicalCardId: nextPhysicalCardId(3),
@@ -2709,10 +2736,14 @@ I know only that we chose to leave the future a danger behind stone, not a world
         notes: `Act 3 outcome reference card (${outcome.id}).`,
       },
     });
+    const ownerHouseId = outcomeHouseByOutcomeId[outcome.id];
+    if (ownerHouseId) {
+      await assignCardHouses(card.id, [ownerHouseId]);
+    }
   }
 
   for (const clause of FINALE_CLAUSES) {
-    await prisma.card.create({
+    const card = await prisma.card.create({
       data: {
         gameId: game.id,
         physicalCardId: nextPhysicalCardId(3),
@@ -2727,6 +2758,10 @@ I know only that we chose to leave the future a danger behind stone, not a world
         notes: `Act 3 clause reference card (${clause.id}).`,
       },
     });
+    const ownerHouseId = clauseHouseByClauseId[clause.id];
+    if (ownerHouseId) {
+      await assignCardHouses(card.id, [ownerHouseId]);
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
