@@ -1224,7 +1224,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, I",
     description:
-      "A ceramic disc, painted around its rim with a color sequence. Etched beneath: a single clue word.\n\n**Sequence:** Black → Indigo → Orange → **?** → Orange → Indigo → Black\n**Clue:** *Up*",
+      "A ceramic disc, painted around its rim with a color sequence. Etched beneath: a single clue word.\n\n**Sequence:** Black → Indigo → Orange → **?** → Orange → Indigo → Black\n\n**Clue:** *Up*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1232,7 +1232,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, II",
     description:
-      "**Sequence:** **?** → Yellow → Brown → Black\n**Clue:** *Curved*",
+      "**Sequence:** **?** → Yellow → Brown → Black\n\n**Clue:** *Curved*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1240,7 +1240,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, III",
     description:
-      "**Sequence:** Red → **?** → Brown\n**Clue:** *Rare*",
+      "**Sequence:** Red → **?** → Brown\n\n**Clue:** *Rare*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1248,7 +1248,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, IV",
     description:
-      "**Sequence:** Green → Yellow → Orange → Red → **?**\n**Clue:** *Harvest*",
+      "**Sequence:** Green → Yellow → Orange → Red → **?**\n\n**Clue:** *Harvest*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1256,7 +1256,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, V",
     description:
-      "**Sequence:** **?** → Red → Orange → Yellow\n**Clue:** *Forge*",
+      "**Sequence:** **?** → Red → Orange → Yellow\n\n**Clue:** *Forge*",
     houseIds: [drake.id],
   });
 
@@ -1266,7 +1266,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Fragment",
     header: "Hoist Marking, Set I",
     description:
-      "Three iron fragments, prised from the central pulley.\n\n**Position 1:** {{{LEAVE}}} = LEAVE\n**Position 2:** {{{WHO}}} = WHO\n**Position 3:** {{{THIS}}} = THIS",
+      "Three iron fragments, prised from the central pulley.\n\n**Position 1:** {{{LEAVE}}} = LEAVE\n\n**Position 2:** {{{WHO}}} = WHO\n\n**Position 3:** {{{THIS}}} = THIS",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1274,7 +1274,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Fragment",
     header: "Hoist Marking, Set II",
     description:
-      "Three more fragments, pulled from a tangled chain.\n\n**Position 4:** {{{NEVER}}} = NEVER\n**Position 5:** {{{WE}}} = WE\n**Position 6:** {{{THEM}}} = THEM",
+      "Three more fragments, pulled from a tangled chain.\n\n**Position 4:** {{{NEVER}}} = NEVER\n\n**Position 5:** {{{WE}}} = WE\n\n**Position 6:** {{{THEM}}} = THEM",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1282,7 +1282,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Fragment",
     header: "Hoist Marking, Set III",
     description:
-      "The last three, scratched and corroded.\n\n**Position 7:** {{{BUILT}}} = BUILT\n**Position 8:** {{{LET}}} = LET\n**Position 9:** {{{WILL}}} = WILL",
+      "The last three, scratched and corroded.\n\n**Position 7:** {{{BUILT}}} = BUILT\n\n**Position 8:** {{{LET}}} = LET\n\n**Position 9:** {{{WILL}}} = WILL",
     houseIds: [drake.id],
   });
 
@@ -1457,7 +1457,7 @@ async function main() {
     clueVisibleCategory: "Flat Inscribed Slate",
     header: "Flat Inscribed Slate, Set I",
     description:
-      "Three slates dislodged from the wall grid.\n\n**Panel 1:** {{{SEALED}}} = SEALED\n**Panel 2:** {{{TOO}}} = TOO\n**Panel 3:** {{{FOREVER}}} = FOREVER",
+      "Three slates dislodged from the wall grid.\n\n**Panel 1:** {{{SEALED}}} = SEALED\n\n**Panel 2:** {{{TOO}}} = TOO\n\n**Panel 3:** {{{FOREVER}}} = FOREVER",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1465,7 +1465,7 @@ async function main() {
     clueVisibleCategory: "Flat Inscribed Slate",
     header: "Flat Inscribed Slate, Set II",
     description:
-      "**Panel 4:** {{{THOSE}}} = THOSE\n**Panel 5:** {{{AWAY}}} = AWAY\n**Panel 6:** {{{LONG}}} = LONG",
+      "**Panel 4:** {{{THOSE}}} = THOSE\n\n**Panel 5:** {{{AWAY}}} = AWAY\n\n**Panel 6:** {{{LONG}}} = LONG",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1473,7 +1473,7 @@ async function main() {
     clueVisibleCategory: "Flat Inscribed Slate",
     header: "Flat Inscribed Slate, Set III",
     description:
-      "**Panel 7:** {{{WERE}}} = WERE\n**Panel 8:** {{{WHO}}} = WHO\n**Panel 9:** {{{STAYED}}} = STAYED",
+      "**Panel 7:** {{{WERE}}} = WERE\n\n**Panel 8:** {{{WHO}}} = WHO\n\n**Panel 9:** {{{STAYED}}} = STAYED",
     houseIds: [jones.id],
   });
 
@@ -1561,7 +1561,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Spoke",
     header: "Inscribed Metal Spoke, Bundle I",
     description:
-      "Two iron spokes, scattered at the base of the wall.\n\n**Spoke 1:** {{{FIND}}} = FIND\n**Spoke 2:** {{{EVER}}} = EVER",
+      "Two iron spokes, scattered at the base of the wall.\n\n**Spoke 1:** {{{FIND}}} = FIND\n\n**Spoke 2:** {{{EVER}}} = EVER",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1569,7 +1569,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Spoke",
     header: "Inscribed Metal Spoke, Bundle II",
     description:
-      "**Spoke 3:** {{{WHO}}} = WHO\n**Spoke 4:** {{{WAY}}} = WAY\n**Spoke 5:** {{{WILL}}} = WILL",
+      "**Spoke 3:** {{{WHO}}} = WHO\n\n**Spoke 4:** {{{WAY}}} = WAY\n\n**Spoke 5:** {{{WILL}}} = WILL",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1577,7 +1577,7 @@ async function main() {
     clueVisibleCategory: "Inscribed Metal Spoke",
     header: "Inscribed Metal Spoke, Bundle III",
     description:
-      "**Spoke 6:** {{{THOSE}}} = THOSE\n**Spoke 7:** {{{NO}}} = NO\n**Spoke 8:** {{{ENTER}}} = ENTER\n**Spoke 9:** {{{OUT}}} = OUT",
+      "**Spoke 6:** {{{THOSE}}} = THOSE\n\n**Spoke 7:** {{{NO}}} = NO\n\n**Spoke 8:** {{{ENTER}}} = ENTER\n\n**Spoke 9:** {{{OUT}}} = OUT",
     houseIds: [croft.id],
   });
 
@@ -1788,7 +1788,7 @@ Tie your hair back. Let's go.`,
       description:
         "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight, the surface scarred where someone tried — and failed — to chisel through. Your bomb-handler runs a hand along the seam. *They sealed something behind this on purpose.* You've got the Fuse Charges. Place them. There's a name carved above the seal: PRIEST PHYSICIST TOGOM. He didn't want company.",
       puzzleDescription:
-        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"Round and round this bit, but it's not 'and.'\"*\n**Tablet II:** *\"When shuffled, it's even more explosive than 'enraged.'\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"Round and round this bit, but it's not 'and.'\"*\n\n**Tablet II:** *\"When shuffled, it's even more explosive than 'enraged.'\"*\n\nEnter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansReinforcedBunker.id,
@@ -1904,7 +1904,7 @@ Tie your hair back. Let's go.`,
       description:
         "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. *That's a name.* The carvings name an author the others walked past — and below the inscription, a stone tile sits slightly proud of the wall. A pull-tab. The compartment behind it is untouched. Above the tile: BOTANIST THEOLOGIAN SEFA. She wanted to be found.",
       puzzleDescription:
-        "Two cryptic riddles seal the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"It is said to flow, but it doesn't. Instead, it stands beautifully.\"*\n**Tablet II:** *\"You would think that you put on your bread, but instead it soars like a queen.\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two cryptic riddles seal the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"It is said to flow, but it doesn't. Instead, it stands beautifully.\"*\n\n**Tablet II:** *\"You would think that you put on your bread, but instead it soars like a queen.\"*\n\nEnter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csSefaTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansCeilingInscription.id,
@@ -2020,7 +2020,7 @@ Tie your hair back. Let's go.`,
       description:
         "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment is cut into the face of it, sealed with a wooden lid that looks impossibly fresh. Your point climber tilts her head back. *Whoever lived up there wanted to be alone.* You've got the Grappling Rigs. Set the lines. A name is carved into the lid above: PHILOSOPHER MATHEMATICIAN YENUS. He kept his work where the floor couldn't reach.",
       puzzleDescription:
-        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"The gift you always have, at all times.\"*\n**Tablet II:** *\"Add a G; it describes the Earth. Remove the G; it describes the Earth.\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"The gift you always have, at all times.\"*\n\n**Tablet II:** *\"Add a G; it describes the Earth. Remove the G; it describes the Earth.\"*\n\nEnter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansHighLedge.id,
@@ -2071,7 +2071,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Drevu's Tile-Insert",
     header: "Drevu's Compartment Tile, Slot 1",
     description:
-      "*A loose tile prised from Drevu's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 1 of 4:** drop\n**Procedure II — step 1 of 4:** date\n\n*(Steps 2 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Drevu's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 1 of 4:** drop\n\n**Procedure II — step 1 of 4:** date\n\n*(Steps 2 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2079,7 +2079,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Drevu's Tile-Insert",
     header: "Drevu's Compartment Tile, Slot 2",
     description:
-      "*A loose tile prised from Drevu's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 2 of 4:** crack\n**Procedure II — step 2 of 4:** move-in\n\n*(Steps 1 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Drevu's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 2 of 4:** crack\n\n**Procedure II — step 2 of 4:** move-in\n\n*(Steps 1 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2087,7 +2087,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Drevu's Tile-Insert",
     header: "Drevu's Compartment Tile, Slot 3",
     description:
-      "*A loose tile prised from Drevu's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 3 of 4:** split\n**Procedure II — step 3 of 4:** marry\n\n*(Steps 1 and 2 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Drevu's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 3 of 4:** split\n\n**Procedure II — step 3 of 4:** marry\n\n*(Steps 1 and 2 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [croft.id],
   });
 
@@ -2123,7 +2123,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Bark Label",
     header: "Bark Label, Bundle I",
     description:
-      "Bark labels torn loose when the alcove panel slammed. Each label was pinned beneath a station's apparatus.\n\n**Station 1 (2 reagents):** COPPER, TIN\n**Station 2 (2 reagents):** SAND, HEAT",
+      "Bark labels torn loose when the alcove panel slammed. Each label was pinned beneath a station's apparatus.\n\n**Station 1 (2 reagents):** COPPER, TIN\n\n**Station 2 (2 reagents):** SAND, HEAT",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2131,7 +2131,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Bark Label",
     header: "Bark Label, Bundle II",
     description:
-      "**Station 3 (2 reagents):** FAT, ASH\n**Station 4 (2 reagents):** PLANT, STAIN",
+      "**Station 3 (2 reagents):** FAT, ASH\n\n**Station 4 (2 reagents):** PLANT, STAIN",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2167,7 +2167,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Painted Clay Shelf-Label",
     header: "Painted Clay Shelf-Label, Bundle I",
     description:
-      "Painted clay shelf-labels, fallen and scattered when the vines breached the pantry. Each label once sat beneath a sealed jar.\n\n**Shelf 1 (2 ingredients):** FRUIT, FIRE\n**Shelf 2 (2 ingredients):** OATS, STEW",
+      "Painted clay shelf-labels, fallen and scattered when the vines breached the pantry. Each label once sat beneath a sealed jar.\n\n**Shelf 1 (2 ingredients):** FRUIT, FIRE\n\n**Shelf 2 (2 ingredients):** OATS, STEW",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2175,7 +2175,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Painted Clay Shelf-Label",
     header: "Painted Clay Shelf-Label, Bundle II",
     description:
-      "**Shelf 3 (2 ingredients):** PLANT, GREASE\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
+      "**Shelf 3 (2 ingredients):** PLANT, GREASE\n\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2219,7 +2219,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Vesh's Tile-Insert",
     header: "Vesh's Compartment Tile, Slot 1",
     description:
-      "*A loose tile prised from Vesh's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 1 of 4:** trunk\n**Procedure II — step 1 of 4:** pollen\n\n*(Steps 2 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Vesh's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 1 of 4:** trunk\n\n**Procedure II — step 1 of 4:** pollen\n\n*(Steps 2 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2227,7 +2227,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Vesh's Tile-Insert",
     header: "Vesh's Compartment Tile, Slot 2",
     description:
-      "*A loose tile prised from Vesh's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 2 of 4:** branch\n**Procedure II — step 2 of 4:** tingle\n\n*(Steps 1 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Vesh's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 2 of 4:** branch\n\n**Procedure II — step 2 of 4:** tingle\n\n*(Steps 1 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2235,7 +2235,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Vesh's Tile-Insert",
     header: "Vesh's Compartment Tile, Slot 3",
     description:
-      "*A loose tile prised from Vesh's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 3 of 4:** leaf\n**Procedure II — step 3 of 4:** gasp\n\n*(Steps 1 and 2 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Vesh's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 3 of 4:** leaf\n\n**Procedure II — step 3 of 4:** gasp\n\n*(Steps 1 and 2 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [croft.id],
   });
 
@@ -2323,7 +2323,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label, Bundle I",
     description:
-      "Lens-labels fallen from the sighting wall and scattered to the chamber below. Each label once sat beside a polished amber lens.\n\n**Cluster 1 (2 lenses):** NIGHT, SURRENDER\n**Cluster 2 (2 lenses):** DARK, THRONE",
+      "Lens-labels fallen from the sighting wall and scattered to the chamber below. Each label once sat beside a polished amber lens.\n\n**Cluster 1 (2 lenses):** NIGHT, SURRENDER\n\n**Cluster 2 (2 lenses):** DARK, THRONE",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2331,7 +2331,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label, Bundle II",
     description:
-      "**Cluster 3 (2 lenses):** HEAT, LIE\n**Cluster 4 (2 lenses):** SHADOW, SUN",
+      "**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2349,7 +2349,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Krane's Tile-Insert",
     header: "Krane's Compartment Tile, Slot 1",
     description:
-      "*A loose tile prised from Krane's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 1 of 4:** clear\n**Procedure II — step 1 of 4:** ebb\n\n*(Steps 2 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Krane's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 1 of 4:** clear\n\n**Procedure II — step 1 of 4:** ebb\n\n*(Steps 2 and 3 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2357,7 +2357,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Krane's Tile-Insert",
     header: "Krane's Compartment Tile, Slot 2",
     description:
-      "*A loose tile prised from Krane's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 2 of 4:** gather\n**Procedure II — step 2 of 4:** gather\n\n*(Yes — both procedures use the same word at this position. The QRians liked the rhyme. Steps 1 and 3 are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Krane's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 2 of 4:** gather\n\n**Procedure II — step 2 of 4:** gather\n\n*(Yes — both procedures use the same word at this position. The QRians liked the rhyme. Steps 1 and 3 are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2365,7 +2365,7 @@ Tie your hair back. Let's go.`,
     clueVisibleCategory: "Krane's Tile-Insert",
     header: "Krane's Compartment Tile, Slot 3",
     description:
-      "*A loose tile prised from Krane's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 3 of 4:** darken\n**Procedure II — step 3 of 4:** wave\n\n*(Steps 1 and 2 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
+      "*A loose tile prised from Krane's compartment-table. Two slot-numbers and their words are intact.*\n\n**Procedure I — step 3 of 4:** darken\n\n**Procedure II — step 3 of 4:** wave\n\n*(Steps 1 and 2 of each procedure are on tiles the other houses hold. Step 4 of each is the blank passcode slot — you have to infer it.)*",
     houseIds: [croft.id],
   });
 
