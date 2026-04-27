@@ -18,7 +18,6 @@
 
 **Status legend**:
 - ✅ FULLY DESIGNED — all text locked
-- 🚧 IN PROGRESS — briefs/consequences locked; Anthony to fill 5 concepts each (C-trio only)
 
 ---
 
@@ -125,31 +124,36 @@ The QRians wrote it on the wall hundreds of times, in the only way that would su
 
 ---
 
-## A2M4 — The Reagent Alcove (Path)  🚧
+## A2M4 — The Reagent Alcove (Path)  ✅
 
-*NEW mission filling Drake's missing C-type. Briefs/consequences locked. **5 reagent-combinations TBD by Anthony**.*
+*NEW mission filling Drake's missing C-type.*
 
-**Type:** C — Conceptual Decipherment | **Cards:** 3 (bark labels) | **Evidence:** S4 expansion (the Seal as voluntary moral choice over scorched-earth)
+**Type:** C — Conceptual Decipherment | **Cards:** 3 (bark labels) | **Evidence:** S4 expansion (active QRian resistance — counter-program against the Source)
 
 **Story card brief:**
 > One of your crew leans against the wrong stretch of wall and a panel swings inward. Behind: a low-ceilinged alcove, every surface stacked with sealed glass phials, ceramic crucibles, fired-clay jars. The smell stops you. *Chemicals.* Not medicine — engineering. Your bomb-handler crouches. *They were making something here.* Bark labels lie scattered across the floor, torn loose when the panel slammed. The other houses have a few. You'll want them back…
 
-**Puzzle:** Each station-cluster of 2-3 reagents combined into one named compound. Match scattered card-labels back to stations, identify the 5 derived compounds. **Anthony's intent: area-weapon / geographic kill-zone compounds.**
+**Puzzle:** Each station-cluster of 2 reagents combined into one named compound. Match scattered card-labels back to stations, identify the 5 derived compounds.
 
 **Puzzle prompt:** *"Name each compound the QRians were producing."*
 
-**5 compounds:** TBD by Anthony.
+**5 compounds:**
+1. **COPPER + TIN → BRONZE** (alts: brass, alloy)
+2. **SAND + HEAT → GLASS** (alts: glassware, crystal)
+3. **FAT + ASH → SOAP** (alts: soaps, lye, lather)
+4. **PLANT + STAIN → DYE** (alts: dyes, pigment, ink, stain)
+5. **FLOWER + SPIRIT → PERFUME** (alts: perfumes, scent, fragrance, essence)
 
-**Hint:** *Each station-cluster of 2-3 reagents was making one named compound. Match the loose bark-labels back to their stations. Read each cluster as a recipe. Five compounds together tell you what they were trying to build — and why they stopped.*
+**Hint:** *Each station-cluster of 2 reagents was making one named compound. Match the loose bark-labels back to their stations. Read each cluster as a recipe. Five compounds together tell you what they were stockpiling.*
 
 **Correct answer reveal:**
-"Five compounds resolve. Read together, they aren't medicine. They aren't preservatives. They aren't anything benign. Each compound, once produced, would render an area uninhabitable — soil poisoned, air corrupted, water altered, geography itself made hostile. The QRians were building *area-weapons*. Geographic kill-zones. They were planning to render their own region unfit for life. And then — partway through the program — they stopped. The half-finished compounds in the back of this alcove are the proof. They had the chemistry. They could have done it. They chose not to. They chose this temple instead. The seal isn't damage control. It's the alternative they picked when they refused to poison the land."
+"Five compounds resolve: **BRONZE. GLASS. SOAP. DYE. PERFUME.** At a glance, ordinary — the working stock of any well-funded QRian workshop. But not in *this* alcove. The bronze is refined past tools. The glass past cups. The dyes too saturated for cloth, the perfumes too concentrated for ceremony. Whoever stocked this room wasn't decorating. Your bomb-handler reads the back wall — half-finished assemblies, brackets, casings, sealed reservoirs — and the picture sharpens. The QRians were taking the most everyday compounds their civilization knew how to refine, and combining them into something *purpose-built*. Crafted weapons. Counter-instruments. Preparations to push back against the Source's influence directly. They were trying to fight the thing that was eating them."
 
 **Success consequence:**
-"Logged as paradigm-changing intelligence. The QRians weren't a doomed civilization that didn't know what hit it. They were a civilization that did the math, drafted two extinction protocols, and chose the one that didn't leave the geography unlivable for whoever came next. The temple is voluntary. The seal is consent. Whatever the Source did to them, they made sure it ended *with* them, not after. The reason they refused to poison the land — that's the question we don't have an answer to yet."
+"Logged. The QRians weren't only documenting the contagion or sealing themselves away from it — they were arming against it. These five compounds, refined past any practical use, were the raw stockpile for something built to *push back* on the Source. We don't yet know what shape the finished weapon would have taken, or whether it was ever assembled. But the alcove proves intent: they fought. Whatever the Source was, the QRians treated it as something a civilization could meet on engineering terms, and they tried. That changes what the seal means. The seal wasn't surrender. It was Plan B."
 
 **Failure consequence:**
-"Without the labels, the alcove is a chemist's vault of unmarked reagents. We know they were making something. We don't know what or why they stopped. File the panel and press on."
+"Without the labels, the alcove is a chemist's vault of unmarked reagents and half-built apparatus. We know they were making something. We don't know what. File the panel and press on."
 
 ---
 
@@ -186,28 +190,33 @@ The QRians wrote it on the wall hundreds of times, in the only way that would su
 
 # JONES JUNKET (Amber)
 
-## A2M1 — The Sealed Pantry (Artifact)  🚧
+## A2M1 — The Sealed Pantry (Artifact)  ✅
 
-*Replaces Concept Garden brief. Briefs/consequences locked. **5 preparation-combinations TBD by Anthony**.*
+*Replaces Concept Garden brief.*
 
 **Type:** C — Conceptual Decipherment | **Cards:** 3 (painted clay shelf-labels) | **Evidence:** S5 + active-resistance (QRians medicating against the contagion)
 
 **Story card brief:**
 > Off the main chamber to the right: an archway you missed, choked with vines so thick you nearly walked past it. Push through. Inside, a storeroom — fired-clay jars on stone shelves, every one sealed, every one heavy. Some shelves still bear their painted labels. Others are bare, the labels fallen, scattered. Your historian inhales slow. *This was a pantry.* Whoever ate from this pantry was eating with intention. The other houses pocketed a few of the labels. You'll want them back to know what was being kept here…
 
-**Puzzle:** Each shelf-cluster holds 2-3 ingredients. The combined ingredients name one preparation. Match scattered card-labels to shelves, identify 5 derived preparations. **Anthony's intent: nootropics — preparations to slow mind-drift, anchor thought against the contagion.**
+**Puzzle:** Each shelf-cluster holds 2 ingredients. The combined ingredients name one preparation. Match scattered card-labels to shelves, identify 5 derived preparations.
 
 **Puzzle prompt:** *"Name each preparation kept in this pantry."*
 
-**5 preparations:** TBD by Anthony.
+**5 preparations:**
+1. **FRUIT + FIRE → PEPPER** (alts: peppers, peppercorn, chili, spice)
+2. **OATS + STEW → PORRIDGE** (alts: oatmeal, gruel, mush, pottage)
+3. **PLANT + GREASE → OIL** (alts: oils, olive-oil, anointing-oil)
+4. **HONEY + BREAD → CAKE** (alts: cakes, honeycake, sweetbread, loaf)
+5. **CREATURE + DRINK → MILK** (alts: milks, cream, dairy)
 
-**Hint:** *The pantry's shelves group ingredients by preparation. Each cluster of 2-3 jars made one named compound. Match the loose labels back to their shelves. Read each cluster as a recipe. Five preparations together tell you the pantry's purpose.*
+**Hint:** *The pantry's shelves group ingredients by preparation. Each cluster of 2 jars made one named food. Match the loose labels back to their shelves. Read each cluster as a recipe. Five preparations together tell you the pantry's purpose.*
 
 **Correct answer reveal:**
-"Five preparations resolve. Read together, they aren't a meal plan. They aren't a feast list. The QRians weren't preserving food for nourishment. They were preserving food for *defense* — every jar in this room is a compound known to slow the mind's drift, to anchor thought against drift, to keep the brain from going where it didn't want to go. They were medicating themselves against the thing that was happening to them. They knew it was coming. They tried to eat their way through it."
+"Five preparations resolve: **PEPPER. PORRIDGE. OIL. CAKE. MILK.** Look at your kitchen at home — none of these would surprise you. But that's the point. To the QRians of this era, these weren't kitchen staples. They were *nootropics*. Pepper sharpened the senses. Porridge anchored the body. Oil eased thought. Cake — sweetened with honey — kept the mind warm and present. Milk steadied a person whose center was slipping. Every jar in this pantry is a food the QRians of this period genuinely believed could armor the mind against drift. They medicated themselves with breakfast. With dinner. With the everyday stock of a kitchen, deliberately preserved, deliberately stored, deliberately *kept*. They were eating their way through the contagion in the only language their medical understanding offered."
 
 **Success consequence:**
-"Logged. The QRians weren't just observing the contagion — they were fighting it with what they had. The pantry is a record of that fight, jar by jar. Every preparation in this room is the QRians refusing, for as long as they could, to lose themselves. They lost. But they fought. That changes what we thought we knew about how this culture went under."
+"Logged. The QRians weren't just observing the contagion — they were fighting it with what they had. By the standards of their day, every jar in this pantry was a brain-anchoring compound. The medicine was wrong by our standards; the *intent* was unmistakable. The pantry is a record of that fight, jar by jar — a civilization eating its way through what was eating it. They lost. But they fought. That changes what we thought we knew about how this culture went under."
 
 **Failure consequence:**
 "Without the labels, the pantry is rows of sealed jars and silent shelves. We know they ate here. We don't know what they ate or why they kept it. File the storeroom as ambiguous and press on."
@@ -370,22 +379,27 @@ The QRians wrote it on the wall hundreds of times, in the only way that would su
 
 ---
 
-## A2M2 — The Sighting Wall (Artifact)  🚧
+## A2M2 — The Sighting Wall (Artifact)  ✅
 
-*Was Heliotrope Turn. Briefs/consequences locked. **5 lens-observation combinations TBD by Anthony**.*
+*Was Heliotrope Turn.*
 
 **Type:** C — Conceptual Decipherment | **Cards:** 3 (lens-labels) | **Evidence:** S0 *(first first-coverage of S0)*
 
 **Story card brief:**
 > Up the ledge your climber uncovered: the chamber narrows to a wall, and the wall is full of slits. Thin vertical cuts, each one no wider than a hand, set at varying heights, looking out — out, over the canopy, the basin, the far ridges. Set into many of the slits: amber lenses, polished smooth, each one labeled in a careful hand. Other slits are bare; their labels gone, scattered to the chamber below. Your climber goes still. *This wasn't a fortress wall.* It was an eye…
 
-**Puzzle:** Each cluster of 2-3 slits/lenses tracked one observable phenomenon. Match scattered card-labels to lenses, identify 5 derived observations. **Anthony's intent: weather + astronomical patterns.**
+**Puzzle:** Each cluster of 2 slits/lenses tracked one observable phenomenon. Match scattered card-labels to lenses, identify 5 derived observations.
 
 **Puzzle prompt:** *"Name each phenomenon the QRians were observing."*
 
-**5 observations:** TBD by Anthony.
+**5 observations:**
+1. **NIGHT + SURRENDER → DAWN** (alts: sunrise, daybreak, morning, first-light)
+2. **DARK + THRONE → MIDNIGHT** (alts: midnight-hour, dead-of-night, witching-hour)
+3. **HEAT + LIE → MIRAGE** (alts: mirages, illusion, fata-morgana)
+4. **SHADOW + SUN → ECLIPSE** (alts: eclipses, occultation)
+5. **DAY + DEATH → SUNSET** (alts: sundown, dusk, twilight, gloaming)
 
-**Hint:** *Each cluster of 2-3 slits aimed at one phenomenon. Match the loose labels to their lenses. Read each cluster as a single observation. Five observations together tell you what the QRians were trying to find.*
+**Hint:** *Each cluster of 2 slits aimed at one phenomenon. Match the loose labels to their lenses. Read each cluster as a single observation. Five observations together tell you what the QRians were trying to find — note that every one of them is a moment where the sky's behavior **shifts**.*
 
 **Correct answer reveal:**
 "Five observations resolve. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe*. They watched the sky for what they couldn't otherwise know — where they sat in the bigger pattern, what their place was relative to fixed stars, how the weather over this valley differed from the weather over every other valley. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was *here* — bound to this geography — or whether it was bigger than that."
@@ -516,16 +530,6 @@ The QRians weren't morally uniform in their final days. The temple was built by 
 ---
 
 # Pending design tasks
-
-## C-trio concepts (5 each, by Anthony)
-
-| Mission | Atom type | 5 derived concepts must be… | Reveal theme |
-|---|---|---|---|
-| **Jones — Sealed Pantry** | Ingredients on shelves | 5 named preparations | Nootropics — anti-contagion medication |
-| **Croft — Sighting Wall** | Lens-types in slits | 5 named phenomena | Cosmographic triangulation (S0) |
-| **Drake — Reagent Alcove** | Reagents at stations | 5 named compounds | Area-weapons abandoned for the temple (S4) |
-
-Each concept = 2-3 atoms combined → 1 named result. Once Anthony drafts these (15 concepts total + atom palettes), the C-trio is fully designed and Act 2 is complete.
 
 ## Grid generation
 
