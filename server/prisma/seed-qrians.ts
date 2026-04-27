@@ -19,6 +19,7 @@ const physicalCards: { id: string }[] = require("../../shared/physical-cards.jso
 
 const GAME_NAME = "Temple of the QRians";
 const physicalCardIndex: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+let designByCardSet: Record<string, string> = {};
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
@@ -86,13 +87,16 @@ async function createClueCard(opts: {
   header: string;
   description: string;
   houseIds: string[];
+  designId?: string;
 }) {
+  const designId = opts.designId ?? designByCardSet[opts.cardSetId] ?? null;
   const card = await prisma.card.create({
     data: {
       gameId: opts.gameId,
       physicalCardId: nextPhysicalCardId(opts.act),
       act: opts.act,
       cardSetId: opts.cardSetId,
+      designId,
       clueVisibleCategory: opts.clueVisibleCategory,
       complexity: "simple",
       header: opts.header,
@@ -108,6 +112,13 @@ async function createClueCard(opts: {
 async function main() {
   console.log("Cleaning existing game...");
   await cleanExistingGame();
+
+  // Shuffle the physical-card pool so card sets don't end up sequential
+  // (otherwise the printed colors leak the set-membership before the QR scan).
+  for (let i = physicalCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [physicalCards[i], physicalCards[j]] = [physicalCards[j], physicalCards[i]];
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // GAME
@@ -256,6 +267,173 @@ async function main() {
   const csAct3Clause = await prisma.cardSet.create({
     data: { gameId: game.id, name: "Act 3 Settlement Clause", color: "#475569" },
   });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // DESIGNS (themes — assigned per card set)
+  // ═══════════════════════════════════════════════════════════════════
+
+  console.log("Creating designs...");
+
+  const designErodedStone = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Eroded Stone",
+      bgColor: "#3a342e",
+      bgGradient: "linear-gradient(180deg, #3a342e 0%, #2a2520 50%, #1c1814 100%)",
+      textColor: "#e8e0d0",
+      accentColor: "#c08552",
+      secondaryColor: "#8b6f47",
+      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      cardStyle: "standard",
+      animationIn: "fade",
+      borderStyle: "1px solid rgba(192, 133, 82, 0.25)",
+      overlayEffect: "static-noise",
+    },
+  });
+
+  const designTarnishedMetal = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Tarnished Metal",
+      bgColor: "#1a1f23",
+      bgGradient: "linear-gradient(180deg, #1a1f23 0%, #14181b 50%, #0c0e10 100%)",
+      textColor: "#d4dce0",
+      accentColor: "#5fb3a1",
+      secondaryColor: "#7a8a8f",
+      fontFamily: "'Helvetica Neue', system-ui, sans-serif",
+      cardStyle: "standard",
+      animationIn: "slide-up",
+      borderStyle: "1px solid rgba(95, 179, 161, 0.25)",
+      overlayEffect: "scanlines",
+    },
+  });
+
+  const designDampParchment = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Damp Parchment",
+      bgColor: "#f4ead2",
+      bgGradient: "linear-gradient(180deg, #f4ead2 0%, #e8dcb8 50%, #d8c89a 100%)",
+      textColor: "#3b2818",
+      accentColor: "#8b3a1f",
+      secondaryColor: "#5e4d2f",
+      fontFamily: "'Crimson Text', 'Georgia', serif",
+      cardStyle: "standard",
+      animationIn: "fade",
+      borderStyle: "1px solid rgba(94, 77, 47, 0.3)",
+    },
+  });
+
+  const designBotanicalCipher = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Botanical Cipher",
+      bgColor: "#1f2a1c",
+      bgGradient: "linear-gradient(180deg, #2a3826 0%, #1f2a1c 60%, #131a11 100%)",
+      textColor: "#e6dcb8",
+      accentColor: "#d4a857",
+      secondaryColor: "#7d8b56",
+      fontFamily: "'Cormorant Garamond', 'Georgia', serif",
+      cardStyle: "standard",
+      animationIn: "fade",
+      borderStyle: "1px solid rgba(212, 168, 87, 0.3)",
+      overlayEffect: "particles",
+    },
+  });
+
+  const designCompartmentWhisper = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Compartment Whisper",
+      bgColor: "#0a0708",
+      bgGradient: "radial-gradient(ellipse at top, #1a1410 0%, #0a0708 70%, #000000 100%)",
+      textColor: "#d4c8a8",
+      accentColor: "#a87f3f",
+      secondaryColor: "#6b4f1f",
+      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      cardStyle: "standard",
+      animationIn: "decrypt",
+      borderStyle: "1px solid rgba(168, 127, 63, 0.4)",
+      overlayEffect: "glow",
+    },
+  });
+
+  const designTranslatorsLight = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Translator's Light",
+      bgColor: "#f7f1e1",
+      bgGradient: "linear-gradient(180deg, #f7f1e1 0%, #ede4cc 50%, #e0d4b3 100%)",
+      textColor: "#1c2a4a",
+      accentColor: "#3b5fa8",
+      secondaryColor: "#7a6a48",
+      fontFamily: "'Georgia', 'Crimson Text', serif",
+      cardStyle: "standard",
+      animationIn: "fade",
+      borderStyle: "1px solid rgba(59, 95, 168, 0.3)",
+    },
+  });
+
+  const designTwilightHistory = await prisma.design.create({
+    data: {
+      gameId: game.id,
+      name: "Twilight History",
+      bgColor: "#0d0a1f",
+      bgGradient: "linear-gradient(180deg, #1a1432 0%, #0d0a1f 60%, #050309 100%)",
+      textColor: "#e0d4f0",
+      accentColor: "#d4a85f",
+      secondaryColor: "#6b5a8b",
+      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      cardStyle: "standard",
+      animationIn: "decrypt",
+      borderStyle: "1px solid rgba(212, 168, 95, 0.3)",
+      overlayEffect: "glow",
+    },
+  });
+
+  // CardSet → Design assignment table
+  designByCardSet = {
+    // Eroded Stone (stone-family)
+    [csInscribedStone.id]: designErodedStone.id,
+    [csCeramicTile.id]: designErodedStone.id,
+    [csStoneVessel.id]: designErodedStone.id,
+    [csSlate.id]: designErodedStone.id,
+    [csStoneMarker.id]: designErodedStone.id,
+    [csEdgeBlock.id]: designErodedStone.id,
+    [csRedWallTile.id]: designErodedStone.id,
+    [csAmberWallTile.id]: designErodedStone.id,
+    [csPurpleWallTile.id]: designErodedStone.id,
+    // Tarnished Metal (metal-family)
+    [csMechanicalPart.id]: designTarnishedMetal.id,
+    [csMetalFragment.id]: designTarnishedMetal.id,
+    [csMetalSpoke.id]: designTarnishedMetal.id,
+    [csSteelHardware.id]: designTarnishedMetal.id,
+    // Damp Parchment (paper-family)
+    [csDampPage.id]: designDampParchment.id,
+    [csApothecaryNote.id]: designDampParchment.id,
+    [csTogomTablet.id]: designDampParchment.id,
+    [csSefaTablet.id]: designDampParchment.id,
+    [csYenusTablet.id]: designDampParchment.id,
+    // Botanical Cipher (organic/painted-family)
+    [csPaintedDisc.id]: designBotanicalCipher.id,
+    [csClayShelfLabel.id]: designBotanicalCipher.id,
+    [csBarkLabel.id]: designBotanicalCipher.id,
+    [csLensLabel.id]: designBotanicalCipher.id,
+    [csBurialRiteFragment.id]: designBotanicalCipher.id,
+    // Compartment Whisper (N-trio tile-inserts)
+    [csDrevuTile.id]: designCompartmentWhisper.id,
+    [csVeshTile.id]: designCompartmentWhisper.id,
+    [csKraneTile.id]: designCompartmentWhisper.id,
+    // Translator's Light (glyph rosetta / scholarly working surface)
+    [csClayTablet.id]: designTranslatorsLight.id,
+    [csPotteryShard.id]: designTranslatorsLight.id,
+    [csCalculationTablet.id]: designTranslatorsLight.id,
+    [csBoneToken.id]: designTranslatorsLight.id,
+    // Twilight History (Act 3 history + reference cards)
+    [csAct3History.id]: designTwilightHistory.id,
+    [csAct3Outcome.id]: designTwilightHistory.id,
+    [csAct3Clause.id]: designTwilightHistory.id,
+  };
 
   // ═══════════════════════════════════════════════════════════════════
   // ANSWERS (Act 1 — all 15 missions)
@@ -2437,6 +2615,7 @@ I know only that we chose to leave the future a danger behind stone, not a world
         subtype: "history",
         historyTimelineOrder: historyCard.order,
         cardSetId: csAct3History.id,
+        designId: designByCardSet[csAct3History.id],
         clueVisibleCategory: "History Fragment",
         complexity: "simple",
         header: historyCard.header,
@@ -2461,6 +2640,7 @@ I know only that we chose to leave the future a danger behind stone, not a world
         act: 3,
         subtype: "reference",
         cardSetId: csAct3Outcome.id,
+        designId: designByCardSet[csAct3Outcome.id],
         clueVisibleCategory: "Major Decision",
         complexity: "simple",
         header: outcome.label,
@@ -2478,6 +2658,7 @@ I know only that we chose to leave the future a danger behind stone, not a world
         act: 3,
         subtype: "reference",
         cardSetId: csAct3Clause.id,
+        designId: designByCardSet[csAct3Clause.id],
         clueVisibleCategory: "Settlement Clause",
         complexity: "simple",
         header: clause.label,
@@ -2538,7 +2719,7 @@ Croft's instinct is stewardship. Some discoveries are real and beautiful and sti
   // ═══════════════════════════════════════════════════════════════════
 
   console.log(
-    `\n✓ Created "${GAME_NAME}" with 3 houses, 33 card sets, 30 answers, 15 Act 1 missions, 15 Act 2 missions, 47 Act 1 cards, 43 Act 2 cards, 27 Act 3 cards, 3 Act 1→Act 2 lock gates, and 9 story sheets.\n`,
+    `\n✓ Created "${GAME_NAME}" with 3 houses, 33 card sets, 7 designs, 30 answers, 15 Act 1 missions, 15 Act 2 missions, 47 Act 1 cards, 43 Act 2 cards, 27 Act 3 cards, 3 Act 1→Act 2 lock gates, and 9 story sheets.\n`,
   );
   console.log("Game ID:", game.id);
 }
