@@ -67,15 +67,15 @@ async function main() {
 
   // === Houses ===
   const alpha = await prisma.house.create({
-    data: { gameId: game.id, name: "Alpha", color: "#4fc3f7" },
+    data: { gameId: game.id, name: "Alpha", slug: "alpha", color: "#4fc3f7" },
   });
 
   const bravo = await prisma.house.create({
-    data: { gameId: game.id, name: "Bravo", color: "#ff5252" },
+    data: { gameId: game.id, name: "Bravo", slug: "bravo", color: "#ff5252" },
   });
 
   const charlie = await prisma.house.create({
-    data: { gameId: game.id, name: "Charlie", color: "#69f0ae" },
+    data: { gameId: game.id, name: "Charlie", slug: "charlie", color: "#69f0ae" },
   });
 
   // === Designs ===

@@ -102,6 +102,7 @@ export interface AdminCardSet {
 export interface AdminHouse {
   id: string;
   name: string;
+  slug: string | null;
   color: string;
   _count?: { cards: number };
 }
@@ -322,6 +323,7 @@ export interface DashboardData {
     act: number;
     isCorrect?: boolean;
     attemptNumber?: number;
+    house: HouseRef | null;
   }[];
   missionProgress: {
     house: HouseRef;
@@ -333,6 +335,11 @@ export interface DashboardData {
       act: number;
       isCompleted: boolean;
     }[];
+  }[];
+  houseScans: {
+    house: HouseRef;
+    scans: number;
+    correctAnswers: number;
   }[];
 }
 

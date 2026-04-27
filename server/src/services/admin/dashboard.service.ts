@@ -58,6 +58,7 @@ export async function getDashboard(gameId: string) {
       take: 20,
       include: {
         card: { select: { physicalCardId: true, header: true, cardSetId: true, act: true } },
+        house: { select: { id: true, name: true, color: true } },
       },
     }),
 
@@ -68,6 +69,7 @@ export async function getDashboard(gameId: string) {
       take: 20,
       include: {
         card: { select: { physicalCardId: true, header: true, cardSetId: true, act: true } },
+        house: { select: { id: true, name: true, color: true } },
       },
     }),
 
@@ -162,6 +164,7 @@ export async function getDashboard(gameId: string) {
       cardId: s.card.physicalCardId,
       cardTitle: s.card.header,
       act: s.card.act,
+      house: s.house ? { id: s.house.id, name: s.house.name, color: s.house.color } : null,
     })),
     ...recentAnswers.map((a: any) => ({
       type: "answer" as const,
@@ -171,10 +174,36 @@ export async function getDashboard(gameId: string) {
       isCorrect: a.isCorrect,
       attemptNumber: a.attemptNumber,
       act: a.card.act,
+      house: a.house ? { id: a.house.id, name: a.house.name, color: a.house.color } : null,
     })),
   ]
     .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
     .slice(0, 30);
+
+  // Per-house scan + answer aggregates (current act)
+  const [houseScanGroups, houseAnswerGroups] = await Promise.all([
+    prisma.scanEvent.groupBy({
+      by: ["houseId"],
+      where: { gameId, card: { act: currentAct }, houseId: { not: null } },
+      _count: { _all: true },
+    }),
+    prisma.answerAttempt.groupBy({
+      by: ["houseId"],
+      where: { gameId, card: { act: currentAct }, isCorrect: true, houseId: { not: null } },
+      _count: { _all: true },
+    }),
+  ]);
+  const scanByHouse = new Map(
+    houseScanGroups.map((g: any) => [g.houseId as string, g._count._all as number]),
+  );
+  const correctByHouse = new Map(
+    houseAnswerGroups.map((g: any) => [g.houseId as string, g._count._all as number]),
+  );
+  const houseScans = houses.map((h: any) => ({
+    house: { id: h.id, name: h.name, color: h.color },
+    scans: scanByHouse.get(h.id) ?? 0,
+    correctAnswers: correctByHouse.get(h.id) ?? 0,
+  }));
 
   return {
     currentAct,
@@ -194,5 +223,6 @@ export async function getDashboard(gameId: string) {
     cardDiscovery: [...setMap.values()],
     activity,
     missionProgress: missionsByHouse,
+    houseScans,
   };
 }

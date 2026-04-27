@@ -289,6 +289,7 @@ export async function recordScan(
   cardId: string,
   sessionHash?: string,
   userAgent?: string,
+  houseId?: string,
 ): Promise<ScanResponse> {
   const card = await resolveCard(cardId, (id) =>
     prisma.card.findUnique({
@@ -309,6 +310,7 @@ export async function recordScan(
     data: {
       cardId: card.id,
       gameId: card.gameId,
+      houseId: houseId ?? null,
       sessionHash,
       userAgent,
     },
@@ -373,6 +375,7 @@ export async function checkAnswer(
   cardId: string,
   answer: string | string[] | Record<string, string>,
   sessionHash?: string,
+  houseId?: string,
 ): Promise<AnswerResponse> {
   const card = await resolveCard(cardId, (id) =>
     prisma.card.findUnique({
@@ -436,6 +439,7 @@ export async function checkAnswer(
     data: {
       cardId: card.id,
       gameId: card.gameId,
+      houseId: houseId ?? null,
       attemptNumber,
       answerGiven: typeof answer === "string" ? answer : JSON.parse(JSON.stringify(answer)),
       isCorrect: correct,

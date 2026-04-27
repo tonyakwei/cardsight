@@ -193,6 +193,7 @@ export interface MissionViewerResponse {
   answerTemplateType: AnswerTemplateType | null;
   answerMeta: AnswerMeta | null;
   houses: { id: string; name: string; color: string }[];
+  correctAnswerReveal: string | null;
 }
 
 export interface MissionScanResponse {
@@ -204,6 +205,7 @@ export interface MissionAnswerResponse {
   attemptNumber: number;
   hint: string | null;
   message: string;
+  correctAnswerReveal: string | null;
 }
 
 // === Admin Types ===

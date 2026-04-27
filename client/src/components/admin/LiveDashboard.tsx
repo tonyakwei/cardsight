@@ -57,7 +57,7 @@ export function LiveDashboard() {
 
   if (!game || !data) return null;
 
-  const { overview, cardDiscovery, missionProgress } = data;
+  const { overview, cardDiscovery, missionProgress, houseScans } = data;
   const discoveryPct =
     overview.totalCards > 0
       ? Math.round((overview.cardsScanned / overview.totalCards) * 100)
@@ -247,6 +247,41 @@ export function LiveDashboard() {
           </Stack>
         </Paper>
       </SimpleGrid>
+
+      {/* Per-house scan flow */}
+      {houseScans.length > 0 && (
+        <Paper p="md" withBorder mb="lg">
+          <Text size="sm" fw={700} mb="md">
+            Scan Activity by House (Act {data.currentAct})
+          </Text>
+          <SimpleGrid cols={{ base: 1, sm: houseScans.length }}>
+            {houseScans.map((entry) => (
+              <Group key={entry.house.id} gap="sm" wrap="nowrap">
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    backgroundColor: entry.house.color,
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <Text size="sm" fw={600} lineClamp={1}>
+                    {entry.house.name}
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    {entry.scans} scans · {entry.correctAnswers} solved
+                  </Text>
+                </div>
+              </Group>
+            ))}
+          </SimpleGrid>
+          <Text size="xs" c="dimmed" mt="xs">
+            Attribution comes from house NFC taps. Untagged scans are not counted here.
+          </Text>
+        </Paper>
+      )}
 
       {/* Recent Activity */}
       <ActivitySection activity={data.activity} />

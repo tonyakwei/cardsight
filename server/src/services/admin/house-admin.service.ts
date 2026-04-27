@@ -12,11 +12,15 @@ export async function listHouses(gameId: string) {
   });
 }
 
-export async function createHouse(gameId: string, data: { name: string; color?: string }) {
+export async function createHouse(
+  gameId: string,
+  data: { name: string; slug?: string | null; color?: string },
+) {
   return prisma.house.create({
     data: {
       gameId,
       name: data.name,
+      slug: normalizeSlug(data.slug),
       color: data.color ?? "#3b82f6",
     },
   });
@@ -26,9 +30,19 @@ export async function updateHouse(gameId: string, id: string, data: Record<strin
   const house = await prisma.house.findUnique({ where: { id } });
   if (!house || house.gameId !== gameId) throw new AppError(404, "House not found");
 
-  const updateData = pickAllowedFields(data, ["name", "color"]);
+  const updateData = pickAllowedFields(data, ["name", "slug", "color"]);
+  if ("slug" in updateData) {
+    updateData.slug = normalizeSlug(updateData.slug);
+  }
 
   return prisma.house.update({ where: { id }, data: updateData });
+}
+
+function normalizeSlug(raw: string | null | undefined): string | null {
+  if (raw == null) return null;
+  const trimmed = String(raw).trim().toLowerCase();
+  if (trimmed === "") return null;
+  return trimmed.replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-");
 }
 
 // === Simulator ===

@@ -90,6 +90,7 @@ model House {
   gameId    String   @map("game_id") @db.Uuid
   game      Game     @relation(fields: [gameId], references: [id])
   name      String
+  slug      String?
   color     String   @default("#3b82f6")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -100,8 +101,11 @@ model House {
   showtimeSlots          ShowtimeSlot[]
   triggeredConsequences  TriggeredConsequence[]
   storySheets            StorySheet[]
+  scanEvents             ScanEvent[]
+  answerAttempts         AnswerAttempt[]
 
   @@unique([gameId, name])
+  @@unique([gameId, slug])
   @@map("houses")
 }
 
@@ -241,6 +245,8 @@ model ScanEvent {
   card        Card     @relation(fields: [cardId], references: [id])
   gameId      String   @map("game_id") @db.Uuid
   game        Game     @relation(fields: [gameId], references: [id])
+  houseId     String?  @map("house_id") @db.Uuid
+  house       House?   @relation(fields: [houseId], references: [id])
   scannedAt   DateTime @default(now()) @map("scanned_at")
   sessionHash String?  @map("session_hash")
   userAgent   String?  @map("user_agent")
@@ -255,6 +261,8 @@ model AnswerAttempt {
   card            Card     @relation(fields: [cardId], references: [id])
   gameId          String   @map("game_id") @db.Uuid
   game            Game     @relation(fields: [gameId], references: [id])
+  houseId         String?  @map("house_id") @db.Uuid
+  house           House?   @relation(fields: [houseId], references: [id])
   attemptNumber   Int      @map("attempt_number")
   answerGiven     Json     @map("answer_given")
   isCorrect       Boolean  @map("is_correct")
@@ -306,6 +314,7 @@ model Mission {
   consequenceNotCompleted     String?             @map("consequence_not_completed")
   consequenceImageCompleted   String?             @map("consequence_image_completed")
   consequenceImageNotCompleted String?            @map("consequence_image_not_completed")
+  correctAnswerReveal         String?             @map("correct_answer_reveal")
   sortOrder                   Int                 @default(0) @map("sort_order")
   notes                       String?
   createdAt                   DateTime            @default(now()) @map("created_at")

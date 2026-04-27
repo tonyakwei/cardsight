@@ -53,6 +53,22 @@ export function ActivityTab({ dashboard }: { dashboard: DashboardData }) {
                       ? "CORRECT"
                       : "WRONG"}
                 </Badge>
+                {ev.house && (
+                  <Badge
+                    size="xs"
+                    variant="light"
+                    style={{ flexShrink: 0 }}
+                    styles={{
+                      root: {
+                        backgroundColor: ev.house.color + "22",
+                        color: ev.house.color,
+                        border: `1px solid ${ev.house.color}66`,
+                      },
+                    }}
+                  >
+                    {ev.house.name.split(" ")[0]}
+                  </Badge>
+                )}
                 <Text size="sm" lineClamp={1} style={{ minWidth: 0 }}>
                   {name}
                 </Text>

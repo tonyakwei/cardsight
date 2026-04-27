@@ -7,6 +7,7 @@ import { CardContent } from "../card-viewer/CardContent";
 import { AnimationWrapper } from "../card-viewer/animations/AnimationWrapper";
 import { OverlayRenderer } from "../card-viewer/overlays/OverlayRenderer";
 import { MissionAnswerInput } from "./MissionAnswerInput";
+import { MissionRevealOverlay } from "./MissionRevealOverlay";
 import { RequiredItems } from "./RequiredItems";
 import type { MissionViewerResponse } from "@cardsight/shared";
 
@@ -33,6 +34,8 @@ export function MissionViewer() {
   const [notFound, setNotFound] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
   const [selectedHouse, setSelectedHouse] = useState<string | null>(getStoredHouseId);
+  const [revealPhase, setRevealPhase] = useState<"idle" | "confetti" | "revealed">("idle");
+  const [revealText, setRevealText] = useState<string | null>(null);
 
   const loadMission = useCallback(async () => {
     if (!missionId) return;
@@ -74,12 +77,17 @@ export function MissionViewer() {
     storeHouseId(houseId);
   };
 
-  const handleCompleted = useCallback(() => {
+  const handleCompleted = useCallback((reveal: string | null) => {
+    if (revealPhase !== "idle") return; // already triggered
+    setRevealText(reveal);
+    setRevealPhase("confetti");
     setJustCompleted(true);
     setMission((prev) =>
-      prev ? { ...prev, isCompleted: true, isAnswerable: false } : prev,
+      prev ? { ...prev, isCompleted: true, isAnswerable: false, correctAnswerReveal: reveal } : prev,
     );
-  }, []);
+    // 2.5s of full-screen confetti, then transition to the reveal panel.
+    setTimeout(() => setRevealPhase("revealed"), 2500);
+  }, [revealPhase]);
 
   if (loading) {
     return (
@@ -236,6 +244,21 @@ export function MissionViewer() {
           100% { transform: scale(1); opacity: 1; }
         }
       `}</style>
+
+      {revealPhase !== "idle" && (
+        <MissionRevealOverlay
+          phase={revealPhase}
+          houseColor={
+            mission.houses.find((h) => h.id === selectedHouse)?.color ?? "#6b7280"
+          }
+          houseName={
+            mission.houses.find((h) => h.id === selectedHouse)?.name ?? ""
+          }
+          revealText={revealText}
+          missionTitle={mission.title}
+          onDismiss={() => setRevealPhase("idle")}
+        />
+      )}
     </CardShell>
   );
 }

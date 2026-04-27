@@ -89,6 +89,8 @@ export async function getMissionForViewer(
     answerTemplateType: mission.answerTemplateType as AnswerTemplateType | null,
     answerMeta,
     houses: mission.missionHouses.map((mh) => mh.house),
+    // Only expose the reveal once the mission has been solved.
+    correctAnswerReveal: mission.isCompleted ? mission.correctAnswerReveal ?? null : null,
   };
 }
 
@@ -133,6 +135,7 @@ export async function checkMissionAnswer(
       answerTemplateType: true,
       answerId: true,
       lockedOut: true,
+      correctAnswerReveal: true,
     },
   });
 
@@ -154,6 +157,7 @@ export async function checkMissionAnswer(
       attemptNumber: 0,
       hint: null,
       message: "This mission has already been completed!",
+      correctAnswerReveal: mission.correctAnswerReveal ?? null,
     };
   }
 
@@ -191,6 +195,7 @@ export async function checkMissionAnswer(
       attemptNumber,
       hint: null,
       message: "Correct! Mission complete.",
+      correctAnswerReveal: mission.correctAnswerReveal ?? null,
     };
   }
 
@@ -217,6 +222,7 @@ export async function checkMissionAnswer(
     attemptNumber,
     hint,
     message: "Incorrect. Try again.",
+    correctAnswerReveal: null,
   };
 }
 

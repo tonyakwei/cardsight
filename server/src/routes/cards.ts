@@ -21,6 +21,7 @@ router.post("/:cardId/scan", async (req, res) => {
     req.params.cardId,
     parsed.data.sessionHash,
     parsed.data.userAgent ?? req.headers["user-agent"],
+    req.houseId,
   );
   res.json(result);
 });
@@ -41,6 +42,7 @@ router.post("/:cardId/answer", async (req, res) => {
     req.params.cardId,
     parsed.data.answer,
     parsed.data.sessionHash,
+    req.houseId,
   );
   res.json(result);
 });

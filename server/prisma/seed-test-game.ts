@@ -161,6 +161,7 @@ async function main() {
     data: {
       gameId: game.id,
       name: "The Herald",
+      slug: "herald",
       color: "#2563eb",
     },
   });
@@ -169,6 +170,7 @@ async function main() {
     data: {
       gameId: game.id,
       name: "The Beacon",
+      slug: "beacon",
       color: "#eab308",
     },
   });
@@ -177,6 +179,7 @@ async function main() {
     data: {
       gameId: game.id,
       name: "The Chronicle",
+      slug: "chronicle",
       color: "#16a34a",
     },
   });

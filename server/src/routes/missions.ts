@@ -19,7 +19,7 @@ router.post("/:missionId/scan", async (req, res) => {
   }
   const result = await missionService.recordMissionScan(
     req.params.missionId,
-    parsed.data.houseId,
+    req.houseId ?? parsed.data.houseId,
     parsed.data.sessionHash,
   );
   res.json(result);
@@ -34,7 +34,7 @@ router.post("/:missionId/answer", async (req, res) => {
   const result = await missionService.checkMissionAnswer(
     req.params.missionId,
     parsed.data.answer,
-    parsed.data.houseId,
+    req.houseId ?? parsed.data.houseId,
     parsed.data.sessionHash,
   );
   res.json(result);

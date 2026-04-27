@@ -196,7 +196,7 @@ async function dupHouses(tx: any, gameId: string, newGameId: string): Promise<Id
   const map = new Map<string, string>();
   for (const h of old) {
     const n = await tx.house.create({
-      data: { gameId: newGameId, name: h.name, color: h.color },
+      data: { gameId: newGameId, name: h.name, slug: h.slug, color: h.color },
     });
     map.set(h.id, n.id);
   }

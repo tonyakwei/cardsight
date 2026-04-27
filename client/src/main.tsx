@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { CardViewer } from "./components/card-viewer/CardViewer";
 import { MissionViewer } from "./components/mission-viewer/MissionViewer";
 import { ShowtimeViewer } from "./components/showtime/ShowtimeViewer";
+import { HouseClaim } from "./components/house-claim/HouseClaim";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { GameList } from "./components/admin/GameList";
 import { CardManager } from "./components/admin/CardManager";
@@ -38,6 +39,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/c/:cardId" element={<CardViewer />} />
           <Route path="/m/:missionId" element={<MissionViewer />} />
           <Route path="/showtime/:showtimeId" element={<ShowtimeViewer />} />
+          <Route path="/h/:slug" element={<HouseClaim />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<GameList />} />
             <Route path="games/:gameId" element={<CardManager />} />

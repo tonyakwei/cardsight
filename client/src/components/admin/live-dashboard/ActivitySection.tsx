@@ -87,6 +87,21 @@ function ActivityList({ activity }: { activity: ActivityEvent[] }) {
             {event.type === "answer" &&
               ` (attempt #${event.attemptNumber})`}
           </Text>
+          {event.house && (
+            <Badge
+              size="xs"
+              variant="light"
+              styles={{
+                root: {
+                  backgroundColor: event.house.color + "22",
+                  color: event.house.color,
+                  border: `1px solid ${event.house.color}66`,
+                },
+              }}
+            >
+              {event.house.name}
+            </Badge>
+          )}
           <Text size="xs" c="dimmed">
             {formatTime(event.at)}
           </Text>
