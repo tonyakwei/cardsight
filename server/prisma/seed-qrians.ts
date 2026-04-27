@@ -189,7 +189,7 @@ async function main() {
     data: { gameId: game.id, name: "Coded Clay Tablet", color: "#c2410c" },
   });
   const csCeramicTile = await prisma.cardSet.create({
-    data: { gameId: game.id, name: "Grooved Ceramic Tile", color: "#b45309" },
+    data: { gameId: game.id, name: "Pipe Bundle", color: "#b45309" },
   });
   const csStoneVessel = await prisma.cardSet.create({
     data: { gameId: game.id, name: "Sealed Stone Vessel", color: "#475569" },
@@ -1463,9 +1463,9 @@ async function main() {
   // Jones A1M2 — Ancient Drainage (3 cards)
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
-    clueVisibleCategory: "Grooved Ceramic Tile",
-    header: "Grooved Ceramic Tile",
-    description: `Three pipe-tiles, scattered by the flood.
+    clueVisibleCategory: "Pipe Bundle",
+    header: "Pipe Bundle",
+    description: `Three pipe sections, scattered by the flood.
 
 **V1 — Straight (L↔R):** Standard pass-through.
 
@@ -1499,9 +1499,11 @@ async function main() {
   });
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
-    clueVisibleCategory: "Grooved Ceramic Tile",
-    header: "Grooved Ceramic Tile",
-    description: `**V3 — T-junction (L, R, T):** Three openings; the top is a dead-end.
+    clueVisibleCategory: "Pipe Bundle",
+    header: "Pipe Bundle",
+    description: `Two pipe sections, mineral-crusted from a long flood-cycle.
+
+**V3 — T-junction (L, R, T):** Three openings; the top is a dead-end.
 
 \`\`\`text
   +-+
@@ -1525,9 +1527,11 @@ async function main() {
   });
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
-    clueVisibleCategory: "Grooved Ceramic Tile",
-    header: "Grooved Ceramic Tile",
-    description: `**V6 — Elbow (T, R):** Comes in from above, exits right.
+    clueVisibleCategory: "Pipe Bundle",
+    header: "Pipe Bundle",
+    description: `Two pipe sections, recovered from beneath a fallen slab.
+
+**V6 — Elbow (T, R):** Comes in from above, exits right.
 
 \`\`\`text
 +-+
