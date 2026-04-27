@@ -13,7 +13,7 @@ Working list for the first live run.
   - Powder of the Quiet Bed (flower-grid; super-glyphs B/Y/E)
   - Reckoning Floor (Arabic-numeral pebble grid; T/I/M/E)
   - Hanging Garden of Names (canopy map; J/A/W)
-- [ ] **Glyph reference card** — one per table, taped down. Saves players from rescanning the rosetta cards every inscription.
+- [x] **Glyph reference card** — one per table, taped down. Saves players from rescanning the rosetta cards every inscription. *(Print from admin: Print Center → "QRian Glyph Codex" — letter-size, one per table. Standalone preview also at `tools/glyph-rosetta.html`.)*
 - [ ] **54 physical cards** — already printed; confirm none missing.
 - [ ] **Card distribution sheet** — print from the admin Simulator after the final reseed, so you know which physical card lives at which table.
 
@@ -58,7 +58,7 @@ Working list for the first live run.
 
 ## 6. Player communications (pre-event)
 
-- [ ] Invite + RSVP locked at least 4 days before — headcount drives card distribution and house sizes.
+- [x] Invite + RSVP locked at least 4 days before — headcount drives card distribution and house sizes.
 - [ ] "What to bring" note: charged phone, comfortable clothes, willingness to write things down on paper.
 - [ ] Arrival window vs. start time — buffer 30+ min for late arrivers and onboarding.
 - [ ] Optional dietary check if you're feeding people.

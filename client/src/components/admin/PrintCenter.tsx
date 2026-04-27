@@ -24,6 +24,12 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/print/artifact-catalog`,
       color: "orange",
     },
+    {
+      title: "QRian Glyph Codex",
+      description: "Player-facing translation log. Glyphs appear in scrambled order with blanks underneath; players fill in the English letter as they find rosetta cards. Print one per table.",
+      path: `/admin/games/${gameId}/print/glyph-codex`,
+      color: "grape",
+    },
   ];
 
   return (
