@@ -1343,24 +1343,85 @@ async function main() {
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
     clueVisibleCategory: "Grooved Ceramic Tile",
     header: "Grooved Ceramic Tile, Bundle I",
-    description:
-      "Three pipe-tiles, scattered by the flood.\n\n**V1 — Straight (L↔R):** Standard pass-through.\n\n**V2 — Elbow (L, B):** Turns down.\n\n**V5 — Elbow (R, B):** Marked **SABOTAGED** — chisel marks across the seal.",
+    description: `Three pipe-tiles, scattered by the flood.
+
+**V1 — Straight (L↔R):** Standard pass-through.
+
+\`\`\`text
++-----------+
+|           |
++-----------+
+\`\`\`
+
+**V2 — Elbow (L, B):** Turns down.
+
+\`\`\`text
++-----------+
+|           |
++---------+ |
+          | |
+          +-+
+\`\`\`
+
+**V5 — Elbow (R, B):** Marked **SABOTAGED** — chisel marks across the seal.
+
+\`\`\`text
++-----------+
+|    xx     |
+| +---------+
+| |
+| |
++-+
+\`\`\``,
     houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
     clueVisibleCategory: "Grooved Ceramic Tile",
     header: "Grooved Ceramic Tile, Bundle II",
-    description:
-      "**V3 — T-junction (L, R, T):** Three openings; the top is a dead-end.\n\n**V4 — Elbow (T, L):** Comes in from above, exits left.",
+    description: `**V3 — T-junction (L, R, T):** Three openings; the top is a dead-end.
+
+\`\`\`text
+  +-+
+  | |
+  | |
++-------+
+|       |
++-------+
+\`\`\`
+
+**V4 — Elbow (T, L):** Comes in from above, exits left.
+
+\`\`\`text
+          +-+
+          | |
+ +--------+ |
+ |          |
++-----------+
+\`\`\``,
     houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csCeramicTile.id, act: 1,
     clueVisibleCategory: "Grooved Ceramic Tile",
     header: "Grooved Ceramic Tile, Bundle III",
-    description:
-      "**V6 — Elbow (T, R):** Comes in from above, exits right.\n\n**Straight (L↔R), no valve:** Just channel.",
+    description: `**V6 — Elbow (T, R):** Comes in from above, exits right.
+
+\`\`\`text
++-+
+| |
+| +--------+
+|          |
++-----------+
+\`\`\`
+
+**Straight (L↔R), no valve:** Just channel.
+
+\`\`\`text
++-----------+
+|           |
++-----------+
+\`\`\``,
     houseIds: [jones.id],
   });
 
