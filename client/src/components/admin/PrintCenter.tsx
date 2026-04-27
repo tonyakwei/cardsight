@@ -30,6 +30,12 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/print/glyph-codex`,
       color: "grape",
     },
+    {
+      title: "Welcome Placard",
+      description: "Three stone-tablet welcome placards on a single letter sheet. Print, cut along the dotted lines, hand one to each team at the door.",
+      path: `/admin/games/${gameId}/print/welcome-placard`,
+      color: "yellow",
+    },
   ];
 
   return (
