@@ -36,6 +36,12 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/print/welcome-placard`,
       color: "yellow",
     },
+    {
+      title: "Powder of the Quiet Bed (Grid)",
+      description: "10×12 flower grid for Drake's Act 2 mission. Numbered 🌸/🪻/🥀 trace QRian B-Y-E when connected; the rest are 🌺/🌼 decoys. Print one per Drake team.",
+      path: `/admin/games/${gameId}/print/quiet-bed`,
+      color: "pink",
+    },
   ];
 
   return (

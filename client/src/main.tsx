@@ -23,6 +23,7 @@ import { PrintCenter } from "./components/admin/PrintCenter";
 import { ArtifactCatalogPrint } from "./components/admin/ArtifactCatalogPrint";
 import { GlyphCodexPrint } from "./components/admin/GlyphCodexPrint";
 import { WelcomePlacardPrint } from "./components/admin/WelcomePlacardPrint";
+import { QuietBedGridPrint } from "./components/admin/QuietBedGridPrint";
 import { HostConsole } from "./components/admin/HostConsole";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
@@ -55,6 +56,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/print/artifact-catalog" element={<ArtifactCatalogPrint />} />
             <Route path="games/:gameId/print/glyph-codex" element={<GlyphCodexPrint />} />
             <Route path="games/:gameId/print/welcome-placard" element={<WelcomePlacardPrint />} />
+            <Route path="games/:gameId/print/quiet-bed" element={<QuietBedGridPrint />} />
             <Route path="games/:gameId/console" element={<HostConsole />} />
           </Route>
           <Route

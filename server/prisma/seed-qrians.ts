@@ -700,7 +700,7 @@ async function main() {
       gameId: game.id,
       correctAnswer: "bye",
       acceptAlternatives: ["BYE", "Bye", "goodbye", "GOODBYE", "farewell"],
-      hint: "The pharmacist categorized three batches — A, B, C. Mark each batch separately on the grid. The path connecting each batch's harvest order traces a single letter. Three letters, one word.",
+      hint: "The pharmacist categorized three batches — A, B, C. For each batch, find every numbered specimen on the grid and connect them in the order the pharmacist marked them. The path traces a single letter. Three batches, three letters, one word. Some batch flowers may have no number — they belong to the glyph but stand alone.",
       hintAfterAttempts: 2,
     },
   });
@@ -1828,7 +1828,7 @@ async function main() {
       description:
         "Sweeping across the far wall bedded in vines, you stop. What looked like a garden — dozens of flower and leaf arrangements pinned to the vine surface — is actually a grid. The same few shapes, repeating in patterns. Your medic says it first: it's writing. The whole wall is writing. Scattered across the chamber floor are loose working notes — the pharmacist's own records. You'll want to gather those before the wall means anything.",
       puzzleDescription:
-        "The pharmacist's working notes describe three batches — A, B, and C — each pinned across the wall as one specific variety of flower. For each batch, find every specimen of that flower-type that bears a harvest-sequence number. Mark them on the printed grid, then connect the numbered instances in order — the connecting line traces a single letter, one per batch. Three letters spell a single English word.\n\nWhat does the wall say?",
+        "The pharmacist's working notes describe three batches — A, B, and C — each pinned across the wall as one specific variety of flower. For each batch, find every numbered specimen of that flower-type on the printed grid, then connect them in the order the pharmacist marked them — the connecting line traces a single letter. If a batch flower has no number, it belongs to the glyph but stands alone. Three letters spell a single English word.\n\nWhat does the wall say?",
       requiredClueSets: [{ cardSetId: csApothecaryNote.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPowderQuietBed.id,
@@ -2215,7 +2215,7 @@ async function main() {
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Folded",
     description:
-      "*Folded note in the pharmacist's hand.*\n\n**Batch A — Soporific base compound.** *The pink flowers.* Mark every Batch A specimen on the printed grid. Connect them in harvest-sequence order. The path traces the first letter of the answer.",
+      "*Folded note in the pharmacist's hand.*\n\n**Batch A — Soporific base compound.** *The pink flowers (🌸).* On the printed grid, connect every numbered Batch A flower in the order the pharmacist marked them. If any Batch A flower has no number, it belongs to the glyph but stands alone. The path traces the first letter of the answer.",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2223,7 +2223,7 @@ async function main() {
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Ink-stained",
     description:
-      "*Ink-stained note from the same hand.*\n\n**Batch B — Activating agent.** *The purple flowers.* Mark every Batch B specimen on the printed grid. Connect in harvest order. The shape is the second letter.",
+      "*Ink-stained note from the same hand.*\n\n**Batch B — Activating agent.** *The purple flowers (🪻).* On the printed grid, connect every numbered Batch B flower in the order the pharmacist marked them. If any Batch B flower has no number, it belongs to the glyph but stands alone. The shape is the second letter.",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2231,7 +2231,7 @@ async function main() {
     clueVisibleCategory: "Apothecary Note",
     header: "Apothecary Note, Torn",
     description:
-      "*Torn note. The bottom edge is missing.*\n\n**Batch C — Terminal compound.** *The wilting flowers.* Mark every Batch C specimen on the printed grid. Connect in harvest order. The shape is the third and last letter.",
+      "*Torn note. The bottom edge is missing.*\n\n**Batch C — Terminal compound.** *The wilting flowers (🥀).* On the printed grid, connect every numbered Batch C flower in the order the pharmacist marked them. If any Batch C flower has no number, it belongs to the glyph but stands alone. The shape is the third and last letter.",
     houseIds: [drake.id],
   });
 
