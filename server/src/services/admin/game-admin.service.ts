@@ -291,8 +291,9 @@ async function dupMissions(
       data: {
         gameId: newGameId, act: m.act,
         missionCardId: remapId(maps.cardMap, m.missionCardId),
-        title: m.title, sheetLetter: m.sheetLetter,
+        title: m.title,
         description: m.description, puzzleDescription: m.puzzleDescription,
+        storySheetBlurb: m.storySheetBlurb,
         requiredClueSets: m.requiredClueSets ?? [],
         answerTemplateType: m.answerTemplateType,
         answerId: remapId(maps.answerMap, m.answerId),

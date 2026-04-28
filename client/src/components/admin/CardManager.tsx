@@ -14,7 +14,10 @@ import {
   Switch,
   Checkbox,
   Select,
+  Collapse,
+  Paper,
 } from "@mantine/core";
+import Markdown from "react-markdown";
 import {
   fetchGame,
   fetchCards,
@@ -578,42 +581,126 @@ function SetMissions({
           →
         </ActionIcon>
       </Group>
-      <Stack gap={2}>
+      <Stack gap="xs">
         {related.map((m) => {
           const needed = (m.requiredClueSets ?? []).find(
             (rc: any) => rc.cardSetId === cardSetId,
           ) as { count: number } | undefined;
           return (
-            <Group key={m.id} gap="xs">
-              <Badge
-                size="xs"
-                variant={m.isCompleted ? "filled" : "outline"}
-                color={m.isCompleted ? "green" : "gray"}
-              >
-                {m.isCompleted ? "Done" : `Act ${m.act}`}
-              </Badge>
-              <Text size="xs">{m.title}</Text>
-              {m.missionHouses.map((mh) => (
-                <Badge
-                  key={mh.house.id}
-                  size="xs"
-                  variant="dot"
-                  color="gray"
-                  style={{ borderColor: mh.house.color }}
-                >
-                  {mh.house.name}
-                </Badge>
-              ))}
-              {needed && (
-                <Text size="xs" c="dimmed">
-                  (needs {needed.count})
-                </Text>
-              )}
-            </Group>
+            <SetMissionRow
+              key={m.id}
+              mission={m}
+              needed={needed?.count}
+            />
           );
         })}
       </Stack>
     </div>
+  );
+}
+
+function SetMissionRow({
+  mission,
+  needed,
+}: {
+  mission: AdminMission;
+  needed: number | undefined;
+}) {
+  const [expanded, setExpanded] = useState(true);
+
+  return (
+    <Paper
+      p="xs"
+      withBorder
+      style={{
+        background: "rgba(0,0,0,0.15)",
+        borderColor: "var(--mantine-color-dark-5)",
+      }}
+    >
+      <Group
+        gap="xs"
+        wrap="nowrap"
+        style={{ cursor: "pointer" }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <Text size="xs" c="dimmed" style={{ width: 12 }}>
+          {expanded ? "▾" : "▸"}
+        </Text>
+        <Badge
+          size="xs"
+          variant={mission.isCompleted ? "filled" : "outline"}
+          color={mission.isCompleted ? "green" : "gray"}
+        >
+          {mission.isCompleted ? "Done" : `Act ${mission.act}`}
+        </Badge>
+        <Text size="xs" fw={600}>
+          {mission.title}
+        </Text>
+        {mission.missionHouses.map((mh) => (
+          <Badge
+            key={mh.house.id}
+            size="xs"
+            variant="dot"
+            color="gray"
+            style={{ borderColor: mh.house.color }}
+          >
+            {mh.house.name}
+          </Badge>
+        ))}
+        {needed !== undefined && (
+          <Text size="xs" c="dimmed">
+            (needs {needed})
+          </Text>
+        )}
+      </Group>
+      <Collapse in={expanded}>
+        <Stack gap="xs" mt="xs" pl="lg">
+          {mission.description && (
+            <div>
+              <Text size="xs" c="dimmed" tt="uppercase" lts="0.05em" fw={600} mb={2}>
+                Briefing
+              </Text>
+              <Text size="xs" style={{ lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+                {mission.description}
+              </Text>
+            </div>
+          )}
+          {mission.puzzleDescription && (
+            <div>
+              <Text size="xs" c="dimmed" tt="uppercase" lts="0.05em" fw={600} mb={2}>
+                Puzzle (shown to players)
+              </Text>
+              <div
+                className="set-mission-md"
+                style={{ fontSize: "0.75rem", lineHeight: 1.5 }}
+              >
+                <Markdown>{mission.puzzleDescription}</Markdown>
+              </div>
+            </div>
+          )}
+        </Stack>
+      </Collapse>
+      <style>{`
+        .set-mission-md p { margin: 0 0 0.4rem 0; }
+        .set-mission-md p:last-child { margin-bottom: 0; }
+        .set-mission-md table {
+          border-collapse: collapse;
+          margin: 0.4rem 0;
+          font-size: 0.7rem;
+        }
+        .set-mission-md th, .set-mission-md td {
+          border: 1px solid var(--mantine-color-dark-4);
+          padding: 2px 6px;
+        }
+        .set-mission-md code {
+          background: rgba(255,255,255,0.06);
+          padding: 1px 4px;
+          border-radius: 3px;
+        }
+        .set-mission-md em { font-style: italic; }
+        .set-mission-md strong { font-weight: 700; }
+      `}</style>
+    </Paper>
   );
 }
 

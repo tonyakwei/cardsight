@@ -19,6 +19,14 @@ router.get("/games/:gameId/missions/:missionId", async (req, res) => {
   res.json(mission);
 });
 
+router.put("/games/:gameId/missions/reorder", async (req, res) => {
+  const missions = await adminService.reorderMissions(
+    req.params.gameId,
+    req.body.missionIds,
+  );
+  res.json(missions);
+});
+
 router.post("/games/:gameId/missions", async (req, res) => {
   const mission = await adminService.createMission(req.params.gameId, req.body);
   res.status(201).json(mission);

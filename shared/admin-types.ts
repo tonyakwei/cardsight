@@ -163,9 +163,9 @@ export interface AdminMission {
   missionCardId: string | null;
   missionCard: { id: string; physicalCardId: string; header: string | null } | null;
   title: string;
-  sheetLetter: string | null;
   description: string;
   puzzleDescription: string | null;
+  storySheetBlurb: string | null;
   requiredClueSets: { cardSetId: string; count: number }[];
   answerTemplateType: AnswerTemplateType | null;
   answerId: string | null;

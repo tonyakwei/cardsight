@@ -11,15 +11,15 @@ export type FinaleClauseId =
   | "copy_inscriptions"
   | "publish_discovery"
   | "preserve_some_artifacts"
-  | "open_under_guard"
-  | "no_artifacts_leave"
-  | "falsify_reports"
+  | "three_witness_rule"
+  | "no_private_keeping"
+  | "withhold_mechanism"
   | "suppress_location"
   | "three_house_custody"
   | "no_house_takes_credit"
-  | "archive_everything_then_destroy"
+  | "no_judgment_without_record"
   | "leave_unmistakable_warning"
-  | "bury_approach";
+  | "no_ready_passage";
 
 type DimensionVector = Record<FinaleDimension, number>;
 
@@ -35,8 +35,6 @@ export interface FinaleClauseDefinition {
   label: string;
   description: string;
   vector: DimensionVector;
-  allowedOutcomes?: FinaleOutcomeId[];
-  incompatibleWith?: FinaleClauseId[];
 }
 
 export interface FinaleHouseDefinition {
@@ -115,35 +113,30 @@ export const FINALE_CLAUSES: FinaleClauseDefinition[] = [
     label: "Publish the Discovery",
     description: "Reveal what happened here to the wider world.",
     vector: vec(1, -1, 0, 2, 0),
-    incompatibleWith: ["falsify_reports"],
   },
   {
     id: "preserve_some_artifacts",
     label: "Preserve Some Artifacts",
     description: "Allow selected physical artifacts to be retained as part of the outcome.",
     vector: vec(1, -1, 0, 1, 0),
-    incompatibleWith: ["no_artifacts_leave"],
   },
   {
-    id: "open_under_guard",
-    label: "Open Under Guard",
-    description: "Allow access only under active supervision and strict limits.",
+    id: "three_witness_rule",
+    label: "Three-Witness Rule",
+    description: "Any future contact with the chamber — return expedition, breach response, sanctioned visit — requires representatives from all three houses present.",
     vector: vec(1, 1, 0, 1, 1),
-    allowedOutcomes: ["open_for_research"],
   },
   {
-    id: "no_artifacts_leave",
-    label: "No Artifacts Leave",
-    description: "Nothing physical leaves the temple.",
+    id: "no_private_keeping",
+    label: "No Private Keeping",
+    description: "No house may carry relics away into its own vaults, estates, or shrines.",
     vector: vec(0, 2, 1, -1, 0),
-    incompatibleWith: ["preserve_some_artifacts"],
   },
   {
-    id: "falsify_reports",
-    label: "Falsify Reports",
-    description: "Mislead the outside world about what happened here.",
+    id: "withhold_mechanism",
+    label: "Withhold the Mechanism",
+    description: "Publish the cultural and historical findings, but redact the dangerous technical details of how the Source works.",
     vector: vec(-2, 1, 0, -2, 0),
-    incompatibleWith: ["publish_discovery"],
   },
   {
     id: "suppress_location",
@@ -164,11 +157,10 @@ export const FINALE_CLAUSES: FinaleClauseDefinition[] = [
     vector: vec(0, 0, 0, -1, 2),
   },
   {
-    id: "archive_everything_then_destroy",
-    label: "Archive Everything Then Destroy",
-    description: "Salvage as much knowledge as possible before destroying the Source.",
-    vector: vec(2, 0, 2, -2, 0),
-    allowedOutcomes: ["destroy_source"],
+    id: "no_judgment_without_record",
+    label: "No Judgment Without Record",
+    description: "Before any irreversible decision is enacted, the chamber in its entirety must be fully documented — every artifact, residue, instrument, layout, and structural detail.",
+    vector: vec(2, 0, 0, 0, 1),
   },
   {
     id: "leave_unmistakable_warning",
@@ -177,11 +169,10 @@ export const FINALE_CLAUSES: FinaleClauseDefinition[] = [
     vector: vec(1, 1, 0, 0, 0),
   },
   {
-    id: "bury_approach",
-    label: "Bury the Approach",
-    description: "Destroy or hide the routes back to the chamber so later return is much harder.",
+    id: "no_ready_passage",
+    label: "No Ready Passage",
+    description: "The settlement must leave no convenient way back into the chamber. Return is not forbidden, but it must become difficult, costly, and deliberate.",
     vector: vec(-1, 1, 1, -2, 0),
-    allowedOutcomes: ["destroy_source", "recontain_source"],
   },
 ];
 
@@ -278,23 +269,6 @@ export function evaluateFinaleSelection(
   const clauses = selection.clauseIds
     .map((id) => FINALE_CLAUSE_BY_ID[id])
     .filter(Boolean);
-
-  if (selection.outcomeId) {
-    for (const clause of clauses) {
-      if (clause.allowedOutcomes && !clause.allowedOutcomes.includes(selection.outcomeId)) {
-        errors.push(`${clause.label} cannot be used with ${FINALE_OUTCOME_BY_ID[selection.outcomeId].label}.`);
-      }
-    }
-  }
-
-  for (const clause of clauses) {
-    for (const conflict of clause.incompatibleWith ?? []) {
-      if (selection.clauseIds.includes(conflict)) {
-        const other = FINALE_CLAUSE_BY_ID[conflict];
-        errors.push(`${clause.label} conflicts with ${other.label}.`);
-      }
-    }
-  }
 
   const outcomeVector = selection.outcomeId
     ? FINALE_OUTCOME_BY_ID[selection.outcomeId].vector

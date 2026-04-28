@@ -908,10 +908,11 @@ async function main() {
     data: {
       gameId: game.id,
       act: 1,
-      title: "Secure the Fuse Charges",
+      title: "Secure Your Fuse Charges",
+      storySheetBlurb:
+        "Your precision explosives are dead weight without the fuse charges. Seven components are scattered across the chamber — small metal parts that look like trinkets to anyone who doesn't know what they assemble into. These charges are the only real edge you have left in this temple. The other teams pocketed some — you'll need them back to rebuild the sequence…",
       correctAnswerReveal:
         "Click. Click. Click. Seven components, locked in sequence, just like training. The precision explosives are live. Whether you'll need them down here is another question — but up ahead, in whatever comes next, you'll have options the other teams don't. You just hope they never find out what those codenames actually meant.",
-      sheetLetter: "A",
       description:
         "Your precision explosives are dead weight without the fuse charges, and the components are scattered across the chamber — small metal parts that look like strange precision instruments to anyone who doesn't know what they assemble into. The assembly manual went under with the bag. You'll have to reconstruct the sequence from memory.",
       puzzleDescription:
@@ -933,9 +934,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Operate the Stone Wheel",
+      storySheetBlurb:
+        "All houses blame your dynamite for the flooding. Set into the far wall, a heavy stone wheel — channels radiating across the floor — your tactical eye reads it instantly: it controls the water. Five QRian glyphs are carved into the face. Turn it, and you might prove the flood wasn't your fault. The decoding fragments are scattered — some yours, some not…",
       correctAnswerReveal:
         "The wheel turns. Water redirects through ancient channels, and floor inscriptions emerge — the channels are original features. The flood isn't from the dynamite. The temple was built to purge itself. Your blast didn't cause this. The QRians did.",
-      sheetLetter: "B",
       description:
         "Set into the far wall — a heavy stone wheel, seized with age. Channels radiate from it across the floor. Your tactical eyes read it immediately: this controls the water flow. Five QRian glyphs are carved into the wheel's face — the unlock command.",
       puzzleDescription:
@@ -957,9 +959,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Reach the Shadow Astrolabe",
+      storySheetBlurb:
+        "At the center of the chamber — a stone table, and on it a thick glass dome. Inside: a strange contraption with golden concentric rings, markings shimmering. Up close, it looks like it's mapping the temple itself. The base has five empty slots — a combination lock. The disc inserts that complete it lie scattered across the floor. You'll want to find them…",
       correctAnswerReveal:
         "Click. Click. Click. Click. Click. The dome splits along hidden seams and opens like a flower. The contraption is heavier than it looks. Up close, the etchings aren't decorative — they're architectural. This device maps the temple itself. Every corridor, every chamber. Your team traces the paths and the realization hits: this place was designed to trap people. You're holding the blueprint of a perfect trap — and you're standing in it.",
-      sheetLetter: "C",
       description:
         "At the center of the chamber — a stone table, and on it, a thick glass dome. Through the glass: a strange contraption with golden concentric rings, nested inside each other, etched with markings so fine they shimmer. Sealed under glass you cannot safely break without possibly destroying the object. The base has five empty slots, each with a dial of colors — a combination lock.",
       puzzleDescription:
@@ -981,9 +984,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Activate the Construction Hoist",
+      storySheetBlurb:
+        "Directly overhead — thick iron chains hang from the dark, taut and corroded green, dropping to a stone slab pulled tight against the floor. Whatever the builders hid under there, they hid it on purpose. Nine carved positions on the hoist read in QRian glyphs. The translation tablets that decode them are scattered — you'll need them back to lift the slab…",
       correctAnswerReveal:
         "The chains grind. The stone slab lifts. Underneath: shift tallies scratched into the stone — thousands of workers, counted in weeks. This temple was built in months by people who carved their own confession into the machinery. They knew what they were building. A trap. And they built it fast.",
-      sheetLetter: "D",
       description:
         "Directly overhead, near the center of the chamber — thick iron chains hang from the dark above, taut and corroded green, dropping to a stone slab pulled tight against the floor. Nine positions on the chains and pulleys are marked with QRian glyphs — clearly an activation sequence.",
       puzzleDescription:
@@ -1005,9 +1009,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Investigate the Scraped Gap",
+      storySheetBlurb:
+        "Along the back wall, half-hidden behind a collapsed pillar — a dark crack scored with bright metal scratches. A faint breeze from inside that smells like old dust and old fear. Someone got out of there. Or they didn't. Whoever was in there left a journal, but the pages are scattered across the chamber. You'll want them back to find out…",
       correctAnswerReveal:
         "The trunk opens. Inside: a hand-drawn cross-section of the temple, every route mapped and marked with an X. The final annotation in the same hand: 'Every staircase descends.' Modern ink. Modern paper. These people mapped the routes that don't work — and never found one that did. The temple isn't broken. It's a trap. And they walked into it the same way you did.",
-      sheetLetter: "E",
       description:
         "Along the back wall, half-hidden behind a collapsed pillar — a dark crack in the stone scored with bright metal scratches. A faint breeze from inside that smells like old dust and old fear.",
       puzzleDescription:
@@ -1034,10 +1039,11 @@ async function main() {
     data: {
       gameId: game.id,
       act: 1,
-      title: "Retrieve the Ceremonial Whips",
+      title: "Retrieve Your Ceremonial Whips",
+      storySheetBlurb:
+        "In the rush through the hidden passage, your ceremonial whips were left behind — and the floodwater is swallowing the way back. The passage branches into half-submerged corridors, each with a QRian word carved above. Read the wall right and it tells you which corridor is safe. One swimmer, one breath. Translation fragments are scattered — some yours, some pocketed by the others…",
       correctAnswerReveal:
         "The word settles into the stone like it was always supposed to be there. TIME. Your swimmer drops into the half-submerged corridor and kicks forward into the dark — thirty seconds of nothing but echoing water and held breath from everyone watching the entrance. Then a shout, muffled but unmistakable. The whips are there, bundled in oilskin on a raised shelf, dry as the day they were left. Your swimmer surfaces with the bundle held above their head like a trophy, and for a moment nobody speaks. You just read a dead language off a temple wall and it told you exactly where to go. Dr. Jones spent thirty years trying to crack QRian script. His students just did it in a flooding corridor with fragments and adrenaline.",
-      sheetLetter: "A",
       description:
         "In the rush through the hidden passage, the ceremonial whips were left behind — and the floodwater is swallowing the way back. The passage branches into several half-submerged corridors, each with a QRian word carved above its entrance. A longer inscription on the nearby wall appears to describe the correct route.",
       puzzleDescription:
@@ -1059,9 +1065,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Activate the Ancient Drainage",
+      storySheetBlurb:
+        "Along the lower walls, half-obscured by mineral deposits — a 3x3 grid of carved pipe sections, an engineered drainage network. Source and drain are visible but seven sections are missing, their Channel Stones scattered. Everything Jones came here to read is upstairs — and getting wet. You didn't spend three months on schematics for nothing. The other teams pocketed some — you'll want them back…",
       correctAnswerReveal:
         "The valves click open in sequence and water flows through channels that haven't moved in centuries. But V5 stays dead — deliberate chisel marks, QRian tools. They built a drainage system then crippled it. The QRians didn't just build a flood trap. They made sure no one could undo it.",
-      sheetLetter: "B",
       description:
         "Along the lower walls, half-obscured by mineral deposits — a 3×3 grid of carved pipe sections, clearly an engineered drainage network. The source and drain are visible but seven connecting pieces are missing — bundles of grooved ceramic pipe, scattered across the floor.",
       puzzleDescription:
@@ -1083,9 +1090,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Sort the Scattered Offerings",
+      storySheetBlurb:
+        "High on the far wall — three deep alcoves, each stained a different color from centuries of offerings. Six stone vessels lie on the floor below, knocked loose by the flood. Each holds a residue and carries a letter. Read the alcoves right and they'll tell you what this place actually is. Some vessels are with you; the others have the rest…",
       correctAnswerReveal:
         "The vessels settle into place with a satisfying click, each residue matching its alcove's ancient stain. The letters read left to right across the wall: S-C-H-O-O-L. This wasn't a temple. It was a school. Three alcoves, three departments of knowledge — the blue for sky-reading, the amber for building, the green for earth-work. The QRians didn't come here to worship. They came here to learn. And the offerings weren't sacrifices — they were materials. Lapis for pigment, resin for binding, malachite for dye. What looked like ritual devotion was a curriculum.",
-      sheetLetter: "C",
       description:
         "High on the far wall, where the torchlight barely reaches, three deep alcoves are carved into the stone in a row. Each alcove's inner surface is stained a different color from centuries of use — the left one deep blue, the center one amber-gold, the right one dark green. Below them, six small stone vessels lie scattered across the floor, clearly knocked from the alcoves by the flood. Each vessel has a letter carved into its underside.",
       puzzleDescription:
@@ -1107,9 +1115,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Examine the Sliding Panels",
+      storySheetBlurb:
+        "Across the haze of the chamber — small flat rocks, so precisely placed they form a grid in the wall. Several panels are missing, scattered across the chamber floor. At the grid's center: a hand-shaped hollow, worn silk-smooth by centuries of palms. Whatever's behind that hollow, the QRians sealed it on purpose. The other teams hold panels you'll need back…",
       correctAnswerReveal:
         "The panels slide open. Behind them — a small, sealed chamber. The walls are covered in carvings. Not official inscriptions — personal ones. Someone lived in here. The markings are dense, obsessive, but you can't decipher them yet. Whatever happened to this person, the QRians thought sealing them away was the answer. The chamber smells like dust and centuries.",
-      sheetLetter: "D",
       description:
         "Peering straight across the haze of the chamber — small flat rocks, so precisely placed and stacked on one another that they form a grid in the wall. They can clearly be slid around. But several are missing — smooth slates with QRian symbols etched into them, dislodged and scattered across the chamber floor. At the grid's center: a dark, hand-shaped hollow, worn silk-smooth by what must have been hundreds of palms pressed into it over centuries.",
       puzzleDescription:
@@ -1131,9 +1140,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Map the False Exit",
+      storySheetBlurb:
+        "Off to the left, beyond a low archway — a corridor that tilts *up*. After a temple where everything descends, an upward slope feels like sunlight. It looks like a way out. Three months of schematics say: don't trust it. The carved waymarkers fell long ago — some sit on your table, others were pocketed by the houses around you…",
       correctAnswerReveal:
         "The map is complete — and the realization hits like cold water. The corridor spirals. What felt like climbing was descent. The walls bear a repeating inscription: 'You are not leaving. You were never going to leave.' This trap was built for people exactly like you — scholars who notice an upward slope and follow it.",
-      sheetLetter: "E",
       description:
         "Something was odd when you first entered the chamber, and now you realize what. Off to the left, beyond a low archway — a corridor that tilts *up*. After a temple where everything descends, an upward slope feels like sunlight. But three months of schematics trained you to map before you move.",
       puzzleDescription:
@@ -1160,10 +1170,11 @@ async function main() {
     data: {
       gameId: game.id,
       act: 1,
-      title: "Recover the Grappling Rigs",
+      title: "Recover Your Grappling Rigs",
+      storySheetBlurb:
+        "Your signature grappling rigs — high-tension cable, Croft-issue hooks, spring-loaded launcher — sit on the ledge where you climbed in from below. The floodwater is rising. Without them, every climb in this temple is improvisation. To rig a route up, your kit components must be assembled in order — some are in your hands, some in theirs…",
       correctAnswerReveal:
         "Stud. Plate. Line. Clamp. Climb. Bolt. Pulley. Hook. Seven steps, no hesitation — your hands know this sequence the way your lungs know breathing. The route goes up clean: twenty feet of ancient stone, the fixed line humming with tension, the haul pulley spinning true. The grappling rigs come up heavy and swinging, and when they settle on the alcove floor, the whole team just stands there for a second, catching their breath. Down below, the water swallows the entry ledge. Another few minutes and the rigs would have been gone. They're heavy. They're going to slow you down. And you wouldn't trade them for anything.",
-      sheetLetter: "A",
       description:
         "Your signature grappling rigs — high-tension cable, Croft-issue hooks, the works — are stashed on the ledge where you climbed in, eight feet up. The floodwater is rising toward them. There's a dry alcove higher up the wall, well above the waterline — if you can rig a haul route, the gear is safe.",
       puzzleDescription:
@@ -1185,9 +1196,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Solve the Stone Jigsaw",
+      storySheetBlurb:
+        "Water pours through a crack where a sealed passage gave way. Five flat stone fragments that originally sealed it lie scattered on the floor. Each has a carved symbol on its left edge, a different one on its right, and a letter on its face. Lock the seal before the leak floods the next chamber. Some fragments are with you, others pocketed — you'll want them back…",
       correctAnswerReveal:
         "The fragments lock together. The crack seals. And across the assembled surface — what looked like figures in prayer are actually construction diagrams. The 'worship scene' is a blueprint. The QRians dressed their engineering in sacred imagery.",
-      sheetLetter: "B",
       description:
         "Water pours through a crack in the far wall where a sealed passage gave way. Scattered across the floor — odd blocks with symbols marked along their edges and a letter on each face. They're clearly meant to fit together somehow.",
       puzzleDescription:
@@ -1209,9 +1221,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Reach the Impossible Vase",
+      storySheetBlurb:
+        "Far off to the left, at the fuzzy edge of the shadows — atop a ledge fifteen feet above the floor, a vibrantly red porcelain vase. Impossibly intact after centuries. Whatever this material is, it shouldn't exist. Climbing spokes lie scattered along the wall — some yours, some held by the others. You'll want them back…",
       correctAnswerReveal:
         "Each spoke locks with a deep, satisfying click — one after another, climbing holds materializing out of the wall. The climb is clean: fifteen feet of ancient stone, and at the top, the vase. It's heavier than it looks. Up close, the surface isn't glazed — it's fused, as if the ceramic itself was transformed at the molecular level. The material is harder than anything your team has ever handled — harder than any ceramic known to modern science. This wasn't fired in a kiln; it was made by a process that shouldn't exist. The vase is flawless. Not 'well-preserved.' Flawless. Whatever the QRians knew about materials, they were centuries — maybe millennia — ahead of anyone else. And they used that knowledge to make a vase. The question is: what else did they make with it?",
-      sheetLetter: "C",
       description:
         "Far off to the left, right at the fuzzy edge of the shadows — atop a ledge fifteen feet above the floor, a vibrantly red, sparkling porcelain vase. It catches the torchlight in flashes — impossibly intact and clean after all these years. Nothing survives centuries in a sealed chamber looking like it was fired yesterday.",
       puzzleDescription:
@@ -1233,9 +1246,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Activate the Teaching Stone",
+      storySheetBlurb:
+        "Dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face. Some positions are filled, some empty. It hums when the math is right — the QRians worshipped numbers, and this is their hymnal. Inserts lie scattered near the base. You'll need to gather them — some are with the others…",
       correctAnswerReveal:
         "The outer numbers click into place. The disc hums — stone pieces shift and rotate, mechanically demonstrating the principle. The QRians didn't just use math. They built physical devotions to it. This wasn't an altar. It was a classroom — and you just passed the entrance exam to a school that's been closed for centuries.",
-      sheetLetter: "D",
       description:
         "In the dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face — some filled, some empty. Small bone tokens with numbers carved into them lie scattered near the base — palm-sized, smooth, clearly meant to fit into the disc's slots.",
       puzzleDescription:
@@ -1257,9 +1271,10 @@ async function main() {
       gameId: game.id,
       act: 1,
       title: "Follow the Drag Marks",
+      storySheetBlurb:
+        "Against the near wall, low and easy to miss — a squat doorway set into rough, hurried stone. Beyond it, darkness. On the floor: deep parallel grooves, wide as a body, dragging inward. Whoever was dragged in there isn't coming back. Their last words might. Pottery shards bearing glyph fragments lie nearby — some are with you, others pocketed…",
       correctAnswerReveal:
         "The letters form one by one. TELL. MY. CHILD. I. LOVED. THEM. STILL. Not a confession. Not a warning. A message never delivered, from a parent who built their own tomb and spent their last breath thinking of someone who would never know where they went.",
-      sheetLetter: "E",
       description:
         "Against the near wall, low and easy to miss — a squat doorway set into stone rougher than the rest, as if finished in a hurry. Beyond it, darkness. On the floor, deep parallel grooves gouged into stone, wide as a body, dragging inward.",
       puzzleDescription:
@@ -1771,11 +1786,7 @@ async function main() {
       houseId: drake.id,
       act: 1,
       title: "Drake Delegation — Act 1: The Flood",
-      content: `You are the Drake Delegation — relic hunters by trade, mercenaries by reputation. Your outfit has built a career recovering the priceless knowledge of ancient civilizations, by any means necessary. But your last string of jobs has ended in failure, and the funds are running dry. This temple — recently discovered, untouched, the biggest find in years — is the job that saves the outfit. Or buries it.
-
-You had no time for pleasantries. You blasted your way in with dynamite. Maybe it caused this flood. Doesn't matter now. Got a job to do. Across the chamber, a group with whips and pencils behind their ears is already crouched over inscriptions — the Jones Junket. Near the far wall, a crew in jorts and immaculate hair is prying at the stone — the Croft Company. You didn't expect them. That changes nothing.
-
-The water is rising. You have what you have. Move.`,
+      content: "You blasted your way in with dynamite. The other houses can read their walls — you're here to take what pays. The water is rising; the longer you stand around, the less you walk out with.",
     },
   });
 
@@ -1785,13 +1796,7 @@ The water is rising. You have what you have. Move.`,
       houseId: jones.id,
       act: 1,
       title: "Jones Junket — Act 1: The Flood",
-      content: `You are the Jones Junket — scholars, disciples, and lifelong devotees of the legendary Indiana Jones. You have spent years at his seminars, absorbing every word, preparing for this very moment: your maiden expedition. Three months of painstaking schematic analysis revealed a secret entrance into the temple's lower level. Three months! And worth every second.
-
-If you succeed here, the great Indiana Jones will finally retire, and your careers begin. No pressure.
-
-You entered through the hidden passage to find you are not alone. Across the chamber, a crew in tactical gear and balaclavas is inspecting the walls near a blast hole — the Drake Delegation, apparently. They used *dynamite*. Near the far wall, a team in jorts and styled hair is pulling at the stone — the Croft Company. Neither group appears to have brought pencils. The water is rising — and given the blast hole in the wall, it's not hard to guess why.
-
-Your notes didn't mention flooding. Adapt.`,
+      content: "You spent three months reading schematics for this. The QRians wrote everything down — read the walls, and they'll tell you where to go. The water is rising; whatever it eats first is gone for good.",
     },
   });
 
@@ -1801,13 +1806,7 @@ Your notes didn't mention flooding. Adapt.`,
       houseId: croft.id,
       act: 1,
       title: "Croft Company — Act 1: The Flood",
-      content: `You are the Croft Company — handpicked by the legendary Lara Croft herself. Friends, hired hands, and devoted followers of the most relentless relic hunter alive. When Croft caught wind of this temple, she dispatched you immediately, convinced — in that way only she can be — that this would be the next biggest thing. You trust her. You're also a little terrified of her.
-
-Lara isn't here. You are. Make her proud.
-
-You dug your way in from below, tomb-raider style, and emerged to find company. Near a freshly blasted hole in the wall, a crew in tactical gear and balaclavas is scanning the perimeter — the Drake Delegation. They used dynamite. Across the chamber, a group clutching whips and pencils is already hunched over inscriptions — the Jones Junket. You look much more stylish. The water is rising — probably thanks to whatever that blast hole did to the foundation.
-
-Tie your hair back. Let's go.`,
+      content: "Lara dispatched you, and you don't disappoint Lara. Every chamber has a way up — find it before the water finds you. The other houses brought torches and guesses; you brought rope.",
     },
   });
 
@@ -1822,9 +1821,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "Powder of the Quiet Bed",
+      storySheetBlurb:
+        "Sweeping across the far wall bedded in vines, you stop. What looked like a garden — flower arrangements pinned to vines — is actually a grid. The same shapes, repeating in patterns. Your medic says it: it's writing. Whatever the pharmacist was making, the wall keeps the recipe. Working notes are scattered across the floor — you'll need them before the wall means anything…",
       correctAnswerReveal:
         "The three shapes resolve: B — Y — E. Not a formula. Not a dosing instruction. A farewell. The pharmacist embedded a goodbye in the arrangement of every plant in this room. Batch A was the sedative. Batch B was the paralytic. Batch C was the terminal compound. Together they didn't just quiet the builders — they ended them. The QRians said goodbye to their own labor force in the language of botany, and left the word hidden in the wall they built.",
-      sheetLetter: "A",
       description:
         "Sweeping across the far wall bedded in vines, you stop. What looked like a garden — dozens of flower and leaf arrangements pinned to the vine surface — is actually a grid. The same few shapes, repeating in patterns. Your medic says it first: it's writing. The whole wall is writing. Scattered across the chamber floor are loose working notes — the pharmacist's own records. You'll want to gather those before the wall means anything.",
       puzzleDescription:
@@ -1846,9 +1846,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "Drevu's Compartment",
+      storySheetBlurb:
+        "Off the side-passage and into a dim alcove: a stone table set in the corner, surface scored with rows of inset tile-slots. Above it, a sealed compartment, no hinge. Your bomb-handler reads the gaps. Passcode lock. Whoever Drevu was, he wrote it down before he sealed it. The other houses are holding tiles you'll need back…",
       correctAnswerReveal:
         "Both passcodes enter. The compartment opens. Inside: a folded record by **Mason Lamenter Drevu**.\n> *'We had no choice. The Source corrupts those who linger. We cannot send our scholars to build, our priests, our mathematicians — any of them taken by the work, taken by the place, lost to the obsession. So we sent the others. The unprotected. The ones who would carry the work but not the worth. They build without knowing what they build. They will not return. None of them. We have written the order. We will see it through. Forgive us. There was no other way.'*",
-      sheetLetter: "B",
       description:
         "Off the side-passage and into a dim alcove: a stone table set in the corner, surface scored with rows of inset tile-slots — some filled, some empty. Above the table, a sealed compartment, no hinge. Your bomb-handler reads the gaps. *Passcode lock. The other houses are holding our missing tiles.*",
       puzzleDescription:
@@ -1870,9 +1871,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Wall of Repetitions, Red",
+      storySheetBlurb:
+        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your bomb-handler crouches at the red tiles — carved this many times so the wall would still say it after the wall failed. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
         "The wall says: **IT WAS MAKING US OBSESSED**. Not the Source. The PLACE. The QRians felt it happening — they were the ones writing it down, watching themselves go obsessive, and writing it down was part of what was making them obsessive. Jones found a line above this one. Croft found another. Read all three together when the host calls it: the QRians wrote you a sentence across the whole wall.",
-      sheetLetter: "C",
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Jones and Croft are already at their own sections of the wall, working amber tiles and purple. Your bomb-handler crouches at the red tiles. They wrote it this many times so the eroded ones could still be read against the rest. Some of yours are with the others. You'll want them back to read the wall whole.",
       puzzleDescription:
@@ -1894,9 +1896,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Reagent Alcove",
+      storySheetBlurb:
+        "One of your crew leans against the wrong wall and a panel swings inward. Behind: a low-ceilinged alcove stacked with sealed phials, crucibles, fired-clay jars. Your bomb-handler crouches. Five compounds, refined past anything practical. They were arming against something. Bark labels lie scattered across the floor — some yours, others taken. You'll want them back…",
       correctAnswerReveal:
         "Five compounds resolve: **BRONZE. GLASS. SOAP. DYE. PERFUME.** At a glance, ordinary — the working stock of any well-funded QRian workshop. But not in *this* alcove. The bronze is refined past tools. The glass past cups. The dyes too saturated for cloth, the perfumes too concentrated for ceremony. Whoever stocked this room wasn't decorating. Your bomb-handler reads the back wall — half-finished assemblies, brackets, casings, sealed reservoirs — and the picture sharpens. The QRians were taking the most everyday compounds their civilization knew how to refine, and combining them into something *purpose-built*. Crafted weapons. Counter-instruments. Preparations to push back against the Source's influence directly. They were trying to fight the thing that was eating them.",
-      sheetLetter: "D",
       description:
         "One of your crew leans against the wrong stretch of wall and a panel swings inward. Behind: a low-ceilinged alcove, every surface stacked with sealed glass phials, ceramic crucibles, fired-clay jars. The smell stops you. Chemicals — not medicine, engineering. Your bomb-handler crouches. *They were making something here.* Bark labels lie scattered across the floor, torn loose when the panel slammed. The other houses have a few. You'll want them back.",
       puzzleDescription:
@@ -1918,9 +1921,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Reinforced Bunker",
+      storySheetBlurb:
+        "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight. Your bomb-handler runs a hand along the seam. Whatever Togom hid in there, he sealed it from his own people. You've got the Fuse Charges — place them. A name is carved above: PRIEST PHYSICIST TOGOM. Riddle-tablets are nearby — gather them…",
       correctAnswerReveal:
         "The charges blow inward. Smoke clears. The bunker is small — barely a closet — and inside, on a stone shelf, are the scrolls. Togom's life work, sealed for whoever could solve his riddles. Your linguist unrolls the topmost. The translation reads:\n> *'We discovered this place on one of our expeditions. People who came back from this place suddenly had something in their eyes — some sort of wisdom. We eventually held more expeditions to this area, and realized that all who came toward this area and stayed there for a while would suddenly become a lot more logical in their thinking. It had to do with the area itself. Nothing we destroyed or built seemed to prevent this consequence. The effect could not be destroyed.'*",
-      sheetLetter: "E",
       description:
         "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight, the surface scarred where someone tried — and failed — to chisel through. Your bomb-handler runs a hand along the seam. *They sealed something behind this on purpose.* You've got the Fuse Charges. Place them. There's a name carved above the seal: PRIEST PHYSICIST TOGOM. He didn't want company.",
       puzzleDescription:
@@ -1948,9 +1952,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Sealed Pantry",
+      storySheetBlurb:
+        "Off the main chamber to the right: an archway you missed, choked with vines. Push through. A storeroom — fired-clay jars on stone shelves, every one sealed. Some shelves still bear painted labels. Others are bare, the labels fallen. Whoever ate from this pantry was eating with intention. The fallen labels are scattered — some pocketed, you'll want them back…",
       correctAnswerReveal:
         "Five preparations resolve: **PEPPER. PORRIDGE. OIL. CAKE. MILK.** Look at your kitchen at home — none of these would surprise you. But that's the point. To the QRians of this era, these weren't kitchen staples. They were *nootropics*. Pepper sharpened the senses. Porridge anchored the body. Oil eased thought. Cake — sweetened with honey — kept the mind warm and present. Milk steadied a person whose center was slipping. Every jar in this pantry is a food the QRians of this period genuinely believed could armor the mind against drift. They medicated themselves with breakfast. With dinner. With the everyday stock of a kitchen, deliberately preserved, deliberately stored, deliberately *kept*. They were eating their way through the contagion in the only language their medical understanding offered.",
-      sheetLetter: "A",
       description:
         "Off the main chamber to the right: an archway you missed, choked with vines so thick you nearly walked past it. Push through. Inside, a storeroom — fired-clay jars on stone shelves, every one sealed, every one heavy. Some shelves still bear their painted labels. Others are bare, the labels fallen, scattered. Your historian inhales slow. *This was a pantry.* Whoever ate from this pantry was eating with intention. The other houses pocketed a few of the labels. You'll want them back.",
       puzzleDescription:
@@ -1972,9 +1977,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Wall of Repetitions, Amber",
+      storySheetBlurb:
+        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your linguist drops at the amber tiles. It's a confession the QRians wrote at scale. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
         "The wall says: **THIS PLACE ONCE MADE US WISE**. The QRians' opening confession. They didn't come here as scientists who made a discovery. They came here because being here MADE them scientists — the place itself was the source of their wisdom, and they knew it. Drake found a line below this one. Croft found another. Read all three together when the host calls it: the wall writes a sentence across every house in the room.",
-      sheetLetter: "B",
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Croft are already at their own sections of the wall, working red tiles and purple. Your linguist drops at the amber tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
@@ -1996,9 +2002,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "Vesh's Compartment",
+      storySheetBlurb:
+        "Off the side-passage and into a quiet alcove: a stone table in the corner, surface marked in careful columns of inset tile-slots. Above it, a sealed compartment, no hinge. Your linguist reads the rows. Phrase-lock. Vesh logged something this place wanted forgotten. Some of your tiles are with the other houses — you'll need them back…",
       correctAnswerReveal:
         "Both passcodes enter. The compartment opens. Inside: a logged record by **Witness Chronicler Vesh**.\n> *'The construction was assigned to expendable labor. The decision was made on the principle that exposure to the Source would corrupt any individual of consequence to our civilization, and we could not afford the loss. The expendable population — captured peoples, criminals, the unaccountable — were directed to the work. They built in shifts of approximately forty days. Their disposal at completion was logistical. The temple was completed in less than two cycles, an impressive output. Records to follow.'*",
-      sheetLetter: "C",
       description:
         "Off the side-passage and into a quiet alcove: a stone table set in the corner, surface marked in careful columns of inset tile-slots — some filled, some empty. Above the table, a sealed compartment, no hinge. Your linguist reads the rows. *Phrase-lock. Some tiles are with the other houses.*",
       puzzleDescription:
@@ -2020,9 +2027,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Hanging Garden of Names",
+      storySheetBlurb:
+        "Through the doors and into the dome: a greenhouse three stories high, glass long shattered, vines hanging in a forest of root-curtains. Each braid weighted at its tip with a fired-clay tag. Thousands. They turn slow in the draft. Each tag is a name. Strike the wrong one and the canopy buries the room. Burial-rite fragments lie scattered — some yours, some pocketed…",
       correctAnswerReveal:
         "Three shapes resolve: J — A — W. The tags weren't tags. When a QRian died, they kept the speaking-bone — the only part of the body that had carried words. Bone crumbled; clay replaced it; the names stayed. This garden isn't a wonder of the temple. It's a library of voices, kept in the shape of the part of the body that voiced them. You weren't reading a wall. You were reading the dead. They classified their own corpses by phonetic articulation. They could not stop classifying. They could not stop.",
-      sheetLetter: "D",
       description:
         "Through the doors and into the dome: a greenhouse three stories high, glass long shattered, vines hanging in a forest of root-curtains. Each braid weighted at its tip with a fired-clay tag the size of a fist. Thousands. They turn slow in the draft, clicking against each other like wind chimes made of teeth. Every tag carries one painted glyph. The doors behind you grind shut. The QRians left a path through this — but only in the air. You've got the Ceremonial Whips. Set them.",
       puzzleDescription:
@@ -2044,9 +2052,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Ceiling Inscription",
+      storySheetBlurb:
+        "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. That's a name. Below the inscription, a stone tile sits slightly proud of the wall — a pull-tab. Sefa wanted to be found. The riddle is her invitation. Riddle-tablets are scattered nearby — you'll want them all to release the case…",
       correctAnswerReveal:
         "The tile pulls away. Behind it, exactly the depth of an arm: a tightly-wrapped scroll-bundle. Sefa's writing, untouched. Your linguist unrolls the topmost. The translation reads:\n> *'All those affected by the Source suddenly carried the power of a blocky, descriptive language. The script exploded throughout our civilization — everyone began using these blocky letters to communicate. It seemed effective at first. It was a powerful way to evolve our language. But it affected our entire culture, intimately, perhaps too intimately.'*",
-      sheetLetter: "E",
       description:
         "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. *That's a name.* The carvings name an author the others walked past — and below the inscription, a stone tile sits slightly proud of the wall. A pull-tab. The compartment behind it is untouched. Above the tile: BOTANIST THEOLOGIAN SEFA. She wanted to be found.",
       puzzleDescription:
@@ -2074,9 +2083,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Reckoning Floor",
+      storySheetBlurb:
+        "Down the steps and across the chamber floor: a wide stone slab, set with thousands of pebbles, each carved with a single number. Your engineer crouches and starts mapping it — and stops. They were measuring how much time they had. The floor froze where the answer ran out. Calculation tablets are scattered — find them and read what's frozen here…",
       correctAnswerReveal:
         "Four shapes resolve: T — I — M — E. Not a quantity. Not a duration. The word itself. The QRians' math couldn't separate counting from spelling — when they ran a calculation about something, the calculation produced the name of what they were counting. The answer to *how long do we have* was TIME, written out in the only thing that could write it: a measurement of itself. The calculator embedded the question and the answer in the same field of stones, and the floor froze where the answer ran out. They knew. They counted. They knew.",
-      sheetLetter: "A",
       description:
         "Down the steps and across the chamber floor: a wide stone slab, set with thousands of pebbles, each carved with a single number. Something was being calculated. Your engineer crouches and starts mapping it — and stops. In QRian, math and language sit close enough that a calculation doesn't end in a number; it ends in a word. The other houses have pocketed the calculator's working notes. You'll want them back to read what's frozen here.",
       puzzleDescription:
@@ -2098,9 +2108,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Sighting Wall",
+      storySheetBlurb:
+        "Up the ledge your climber uncovered: the chamber narrows to a wall full of slits. Thin vertical cuts, each no wider than a hand, looking out over canopy and basin and far ridges. Set into many: amber lenses, polished smooth, each labeled. The QRians were measuring whether this place was special. The lenses know. Other slits are bare; their labels fell and scattered — you'll want them back…",
       correctAnswerReveal:
         "Five observations resolve. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe*. They watched the sky for what they couldn't otherwise know — where they sat in the bigger pattern, what their place was relative to fixed stars, how the weather over this valley differed from the weather over every other valley. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was *here* — bound to this geography — or whether it was bigger than that.",
-      sheetLetter: "B",
       description:
         "Up the ledge your climber uncovered: the chamber narrows to a wall, and the wall is full of slits. Thin vertical cuts, each one no wider than a hand, set at varying heights, looking out — over the canopy, the basin, the far ridges. Set into many of the slits: amber lenses, polished smooth, each one labeled in a careful hand. Other slits are bare; their labels gone, scattered to the chamber below. Your climber goes still. *This wasn't a fortress wall.* It was an eye.",
       puzzleDescription:
@@ -2122,9 +2133,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "Krane's Compartment",
+      storySheetBlurb:
+        "Off the side-passage and into a tight alcove: a stone table set in the corner, mechanism still snug — rows of inset tile-slots, some filled, some empty. Above it, a sealed compartment, no hinge. Your point climber checks the slots. Mechanism's plain. Krane built the temple. He left a working note before he sealed it. The other houses have tiles you'll need back…",
       correctAnswerReveal:
         "Both passcodes enter. The compartment opens. Inside: a working note by **Foreman Geometer Krane**.\n> *'The labor system was elegant. We needed builders we could afford to lose. We had them. The captives were efficient when motivated, the criminals when threatened, and the unmarked when convinced of purpose. We assigned tasks by aptitude — the strong to lifting, the deft to inlay, the small to ducting. The work proceeded smoothly. Their elimination at completion was a kindness; we would not return them to a world they could not rejoin. The temple stands as proof.'*",
-      sheetLetter: "C",
       description:
         "Off the side-passage and into a tight alcove: a stone table set in the corner, mechanism still snug — rows of inset tile-slots, some filled, some empty. Above the table, a sealed compartment, no hinge. Your point climber checks the slots. *Mechanism's plain. The other houses have what we need.*",
       puzzleDescription:
@@ -2146,9 +2158,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The Wall of Repetitions, Purple",
+      storySheetBlurb:
+        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your point climber kneels at the purple tiles — the hinge of the confession, wisdom turning to obsession slowly enough to write down. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
         "The wall says: **UNTIL WE SLOWLY REALIZED**. The middle of a sentence. The hinge. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall. Jones found the start. Drake found the end. Read all three together when the host calls it: there's a complete confession on this wall.",
-      sheetLetter: "D",
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Jones are already at their own sections of the wall, working red tiles and amber. Your point climber kneels at the purple tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
@@ -2170,9 +2183,10 @@ Tie your hair back. Let's go.`,
       gameId: game.id,
       act: 2,
       title: "The High Ledge",
+      storySheetBlurb:
+        "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment cut into the face, sealed with a wooden lid. Your point climber tilts her head back. He kept his theory above where the floor could reach. You've got the Grappling Rigs — set the lines. Riddle-tablets are nearby — gather them…",
       correctAnswerReveal:
         "The lid lifts. The compartment is small but dry — Yenus chose his ledge well. Inside: the scrolls. Your engineer unrolls the topmost. The translation reads:\n> *'This place was special. Almost divine, even. It gave us a sense of understanding which vastly accelerated our civilization. We understood mathematics, logic, physics — somehow suddenly, somehow intuitively. And somehow obsessively. We used our new knowledge to build our civilization to great heights. Farmers became mathematicians; merchants became astronomers; we became the envy of the land. Little did we know that this obsession was an unstoppable force…'*",
-      sheetLetter: "E",
       description:
         "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment is cut into the face of it, sealed with a wooden lid that looks impossibly fresh. Your point climber tilts her head back. *Whoever lived up there wanted to be alone.* You've got the Grappling Rigs. Set the lines. A name is carved into the lid above: PHILOSOPHER MATHEMATICIAN YENUS. He kept his work where the floor couldn't reach.",
       puzzleDescription:
@@ -2593,11 +2607,7 @@ Tie your hair back. Let's go.`,
       houseId: drake.id,
       act: 2,
       title: "Drake Delegation — Act 2: The Corruption",
-      content: `You climbed up out of the floodwater into the Green Department — a vast botanical chamber the QRians built above their lower temple. Vines hang in three-story curtains. Glass phials line stone shelves. The air is heavier here, sweeter, wrong.
-
-The temple is sealing itself. Every passage you came up through is grinding shut behind you, and the doors ahead are narrowing on a clock you can't see. Twenty minutes, maybe less.
-
-This was a working chamber. Pharmacists, chemists, builders, engineers. The QRians made things here — and not all of them were medicine. Drake's instinct: find what they were really making. The other houses are reading walls. You came to read inventories.`,
+      content: "The temple is sealing itself behind you. The other houses are reading walls; you came to raid inventories. Find what the QRians were really making — and pocket it before the doors finish closing.",
     },
   });
 
@@ -2607,11 +2617,7 @@ This was a working chamber. Pharmacists, chemists, builders, engineers. The QRia
       houseId: jones.id,
       act: 2,
       title: "Jones Junket — Act 2: The Corruption",
-      content: `You climbed up out of the floodwater into the Green Department — the QRians' upper temple, garden and library and infirmary all at once. Sunlight comes down through shattered glass three stories above you. The vines are alive. The air smells of something half-medicinal, half-fungal.
-
-The temple is sealing itself. You can hear the doors closing one corridor at a time. The clock is real and it is short.
-
-This is the chamber of the writers. Wall after wall of carved phrase, hung tag after hung tag of painted glyph, scroll after sealed scroll. They wrote *constantly*. They could not stop. Jones's instinct: read everything. Whatever the QRians wanted preserved, they preserved it in language — and language is what you came here to read.`,
+      content: "The temple is sealing itself behind you. Every wall is a sentence the QRians could not stop writing — decode what they preserved. The doors are closing; what you don't read here, no scholar will read again.",
     },
   });
 
@@ -2621,11 +2627,7 @@ This is the chamber of the writers. Wall after wall of carved phrase, hung tag a
       houseId: croft.id,
       act: 2,
       title: "Croft Company — Act 2: The Corruption",
-      content: `You climbed up out of the floodwater into the Green Department — a high chamber the QRians built into the canopy itself. Stone slabs underfoot, slits in the walls looking out over the basin, a sighting wall full of polished lenses pointed at a sky you can't see from here.
-
-The temple is sealing itself. Every passage you came up through is closing on a deadline you can feel in your teeth.
-
-This chamber was built by people who measured. They were calculating something — on the floor, through the lenses, in the columns of inset tiles cut into stone tables. Croft's instinct: read what they were measuring. Math doesn't lie, and the QRians left their math behind. If they ran out of time partway through a calculation, the answer is still in the room.`,
+      content: "The temple is sealing itself behind you. The QRians left their math frozen in stone — crack what they ran out of time to finish. The doors are closing; the answer's still in the room, but the room won't be.",
     },
   });
 
@@ -2871,21 +2873,21 @@ I know only that we chose to leave the future a danger behind stone, not a world
   // Each Act 3 clause lives with the house whose platform would propose it.
   // Other houses can agree or refuse; only the holder can put it on the table.
   const clauseHouseByClauseId: Record<string, string> = {
-    // Jones — Knowledge platform: writing survives, world hears, museums get pieces.
+    // Jones — Knowledge platform: writing survives, world hears, record before any decision.
     copy_inscriptions: jones.id,
     publish_discovery: jones.id,
     preserve_some_artifacts: jones.id,
+    no_judgment_without_record: jones.id,
     // Croft — Stewardship platform: shared, supervised, glory-free, future warned.
-    open_under_guard: croft.id,
+    three_witness_rule: croft.id,
     three_house_custody: croft.id,
     no_house_takes_credit: croft.id,
     leave_unmistakable_warning: croft.id,
     // Drake — Containment platform: lock it down forever, nothing leaves.
-    falsify_reports: drake.id,
-    no_artifacts_leave: drake.id,
+    withhold_mechanism: drake.id,
+    no_private_keeping: drake.id,
     suppress_location: drake.id,
-    archive_everything_then_destroy: drake.id,
-    bury_approach: drake.id,
+    no_ready_passage: drake.id,
   };
 
   for (const outcome of FINALE_OUTCOMES) {
@@ -2948,11 +2950,7 @@ I know only that we chose to leave the future a danger behind stone, not a world
       houseId: drake.id,
       act: 3,
       title: "Drake Delegation — Act 3: The Dying Light",
-      content: `The temple is not just old. It is a decision someone else made and forced into stone.
-
-Act 3 begins with comparison, not conquest. Pool what your house knows with what the others know. Reconstruct the order of the QRians' rise, dependence, and collapse. Only then decide what the living owe the future.
-
-Drake's instinct is simple: if the Source remained dangerous even after the builders understood it, then leaving a live wound behind is cowardice disguised as caution. You do not have to destroy it at any cost. But you must push for an ending that actually settles the threat, not one that merely postpones it.`,
+      content: "This is no longer about who finds what. The QRians left a wound — close it cleanly, or close it forever. Drake's instinct: an ending that settles the threat is the only real ending.",
     },
   });
 
@@ -2962,11 +2960,7 @@ Drake's instinct is simple: if the Source remained dangerous even after the buil
       houseId: jones.id,
       act: 3,
       title: "Jones Junket — Act 3: The Dying Light",
-      content: `The final chamber is now a matter of history as much as danger.
-
-Act 3 begins by comparing notes across all three houses. Build the temple's true timeline together. What did the Source give the QRians? What did it take from them? What did they choose at the end?
-
-Jones's instinct is equally simple: destroying or burying the Source without understanding what it made possible would be a second tragedy. Push for a future in which truth survives, even if access must be constrained. If the room decides to close the book, make sure it does not also burn the archive.`,
+      content: "This is no longer about who finds what. Reconstruct the QRians' rise and fall — together, across the three houses. Jones's instinct: don't burn the archive when you close the book.",
     },
   });
 
@@ -2976,11 +2970,7 @@ Jones's instinct is equally simple: destroying or burying the Source without und
       houseId: croft.id,
       act: 3,
       title: "Croft Company — Act 3: The Dying Light",
-      content: `The QRians left behind more than ruins. They left behind a warning poorly translated by the centuries.
-
-Act 3 starts with collective reconstruction. Compare evidence, assemble the true order of events, and decide what the builders were trying to prevent.
-
-Croft's instinct is stewardship. Some discoveries are real and beautiful and still too dangerous to treat as prizes. Push for an ending that protects the world from the Source without reducing the room to panic. The question is not just what you can reach. It is what should be left unopened, and how clearly you owe that warning to whoever comes next.`,
+      content: "This is no longer about who finds what. Reconstruct what the QRians were trying to prevent — together, across the three houses. Croft's instinct: some discoveries are too dangerous to treat as prizes.",
     },
   });
 

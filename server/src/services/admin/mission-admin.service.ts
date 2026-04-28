@@ -61,7 +61,7 @@ export async function createMission(gameId: string, data: Record<string, any>) {
   const createData: Record<string, any> = {
     gameId,
     ...pickAllowedFields(data, [
-      "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
+      "act", "title", "description", "puzzleDescription", "storySheetBlurb", "missionCardId",
       "requiredClueSets", "answerTemplateType", "answerId", "designId",
       "consequenceCompleted", "consequenceNotCompleted",
       "consequenceImageCompleted", "consequenceImageNotCompleted",
@@ -99,7 +99,7 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
   delete data.houseIds;
 
   const updateData = pickAllowedFields(data, [
-    "act", "title", "sheetLetter", "description", "puzzleDescription", "missionCardId",
+    "act", "title", "description", "puzzleDescription", "storySheetBlurb", "missionCardId",
     "requiredClueSets", "answerTemplateType", "answerId", "designId",
     "isCompleted", "completedAt", "lockedOut", "lockedOutReason",
     "consequenceCompleted", "consequenceNotCompleted",
@@ -128,6 +128,26 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
   return prisma.mission.findUnique({
     where: { id: missionId },
     include: missionInclude,
+  });
+}
+
+export async function reorderMissions(gameId: string, missionIds: string[]) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  await prisma.$transaction(
+    missionIds.map((id, index) =>
+      prisma.mission.update({
+        where: { id },
+        data: { sortOrder: index },
+      }),
+    ),
+  );
+
+  return prisma.mission.findMany({
+    where: { gameId },
+    include: missionInclude,
+    orderBy: [{ act: "asc" }, { sortOrder: "asc" }],
   });
 }
 

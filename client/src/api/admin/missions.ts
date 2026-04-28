@@ -49,6 +49,17 @@ export async function deleteMission(
   });
 }
 
+export async function reorderMissions(
+  gameId: string,
+  missionIds: string[],
+): Promise<void> {
+  await adminFetch(`${BASE}/games/${gameId}/missions/reorder`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ missionIds }),
+  });
+}
+
 export function getMissionQRUrl(gameId: string, missionId: string): string {
   const token = getAdminToken();
   const url = `${BASE}/games/${gameId}/missions/${missionId}/qr`;

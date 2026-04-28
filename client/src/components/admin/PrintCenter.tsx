@@ -47,8 +47,15 @@ export function PrintCenter() {
 
       <Stack gap="md">
         {printOptions.map((opt) => (
-          <Paper key={opt.title} p="lg" withBorder>
-            <Group justify="space-between">
+          <Paper
+            key={opt.title}
+            p="lg"
+            withBorder
+            onClick={() => navigate(opt.path)}
+            style={{ cursor: "pointer" }}
+            className="print-option-row"
+          >
+            <Group justify="space-between" wrap="nowrap">
               <div>
                 <Text size="md" fw={600}>{opt.title}</Text>
                 <Text size="sm" c="dimmed" mt={4}>{opt.description}</Text>
@@ -56,7 +63,10 @@ export function PrintCenter() {
               <Button
                 variant="light"
                 color={opt.color}
-                onClick={() => navigate(opt.path)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(opt.path);
+                }}
               >
                 Open
               </Button>
@@ -64,6 +74,14 @@ export function PrintCenter() {
           </Paper>
         ))}
       </Stack>
+
+      <style>{`
+        .print-option-row { transition: border-color 0.12s ease, background 0.12s ease; }
+        .print-option-row:hover {
+          border-color: var(--mantine-color-yellow-6);
+          background: rgba(255, 200, 0, 0.04);
+        }
+      `}</style>
     </div>
   );
 }

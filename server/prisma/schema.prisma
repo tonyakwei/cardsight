@@ -297,9 +297,9 @@ model Mission {
   missionCardId               String?             @map("mission_card_id") @db.Uuid
   missionCard                 Card?               @relation(fields: [missionCardId], references: [id])
   title                       String
-  sheetLetter                 String?             @map("sheet_letter")
   description                 String
   puzzleDescription           String?             @map("puzzle_description")
+  storySheetBlurb             String?             @map("story_sheet_blurb")
   requiredClueSets            Json                @default("[]") @map("required_clue_sets")
                               // Array of { cardSetId: string, count: number }
   answerTemplateType          AnswerTemplateType? @map("answer_template_type")

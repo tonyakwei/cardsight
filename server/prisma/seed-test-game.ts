@@ -2098,7 +2098,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Verify the Permit Discrepancy",
-      sheetLetter: "A",
       description:
         "Your anonymous source mentioned Building Permit #4471. The dates allegedly don't match the council vote. Gather Documents and Sources clues to verify this claim before going further.",
       puzzleDescription:
@@ -2123,7 +2122,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Locate the Hidden Records Room",
-      sheetLetter: "B",
       description:
         "The night janitor mentioned files being moved to an unlisted area of City Hall before the vote. Gather Sources clues to confirm the location and what's stored there.",
       puzzleDescription:
@@ -2144,7 +2142,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Identify 'H.C.'",
-      sheetLetter: "C",
       description:
         "The initials 'H.C.' keep appearing — on a restaurant receipt, on corporate filings, in employee testimony. Gather Sources and Connections clues to identify this person.",
       puzzleDescription:
@@ -2169,7 +2166,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Document the Empty Site",
-      sheetLetter: "D",
       description:
         "Multiple clues suggest the Greenfield construction site is empty despite millions in public spending. Gather Photos and Money Trail clues to document this discrepancy.",
       requiredClueSets: [
@@ -2191,7 +2187,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Trace the Money Offshore",
-      sheetLetter: "E",
       description:
         "The bank records show money flowing from the city to GreenBuild and then... somewhere else. Follow the Money Trail to determine where the funds are going.",
       puzzleDescription:
@@ -2213,7 +2208,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Establish the Address Connection",
-      sheetLetter: "F",
       description:
         "Cross-reference GreenBuild LLC's corporate filings with other publicly available records. There's a connection hiding in plain sight.",
       requiredClueSets: [
@@ -2235,7 +2229,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 1,
       title: "Build the Initial Timeline",
-      sheetLetter: "G",
       description:
         "Something doesn't add up about the sequence of events. The Herald has documents showing when things were filed; the Chronicle has financial records showing when money moved. Combine your evidence to construct a chronological timeline of the Greenfield scheme.",
       requiredClueSets: [
@@ -2263,7 +2256,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 2,
       title: "Find Diane Liu",
-      sheetLetter: "A",
       description:
         "The city comptroller, Diane Liu, has been missing for two weeks. Her office is cleaned out, her house is dark, and HR claims she's 'on leave.' Gather Sources and Connections clues to determine what happened to her.",
       puzzleDescription:
@@ -2288,7 +2280,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 2,
       title: "Expose the Five Shell Companies",
-      sheetLetter: "B",
       description:
         "The comptroller's unfinished audit referenced payments to multiple companies beyond GreenBuild. Gather Documents and Money Trail clues to identify the full scope of the shell company network.",
       requiredClueSets: [
@@ -2310,7 +2301,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 2,
       title: "Map Helen Cross's Empire",
-      sheetLetter: "C",
       description:
         "Helen Cross isn't just the registered agent — she may be at the center of the entire operation. Gather Connections and Documents clues to map her full involvement.",
       requiredClueSets: [
@@ -2331,7 +2321,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 2,
       title: "Recover the Mailed Evidence",
-      sheetLetter: "D",
       description:
         "An anonymous caller said the comptroller mailed evidence before disappearing. Gather Sources clues to track down the letters.",
       puzzleDescription:
@@ -2354,7 +2343,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 2,
       title: "Follow the $40 Million",
-      sheetLetter: "E",
       description:
         "The money moved from the city through five shell companies to a Cayman Islands trust. But where did it go from there? Gather Money Trail and Documents clues to trace the final destination.",
       requiredClueSets: [
@@ -2375,7 +2363,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 2,
       title: "Connect the Trust to the Mayor",
-      sheetLetter: "F",
       description:
         "The Cayman Holdings Trust is at the center of the money trail. Gather Connections and Money Trail clues to identify who controls it and who benefits.",
       requiredClueSets: [
@@ -2403,7 +2390,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 3,
       title: "Write the Government Corruption Angle",
-      sheetLetter: "A",
       description:
         "Your paper's piece focuses on the government corruption: the rigged bid, the backdated permit, the intimidated comptroller, and the sealed arrest warrant. Assemble your Documents and Sources.",
       requiredClueSets: [
@@ -2420,7 +2406,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 3,
       title: "Secure On-Record Sources",
-      sheetLetter: "B",
       description:
         "The story needs named sources willing to go on record. The dissenting councilors and the former aide are ready to talk. Gather their statements.",
       requiredClueSets: [{ cardSetId: sources.id, count: 2 }],
@@ -2435,7 +2420,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 3,
       title: "Write the Human Interest Story",
-      sheetLetter: "C",
       description:
         "Your paper's angle is the people: the comptroller who risked everything, the employees who discovered they were part of a fraud, the councilors who tried to warn everyone. Gather Sources and Photos.",
       requiredClueSets: [
@@ -2452,7 +2436,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 3,
       title: "Assemble the Photo Evidence Package",
-      sheetLetter: "D",
       description:
         "Every good story needs visuals. Collect the photographic evidence and connection diagrams that will make the front page unforgettable.",
       requiredClueSets: [
@@ -2470,7 +2453,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 3,
       title: "Write the Financial Investigation",
-      sheetLetter: "E",
       description:
         "Your paper traces every dollar. The complete transaction map, the tax evasion evidence, the forensic accounting — assemble the financial story that makes the case irrefutable.",
       requiredClueSets: [
@@ -2487,7 +2469,6 @@ The woman who started this investigation is the same woman who finished it. She 
       gameId: game.id,
       act: 3,
       title: "Assemble the Complete Case File",
-      sheetLetter: "F",
       description:
         "Before publication, compile the definitive case file: the money trail, the network diagram, the plea deal. This is the package that will hold up in court.",
       requiredClueSets: [

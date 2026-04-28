@@ -27,6 +27,7 @@ import {
   createMission,
   updateMission,
   deleteMission,
+  reorderMissions,
   getMissionQRUrl,
   fetchConsequences,
   createConsequence,
@@ -189,6 +190,34 @@ export function MissionManager() {
                     designs={designs}
                     onUpdated={handleUpdated}
                     onDeleted={handleDeleted}
+                    onReorder={async (draggedId, targetId) => {
+                      const group = byAct.get(act)!;
+                      const from = group.findIndex((m) => m.id === draggedId);
+                      const to = group.findIndex((m) => m.id === targetId);
+                      if (from === -1 || to === -1 || from === to) return;
+                      const reordered = [...group];
+                      const [moved] = reordered.splice(from, 1);
+                      reordered.splice(to, 0, moved);
+                      // Build full mission ID order: keep other acts intact, splice in reordered group
+                      const next: string[] = [];
+                      for (const a of sortedActs) {
+                        if (a === act) {
+                          next.push(...reordered.map((m) => m.id));
+                        } else {
+                          next.push(...byAct.get(a)!.map((m) => m.id));
+                        }
+                      }
+                      // Optimistic local update
+                      setMissions((prev) => {
+                        const orderMap = new Map(next.map((id, i) => [id, i]));
+                        return [...prev].sort(
+                          (a, b) =>
+                            a.act - b.act ||
+                            (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0),
+                        );
+                      });
+                      await reorderMissions(gameId!, next);
+                    }}
                   />
                 ))}
               </Stack>
@@ -209,6 +238,7 @@ function MissionRow({
   designs,
   onUpdated,
   onDeleted,
+  onReorder,
 }: {
   mission: AdminMission;
   gameId: string;
@@ -218,9 +248,11 @@ function MissionRow({
   designs: AdminDesign[];
   onUpdated: (m: AdminMission) => void;
   onDeleted: (id: string) => void;
+  onReorder: (draggedId: string, targetId: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   const save = async (data: Record<string, any>) => {
     setSaving(true);
@@ -250,11 +282,36 @@ function MissionRow({
     <Paper
       p="sm"
       withBorder
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData("text/mission-id", mission.id);
+        e.dataTransfer.effectAllowed = "move";
+      }}
+      onDragOver={(e) => {
+        if (e.dataTransfer.types.includes("text/mission-id")) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          setDragOver(true);
+        }
+      }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragOver(false);
+        const draggedId = e.dataTransfer.getData("text/mission-id");
+        if (draggedId && draggedId !== mission.id) {
+          onReorder(draggedId, mission.id);
+        }
+      }}
       style={{
-        borderColor: mission.isCompleted
+        borderColor: dragOver
+          ? "var(--mantine-color-yellow-5)"
+          : mission.isCompleted
           ? "var(--mantine-color-green-8)"
           : "var(--mantine-color-dark-5)",
-        background: mission.isCompleted
+        background: dragOver
+          ? "rgba(255, 200, 0, 0.06)"
+          : mission.isCompleted
           ? "rgba(0, 255, 0, 0.03)"
           : "transparent",
       }}
@@ -266,6 +323,14 @@ function MissionRow({
         onClick={() => setExpanded(!expanded)}
       >
         <Group gap="sm">
+          <Text
+            size="sm"
+            c="dimmed"
+            style={{ cursor: "grab", userSelect: "none", lineHeight: 1 }}
+            title="Drag to reorder"
+          >
+            ⋮⋮
+          </Text>
           <Checkbox
             size="xs"
             checked={mission.isCompleted}
@@ -320,18 +385,6 @@ function MissionRow({
                   save({ title: e.target.value });
               }}
             />
-            <TextInput
-              label="Sheet Letter"
-              size="xs"
-              style={{ maxWidth: 80 }}
-              placeholder="A"
-              defaultValue={mission.sheetLetter ?? ""}
-              onBlur={(e) => {
-                const val = e.target.value.toUpperCase().trim() || null;
-                if (val !== (mission.sheetLetter ?? null))
-                  save({ sheetLetter: val });
-              }}
-            />
             <NumberInput
               label="Act"
               size="xs"
@@ -357,6 +410,21 @@ function MissionRow({
                   if (e.target.value !== mission.description)
                     save({ description: e.target.value });
                 }}
+              />
+              <Textarea
+                label="Story Sheet Blurb (printed under the story brief — markdown)"
+                size="xs"
+                autosize
+                minRows={2}
+                maxRows={6}
+                placeholder="The hook printed on the story sheet, next to this mission's QR code..."
+                defaultValue={mission.storySheetBlurb ?? ""}
+                onBlur={(e) => {
+                  const val = e.target.value || null;
+                  if (val !== mission.storySheetBlurb)
+                    save({ storySheetBlurb: val });
+                }}
+                styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }}
               />
               <Textarea
                 label="Puzzle Description (shown to players — markdown)"

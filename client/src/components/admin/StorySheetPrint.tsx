@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useLayoutEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import {
   Group,
@@ -7,7 +7,10 @@ import {
   Button,
   SegmentedControl,
   ActionIcon,
+  Badge,
+  Stack,
 } from "@mantine/core";
+import Markdown from "react-markdown";
 import {
   fetchGame,
   fetchStorySheetPrintData,
@@ -18,8 +21,8 @@ import {
 interface PrintMission {
   id: string;
   title: string;
-  sheetLetter: string | null;
   description: string;
+  storySheetBlurb: string | null;
 }
 
 interface PrintSheet {
@@ -36,7 +39,7 @@ interface PrintSheet {
 interface SheetTheme {
   id: string;
   label: string;
-  fonts?: string; // Google Fonts URL to load
+  fonts?: string;
   pageBg: string;
   textColor: string;
   bodyFont: string;
@@ -47,9 +50,7 @@ interface SheetTheme {
   headerBorder: (houseColor: string) => string;
   missionBandBg: (houseColor: string) => string;
   missionBandBorder: (houseColor: string) => string;
-  missionLetterColor: (houseColor: string) => string;
-  missionMarkerColor: (houseColor: string) => string;
-  /** Optional decorative background layers */
+  missionTitleColor: (houseColor: string) => string;
   renderBackground?: (houseColor: string) => React.ReactNode;
 }
 
@@ -66,8 +67,7 @@ const classicTheme: SheetTheme = {
   headerBorder: (houseColor) => `2px solid ${houseColor}`,
   missionBandBg: (houseColor) => `${houseColor}12`,
   missionBandBorder: (houseColor) => `4px solid ${houseColor}`,
-  missionLetterColor: (houseColor) => houseColor,
-  missionMarkerColor: (houseColor) => houseColor,
+  missionTitleColor: (houseColor) => houseColor,
 };
 
 const templeTheme: SheetTheme = {
@@ -84,11 +84,9 @@ const templeTheme: SheetTheme = {
   headerBorder: () => "2px solid #c4a265",
   missionBandBg: () => "rgba(139, 94, 60, 0.10)",
   missionBandBorder: () => "4px solid #a0845c",
-  missionLetterColor: () => "#8b5e3c",
-  missionMarkerColor: () => "#6b4226",
+  missionTitleColor: () => "#6b4226",
   renderBackground: () => (
     <>
-      {/* Parchment texture — subtle warm grain */}
       <div
         style={{
           position: "absolute",
@@ -107,7 +105,6 @@ const templeTheme: SheetTheme = {
           `,
         }}
       />
-      {/* Aged edge darkening */}
       <div
         style={{
           position: "absolute",
@@ -118,7 +115,6 @@ const templeTheme: SheetTheme = {
           `,
         }}
       />
-      {/* Faint crack lines */}
       <div
         style={{
           position: "absolute",
@@ -138,34 +134,17 @@ const templeTheme: SheetTheme = {
 
 const THEMES: SheetTheme[] = [classicTheme, templeTheme];
 
-// --- Content parsing ---
-
-/** Parse content into segments: plain text or mission-marked paragraphs.
- *  Missions are matched by their explicit sheetLetter field (set in admin). */
-function parseContent(content: string, missions: PrintMission[]) {
-  const paragraphs = content.split(/\n\n+/);
-  const missionLetterMap = new Map<string, PrintMission>();
-  for (const m of missions) {
-    if (m.sheetLetter) {
-      missionLetterMap.set(m.sheetLetter.toUpperCase(), m);
-    }
-  }
-
-  return paragraphs.map((para) => {
-    // Check for (A), (B), etc. anywhere in the paragraph
-    const match = para.match(/\(([A-Z])\)/);
-    if (match) {
-      const letter = match[1];
-      const mission = missionLetterMap.get(letter);
-      if (mission) {
-        return { type: "mission" as const, text: para, letter, mission };
-      }
-    }
-    return { type: "text" as const, text: para };
-  });
-}
-
 // --- Components ---
+
+// US Letter content area at 96 DPI with 0.5in margins
+const PAGE_CONTENT_HEIGHT_PX = 10 * 96; // 960px
+const PAGE_WARN_RATIO = 0.9; // warn when within 10% of overflow
+
+interface OverflowState {
+  height: number;
+  overflows: boolean;
+  warning: boolean;
+}
 
 export function StorySheetPrint() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -175,12 +154,33 @@ export function StorySheetPrint() {
   const [act, setAct] = useState("1");
   const [themeId, setThemeId] = useState("classic");
   const [loading, setLoading] = useState(true);
+  const [overflows, setOverflows] = useState<Record<string, OverflowState>>({});
 
   const theme = THEMES.find((t) => t.id === themeId) ?? classicTheme;
+
+  const recordHeight = useCallback((sheetId: string, height: number) => {
+    setOverflows((prev) => {
+      const next: OverflowState = {
+        height,
+        overflows: height > PAGE_CONTENT_HEIGHT_PX,
+        warning: height > PAGE_CONTENT_HEIGHT_PX * PAGE_WARN_RATIO,
+      };
+      const cur = prev[sheetId];
+      if (
+        cur &&
+        cur.height === next.height &&
+        cur.overflows === next.overflows &&
+        cur.warning === next.warning
+      )
+        return prev;
+      return { ...prev, [sheetId]: next };
+    });
+  }, []);
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
     setLoading(true);
+    setOverflows({});
     const [g, s] = await Promise.all([
       fetchGame(gameId),
       fetchStorySheetPrintData(gameId, Number(act)),
@@ -206,12 +206,8 @@ export function StorySheetPrint() {
 
   return (
     <div>
-      {/* Google Fonts for active theme */}
-      {theme.fonts && (
-        <link rel="stylesheet" href={theme.fonts} />
-      )}
+      {theme.fonts && <link rel="stylesheet" href={theme.fonts} />}
 
-      {/* Controls (hidden in print) */}
       <div className="no-print" style={{ marginBottom: "1.5rem" }}>
         <Group justify="space-between" mb="md">
           <Group gap="sm">
@@ -250,6 +246,39 @@ export function StorySheetPrint() {
         </Group>
       </div>
 
+      {/* Overflow summary (screen-only) */}
+      {!loading && sheets.length > 0 && (
+        <div className="no-print" style={{ marginBottom: "1rem" }}>
+          <Stack gap={4}>
+            {sheets.map((sheet) => {
+              const o = overflows[sheet.id];
+              if (!o) return null;
+              const overshootPx = Math.max(0, o.height - PAGE_CONTENT_HEIGHT_PX);
+              return (
+                <Group key={sheet.id} gap="xs">
+                  <Text size="xs" fw={600} style={{ minWidth: 110 }}>
+                    {sheet.house.name}
+                  </Text>
+                  {o.overflows ? (
+                    <Badge size="sm" color="red" variant="filled">
+                      Overflows by ~{overshootPx}px ({Math.ceil(o.height / PAGE_CONTENT_HEIGHT_PX)} pages)
+                    </Badge>
+                  ) : o.warning ? (
+                    <Badge size="sm" color="yellow" variant="filled">
+                      Tight — {Math.round((o.height / PAGE_CONTENT_HEIGHT_PX) * 100)}% of page
+                    </Badge>
+                  ) : (
+                    <Badge size="sm" color="teal" variant="light">
+                      Fits ({Math.round((o.height / PAGE_CONTENT_HEIGHT_PX) * 100)}%)
+                    </Badge>
+                  )}
+                </Group>
+              );
+            })}
+          </Stack>
+        </div>
+      )}
+
       {loading ? (
         <Group justify="center" pt="xl">
           <Loader color="yellow" size="sm" />
@@ -267,19 +296,30 @@ export function StorySheetPrint() {
               gameId={gameId!}
               theme={theme}
               isLast={i === sheets.length - 1}
+              onMeasure={(h) => recordHeight(sheet.id, h)}
             />
           ))}
         </div>
       )}
 
       <style>{`
+        @page { size: letter; margin: 0.5in; }
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; }
+          .sheet-page { margin: 0 !important; box-shadow: none !important; }
         }
         @media screen {
-          .sheet-page { margin-bottom: 2rem; }
+          .sheet-page { margin: 0 auto 2rem auto; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
         }
+        .story-md p { margin: 0 0 1rem 0; }
+        .story-md p:last-child { margin-bottom: 0; }
+        .story-md em { font-style: italic; }
+        .story-md strong { font-weight: 700; }
+        .blurb-md p { margin: 0 0 0.5rem 0; }
+        .blurb-md p:last-child { margin-bottom: 0; }
+        .blurb-md em { font-style: italic; }
+        .blurb-md strong { font-weight: 700; }
       `}</style>
     </div>
   );
@@ -290,22 +330,40 @@ function SheetPage({
   gameId,
   theme,
   isLast,
+  onMeasure,
 }: {
   sheet: PrintSheet;
   gameId: string;
   theme: SheetTheme;
   isLast: boolean;
+  onMeasure: (heightPx: number) => void;
 }) {
-  const segments = parseContent(sheet.content, sheet.missions);
   const houseColor = sheet.house.color;
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => onMeasure(el.scrollHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    // Re-measure once images (QR codes) have loaded
+    const imgs = el.querySelectorAll("img");
+    imgs.forEach((img) => {
+      if (!img.complete) img.addEventListener("load", measure, { once: true });
+    });
+    return () => ro.disconnect();
+  }, [onMeasure, sheet.content, sheet.missions.length]);
 
   return (
     <div
+      ref={ref}
       className="sheet-page"
       style={{
         pageBreakAfter: isLast ? undefined : "always",
-        maxWidth: "850px",
-        margin: "0 auto",
+        width: "7.5in",
+        boxSizing: "border-box",
         padding: "2.5rem",
         position: "relative",
         overflow: "hidden",
@@ -318,10 +376,8 @@ function SheetPage({
         WebkitPrintColorAdjust: "exact",
       } as React.CSSProperties}
     >
-      {/* Decorative background layers */}
       {theme.renderBackground?.(houseColor)}
 
-      {/* Content (above background) */}
       <div style={{ position: "relative" }}>
         {/* Title header */}
         <div
@@ -358,57 +414,66 @@ function SheetPage({
           </h1>
         </div>
 
-        {/* Content segments */}
-        <div style={{ fontSize: "0.95rem", lineHeight: 1.85 }}>
-          {segments.map((seg, j) =>
-            seg.type === "mission" ? (
-              <MissionBand
-                key={j}
-                text={seg.text}
-                letter={seg.letter}
-                mission={seg.mission}
-                houseColor={houseColor}
-                gameId={gameId}
-                theme={theme}
-              />
-            ) : (
-              <p key={j} style={{ margin: "0 0 1rem 0" }}>
-                {seg.text}
-              </p>
-            ),
-          )}
+        {/* Story content (markdown) */}
+        <div
+          className="story-md"
+          style={{ fontSize: "0.95rem", lineHeight: 1.85 }}
+        >
+          <Markdown>{sheet.content}</Markdown>
         </div>
+
+        {/* Mission list */}
+        {sheet.missions.length > 0 && (
+          <div style={{ marginTop: "2rem" }}>
+            <div
+              style={{
+                fontSize: "0.7rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.2em",
+                color: theme.labelColor(houseColor),
+                fontFamily: theme.headingFont,
+                fontWeight: 700,
+                marginBottom: "0.75rem",
+              }}
+            >
+              Your Missions
+            </div>
+            <div>
+              {sheet.missions.map((mission) => (
+                <MissionBand
+                  key={mission.id}
+                  mission={mission}
+                  houseColor={houseColor}
+                  gameId={gameId}
+                  theme={theme}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function MissionBand({
-  text,
-  letter,
   mission,
   houseColor,
   gameId,
   theme,
 }: {
-  text: string;
-  letter: string;
   mission: PrintMission;
   houseColor: string;
   gameId: string;
   theme: SheetTheme;
 }) {
-  // Bold the (X) marker in the text
-  const markerRegex = new RegExp(`\\(${letter}\\)`);
-  const parts = text.split(markerRegex);
-
   return (
     <div
       style={{
         display: "flex",
         alignItems: "stretch",
-        margin: "1rem -1.5rem",
-        padding: "1rem 1.5rem",
+        margin: "0.75rem 0",
+        padding: "1rem 1.25rem",
         background: theme.missionBandBg(houseColor),
         borderLeft: theme.missionBandBorder(houseColor),
         borderRadius: "0 4px 4px 0",
@@ -416,34 +481,25 @@ function MissionBand({
         pageBreakInside: "avoid",
       }}
     >
-      {/* Large letter */}
-      <div
-        style={{
-          fontSize: "2.5rem",
-          fontWeight: 700,
-          color: theme.missionLetterColor(houseColor),
-          opacity: 0.35,
-          lineHeight: 1,
-          minWidth: "2.5rem",
-          display: "flex",
-          alignItems: "flex-start",
-          paddingTop: "0.15rem",
-          fontFamily: theme.headingFont,
-        }}
-      >
-        {letter}
+      <div style={{ flex: 1, fontSize: "0.9rem", lineHeight: 1.6 }}>
+        <div
+          style={{
+            fontFamily: theme.headingFont,
+            fontWeight: 700,
+            fontSize: "1.05rem",
+            color: theme.missionTitleColor(houseColor),
+            marginBottom: "0.4rem",
+          }}
+        >
+          {mission.title}
+        </div>
+        {mission.storySheetBlurb && (
+          <div className="blurb-md">
+            <Markdown>{mission.storySheetBlurb}</Markdown>
+          </div>
+        )}
       </div>
 
-      {/* Text */}
-      <div style={{ flex: 1 }}>
-        <p style={{ margin: 0 }}>
-          {parts[0]}
-          <strong style={{ color: theme.missionMarkerColor(houseColor) }}>({letter})</strong>
-          {parts[1] ?? ""}
-        </p>
-      </div>
-
-      {/* QR code */}
       <div
         style={{
           display: "flex",
@@ -455,8 +511,8 @@ function MissionBand({
           src={getMissionQRUrl(gameId, mission.id)}
           alt={`QR: ${mission.title}`}
           style={{
-            width: "72px",
-            height: "72px",
+            width: "84px",
+            height: "84px",
             borderRadius: "4px",
           }}
         />
