@@ -177,6 +177,17 @@ export async function getCardForViewer(
   };
 }
 
+/**
+ * Era-grouped timeline verification: cards are split into 3 equal-size eras
+ * (Discovery / Dependency / Consent). The scan attempt must produce the cards
+ * in era order — but the order within an era is up to the players. Re-scanning
+ * a card already submitted in this attempt is treated as a fail.
+ */
+function eraOf(order: number, totalCards: number): number {
+  if (totalCards <= 0) return 0;
+  return Math.floor(((order - 1) * 3) / totalCards);
+}
+
 async function getHistoryTimelineResult(
   gameId: string,
   cardId: string,
@@ -187,6 +198,7 @@ async function getHistoryTimelineResult(
     select: {
       historyTimelineArmed: true,
       historyTimelineAttemptIndex: true,
+      historyTimelineAttemptedCardIds: true,
       historyTimelineSolvedAt: true,
     },
   });
@@ -214,14 +226,15 @@ async function getHistoryTimelineResult(
 
   const totalCards = orderedCards.length;
   const expectedIndex = game.historyTimelineAttemptIndex;
-  const expectedCard = orderedCards[expectedIndex];
+  const attemptedIds = new Set(game.historyTimelineAttemptedCardIds);
 
-  if (!expectedCard) {
+  if (totalCards === 0 || expectedIndex >= totalCards) {
     await prisma.game.update({
       where: { id: gameId },
       data: {
         historyTimelineArmed: false,
         historyTimelineAttemptIndex: 0,
+        historyTimelineAttemptedCardIds: [],
       },
     });
     return {
@@ -233,12 +246,35 @@ async function getHistoryTimelineResult(
     };
   }
 
-  if (expectedCard.id !== cardId) {
+  // Reject re-scanning a card already submitted in the current attempt.
+  if (attemptedIds.has(cardId)) {
     await prisma.game.update({
       where: { id: gameId },
       data: {
         historyTimelineArmed: false,
         historyTimelineAttemptIndex: 0,
+        historyTimelineAttemptedCardIds: [],
+      },
+    });
+    return {
+      result: "failed",
+      currentIndex: expectedIndex,
+      totalCards,
+      expectedOrder: expectedIndex + 1,
+      message: "History chronology failed. The host must re-arm the check.",
+    };
+  }
+
+  const expectedEra = eraOf(expectedIndex + 1, totalCards);
+  const scannedEra = eraOf(historyTimelineOrder, totalCards);
+
+  if (scannedEra !== expectedEra) {
+    await prisma.game.update({
+      where: { id: gameId },
+      data: {
+        historyTimelineArmed: false,
+        historyTimelineAttemptIndex: 0,
+        historyTimelineAttemptedCardIds: [],
       },
     });
     return {
@@ -251,12 +287,15 @@ async function getHistoryTimelineResult(
   }
 
   const nextIndex = expectedIndex + 1;
+  const nextAttempted = [...game.historyTimelineAttemptedCardIds, cardId];
+
   if (nextIndex >= totalCards) {
     await prisma.game.update({
       where: { id: gameId },
       data: {
         historyTimelineArmed: false,
         historyTimelineAttemptIndex: 0,
+        historyTimelineAttemptedCardIds: [],
         historyTimelineSolvedAt: new Date(),
       },
     });
@@ -273,6 +312,7 @@ async function getHistoryTimelineResult(
     where: { id: gameId },
     data: {
       historyTimelineAttemptIndex: nextIndex,
+      historyTimelineAttemptedCardIds: nextAttempted,
     },
   });
 

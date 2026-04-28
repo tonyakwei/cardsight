@@ -2739,7 +2739,7 @@ This rule is not a punishment. It is a correction. Too many who leave the chambe
     },
     {
       header: "The Fifty-Seventh Lesson",
-      description: `*From the year the schools began promoting children early*
+      description: `*Two generations after the first valley schools opened*
 
 By the fifty-seventh lesson, even the fisherman's son could derive the sky-table. We have begun promoting children before their elders can finish the proofs they wrote for them.
 

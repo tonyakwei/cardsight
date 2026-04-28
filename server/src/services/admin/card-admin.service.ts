@@ -333,6 +333,7 @@ export async function resetAllCards(gameId: string) {
       data: {
         historyTimelineArmed: false,
         historyTimelineAttemptIndex: 0,
+        historyTimelineAttemptedCardIds: [],
         historyTimelineSolvedAt: null,
       },
     }),

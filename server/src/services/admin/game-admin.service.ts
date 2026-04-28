@@ -149,6 +149,7 @@ export async function duplicateGame(gameId: string) {
         currentAct: 1,
         historyTimelineArmed: false,
         historyTimelineAttemptIndex: 0,
+        historyTimelineAttemptedCardIds: [],
         historyTimelineSolvedAt: null,
         finaleOutcome: game.finaleOutcome,
         finaleClauseIds: game.finaleClauseIds,
@@ -446,6 +447,7 @@ export async function armHistoryTimeline(gameId: string) {
     data: {
       historyTimelineArmed: true,
       historyTimelineAttemptIndex: 0,
+      historyTimelineAttemptedCardIds: [],
     },
   });
 
@@ -466,6 +468,7 @@ export async function resetHistoryTimeline(gameId: string) {
     data: {
       historyTimelineArmed: false,
       historyTimelineAttemptIndex: 0,
+      historyTimelineAttemptedCardIds: [],
       historyTimelineSolvedAt: null,
     },
   });

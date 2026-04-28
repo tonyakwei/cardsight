@@ -40,6 +40,7 @@ model Game {
   blurNudgeEnabled Boolean   @default(false) @map("blur_nudge_enabled")
   historyTimelineArmed Boolean @default(false) @map("history_timeline_armed")
   historyTimelineAttemptIndex Int @default(0) @map("history_timeline_attempt_index")
+  historyTimelineAttemptedCardIds String[] @default([]) @map("history_timeline_attempted_card_ids") @db.Uuid
   historyTimelineSolvedAt DateTime? @map("history_timeline_solved_at")
   finaleOutcome String?      @map("finale_outcome")
   finaleClauseIds String[]   @default([]) @map("finale_clause_ids")
