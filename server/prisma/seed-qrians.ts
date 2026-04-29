@@ -2101,7 +2101,7 @@ async function main() {
       act: 2,
       title: "The Hanging Garden of Names",
       storySheetBlurb:
-        "Through the doors and into the dome: a greenhouse three stories high, glass long shattered, vines hanging in a forest of root-curtains. Each braid weighted at its tip with a fired-clay tag. Thousands. They turn slow in the draft. Each tag is a name. Strike the wrong one and the canopy buries the room. Burial-rite fragments lie scattered — some yours, some pocketed…",
+        "Through the doors and into the dome: a greenhouse three stories high, glass long shattered, vines hanging in a forest of root-curtains. Each braid weighted at its tip with a fired-clay tag. Thousands. They turn slow in the draft. Each tag is a name. Strike the wrong one and the canopy buries the room. Burial-rite fragments lie scattered — some yours, some pocketed. *Your historian lifts a corner of one and watches it powder in their hand. The fragments don't keep. None of them will. Whatever each one says, we'll have it for a minute once it's open — and so will the houses holding ours.*",
       correctAnswerReveal:
         "Three shapes resolve: J — A — W. The tags weren't tags. When a QRian died, they kept the speaking-bone — the only part of the body that had carried words. Bone crumbled; clay replaced it; the names stayed. This garden isn't a wonder of the temple. It's a library of voices, kept in the shape of the part of the body that voiced them. You weren't reading a wall. You were reading the dead. They classified their own corpses by phonetic articulation. They could not stop classifying. They could not stop.",
       description:
@@ -2182,7 +2182,7 @@ async function main() {
       act: 2,
       title: "The Sighting Wall",
       storySheetBlurb:
-        "Up the ledge your climber uncovered: the chamber narrows to a wall full of slits. Thin vertical cuts, each no wider than a hand, looking out over canopy and basin and far ridges. Set into many: amber lenses, polished smooth, each labeled. The QRians were measuring whether this place was special. The lenses know. Other slits are bare; their labels fell and scattered — you'll want them back…",
+        "Up the ledge your climber uncovered: the chamber narrows to a wall full of slits. Thin vertical cuts, each no wider than a hand, looking out over canopy and basin and far ridges. Set into many: amber lenses, polished smooth, each labeled. The QRians were measuring whether this place was special. The lenses know. Other slits are bare; their labels fell and scattered. *The first one your climber lifts crumbles in their fingers. They glance at you, then at the doors the other houses came through. Every label in this room is on the same clock — ours, theirs, all of them.*",
       correctAnswerReveal:
         "Five observations resolve. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe*. They watched the sky for what they couldn't otherwise know — where they sat in the bigger pattern, what their place was relative to fixed stars, how the weather over this valley differed from the weather over every other valley. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was *here* — bound to this geography — or whether it was bigger than that.",
       description:
