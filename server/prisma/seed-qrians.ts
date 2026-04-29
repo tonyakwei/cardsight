@@ -802,25 +802,47 @@ async function main() {
 
   // ─── Act 2 answers — Jones ──────────────────────────────────────────
 
-  const ansSealedPantry = await prisma.singleAnswer.create({
+  const ansSealedPantry = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "pepper porridge oil cake milk",
-      acceptAlternatives: [
-        "pepper, porridge, oil, cake, milk",
-        "pepper-porridge-oil-cake-milk",
-        "PEPPER PORRIDGE OIL CAKE MILK",
-        "peppercorn porridge oil cake milk",
-        "spice porridge oil cake milk",
-        "pepper oatmeal oil cake milk",
-        "pepper gruel oil cake milk",
-        "pepper porridge oils cake milk",
-        "pepper porridge oil honeycake milk",
-        "pepper porridge oil loaf milk",
-        "pepper porridge oil cake cream",
-        "pepper porridge oil cake dairy",
+      fields: [
+        {
+          prompt: "Shelf 1 — FRUIT + FIRE",
+          correctAnswer: "pepper",
+          acceptAlternatives: ["peppercorn", "spice"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Shelf 2 — OATS + STEW",
+          correctAnswer: "porridge",
+          acceptAlternatives: ["oatmeal", "gruel"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Shelf 3 — PLANT + GREASE",
+          correctAnswer: "oil",
+          acceptAlternatives: ["oils"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Shelf 4 — HONEY + BREAD",
+          correctAnswer: "cake",
+          acceptAlternatives: ["honeycake", "honey cake", "loaf"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Shelf 5 — CREATURE + DRINK",
+          correctAnswer: "milk",
+          acceptAlternatives: ["cream", "dairy", "broth"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
-      hint: "Each shelf-cluster of 2 ingredients was making one named food. Match the loose labels back to their shelves and read each cluster as a recipe. Five preparations together tell you the pantry's purpose. Enter the five preparation names in shelf order: 1, 2, 3, 4, 5.",
+      hint: "Each shelf-cluster of 2 ingredients was making one named food. Match the loose labels back to their shelves and read each cluster as a recipe. Five preparations together tell you the pantry's purpose.",
       hintAfterAttempts: 2,
     },
   });
@@ -2010,9 +2032,9 @@ async function main() {
       description:
         "Off the main chamber to the right: an archway you missed, choked with vines so thick you nearly walked past it. Push through. Inside, a storeroom — fired-clay jars on stone shelves, every one sealed, every one heavy. Some shelves still bear their painted labels. Others are bare, the labels fallen, scattered. Your historian inhales slow. *This was a pantry.* Whoever ate from this pantry was eating with intention. The other houses pocketed a few of the labels. You'll want them back.",
       puzzleDescription:
-        "Five shelf-clusters of 2 ingredients each. Match the scattered painted clay labels back to their shelves and read each cluster as a recipe — the named preparation it produces.\n\nName each preparation kept in this pantry. Enter all five preparation names in shelf order, separated by spaces:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
+        "Five shelf-clusters of 2 ingredients each. Match the scattered painted clay labels back to their shelves and read each cluster as a recipe — the named preparation it produces.\n\nName each preparation kept in this pantry. Enter each shelf's preparation in its own input below:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
       requiredClueSets: [{ cardSetId: csClayShelfLabel.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansSealedPantry.id,
       consequenceCompleted:
         "Five preparations resolve: PEPPER, PORRIDGE, OIL, CAKE, MILK. Look at your kitchen at home — none of these would surprise you. But that's the point. To the QRians of this era, these weren't kitchen staples. They were *nootropics*: pepper sharpened the senses, porridge anchored the body, oil eased thought, cake kept the mind warm, milk steadied a slipping center. Every jar in this pantry is a food the QRians genuinely believed could armor the mind against drift. They medicated themselves with breakfast, with dinner, with the everyday stock of a kitchen — eating their way through the contagion in the only language their medical understanding offered.",
