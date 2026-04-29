@@ -797,8 +797,6 @@ async function main() {
       gameId: game.id,
       correctAnswer: "orbit grenade",
       acceptAlternatives: ["orbit, grenade", "orbit-grenade", "ORBIT GRENADE"],
-      hint: "Two cryptic riddles. The first hides 'or' in the round shape of an old word for the path of a moon. The second is an anagram of ENRAGED with one letter added.",
-      hintAfterAttempts: 2,
     },
   });
 
