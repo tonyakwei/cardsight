@@ -837,13 +837,24 @@ async function main() {
     },
   });
 
-  const ansVeshCompartment = await prisma.singleAnswer.create({
+  const ansVeshCompartment = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "vein sneeze",
-      acceptAlternatives: [
-        "vein, sneeze", "vein-sneeze", "VEIN SNEEZE",
-        "vein achoo", "vein blast", "vein spray", "vein expel", "vein relief",
+      fields: [
+        {
+          prompt: "Procedure I — Step 4",
+          correctAnswer: "vein",
+          acceptAlternatives: ["root", "vien"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Procedure II — Step 4",
+          correctAnswer: "sneeze",
+          acceptAlternatives: ["achoo", "blast", "spray", "expel", "relief"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Two procedures, two answers. Procedure 1 follows the branching hierarchy of a plant from largest to smallest. Procedure 2 walks through the body's reaction to an irritant — what's the reflex at the end?",
       hintAfterAttempts: 2,
@@ -1598,7 +1609,7 @@ async function main() {
 +-----------+
 \`\`\`
 
-**Straight (L↔R), no valve:** Just channel.
+**Unnumbered Channel (L↔R) — straight pass-through, NO valve. Do not include this piece in your answer:**
 
 \`\`\`text
 +-----------+
@@ -2051,9 +2062,9 @@ async function main() {
       description:
         "Off the side-passage and into a quiet alcove: a stone table set in the corner, surface marked in careful columns of inset tile-slots — some filled, some empty. Above the table, a sealed compartment, no hinge. Your linguist reads the rows. *Phrase-lock. Some tiles are with the other houses.*",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Enter the two inferred words separated by a space. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Enter each inferred word in its own input below. The compartment opens.",
       requiredClueSets: [{ cardSetId: csVeshTile.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansVeshCompartment.id,
       consequenceCompleted:
         "Both passcodes enter. The compartment opens. Inside: a logged record by Witness Chronicler Vesh. He wrote it like a ledger — *the construction was assigned to expendable labor; their disposal at completion was logistical.* No anguish, no pride, just the cycles. The QRians had a class system that absorbed the moral cost without flinching.",
