@@ -168,8 +168,8 @@ async function main() {
   console.log("Creating card sets...");
 
   // Drake
-  const csMechanicalPart = await prisma.cardSet.create({
-    data: { gameId: game.id, name: "Small Mechanical Part", color: "#6b7280" },
+  const csDetonatorComponent = await prisma.cardSet.create({
+    data: { gameId: game.id, name: "Detonator Component", color: "#6b7280" },
   });
   const csInscribedStone = await prisma.cardSet.create({
     data: { gameId: game.id, name: "Inscribed Chunk of Stone", color: "#92400e" },
@@ -295,7 +295,7 @@ async function main() {
       textColor: "#e8e0d0",
       accentColor: "#c08552",
       secondaryColor: "#8b6f47",
-      fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
+      fontFamily: "'IM Fell DW Pica SC', 'Cormorant Garamond', serif",
       cardStyle: "standard",
       animationIn: "fade",
       borderStyle: "1px solid rgba(192, 133, 82, 0.25)",
@@ -490,7 +490,7 @@ async function main() {
     [csAmberWallTile.id]: designErodedStone.id,
     [csPurpleWallTile.id]: designErodedStone.id,
     // Tarnished Metal (metal-family)
-    [csMechanicalPart.id]: designTarnishedMetal.id,
+    [csDetonatorComponent.id]: designTarnishedMetal.id,
     [csMetalFragment.id]: designTarnishedMetal.id,
     [csMetalSpoke.id]: designTarnishedMetal.id,
     [csSteelHardware.id]: designTarnishedMetal.id,
@@ -910,20 +910,20 @@ async function main() {
       act: 1,
       title: "Secure Your Fuse Charges",
       storySheetBlurb:
-        "Your precision explosives are dead weight without the fuse charges. Seven components are scattered across the chamber — small metal parts that look like trinkets to anyone who doesn't know what they assemble into. These charges are the only real edge you have left in this temple. The other teams pocketed some — you'll need them back to rebuild the sequence…",
+        "Your precision explosives are dead weight without the fuse charges. Seven components scattered across the chamber when the blast hit — and other teams swept some up in the chaos. They know exactly what they're holding. You're going to have to get them back, then rebuild the sequence from memory…",
       correctAnswerReveal:
-        "Click. Click. Click. Seven components, locked in sequence, just like training. The precision explosives are live. Whether you'll need them down here is another question — but up ahead, in whatever comes next, you'll have options the other teams don't. You just hope they never find out what those codenames actually meant.",
+        "Click. Click. Click. Seven components, locked in sequence, just like training. The precision explosives are live. Whether you'll need them down here is another question — but up ahead, in whatever comes next, you'll have options the other teams don't.",
       description:
-        "Your precision explosives are dead weight without the fuse charges, and the components are scattered across the chamber — small metal parts that look like strange precision instruments to anyone who doesn't know what they assemble into. The assembly manual went under with the bag. You'll have to reconstruct the sequence from memory.",
+        "Your precision explosives are dead weight without the fuse charges, and the components are scattered across the chamber. Other teams swept some up — they know what they have. The assembly manual went under with the bag. You'll have to get the parts back and reconstruct the sequence from memory.",
       puzzleDescription:
-        "Seven components need to be assembled in the correct order. Each component's description hints at its position in the sequence. Enter the component numbers in assembly order.\n\n| # | Component | Description |\n|---|-----------|-------------|\n| 1 | Whisper Pins | \"Delicate. These seat into the base before anything else.\" |\n| 2 | Ghost Shells | \"The outer housing. Nothing goes on after these.\" |\n| 3 | Dragon Teeth | \"The heavy cores. They nest right on top of the pins.\" |\n| 4 | Ember Dust | \"Volatile. Packed between the cores and the plates. Don't sneeze.\" |\n| 5 | Striker Plates | \"Press flat against the dust layer. Takes the initial impact.\" |\n| 6 | Fang Clips | \"Lock the plates in place. Snaps onto the strikers before you seal.\" |\n| 7 | Coil Segments | \"The ignition thread. Winds through the clips and connects to the shell trigger.\" |",
-      requiredClueSets: [{ cardSetId: csMechanicalPart.id, count: 3 }],
+        "Seven detonator components need to be assembled in the correct order — but the components are scattered across the chamber, and other teams swept some up in the chaos. The numbered fitter's tags (#1–#7) on each part are inventory labels only; they do not indicate assembly order.\n\nGather all three *Detonator Component* clue cards from the chamber, read each part's fitter's note for hints about where it sits in the sequence, then enter the seven component numbers in assembly order.",
+      requiredClueSets: [{ cardSetId: csDetonatorComponent.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansFuseCharges.id,
       consequenceCompleted:
         "The charges are assembled and secured. The team moves with a little more swagger — you're the only crew in this temple with a real ace up your sleeve. Whatever's ahead, you can blow through it. Literally.",
       consequenceNotCompleted:
-        "The components are scattered, some lost to the water, some in the hands of teams who think they're holding QRian trinkets. Your precision explosives are gone. Drake without firepower is just... people in balaclavas. Morale takes a serious hit...",
+        "The components are scattered, some lost to the water, some still in the hands of teams who wouldn't give them up in time. Your precision explosives are gone. Drake without firepower is just... people in balaclavas. Morale takes a serious hit...",
       sortOrder: 1,
     },
   });
@@ -966,7 +966,7 @@ async function main() {
       description:
         "At the center of the chamber — a stone table, and on it, a thick glass dome. Through the glass: a strange contraption with golden concentric rings, nested inside each other, etched with markings so fine they shimmer. Sealed under glass you cannot safely break without possibly destroying the object. The base has five empty slots, each with a dial of colors — a combination lock.",
       puzzleDescription:
-        "Five ceramic discs with painted color markings are needed to unlock the dome. Each disc shows a color sequence with one color missing, and a single clue word etched beneath. Each sequence represents something real that changes color. Figure out what each sequence represents, determine the missing color, and enter all five in disc order.\n\n| Disc | Sequence | Clue |\n|------|----------|------|\n| 1 | Black → Indigo → Orange → **?** → Orange → Indigo → Black | *Up* |\n| 2 | **?** → Yellow → Brown → Black | *Curved* |\n| 3 | Red → **?** → Brown | *Rare* |\n| 4 | Green → Yellow → Orange → Red → **?** | *Harvest* |\n| 5 | **?** → Red → Orange → Yellow | *Forge* |\n\nEnter the five missing colors separated by spaces.",
+        "Five ceramic discs with painted color markings are needed to unlock the dome. Each disc shows a color sequence with one color missing, and a single clue word etched beneath. Each sequence represents something real that changes color — figure out what each represents, determine the missing color, and enter all five in disc order.\n\nThe discs are scattered across the chamber, each held by a different team. Gather all five *Strange Painted Disc* clue cards (numbered I through V) to see each sequence and clue word, then enter the five missing colors separated by spaces, in disc order.",
       requiredClueSets: [{ cardSetId: csPaintedDisc.id, count: 5 }],
       answerTemplateType: "single_answer",
       answerId: ansAstrolabe.id,
@@ -991,7 +991,7 @@ async function main() {
       description:
         "Directly overhead, near the center of the chamber — thick iron chains hang from the dark above, taut and corroded green, dropping to a stone slab pulled tight against the floor. Nine positions on the chains and pulleys are marked with QRian glyphs — clearly an activation sequence.",
       puzzleDescription:
-        "Corroded chain links and pulley pieces found around the chamber each have a translated QRian word. Write each word on an index card and rearrange until the sentence forms. Enter the position numbers in sentence order.\n\n| Position | Word |\n|----------|------|\n| 1 | LEAVE |\n| 2 | WHO |\n| 3 | THIS |\n| 4 | NEVER |\n| 5 | WE |\n| 6 | THEM |\n| 7 | BUILT |\n| 8 | LET |\n| 9 | WILL |",
+        "Nine positions on the hoist mechanism are marked with QRian glyphs — clearly an activation phrase, but unreadable without translation. The chain links and pulley pieces that translate them broke off when the mechanism seized and scattered through the chamber.\n\nGather all three *Inscribed Metal Fragment* clue cards from the chamber, translate the glyphs at each position, then write each translated word on an index card and rearrange until the sentence forms. Enter the position numbers in sentence order.\n\n| Position | Glyph |\n|----------|-------|\n| 1 | {{{LEAVE}}} |\n| 2 | {{{WHO}}} |\n| 3 | {{{THIS}}} |\n| 4 | {{{NEVER}}} |\n| 5 | {{{WE}}} |\n| 6 | {{{THEM}}} |\n| 7 | {{{BUILT}}} |\n| 8 | {{{LET}}} |\n| 9 | {{{WILL}}} |",
       requiredClueSets: [{ cardSetId: csMetalFragment.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansHoist.id,
@@ -1016,7 +1016,7 @@ async function main() {
       description:
         "Along the back wall, half-hidden behind a collapsed pillar — a dark crack in the stone scored with bright metal scratches. A faint breeze from inside that smells like old dust and old fear.",
       puzzleDescription:
-        "Inside the gap: a previous expedition's camp. A locked trunk with a note pinned to the lid:\n\n*\"If you find this, the lock code is hidden in my journal. Take the character at each position. You'll need to unscramble the letters. 1:12, 2:19, 3:25, 4:12, 5:28, 6:19, 7:8. Count every character — letters, spaces, punctuation.\"*\n\n| Entry | Text |\n|-------|------|\n| 1 (Day 1) | \"We found the entrance today. Discovery of a lifetime.\" |\n| 2 (Day 3) | \"Architecture beyond anything in the textbooks.\" |\n| 3 (Day 5) | \"Found a camp from decades ago. No skeletons.\" |\n| 4 (Day 7) | \"Their log echoes ours. Panic sets in.\" |\n| 5 (Day 9) | \"Every route slopes down. None lead up.\" |\n| 6 (Day 11) | \"Compass spins. Water from walls we never passed.\" |\n| 7 (undated) | \"Every staircase descends. We cannot find a path up.\" |\n\nExtract the characters, unscramble, and enter the word.",
+        "Inside the gap: a previous expedition's camp. A locked trunk with a note pinned to the lid:\n\n*\"If you find this, the lock code is hidden in my journal. Take the character at each position. You'll need to unscramble the letters. 1:12, 2:19, 3:25, 4:12, 5:28, 6:19, 7:8. Count every character — letters, spaces, punctuation.\"*\n\nThe journal pages are scattered — some sit on your table, others are with the houses around you. Gather all three *Mysterious Damp Page* clue cards from the chamber to read entries 1 through 7, then extract the characters, unscramble, and enter the word.",
       requiredClueSets: [{ cardSetId: csDampPage.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansScrapedGap.id,
@@ -1072,7 +1072,7 @@ async function main() {
       description:
         "Along the lower walls, half-obscured by mineral deposits — a 3×3 grid of carved pipe sections, clearly an engineered drainage network. The source and drain are visible but seven connecting pieces are missing — bundles of grooved ceramic pipe, scattered across the floor.",
       puzzleDescription:
-        "A 3×3 pipe grid. SOURCE (top-left, opens Right) and DRAIN (bottom-right, opens Left) are fixed. Place 7 pipe sections so water flows through ALL 9 cells in one continuous path.\n\nEach section has specific openings (Left, Right, Top, Bottom). One valve is marked SABOTAGED — it's part of the path but broken.\n\n| Section | Openings | Valve |\n|---------|----------|-------|\n| Straight | L, R | V1 |\n| Elbow | L, B | V2 |\n| T-junction | L, R, T | V3 |\n| Elbow | T, L | V4 |\n| Elbow | R, B | V5 (SABOTAGED) |\n| Elbow | T, R | V6 |\n| Straight | L, R | (no valve) |\n\nEnter the valve numbers in flow order, skipping the sabotaged one.",
+        "A 3×3 pipe grid. SOURCE (top-left, opens Right) and DRAIN (bottom-right, opens Left) are fixed. Seven pipe sections must be placed so water flows through ALL 9 cells in one continuous path. Each section has specific openings (Left, Right, Top, Bottom), and one valve is sabotaged — still part of the path, but broken.\n\nThe pipe sections were dislodged by the flood and scattered across the chamber — some in your hands, others pocketed by the houses around you. Gather all three *Pipe Bundle* clue cards from the chamber to learn each section's openings and identify the sabotaged valve.\n\nEnter the valve numbers in flow order, skipping the sabotaged one.",
       requiredClueSets: [{ cardSetId: csCeramicTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansDrainage.id,
@@ -1097,7 +1097,7 @@ async function main() {
       description:
         "High on the far wall, where the torchlight barely reaches, three deep alcoves are carved into the stone in a row. Each alcove's inner surface is stained a different color from centuries of use — the left one deep blue, the center one amber-gold, the right one dark green. Below them, six small stone vessels lie scattered across the floor, clearly knocked from the alcoves by the flood. Each vessel has a letter carved into its underside.",
       puzzleDescription:
-        "Three alcoves are stained from centuries of use:\n\n- **Left alcove:** stained deep BLUE\n- **Center alcove:** stained AMBER-GOLD\n- **Right alcove:** stained DARK GREEN\n\nSix numbered vessels lie below. Each has an interior residue and a letter carved underneath. Match each vessel to its alcove by determining the connection between its residue and the alcove's stain. Then read the letters in order: left alcove to right, lower-numbered vessel first within each pair.\n\n| # | Interior Residue | Letter |\n|---|-----------------|--------|\n| 1 | Fine powder — unmistakably lapis lazuli, ground to dust | S |\n| 2 | Thick, glassy resin — hardened tree sap, amber-colored where the light catches it | H |\n| 3 | Chalky dust with a bright metallic sheen — crushed malachite | O |\n| 4 | A thin green-blue patina — verdigris, the residue left when copper corrodes | L |\n| 5 | Crystallized residue, translucent and faintly sweet — ancient honey, hardened to glass | O |\n| 6 | Ground mineral powder with a deep, vivid sheen — cobalt ore | C |\n\nThe letters will reveal what this place truly was.",
+        "Three alcoves are stained from centuries of use:\n\n- **Left alcove:** stained deep BLUE\n- **Center alcove:** stained AMBER-GOLD\n- **Right alcove:** stained DARK GREEN\n\nSix numbered vessels lie below — each has an interior residue and a letter carved underneath. The flood scattered them across the chamber floor; some are in your hands, others picked up by the houses around you.\n\nGather all three *Sealed Stone Vessel* clue cards from the chamber to read each vessel's residue and letter. Then match each vessel to the alcove whose stain its residue connects to, and read the letters in order: left alcove to right, lower-numbered vessel first within each pair. The letters will reveal what this place truly was.",
       requiredClueSets: [{ cardSetId: csStoneVessel.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansOfferings.id,
@@ -1122,7 +1122,7 @@ async function main() {
       description:
         "Peering straight across the haze of the chamber — small flat rocks, so precisely placed and stacked on one another that they form a grid in the wall. They can clearly be slid around. But several are missing — smooth slates with QRian symbols etched into them, dislodged and scattered across the chamber floor. At the grid's center: a dark, hand-shaped hollow, worn silk-smooth by what must have been hundreds of palms pressed into it over centuries.",
       puzzleDescription:
-        "Nine flat inscribed slates form a wall grid. Each has a translated QRian word. Write each word on an index card and rearrange until the sentence forms. Enter the slate numbers in sentence order.\n\n| Slate | Word |\n|-------|------|\n| 1 | SEALED |\n| 2 | TOO |\n| 3 | FOREVER |\n| 4 | THOSE |\n| 5 | AWAY |\n| 6 | LONG |\n| 7 | WERE |\n| 8 | WHO |\n| 9 | STAYED |",
+        "Nine flat inscribed slates form a wall grid, each etched with a QRian glyph — but the slates were dislodged long ago and scattered across the chamber floor. The other teams hold some of them.\n\nGather all three *Flat Inscribed Slate* clue cards from the chamber, translate the glyph on each slate, then write each translated word on an index card and rearrange until the sentence forms. Enter the slate numbers in sentence order.\n\n| Slate | Glyph |\n|-------|-------|\n| 1 | {{{SEALED}}} |\n| 2 | {{{TOO}}} |\n| 3 | {{{FOREVER}}} |\n| 4 | {{{THOSE}}} |\n| 5 | {{{AWAY}}} |\n| 6 | {{{LONG}}} |\n| 7 | {{{WERE}}} |\n| 8 | {{{WHO}}} |\n| 9 | {{{STAYED}}} |",
       requiredClueSets: [{ cardSetId: csSlate.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPanels.id,
@@ -1147,7 +1147,7 @@ async function main() {
       description:
         "Something was odd when you first entered the chamber, and now you realize what. Off to the left, beyond a low archway — a corridor that tilts *up*. After a temple where everything descends, an upward slope feels like sunlight. But three months of schematics trained you to map before you move.",
       puzzleDescription:
-        "Seven carved waymarkers once lined the corridor walls. Arrange them in the order you'd encounter them walking through the passage.\n\n| # | Description |\n|---|-------------|\n| 1 | \"The slope levels off. A draft from above. On the ceiling, a crack admits a thin shaft of light. The passage continues straight.\" |\n| 2 | \"Past the carvings, the downward slope steepens. The air grows warmer. A carved sun on the right wall — identical to one seen before, but on the wrong side.\" |\n| 3 | \"The archway opens into a passage that slopes gently upward. The air grows warmer. On the left wall, a carved sun — the first hopeful symbol in this place.\" |\n| 4 | \"The slope levels off. The passage opens into a chamber. Your lamplight reveals familiar shapes — your own equipment, your own markings. You have not climbed. You have descended.\" |\n| 5 | \"A right turn. The shaft of light falls behind. The passage begins to slope downward. The walls are bare stone.\" |\n| 6 | \"The passage turns sharply right. After the bare stone, angular glyphs reappear — and they are the same. You are seeing the backs of the same carvings.\" |\n| 7 | \"The passage turns sharply left. The carved sun is gone, replaced by repeating angular glyphs. The upward slope continues.\" |\n\nEnter the marker numbers in traversal order.",
+        "Seven carved waymarkers once lined the corridor walls. They fell long ago, and the houses around you pocketed them off the chamber floor as worn old stones — numbered 1–7 in the catalogue, but the numbers are just labels. They do not indicate the path order.\n\nGather all three *Worn Stone Marker* clue cards from the chamber, read the seven markers, then arrange them in the order a person walking through the passage from the archway inward would encounter them.\n\nEnter the seven marker numbers as a sequence.",
       requiredClueSets: [{ cardSetId: csStoneMarker.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansFalseExit.id,
@@ -1178,7 +1178,7 @@ async function main() {
       description:
         "Your signature grappling rigs — high-tension cable, Croft-issue hooks, the works — are stashed on the ledge where you climbed in, eight feet up. The floodwater is rising toward them. There's a dry alcove higher up the wall, well above the waterline — if you can rig a haul route, the gear is safe.",
       puzzleDescription:
-        "Seven route-setting kit components need to be assembled in the correct rigging sequence. Each component's description hints at when it's needed. Enter the item numbers in assembly order.\n\n| # | Component | Description |\n|---|-----------|-------------|\n| 1 | Rope Clamps | \"Toothed grips. Bite the rope going up, lock tight coming down.\" |\n| 2 | Cargo Hook | \"Heavy clip. The last thing on the line. Gear bags attach here.\" |\n| 3 | Anchor Plate | \"Flat bracket. Bolts flush to the starting anchor for a tie-off point.\" |\n| 4 | Haul Pulley | \"Wheeled block. Mounts at the top to run the haul line through.\" |\n| 5 | Wall Studs | \"Threaded steel bolts. First into bare rock. Nothing holds without them.\" |\n| 6 | Top Bolts | \"Expansion bolts for the alcove. Useless until someone climbs up.\" |\n| 7 | Fixed Line | \"Stiff rope. Ties off at the base, hangs the full height.\" |",
+        "Seven route-setting kit components need to be assembled in the correct rigging sequence — but the bag burst when you scrambled in, and pieces of kit are scattered across the chamber floor in other teams' hands. The numbered tags (#1–#7) on each piece are inventory labels only; they do not indicate rigging order.\n\nGather all three *Unmarked Steel Hardware* clue cards from the chamber, read each component's tag for a hint about when it's needed, then enter the seven item numbers in assembly order.",
       requiredClueSets: [{ cardSetId: csSteelHardware.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansRigs.id,
@@ -1203,7 +1203,7 @@ async function main() {
       description:
         "Water pours through a crack in the far wall where a sealed passage gave way. Scattered across the floor — odd blocks with symbols marked along their edges and a letter on each face. They're clearly meant to fit together somehow.",
       puzzleDescription:
-        "Five flat stone fragments originally sealed the passage. Each has a symbol on its left edge, a different symbol on its right edge, and a letter on its face. Adjacent fragments must have matching edge symbols. Assemble them in a line and read the letters.\n\n| Tile | Left Edge | Right Edge | Letter |\n|------|-----------|------------|--------|\n| 1 | ☆ | ● | S |\n| 2 | ● | ▲ | T |\n| 3 | ▲ | ◆ | O |\n| 4 | ◆ | ◗ | N |\n| 5 | ◗ | ♦ | E |\n\nEnter the word the letters spell.",
+        "Five flat stone fragments originally sealed the passage — each has a symbol on its left edge, a different symbol on its right edge, and a letter on its face. The fragments are scattered across the chamber, some in your hands, others picked up by the houses around you.\n\nGather all three *Odd Edge-Marked Block* clue cards from the chamber, then assemble the fragments in a line so adjacent edges match. Read the letters across the assembled chain and enter the word they spell.",
       requiredClueSets: [{ cardSetId: csEdgeBlock.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansJigsaw.id,
@@ -1228,7 +1228,7 @@ async function main() {
       description:
         "Far off to the left, right at the fuzzy edge of the shadows — atop a ledge fifteen feet above the floor, a vibrantly red, sparkling porcelain vase. It catches the torchlight in flashes — impossibly intact and clean after all these years. Nothing survives centuries in a sealed chamber looking like it was fired yesterday.",
       puzzleDescription:
-        "Nine metal spokes with inscriptions can be driven into the wall as climbing footholds. The QRians designed them to be placed in a specific order — top to bottom, they read a sentence. Write each spoke's word on an index card and rearrange until the sentence forms. Enter the spoke numbers in sentence order.\n\n| Spoke | Word |\n|-------|------|\n| 1 | FIND |\n| 2 | EVER |\n| 3 | WHO |\n| 4 | WAY |\n| 5 | WILL |\n| 6 | THOSE |\n| 7 | NO |\n| 8 | ENTER |\n| 9 | OUT |",
+        "Nine metal spokes can be driven into the wall as climbing footholds, each inscribed with a QRian glyph — but the spokes are scattered, some in your hands, others picked up by the teams around you. The QRians designed them to be placed in a specific order: top to bottom, the inscriptions read a sentence.\n\nGather all three *Inscribed Metal Spoke* clue cards from the chamber, translate the glyph on each spoke, then write each translated word on an index card and rearrange until the sentence forms. Enter the spoke numbers in sentence order.\n\n| Spoke | Glyph |\n|-------|-------|\n| 1 | {{{FIND}}} |\n| 2 | {{{EVER}}} |\n| 3 | {{{WHO}}} |\n| 4 | {{{WAY}}} |\n| 5 | {{{WILL}}} |\n| 6 | {{{THOSE}}} |\n| 7 | {{{NO}}} |\n| 8 | {{{ENTER}}} |\n| 9 | {{{OUT}}} |",
       requiredClueSets: [{ cardSetId: csMetalSpoke.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansVase.id,
@@ -1253,7 +1253,7 @@ async function main() {
       description:
         "In the dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face — some filled, some empty. Small bone tokens with numbers carved into them lie scattered near the base — palm-sized, smooth, clearly meant to fit into the disc's slots.",
       puzzleDescription:
-        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete. 3 are missing — your Numbered Bone Tokens provide the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nYour bone tokens provide the missing inner values: **5**, **9**, and **15**.\n\nCalculate the three missing outer values and enter them separated by spaces.",
+        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values — the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all three *Numbered Bone Token* clue cards from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values.\n\nEnter the three missing outer values separated by spaces, in position order (3, 5, 8).",
       requiredClueSets: [{ cardSetId: csBoneToken.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansTeaching.id,
@@ -1299,27 +1299,27 @@ async function main() {
 
   // Drake A1M1 — Fuse Charges (3 cards)
   await createClueCard({
-    gameId: game.id, cardSetId: csMechanicalPart.id, act: 1,
-    clueVisibleCategory: "Small Mechanical Part",
+    gameId: game.id, cardSetId: csDetonatorComponent.id, act: 1,
+    clueVisibleCategory: "Detonator Component",
     header: "Detonator Components",
     description:
-      "Two precision instruments, scattered in the silt. Each is etched with a part-name and a fitter's note.\n\n**Whisper Pins:** *\"Delicate. These seat into the base before anything else.\"*\n\n**Dragon Teeth:** *\"The heavy cores. They nest right on top of the pins.\"*",
+      "Three precision instruments, scattered in the silt. Each is etched with a part-name and a fitter's note.\n\n**#1 Anchor Pins:** *\"Delicate. These seat into the base before anything else.\"*\n\n**#4 Primer Powder:** *\"Volatile. Packed between the cores and the plates. Don't sneeze.\"*\n\n**#6 Retainer Clips:** *\"Lock the plates in place. Snaps onto the strikers before you seal.\"*",
     houseIds: [drake.id],
   });
   await createClueCard({
-    gameId: game.id, cardSetId: csMechanicalPart.id, act: 1,
-    clueVisibleCategory: "Small Mechanical Part",
+    gameId: game.id, cardSetId: csDetonatorComponent.id, act: 1,
+    clueVisibleCategory: "Detonator Component",
     header: "Detonator Components",
     description:
-      "Three precision instruments, recovered together.\n\n**Ember Dust:** *\"Volatile. Packed between the cores and the plates. Don't sneeze.\"*\n\n**Striker Plates:** *\"Press flat against the dust layer. Takes the initial impact.\"*\n\n**Coil Segments:** *\"The ignition thread. Winds through the clips and connects to the shell trigger.\"*",
+      "Two precision instruments, recovered together.\n\n**#2 Outer Casings:** *\"The outer housing. Nothing goes on after these.\"*\n\n**#5 Striker Plates:** *\"Press flat against the dust layer. Takes the initial impact.\"*",
     houseIds: [drake.id],
   });
   await createClueCard({
-    gameId: game.id, cardSetId: csMechanicalPart.id, act: 1,
-    clueVisibleCategory: "Small Mechanical Part",
+    gameId: game.id, cardSetId: csDetonatorComponent.id, act: 1,
+    clueVisibleCategory: "Detonator Component",
     header: "Detonator Components",
     description:
-      "Two pieces, picked out of the muck.\n\n**Ghost Shells:** *\"The outer housing. Nothing goes on after these.\"*\n\n**Fang Clips:** *\"Lock the plates in place. Snaps onto the strikers before you seal.\"*",
+      "Two pieces, picked out of the muck.\n\n**#3 Booster Cores:** *\"The heavy cores. They nest right on top of the pins.\"*\n\n**#7 Det Cord:** *\"The ignition thread. Winds through the clips and connects to the shell trigger.\"*",
     houseIds: [drake.id],
   });
 
@@ -1423,7 +1423,7 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "Three damp pages from a torn journal, recovered from the trunk.\n\n**Day 1 (Entry 1):** \"We found the entrance today. Discovery of a lifetime.\"\n\n**Day 3 (Entry 2):** \"Architecture beyond anything in the textbooks.\"\n\n**Day 5 (Entry 3):** \"Found a camp from decades ago. No skeletons.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
+      "Three damp pages from a torn journal, recovered from the trunk.\n\n**Day 3 (Entry 2):** \"Architecture beyond anything in the textbooks.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
     selfDestructTimer: 60,
     selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
@@ -1433,7 +1433,7 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "Damp journal pages, ink bleeding at the edges.\n\n**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
+      "Damp journal pages, ink bleeding at the edges.\n\n**Day 1 (Entry 1):** \"We found the entrance today. Discovery of a lifetime.\"\n\n**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
     selfDestructTimer: 60,
     selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
@@ -1443,7 +1443,7 @@ async function main() {
     clueVisibleCategory: "Mysterious Damp Page",
     header: "Mysterious Damp Page",
     description:
-      "Damp journal pages, water-stained but still legible.\n\n**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
+      "Damp journal pages, water-stained but still legible.\n\n**Day 5 (Entry 3):** \"Found a camp from decades ago. No skeletons.\"\n\n**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
     selfDestructTimer: 60,
     selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
@@ -1455,7 +1455,7 @@ async function main() {
     clueVisibleCategory: "Coded Clay Tablet",
     header: "Coded Clay Tablet",
     description:
-      "A fragment of a translator's tablet, slick with floodwater.\n\n{{{T}}} = T\n\n{{{I}}} = I\n\n{{{M}}} = M\n\n{{{E}}} = E",
+      "A fragment of a translator's tablet, slick with floodwater.\n\n{{{T}}} = T\n\n{{{I}}} = I\n\n{{{S}}} = S\n\n{{{O}}} = O",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1463,7 +1463,7 @@ async function main() {
     clueVisibleCategory: "Coded Clay Tablet",
     header: "Coded Clay Tablet",
     description:
-      "A clay-tablet fragment, etched in a steady hand.\n\n{{{S}}} = S\n\n{{{O}}} = O\n\n{{{N}}} = N\n\n{{{C}}} = C",
+      "A clay-tablet fragment, etched in a steady hand.\n\n{{{M}}} = M\n\n{{{N}}} = N\n\n{{{A}}} = A\n\n{{{L}}} = L",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1471,7 +1471,7 @@ async function main() {
     clueVisibleCategory: "Coded Clay Tablet",
     header: "Coded Clay Tablet",
     description:
-      "A small clay fragment, edges chipped.\n\n{{{A}}} = A\n\n{{{L}}} = L\n\n{{{V}}} = V\n\n{{{H}}} = H",
+      "A small clay fragment, edges chipped.\n\n{{{E}}} = E\n\n{{{C}}} = C\n\n{{{V}}} = V\n\n{{{H}}} = H",
     houseIds: [jones.id],
   });
 
@@ -1624,7 +1624,7 @@ async function main() {
     clueVisibleCategory: "Worn Stone Marker",
     header: "Worn Stone Marker",
     description:
-      "Two waymarkers from the corridor wall.\n\n**Marker 3:** \"The archway opens into a passage that slopes gently upward. The air grows warmer. On the left wall, a carved sun — the first hopeful symbol in this place.\"\n\n**Marker 7:** \"The passage turns sharply left. The carved sun is gone, replaced by repeating angular glyphs. The upward slope continues.\"",
+      "Three waymarkers, fallen from the corridor wall.\n\n**Marker 1:** \"The slope levels off. A draft from above. On the ceiling, a crack admits a thin shaft of light. The passage continues straight.\"\n\n**Marker 4:** \"The slope levels off. The passage opens into a chamber. Your lamplight reveals familiar shapes — your own equipment, your own markings. You have not climbed. You have descended.\"\n\n**Marker 6:** \"The passage turns sharply right. After the bare stone, angular glyphs reappear — and they are the same. You are seeing the backs of the same carvings.\"",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1632,7 +1632,7 @@ async function main() {
     clueVisibleCategory: "Worn Stone Marker",
     header: "Worn Stone Marker",
     description:
-      "Three waymarkers, fallen from the corridor wall.\n\n**Marker 1:** \"The slope levels off. A draft from above. On the ceiling, a crack admits a thin shaft of light. The passage continues straight.\"\n\n**Marker 5:** \"A right turn. The shaft of light falls behind. The passage begins to slope downward. The walls are bare stone.\"\n\n**Marker 6:** \"The passage turns sharply right. After the bare stone, angular glyphs reappear — and they are the same. You are seeing the backs of the same carvings.\"",
+      "Two waymarkers from the corridor wall.\n\n**Marker 2:** \"Past the carvings, the downward slope steepens. The air grows warmer. A carved sun on the right wall — identical to one seen before, but on the wrong side.\"\n\n**Marker 7:** \"The passage turns sharply left. The carved sun is gone, replaced by repeating angular glyphs. The upward slope continues.\"",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -1640,7 +1640,7 @@ async function main() {
     clueVisibleCategory: "Worn Stone Marker",
     header: "Worn Stone Marker",
     description:
-      "Two waymarkers, half-buried in dust.\n\n**Marker 2:** \"Past the carvings, the downward slope steepens. The air grows warmer. A carved sun on the right wall — identical to one seen before, but on the wrong side.\"\n\n**Marker 4:** \"The slope levels off. The passage opens into a chamber. Your lamplight reveals familiar shapes — your own equipment, your own markings. You have not climbed. You have descended.\"",
+      "Two waymarkers, half-buried in dust.\n\n**Marker 3:** \"The archway opens into a passage that slopes gently upward. The air grows warmer. On the left wall, a carved sun — the first hopeful symbol in this place.\"\n\n**Marker 5:** \"A right turn. The shaft of light falls behind. The passage begins to slope downward. The walls are bare stone.\"",
     houseIds: [jones.id],
   });
 
@@ -1650,7 +1650,7 @@ async function main() {
     clueVisibleCategory: "Unmarked Steel Hardware",
     header: "Unmarked Steel Hardware",
     description:
-      "Three pieces of climbing kit, scattered when the bag burst.\n\n**#1 Rope Clamps:** *\"Toothed grips. Bite the rope going up, lock tight coming down.\"*\n\n**#3 Anchor Plate:** *\"Flat bracket. Bolts flush to the starting anchor for a tie-off point.\"*\n\n**#5 Wall Studs:** *\"Threaded steel bolts. First into bare rock. Nothing holds without them.\"*",
+      "Three pieces of climbing kit, scattered when the bag burst.\n\n**#4 Haul Pulley:** *\"Wheeled block. Mounts at the top to run the haul line through.\"*\n\n**#5 Wall Studs:** *\"Threaded steel bolts. First into bare rock. Nothing holds without them.\"*\n\n**#7 Fixed Line:** *\"Stiff rope. Ties off at the base, hangs the full height.\"*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1658,7 +1658,7 @@ async function main() {
     clueVisibleCategory: "Unmarked Steel Hardware",
     header: "Unmarked Steel Hardware",
     description:
-      "Two pieces of climbing kit, recovered from the chamber floor.\n\n**#2 Cargo Hook:** *\"Heavy clip. The last thing on the line. Gear bags attach here.\"*\n\n**#4 Haul Pulley:** *\"Wheeled block. Mounts at the top to run the haul line through.\"*",
+      "Two pieces of climbing kit, recovered from the chamber floor.\n\n**#2 Cargo Hook:** *\"Heavy clip. The last thing on the line. Gear bags attach here.\"*\n\n**#6 Top Bolts:** *\"Expansion bolts for the alcove. Useless until someone climbs up.\"*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1666,7 +1666,7 @@ async function main() {
     clueVisibleCategory: "Unmarked Steel Hardware",
     header: "Unmarked Steel Hardware",
     description:
-      "Two pieces of climbing kit, picked out of the silt.\n\n**#6 Top Bolts:** *\"Expansion bolts for the alcove. Useless until someone climbs up.\"*\n\n**#7 Fixed Line:** *\"Stiff rope. Ties off at the base, hangs the full height.\"*",
+      "Two pieces of climbing kit, picked out of the silt.\n\n**#1 Rope Clamps:** *\"Toothed grips. Bite the rope going up, lock tight coming down.\"*\n\n**#3 Anchor Plate:** *\"Flat bracket. Bolts flush to the starting anchor for a tie-off point.\"*",
     houseIds: [croft.id],
   });
 
@@ -1676,7 +1676,7 @@ async function main() {
     clueVisibleCategory: "Odd Edge-Marked Block",
     header: "Odd Edge-Marked Block, Pair I",
     description:
-      "Two stone fragments from the breached passage.\n\n**Tile 1:** Left edge ☆, right edge ●. Letter on face: **S**.\n\n**Tile 2:** Left edge ●, right edge ▲. Letter on face: **T**.",
+      "Two stone fragments from the breached passage.\n\n**Tile 1:** Left edge ☆, right edge ●. Letter on face: **S**.\n\n**Tile 4:** Left edge ◆, right edge ◗. Letter on face: **N**.",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1684,7 +1684,7 @@ async function main() {
     clueVisibleCategory: "Odd Edge-Marked Block",
     header: "Odd Edge-Marked Block, Pair II",
     description:
-      "Two stone fragments, jagged at the edges.\n\n**Tile 3:** Left edge ▲, right edge ◆. Letter on face: **O**.\n\n**Tile 4:** Left edge ◆, right edge ◗. Letter on face: **N**.",
+      "Two stone fragments, jagged at the edges.\n\n**Tile 2:** Left edge ●, right edge ▲. Letter on face: **T**.\n\n**Tile 5:** Left edge ◗, right edge ♦. Letter on face: **E**.",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -1692,7 +1692,7 @@ async function main() {
     clueVisibleCategory: "Odd Edge-Marked Block",
     header: "Odd Edge-Marked Block, Lone Fragment",
     description:
-      "A stone fragment, edges scarred.\n\n**Tile 5:** Left edge ◗, right edge ♦. Letter on face: **E**.",
+      "A stone fragment, edges scarred.\n\n**Tile 3:** Left edge ▲, right edge ◆. Letter on face: **O**.",
     houseIds: [croft.id],
   });
 

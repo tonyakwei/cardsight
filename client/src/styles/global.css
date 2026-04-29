@@ -15,6 +15,37 @@
   -webkit-touch-callout: none;
 }
 
+.card-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--card-accent-color);
+}
+
+.card-table th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--card-accent-color);
+  color: var(--card-accent-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.card-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: top;
+}
+
+.card-table .qrian-glyph,
+.qrian-glyph {
+  font-family: 'Qrian', serif !important;
+}
+
 *,
 *::before,
 *::after {

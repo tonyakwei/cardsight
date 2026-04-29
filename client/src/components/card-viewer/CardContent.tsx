@@ -1,11 +1,45 @@
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import { processQrianText } from "../../utils/qrian-text";
+import remarkGfm from "remark-gfm";
 
 interface Props {
   header: string | null;
   description: string | null;
   itemName?: string | null;
+}
+
+const GLYPH_RE = /\{\{\{(.+?)\}\}\}/g;
+
+function replaceGlyphsInString(s: string, keyPrefix: string): React.ReactNode {
+  if (!s.includes("{{{")) return s;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let i = 0;
+  GLYPH_RE.lastIndex = 0;
+  while ((match = GLYPH_RE.exec(s)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(s.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <span key={`${keyPrefix}-${i++}`} className="qrian-glyph">
+        {match[1]}
+      </span>,
+    );
+    lastIndex = GLYPH_RE.lastIndex;
+  }
+  if (lastIndex < s.length) parts.push(s.slice(lastIndex));
+  return <>{parts}</>;
+}
+
+function withGlyphs(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child, idx) => {
+    if (typeof child === "string") {
+      return replaceGlyphsInString(child, String(idx));
+    }
+    return child;
+  });
 }
 
 export function CardContent({ header, description, itemName }: Props) {
@@ -53,16 +87,17 @@ export function CardContent({ header, description, itemName }: Props) {
           className="card-description"
         >
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
             components={{
               strong: ({ children }) => (
                 <strong style={{ color: "var(--card-accent-color)", fontWeight: 600 }}>
-                  {children}
+                  {withGlyphs(children)}
                 </strong>
               ),
               em: ({ children }) => (
                 <em style={{ color: "var(--card-secondary-color)", opacity: 0.85 }}>
-                  {children}
+                  {withGlyphs(children)}
                 </em>
               ),
               blockquote: ({ children }) => (
@@ -108,8 +143,9 @@ export function CardContent({ header, description, itemName }: Props) {
                 </pre>
               ),
               p: ({ children }) => (
-                <p style={{ marginBottom: "0.75rem" }}>{children}</p>
+                <p style={{ marginBottom: "0.75rem" }}>{withGlyphs(children)}</p>
               ),
+              li: ({ children }) => <li>{withGlyphs(children)}</li>,
               hr: () => (
                 <hr
                   style={{
@@ -120,9 +156,16 @@ export function CardContent({ header, description, itemName }: Props) {
                   }}
                 />
               ),
+              table: ({ children }) => (
+                <div style={{ overflowX: "auto", margin: "1rem 0" }}>
+                  <table className="card-table">{children}</table>
+                </div>
+              ),
+              th: ({ children }) => <th>{withGlyphs(children)}</th>,
+              td: ({ children }) => <td>{withGlyphs(children)}</td>,
             }}
           >
-            {processQrianText(description)}
+            {description}
           </ReactMarkdown>
         </div>
       )}
