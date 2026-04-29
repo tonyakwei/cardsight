@@ -723,8 +723,8 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "it was making us obsessed",
-      acceptAlternatives: ["IT WAS MAKING US OBSESSED", "it-was-making-us-obsessed"],
-      hint: "Each red tile shows the same phrase with a different set of letters worn smooth. Lay your three tiles side by side. At every blank, the missing letter is visible on one of the other two tiles.",
+      acceptAlternatives: ["IT WAS MAKING US OBSESSED", "it-was-making-us-obsessed", "itwasmakingusobsessed", "ITWASMAKINGUSOBSESSED"],
+      hint: "Each red tile is a 21-character rewrite. At every position, the original letter is the one that appears on two of the three tiles; the lone outlier is drift. Walk the three tiles position by position.",
       hintAfterAttempts: 2,
     },
   });
@@ -789,8 +789,8 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "this place once made us wise",
-      acceptAlternatives: ["THIS PLACE ONCE MADE US WISE", "this-place-once-made-us-wise"],
-      hint: "Each amber tile shows the same phrase with a different set of letters worn smooth. Lay your three tiles side by side. At every blank, the missing letter is visible on one of the other two tiles.",
+      acceptAlternatives: ["THIS PLACE ONCE MADE US WISE", "this-place-once-made-us-wise", "thisplaceoncemadeuswise", "THISPLACEONCEMADEUSWISE"],
+      hint: "Each amber tile is a 23-character rewrite. At every position, the original letter is the one that appears on two of the three tiles; the lone outlier is drift. Walk the three tiles position by position.",
       hintAfterAttempts: 2,
     },
   });
@@ -879,8 +879,8 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "until we slowly realized",
-      acceptAlternatives: ["UNTIL WE SLOWLY REALIZED", "until-we-slowly-realized"],
-      hint: "Each purple tile shows the same phrase with a different set of letters worn smooth. Lay your three tiles side by side. At every blank, the missing letter is visible on one of the other two tiles.",
+      acceptAlternatives: ["UNTIL WE SLOWLY REALIZED", "until-we-slowly-realized", "untilweslowlyrealized", "UNTILWESLOWLYREALIZED"],
+      hint: "Each purple tile is a 21-character rewrite. At every position, the original letter is the one that appears on two of the three tiles; the lone outlier is drift. Walk the three tiles position by position.",
       hintAfterAttempts: 2,
     },
   });
@@ -1878,7 +1878,7 @@ async function main() {
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Jones and Croft are already at their own sections of the wall, working amber tiles and purple. Your bomb-handler crouches at the red tiles. They wrote it this many times so the eroded ones could still be read against the rest. Some of yours are with the others. You'll want them back to read the wall whole.",
       puzzleDescription:
-        "Three red tiles, each carrying the same phrase with a different set of letter-positions worn smooth. The blanks are partitioned: every position is blanked on exactly one tile. Pool all three red tiles, fill each blank from the other two, reconstruct the phrase.\n\nWhat is carved into the red wall?",
+        "Three red tiles, each a 21-character rewrite of the same eroded inscription. The carvers' chisels drifted at scattered positions: at every position, two of the three tiles preserved the original letter and one drifted to something else. The drift pattern is different on every tile.\n\nGather all three red *Wall Tile* clue cards from the chamber. Lay the 21 characters of each tile side by side. At every position, the letter that appears on two tiles is the truth; the lone outlier is drift.\n\nWhat is carved into the red wall?",
       requiredClueSets: [{ cardSetId: csRedWallTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansRedWall.id,
@@ -1928,7 +1928,7 @@ async function main() {
       description:
         "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight, the surface scarred where someone tried — and failed — to chisel through. Your bomb-handler runs a hand along the seam. *They sealed something behind this on purpose.* You've got the Fuse Charges. Place them. There's a name carved above the seal: PRIEST PHYSICIST TOGOM. He didn't want company.",
       puzzleDescription:
-        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"Round and round this bit, but it's not 'and.'\"*\n\n**Tablet II:** *\"When shuffled, it's even more explosive than 'enraged.'\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansReinforcedBunker.id,
@@ -1984,7 +1984,7 @@ async function main() {
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Croft are already at their own sections of the wall, working red tiles and purple. Your linguist drops at the amber tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
-        "Three amber tiles, each carrying the same phrase with a different set of letter-positions worn smooth. The blanks are partitioned: every position is blanked on exactly one tile. Pool all three amber tiles, fill each blank from the other two, reconstruct the phrase.\n\nWhat is carved into the amber wall?",
+        "Three amber tiles, each a 23-character rewrite of the same eroded inscription. The carvers' chisels drifted at scattered positions: at every position, two of the three tiles preserved the original letter and one drifted to something else. The drift pattern is different on every tile.\n\nGather all three amber *Wall Tile* clue cards from the chamber. Lay the 23 characters of each tile side by side. At every position, the letter that appears on two tiles is the truth; the lone outlier is drift.\n\nWhat is carved into the amber wall?",
       requiredClueSets: [{ cardSetId: csAmberWallTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansAmberWall.id,
@@ -2059,7 +2059,7 @@ async function main() {
       description:
         "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. *That's a name.* The carvings name an author the others walked past — and below the inscription, a stone tile sits slightly proud of the wall. A pull-tab. The compartment behind it is untouched. Above the tile: BOTANIST THEOLOGIAN SEFA. She wanted to be found.",
       puzzleDescription:
-        "Two cryptic riddles seal the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"It is said to flow, but it doesn't. Instead, it stands beautifully.\"*\n\n**Tablet II:** *\"You would think that you put on your bread, but instead it soars like a queen.\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two cryptic riddles, inscribed on the *Sefa Riddle-Tablets*, seal the inner scroll-case behind the loose ceiling tile.\n\nGather both Sefa Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csSefaTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansCeilingInscription.id,
@@ -2165,7 +2165,7 @@ async function main() {
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Jones are already at their own sections of the wall, working red tiles and amber. Your point climber kneels at the purple tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
-        "Three purple tiles, each carrying the same phrase with a different set of letter-positions worn smooth. The blanks are partitioned: every position is blanked on exactly one tile. Pool all three purple tiles, fill each blank from the other two, reconstruct the phrase.\n\nWhat is carved into the purple wall?",
+        "Three purple tiles, each a 21-character rewrite of the same eroded inscription. The carvers' chisels drifted at scattered positions: at every position, two of the three tiles preserved the original letter and one drifted to something else. The drift pattern is different on every tile.\n\nGather all three purple *Wall Tile* clue cards from the chamber. Lay the 21 characters of each tile side by side. At every position, the letter that appears on two tiles is the truth; the lone outlier is drift.\n\nWhat is carved into the purple wall?",
       requiredClueSets: [{ cardSetId: csPurpleWallTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPurpleWall.id,
@@ -2190,7 +2190,7 @@ async function main() {
       description:
         "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment is cut into the face of it, sealed with a wooden lid that looks impossibly fresh. Your point climber tilts her head back. *Whoever lived up there wanted to be alone.* You've got the Grappling Rigs. Set the lines. A name is carved into the lid above: PHILOSOPHER MATHEMATICIAN YENUS. He kept his work where the floor couldn't reach.",
       puzzleDescription:
-        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"The gift you always have, at all times.\"*\n\n**Tablet II:** *\"Add a G; it describes the Earth. Remove the G; it describes the Earth.\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansHighLedge.id,
@@ -2224,7 +2224,7 @@ async function main() {
     header: "Apothecary Note, Ink-stained",
     description:
       "*Ink-stained note from the same hand.*\n\n**Batch B — Activating agent.** *The purple flowers (🪻).* On the printed grid, connect every numbered Batch B flower in the order the pharmacist marked them. If any Batch B flower has no number, it belongs to the glyph but stands alone. The shape is the second letter.",
-    houseIds: [drake.id],
+    houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csApothecaryNote.id, act: 2,
@@ -2232,7 +2232,7 @@ async function main() {
     header: "Apothecary Note, Torn",
     description:
       "*Torn note. The bottom edge is missing.*\n\n**Batch C — Terminal compound.** *The wilting flowers (🥀).* On the printed grid, connect every numbered Batch C flower in the order the pharmacist marked them. If any Batch C flower has no number, it belongs to the glyph but stands alone. The shape is the third and last letter.",
-    houseIds: [drake.id],
+    houseIds: [croft.id],
   });
 
   // Drake A2M2 — Drevu's Compartment (3 cards, distributed Drake/Jones/Croft)
@@ -2267,7 +2267,7 @@ async function main() {
     clueVisibleCategory: "Red Wall Tile",
     header: "Red Wall Tile, 1",
     description:
-      "*A pried-loose tile from the east wall, color: red. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`_T W_S M_KI_G U_ OB_ES_ED`\n\n*(Two more red tiles are out there with different worn-smooth positions. Pool all three to read it whole — at every blank, the missing letter is visible on one of the other two.)*",
+      "*A pried-loose tile from the east wall, color: red. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`XVWRSMAPINCUSOBSQSFED`\n\n*(Two more red tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original; the lone outlier is drift.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2275,7 +2275,7 @@ async function main() {
     clueVisibleCategory: "Red Wall Tile",
     header: "Red Wall Tile, 2",
     description:
-      "*A pried-loose tile from the east wall, color: red. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`I_ WA_ MA_IN_ US _BS_SS_D`\n\n*(Two more red tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: red. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`ITWAJYAKIHGTSRVSESSEW`\n\n*(Two more red tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2283,7 +2283,7 @@ async function main() {
     clueVisibleCategory: "Red Wall Tile",
     header: "Red Wall Tile, 3",
     description:
-      "*A pried-loose tile from the east wall, color: red. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`IT _AS _AK_NG _S O_SE_SE_`\n\n*(Two more red tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: red. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`ITKASMLKZNGUNOBPECSBD`\n\n*(Two more red tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [croft.id],
   });
 
@@ -2302,7 +2302,7 @@ async function main() {
     header: "Bark Label",
     description:
       "Bark labels, torn from beneath an apparatus.\n\n**Station 3 (2 reagents):** FAT, ASH\n\n**Station 4 (2 reagents):** PLANT, STAIN",
-    houseIds: [drake.id],
+    houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csBarkLabel.id, act: 2,
@@ -2310,7 +2310,7 @@ async function main() {
     header: "Bark Label",
     description:
       "A bark label, torn from beneath a station's apparatus.\n\n**Station 5 (2 reagents):** FLOWER, SPIRIT",
-    houseIds: [drake.id],
+    houseIds: [croft.id],
   });
 
   // Drake A2M5 — The Reinforced Bunker (2 cards, all Drake)
@@ -2328,7 +2328,7 @@ async function main() {
     header: "Togom Riddle-Tablet, II",
     description:
       "*Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet II:**\n\n*\"When shuffled, it's even more explosive than 'enraged.'\"*",
-    houseIds: [drake.id],
+    houseIds: [jones.id],
   });
 
   // Jones A2M1 — The Sealed Pantry (3 cards, all Jones)
@@ -2346,7 +2346,7 @@ async function main() {
     header: "Painted Clay Shelf-Label",
     description:
       "Painted clay shelf-labels, fallen from the pantry shelves.\n\n**Shelf 3 (2 ingredients):** PLANT, GREASE\n\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
-    houseIds: [jones.id],
+    houseIds: [croft.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csClayShelfLabel.id, act: 2,
@@ -2354,7 +2354,7 @@ async function main() {
     header: "Painted Clay Shelf-Label",
     description:
       "A painted clay shelf-label, knocked from a pantry shelf.\n\n**Shelf 5 (2 ingredients):** CREATURE, DRINK",
-    houseIds: [jones.id],
+    houseIds: [drake.id],
   });
 
   // Jones A2M2 — Wall of Repetitions, Amber (3 tiles, distributed)
@@ -2363,7 +2363,7 @@ async function main() {
     clueVisibleCategory: "Amber Wall Tile",
     header: "Amber Wall Tile, 1",
     description:
-      "*A pried-loose tile from the east wall, color: amber. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`_HI_ PLA_E O_CE _AD_ US _IS_`\n\n*(Two more amber tiles are out there with different worn-smooth positions. Pool all three to read it whole — at every blank, the missing letter is visible on one of the other two.)*",
+      "*A pried-loose tile from the east wall, color: amber. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`FHYSPKACQOVCEJADERSWIXE`\n\n*(Two more amber tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original; the lone outlier is drift.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2371,7 +2371,7 @@ async function main() {
     clueVisibleCategory: "Amber Wall Tile",
     header: "Amber Wall Tile, 2",
     description:
-      "*A pried-loose tile from the east wall, color: amber. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`T_IS _LAC_ ON_E M_DE _S W_SE`\n\n*(Two more amber tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: amber. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`THISZLAWEONNEMAPTUSKASY`\n\n*(Two more amber tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2379,7 +2379,7 @@ async function main() {
     clueVisibleCategory: "Amber Wall Tile",
     header: "Amber Wall Tile, 3",
     description:
-      "*A pried-loose tile from the east wall, color: amber. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`TH_S P__CE _NC_ MA_E U_ WI_E`\n\n*(Two more amber tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: amber. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`TRIVPLICEBNCFMGDEUQWISE`\n\n*(Two more amber tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [croft.id],
   });
 
@@ -2428,7 +2428,7 @@ async function main() {
       "*A charred scrap, edges blackened.*\n\n\"Then the **openers** — glyphs that part the lips. We did not bury our scholars. To bury would have meant we stopped recording. We hung them instead, where the wind could still move through what they had said. Crack in turn; let each one fall.\"\n\n*(Mark every opener-class glyph; crack in sequence. The path traces a second letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
-    houseIds: [jones.id],
+    houseIds: [croft.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csBurialRiteFragment.id, act: 2,
@@ -2438,7 +2438,7 @@ async function main() {
       "*A half-erased scrap; some text remains legible.*\n\n\"Last, the **carriers** — glyphs that ride the breath out. A name is only the shape the jaw makes when the body is gone. Strike them in the order the breath leaves.\"\n\n*(Mark every carrier-class glyph; crack in sequence. The path traces the third and final letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
-    houseIds: [jones.id],
+    houseIds: [drake.id],
   });
 
   // Jones A2M5 — The Ceiling Inscription (2 cards, all Jones)
@@ -2456,7 +2456,7 @@ async function main() {
     header: "Sefa Riddle-Tablet, II",
     description:
       "*Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet II:**\n\n*\"You would think that you put on your bread, but instead it soars like a queen.\"*",
-    houseIds: [jones.id],
+    houseIds: [croft.id],
   });
 
   // Croft A2M1 — The Reckoning Floor (4 cards, distributed Croft 1 / Drake 1 / Jones 2)
@@ -2512,7 +2512,7 @@ async function main() {
       "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
     selfDestructTimer: 60,
     selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
-    houseIds: [croft.id],
+    houseIds: [drake.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csLensLabel.id, act: 2,
@@ -2522,7 +2522,7 @@ async function main() {
       "A lens-label, fallen from the sighting wall.\n\n**Cluster 5 (2 lenses):** DAY, DEATH\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
     selfDestructTimer: 60,
     selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
-    houseIds: [croft.id],
+    houseIds: [jones.id],
   });
 
   // Croft A2M3 — Krane's Compartment (3 cards, distributed)
@@ -2557,7 +2557,7 @@ async function main() {
     clueVisibleCategory: "Purple Wall Tile",
     header: "Purple Wall Tile, 1",
     description:
-      "*A pried-loose tile from the east wall, color: purple. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`_NT_L W_ SL_WL_ R_ALI_ED`\n\n*(Two more purple tiles are out there with different worn-smooth positions. Pool all three to read it whole — at every blank, the missing letter is visible on one of the other two.)*",
+      "*A pried-loose tile from the east wall, color: purple. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`UFTIKWESQOWVYREJLPZEX`\n\n*(Two more purple tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original; the lone outlier is drift.)*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2565,7 +2565,7 @@ async function main() {
     clueVisibleCategory: "Purple Wall Tile",
     header: "Purple Wall Tile, 2",
     description:
-      "*A pried-loose tile from the east wall, color: purple. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`U_TI_ WE _LO_LY _EA_IZ_D`\n\n*(Two more purple tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: purple. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`CNTYLWHSLOTLYBEAGIZND`\n\n*(Two more purple tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2573,7 +2573,7 @@ async function main() {
     clueVisibleCategory: "Purple Wall Tile",
     header: "Purple Wall Tile, 3",
     description:
-      "*A pried-loose tile from the east wall, color: purple. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`UN_IL _E S_OW_Y R_AL_ZE_`\n\n*(Two more purple tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: purple. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`UNDILREMLFWLQRVALIKED`\n\n*(Two more purple tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [jones.id],
   });
 
@@ -2592,7 +2592,7 @@ async function main() {
     header: "Yenus Riddle-Tablet, II",
     description:
       "*Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet II:**\n\n*\"Add a G; it describes the Earth. Remove the G; it describes the Earth.\"*",
-    houseIds: [croft.id],
+    houseIds: [drake.id],
   });
 
   // ═══════════════════════════════════════════════════════════════════
