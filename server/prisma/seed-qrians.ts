@@ -2224,7 +2224,7 @@ async function main() {
     header: "Apothecary Note, Ink-stained",
     description:
       "*Ink-stained note from the same hand.*\n\n**Batch B — Activating agent.** *The purple flowers (🪻).* On the printed grid, connect every numbered Batch B flower in the order the pharmacist marked them. If any Batch B flower has no number, it belongs to the glyph but stands alone. The shape is the second letter.",
-    houseIds: [drake.id],
+    houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csApothecaryNote.id, act: 2,
@@ -2232,7 +2232,7 @@ async function main() {
     header: "Apothecary Note, Torn",
     description:
       "*Torn note. The bottom edge is missing.*\n\n**Batch C — Terminal compound.** *The wilting flowers (🥀).* On the printed grid, connect every numbered Batch C flower in the order the pharmacist marked them. If any Batch C flower has no number, it belongs to the glyph but stands alone. The shape is the third and last letter.",
-    houseIds: [drake.id],
+    houseIds: [croft.id],
   });
 
   // Drake A2M2 — Drevu's Compartment (3 cards, distributed Drake/Jones/Croft)
@@ -2302,7 +2302,7 @@ async function main() {
     header: "Bark Label",
     description:
       "Bark labels, torn from beneath an apparatus.\n\n**Station 3 (2 reagents):** FAT, ASH\n\n**Station 4 (2 reagents):** PLANT, STAIN",
-    houseIds: [drake.id],
+    houseIds: [jones.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csBarkLabel.id, act: 2,
@@ -2310,7 +2310,7 @@ async function main() {
     header: "Bark Label",
     description:
       "A bark label, torn from beneath a station's apparatus.\n\n**Station 5 (2 reagents):** FLOWER, SPIRIT",
-    houseIds: [drake.id],
+    houseIds: [croft.id],
   });
 
   // Drake A2M5 — The Reinforced Bunker (2 cards, all Drake)
@@ -2328,7 +2328,7 @@ async function main() {
     header: "Togom Riddle-Tablet, II",
     description:
       "*Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet II:**\n\n*\"When shuffled, it's even more explosive than 'enraged.'\"*",
-    houseIds: [drake.id],
+    houseIds: [jones.id],
   });
 
   // Jones A2M1 — The Sealed Pantry (3 cards, all Jones)
@@ -2346,7 +2346,7 @@ async function main() {
     header: "Painted Clay Shelf-Label",
     description:
       "Painted clay shelf-labels, fallen from the pantry shelves.\n\n**Shelf 3 (2 ingredients):** PLANT, GREASE\n\n**Shelf 4 (2 ingredients):** HONEY, BREAD",
-    houseIds: [jones.id],
+    houseIds: [croft.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csClayShelfLabel.id, act: 2,
@@ -2354,7 +2354,7 @@ async function main() {
     header: "Painted Clay Shelf-Label",
     description:
       "A painted clay shelf-label, knocked from a pantry shelf.\n\n**Shelf 5 (2 ingredients):** CREATURE, DRINK",
-    houseIds: [jones.id],
+    houseIds: [drake.id],
   });
 
   // Jones A2M2 — Wall of Repetitions, Amber (3 tiles, distributed)
@@ -2428,7 +2428,7 @@ async function main() {
       "*A charred scrap, edges blackened.*\n\n\"Then the **openers** — glyphs that part the lips. We did not bury our scholars. To bury would have meant we stopped recording. We hung them instead, where the wind could still move through what they had said. Crack in turn; let each one fall.\"\n\n*(Mark every opener-class glyph; crack in sequence. The path traces a second letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
-    houseIds: [jones.id],
+    houseIds: [croft.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csBurialRiteFragment.id, act: 2,
@@ -2438,7 +2438,7 @@ async function main() {
       "*A half-erased scrap; some text remains legible.*\n\n\"Last, the **carriers** — glyphs that ride the breath out. A name is only the shape the jaw makes when the body is gone. Strike them in the order the breath leaves.\"\n\n*(Mark every carrier-class glyph; crack in sequence. The path traces the third and final letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
-    houseIds: [jones.id],
+    houseIds: [drake.id],
   });
 
   // Jones A2M5 — The Ceiling Inscription (2 cards, all Jones)
@@ -2456,7 +2456,7 @@ async function main() {
     header: "Sefa Riddle-Tablet, II",
     description:
       "*Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet II:**\n\n*\"You would think that you put on your bread, but instead it soars like a queen.\"*",
-    houseIds: [jones.id],
+    houseIds: [croft.id],
   });
 
   // Croft A2M1 — The Reckoning Floor (4 cards, distributed Croft 1 / Drake 1 / Jones 2)
@@ -2512,7 +2512,7 @@ async function main() {
       "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
     selfDestructTimer: 60,
     selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
-    houseIds: [croft.id],
+    houseIds: [drake.id],
   });
   await createClueCard({
     gameId: game.id, cardSetId: csLensLabel.id, act: 2,
@@ -2522,7 +2522,7 @@ async function main() {
       "A lens-label, fallen from the sighting wall.\n\n**Cluster 5 (2 lenses):** DAY, DEATH\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
     selfDestructTimer: 60,
     selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
-    houseIds: [croft.id],
+    houseIds: [jones.id],
   });
 
   // Croft A2M3 — Krane's Compartment (3 cards, distributed)
@@ -2592,7 +2592,7 @@ async function main() {
     header: "Yenus Riddle-Tablet, II",
     description:
       "*Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet II:**\n\n*\"Add a G; it describes the Earth. Remove the G; it describes the Earth.\"*",
-    houseIds: [croft.id],
+    houseIds: [drake.id],
   });
 
   // ═══════════════════════════════════════════════════════════════════
