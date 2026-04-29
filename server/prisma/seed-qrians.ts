@@ -2163,7 +2163,7 @@ async function main() {
       description:
         "Down the steps and across the chamber floor: a wide stone slab, set with thousands of pebbles, each carved with a single number. Something was being calculated. Your engineer crouches and starts mapping it — and stops. In QRian, math and language sit close enough that a calculation doesn't end in a number; it ends in a word. The other houses have pocketed the calculator's working notes. You'll want them back to read what's frozen here.",
       puzzleDescription:
-        "Four calculation tablets — one per digit-class (3, 5, 7, 9). For each digit-class, find every instance on the printed pebble floor that bears a small calculation-sequence number. Connect them in numerical order. The path traces a single QRian super-glyph, one letter per digit-class. Four super-glyphs spell a single English word.\n\nWhat were the QRians measuring?",
+        "Four calculation tablets — one per digit-class (3, 5, 7, 9). For each digit-class, find every pebble on the printed floor carved with that digit. The pebbles for one class together form the shape of a single QRian super-glyph — one letter per class. Four super-glyphs spell a single English word.\n\nDecoy pebbles bear other digits and may cluster into deceptive shapes — only the four class digits matter.\n\nWhat were the QRians measuring?",
       requiredClueSets: [{ cardSetId: csCalculationTablet.id, count: 4 }],
       answerTemplateType: "single_answer",
       answerId: ansReckoningFloor.id,
@@ -2538,7 +2538,7 @@ async function main() {
     clueVisibleCategory: "Calculation Tablet",
     header: "Three Calculation Tablet",
     description:
-      "*The calculator's working note for digit-class **3**.*\n\n\"Three-class pebbles mark the unit. Find every 3 on the floor record bearing a sequence number. Trace them in order. Their path is the first letter of the answer.\"\n\n*(Math here writes itself in language.)*",
+      "*The calculator's working note for digit-class **3**.*\n\n\"Three-class pebbles mark the unit. Find every pebble on the floor carved with **3**. The pebbles together form the shape of a QRian super-glyph — the first letter.\"\n\n*(Math here writes itself in language.)*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2546,7 +2546,7 @@ async function main() {
     clueVisibleCategory: "Calculation Tablet",
     header: "Five Calculation Tablet",
     description:
-      "*The calculator's working note for digit-class **5**.*\n\n\"Five-class pebbles mark the rate. Find every numbered 5. Trace in sequence. The shape is the second letter.\"",
+      "*The calculator's working note for digit-class **5**.*\n\n\"Five-class pebbles mark the rate. Find every pebble carved with **5**. The pebbles together form the shape of a super-glyph — the second letter.\"",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2554,7 +2554,7 @@ async function main() {
     clueVisibleCategory: "Calculation Tablet",
     header: "Seven Calculation Tablet",
     description:
-      "*The calculator's working note for digit-class **7**.*\n\n\"Seven-class pebbles mark the elapsed. Trace every numbered 7 in sequence.\"",
+      "*The calculator's working note for digit-class **7**.*\n\n\"Seven-class pebbles mark the elapsed. Find every pebble carved with **7**. Their shape is the third letter.\"",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2562,7 +2562,7 @@ async function main() {
     clueVisibleCategory: "Calculation Tablet",
     header: "Nine Calculation Tablet",
     description:
-      "*The calculator's working note for digit-class **9**.*\n\n\"Nine-class pebbles mark the remainder. Trace every numbered 9 in sequence.\"",
+      "*The calculator's working note for digit-class **9**.*\n\n\"Nine-class pebbles mark the remainder. Find every pebble carved with **9**. Their shape is the fourth letter.\"",
     houseIds: [jones.id],
   });
 
