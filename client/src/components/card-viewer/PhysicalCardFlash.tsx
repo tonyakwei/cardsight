@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import physicalCards from "../../../../shared/physical-cards.json";
 
-// --- Transition types, escalating by act ---
-// Act 1 (gentle):  1-5 → fade,   6-9 → iris
-// Act 2 (kinetic): 1-5 → slice,  6-9 → flip
-// Act 3 (intense): 1-5 → glitch, 6-9 → burn
+// --- Transition types, three per act so every player sees all six ---
+// Act 1:           1-3 → fade,  4-6 → iris,   7-9 → slice
+// Act 2 & Act 3+:  1-3 → flip,  4-6 → glitch, 7-9 → burn
 
 type Transition = "fade" | "iris" | "slice" | "flip" | "glitch" | "burn";
 
@@ -18,12 +17,11 @@ const EXIT_DURATION: Record<Transition, number> = {
 };
 
 function getTransition(act: number, cardNumber: number): Transition {
-  const isLow = cardNumber <= 5;
-  switch (act) {
-    case 1: return isLow ? "fade" : "iris";
-    case 2: return isLow ? "slice" : "flip";
-    default: return isLow ? "glitch" : "burn"; // act 3+
-  }
+  const band = cardNumber <= 3 ? 0 : cardNumber <= 6 ? 1 : 2;
+  const set: Transition[] = act === 1
+    ? ["fade", "iris", "slice"]
+    : ["flip", "glitch", "burn"]; // act 2 and act 3+
+  return set[band];
 }
 
 // --- Color themes (from card-preview.html) ---
