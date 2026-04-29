@@ -548,15 +548,45 @@ async function main() {
     },
   });
 
-  const ansAstrolabe = await prisma.singleAnswer.create({
+  const ansAstrolabe = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "blue green pink brown silver",
-      acceptAlternatives: [
-        "blue,green,pink,brown,silver",
-        "blue green pink brown grey",
-        "blue green pink brown gray",
-        "light blue green pink brown silver",
+      fields: [
+        {
+          prompt: "Disc I — Up",
+          correctAnswer: "blue",
+          acceptAlternatives: ["light blue"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Disc II — Curved",
+          correctAnswer: "green",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Disc III — Rare",
+          correctAnswer: "pink",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Disc IV — Harvest",
+          correctAnswer: "brown",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Disc V — Forge",
+          correctAnswer: "silver",
+          acceptAlternatives: ["grey", "gray", "black"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Each sequence represents something real that changes color over time. The clue word tells you what it is.",
       hintAfterAttempts: 2,
@@ -978,9 +1008,9 @@ async function main() {
       description:
         "At the center of the chamber — a stone table, and on it, a thick glass dome. Through the glass: a strange contraption with golden concentric rings, nested inside each other, etched with markings so fine they shimmer. Sealed under glass you cannot safely break without possibly destroying the object. The base has five empty slots, each with a dial of colors — a combination lock.",
       puzzleDescription:
-        "Five ceramic discs with painted color markings are needed to unlock the dome. Each disc shows a color sequence with one color missing, and a single clue word etched beneath. Each sequence represents something real that changes color — figure out what each represents, determine the missing color, and enter all five in disc order.\n\nThe discs are scattered across the chamber, each held by a different team. Gather all five *Strange Painted Disc* clue cards (numbered I through V) to see each sequence and clue word, then enter the five missing colors separated by spaces, in disc order.",
+        "Five ceramic discs with painted color markings are needed to unlock the dome. Each disc shows a color sequence with one color missing, and a single clue word etched beneath. Each sequence represents something real that changes color — figure out what each represents, then determine the missing color.\n\nThe discs are scattered across the chamber, each held by a different team. Gather all five *Strange Painted Disc* clue cards (numbered I through V) to see each sequence and clue word, then enter the missing color for each disc in its own input below.",
       requiredClueSets: [{ cardSetId: csPaintedDisc.id, count: 5 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansAstrolabe.id,
       consequenceCompleted:
         "The team moves differently now. You've got the map — the only map — and you know something the other teams don't: this temple was built to trap anyone who entered. But Drake doesn't panic about being trapped. Drake plans around it. The astrolabe gets stowed carefully. The other teams have no idea you have it.",
