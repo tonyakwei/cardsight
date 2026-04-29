@@ -622,8 +622,14 @@ async function main() {
   const ansPanels = await prisma.singleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "489627153",
-      acceptAlternatives: ["4 8 9 6 2 7 1 5 3", "4-8-9-6-2-7-1-5-3"],
+      correctAnswer: "489267153",
+      acceptAlternatives: [
+        "4 8 9 2 6 7 1 5 3",
+        "4-8-9-2-6-7-1-5-3",
+        "489267315",
+        "4 8 9 2 6 7 3 1 5",
+        "4-8-9-2-6-7-3-1-5",
+      ],
       hint: "The nine words form a single sentence — a warning about what happened to those who lingered here. Start with who's being described.",
       hintAfterAttempts: 2,
     },
@@ -644,7 +650,13 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "5371642",
-      acceptAlternatives: ["5 3 7 1 6 4 2", "5-3-7-1-6-4-2"],
+      acceptAlternatives: [
+        "5 3 7 1 6 4 2",
+        "5-3-7-1-6-4-2",
+        "5371462",
+        "5 3 7 1 4 6 2",
+        "5-3-7-1-4-6-2",
+      ],
       hint: "Each component tells you what it depends on. What goes into bare rock first? What's the last thing on the line?",
       hintAfterAttempts: 2,
     },
@@ -987,7 +999,7 @@ async function main() {
       storySheetBlurb:
         "Directly overhead — thick iron chains hang from the dark, taut and corroded green, dropping to a stone slab pulled tight against the floor. Whatever the builders hid under there, they hid it on purpose. Nine carved positions on the hoist read in QRian glyphs. The translation tablets that decode them are scattered — you'll need them back to lift the slab…",
       correctAnswerReveal:
-        "The chains grind. The stone slab lifts. Underneath: shift tallies scratched into the stone — thousands of workers, counted in weeks. This temple was built in months by people who carved their own confession into the machinery. They knew what they were building. A trap. And they built it fast.",
+        "The phrase resolves on the index cards in front of you: **WE WHO BUILT THIS WILL NEVER LET THEM LEAVE.** Nobody speaks for a moment. The builders carved a warning into their own machinery — not for themselves, for whoever came after. The chains grind. The stone slab lifts. Underneath: shift tallies scratched into the stone, thousands of workers counted in weeks. This temple was built in months by people who knew exactly what they were building. A trap. And they built it fast.",
       description:
         "Directly overhead, near the center of the chamber — thick iron chains hang from the dark above, taut and corroded green, dropping to a stone slab pulled tight against the floor. Nine positions on the chains and pulleys are marked with QRian glyphs — clearly an activation sequence.",
       puzzleDescription:
@@ -1247,7 +1259,7 @@ async function main() {
       act: 1,
       title: "Activate the Teaching Stone",
       storySheetBlurb:
-        "Dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face. Some positions are filled, some empty. It hums when the math is right — the QRians worshipped numbers, and this is their hymnal. Inserts lie scattered near the base. You'll need to gather them — some are with the others…",
+        "Dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face. Some positions are filled, some empty. It hums when the math is right — the QRians worshipped numbers, and this is their hymnal. Inserts lie scattered near the base. You'll need to gather them — some are with the others. *You take one look at the rings and feel a pit in your stomach. This one is going to be hard.*",
       correctAnswerReveal:
         "The outer numbers click into place. The disc hums — stone pieces shift and rotate, mechanically demonstrating the principle. The QRians didn't just use math. They built physical devotions to it. This wasn't an altar. It was a classroom — and you just passed the entrance exam to a school that's been closed for centuries.",
       description:
@@ -1424,7 +1436,7 @@ async function main() {
     header: "Mysterious Damp Page",
     description:
       "Three damp pages from a torn journal, recovered from the trunk.\n\n**Day 3 (Entry 2):** \"Architecture beyond anything in the textbooks.\"\n\n**Day 9 (Entry 5):** \"Every route slopes down. None lead up.\"\n\n**Undated (Entry 7):** \"Every staircase descends. We cannot find a path up.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
-    selfDestructTimer: 60,
+    selfDestructTimer: 75,
     selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
   });
@@ -1434,7 +1446,7 @@ async function main() {
     header: "Mysterious Damp Page",
     description:
       "Damp journal pages, ink bleeding at the edges.\n\n**Day 1 (Entry 1):** \"We found the entrance today. Discovery of a lifetime.\"\n\n**Day 7 (Entry 4):** \"Their log echoes ours. Panic sets in.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
-    selfDestructTimer: 60,
+    selfDestructTimer: 75,
     selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
   });
@@ -1444,7 +1456,7 @@ async function main() {
     header: "Mysterious Damp Page",
     description:
       "Damp journal pages, water-stained but still legible.\n\n**Day 5 (Entry 3):** \"Found a camp from decades ago. No skeletons.\"\n\n**Day 11 (Entry 6):** \"Compass spins. Water from walls we never passed.\"\n\n*The ink is bleeding fast. Read it before it's gone.*",
-    selfDestructTimer: 60,
+    selfDestructTimer: 75,
     selfDestructText: "The ink has bled into the wet paper. The page is unreadable now.",
     houseIds: [drake.id],
   });
