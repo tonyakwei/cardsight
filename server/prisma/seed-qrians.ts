@@ -1152,7 +1152,7 @@ async function main() {
       consequenceCompleted:
         "The drainage holds. The inscriptions in the upper chambers survive the flood. You can't fix what the QRians broke — but you saved what matters.",
       consequenceNotCompleted:
-        "The upper chamber inscriptions were partially washed away. Key context is missing. Whatever those walls said, the flood took it.",
+        "The drainage stays sabotaged and the flood climbs into the upper chambers. Inscriptions you would have read in the next act are bleeding into illegibility before you ever get there. The stones survive; the words don't. Some of what's coming will simply be unreadable when you arrive.",
       sortOrder: 2,
     },
   });
@@ -1283,7 +1283,7 @@ async function main() {
       consequenceCompleted:
         "The passage holds. Whatever route Croft planned through here stays open. And the blueprint on the stones — that's worth studying later.",
       consequenceNotCompleted:
-        "The passage is impassable. You'll have to route around, losing time.",
+        "The passage stays open, and the flood pours through into the chamber beyond. Whatever Croft was meant to find in the next act, some of it sits under dark water now. You'll arrive lighter than you should have been.",
       sortOrder: 2,
     },
   });
@@ -2745,6 +2745,48 @@ async function main() {
       triggerOnSuccess: false,
       message:
         "You didn't recover the Grappling Rigs in Act 1 — this mission is impossible. Yenus's ledge is twelve feet of sheer rock with no holds. Without your rigs, the compartment stays out of reach.",
+      sortOrder: 1,
+    },
+  });
+
+  // Drake M3 Astrolabe failure → no map in Drevu's Compartment
+  await prisma.missionConsequence.create({
+    data: {
+      sourceMissionId: m_drake_t1.id,
+      targetMissionId: m_drake_a2_drevu.id,
+      type: "warning",
+      triggerOnFailure: true,
+      triggerOnSuccess: false,
+      message:
+        "You don't have the Shadow Astrolabe — without it, your bomb-handler is reading this chamber from instinct, not from the QRians' own map of it. Watch for the seams you can't see.",
+      sortOrder: 1,
+    },
+  });
+
+  // Jones M2 Drainage failure → 3 cards lost in Act 2 (host pulls at act break)
+  await prisma.missionConsequence.create({
+    data: {
+      sourceMissionId: m_jones_flood.id,
+      targetMissionId: null,
+      type: "redistribute",
+      triggerOnFailure: true,
+      triggerOnSuccess: false,
+      message:
+        "At act break, pull 3 of Jones's Act 2 clue cards from play before redistribution. The flood reached the upper chambers — three inscriptions Jones would have read have been washed past legibility. Pick which 3 based on what won't soft-fail Jones's most important Act 2 missions; this is meant to make Act 2 harder, not impossible.",
+      sortOrder: 1,
+    },
+  });
+
+  // Croft M2 Jigsaw failure → 2 cards lost in Act 2 (host pulls at act break)
+  await prisma.missionConsequence.create({
+    data: {
+      sourceMissionId: m_croft_flood.id,
+      targetMissionId: null,
+      type: "redistribute",
+      triggerOnFailure: true,
+      triggerOnSuccess: false,
+      message:
+        "At act break, pull 2 of Croft's Act 2 clue cards from play before redistribution. The unsealed passage flooded the next chamber — two of Croft's Act 2 finds are now underwater. Pick which 2 based on what won't soft-fail Croft's most important Act 2 missions.",
       sortOrder: 1,
     },
   });
