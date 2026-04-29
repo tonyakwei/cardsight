@@ -22,6 +22,7 @@ import {
   updateGameSettings,
   armHistoryTimeline,
   resetHistoryTimeline,
+  resetHouseAttributions,
   transitionAct,
   triggerShowtime,
   resetShowtime,
@@ -166,6 +167,20 @@ export function HostConsole() {
     });
   }
 
+  function doResetHouseAttributions() {
+    setConfirmModal({
+      title: "Reset house attributions?",
+      message:
+        "Every phone that scanned a house NFC card will lose its house tag. Players will need to tap their house card again.",
+      onConfirm: () => {
+        setConfirmModal(null);
+        doAction("house-attributions-reset", () =>
+          resetHouseAttributions(gameId!).then(() => {}),
+        );
+      },
+    });
+  }
+
   function doSelectFinaleOutcome(outcomeId: FinaleOutcomeId | null) {
     doAction("finale", async () => {
       const finale = await updateFinaleSelection(gameId!, { outcomeId });
@@ -279,6 +294,7 @@ export function HostConsole() {
             historyTimelineCardCount={game.historyTimelineCardCount}
             onArmHistoryTimeline={doArmHistoryTimeline}
             onResetHistoryTimeline={doResetHistoryTimeline}
+            onResetHouseAttributions={doResetHouseAttributions}
           />
         )}
         {tab === "activity" && <ActivityTab dashboard={dashboard} />}

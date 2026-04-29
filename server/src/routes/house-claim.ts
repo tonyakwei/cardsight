@@ -12,7 +12,7 @@ router.post("/:slug", async (req, res) => {
 
   const activeGame = await prisma.game.findFirst({
     where: { status: "active" },
-    select: { id: true },
+    select: { id: true, houseAttributionEpoch: true },
   });
   if (!activeGame) {
     throw new AppError(404, "No active game");
@@ -27,9 +27,10 @@ router.post("/:slug", async (req, res) => {
   }
 
   const oneYear = 60 * 60 * 24 * 365;
+  const cookieValue = `${house.id}:${activeGame.houseAttributionEpoch}`;
   res.setHeader(
     "Set-Cookie",
-    `${HOUSE_COOKIE_NAME}=${house.id}; Path=/; Max-Age=${oneYear}; HttpOnly; SameSite=Lax`,
+    `${HOUSE_COOKIE_NAME}=${cookieValue}; Path=/; Max-Age=${oneYear}; HttpOnly; SameSite=Lax`,
   );
 
   res.json({ id: house.id, name: house.name, color: house.color, slug: house.slug });

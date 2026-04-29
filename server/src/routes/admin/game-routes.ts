@@ -55,6 +55,11 @@ router.post("/games/:gameId/history-timeline/arm", async (req, res) => {
   res.json(result);
 });
 
+router.post("/games/:gameId/house-attributions/reset", async (req, res) => {
+  const result = await adminService.resetHouseAttributions(req.params.gameId);
+  res.json(result);
+});
+
 router.post("/games/:gameId/history-timeline/reset", async (req, res) => {
   const result = await adminService.resetHistoryTimeline(req.params.gameId);
   res.json(result);

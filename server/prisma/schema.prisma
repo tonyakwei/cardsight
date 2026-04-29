@@ -42,6 +42,7 @@ model Game {
   historyTimelineAttemptIndex Int @default(0) @map("history_timeline_attempt_index")
   historyTimelineAttemptedCardIds String[] @default([]) @map("history_timeline_attempted_card_ids") @db.Uuid
   historyTimelineSolvedAt DateTime? @map("history_timeline_solved_at")
+  houseAttributionEpoch Int @default(0) @map("house_attribution_epoch")
   finaleOutcome String?      @map("finale_outcome")
   finaleClauseIds String[]   @default([]) @map("finale_clause_ids")
   duplicatedFromId String?   @map("duplicated_from_id") @db.Uuid

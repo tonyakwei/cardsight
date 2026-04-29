@@ -77,6 +77,16 @@ export async function resetHistoryTimeline(
   return res.json();
 }
 
+export async function resetHouseAttributions(
+  gameId: string,
+): Promise<{ houseAttributionEpoch: number }> {
+  const res = await adminFetch(
+    `${BASE}/games/${gameId}/house-attributions/reset`,
+    { method: "POST" },
+  );
+  return res.json();
+}
+
 export async function updateFinaleSelection(
   gameId: string,
   data: {

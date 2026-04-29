@@ -459,6 +459,19 @@ export async function armHistoryTimeline(gameId: string) {
   };
 }
 
+export async function resetHouseAttributions(gameId: string) {
+  const game = await prisma.game.findUnique({ where: { id: gameId } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const updated = await prisma.game.update({
+    where: { id: gameId },
+    data: { houseAttributionEpoch: { increment: 1 } },
+    select: { houseAttributionEpoch: true },
+  });
+
+  return { houseAttributionEpoch: updated.houseAttributionEpoch };
+}
+
 export async function resetHistoryTimeline(gameId: string) {
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) throw new AppError(404, "Game not found");

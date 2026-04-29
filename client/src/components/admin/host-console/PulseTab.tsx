@@ -24,6 +24,7 @@ interface Props {
   historyTimelineCardCount: number;
   onArmHistoryTimeline: () => void;
   onResetHistoryTimeline: () => void;
+  onResetHouseAttributions: () => void;
 }
 
 export function PulseTab({
@@ -39,6 +40,7 @@ export function PulseTab({
   historyTimelineCardCount,
   onArmHistoryTimeline,
   onResetHistoryTimeline,
+  onResetHouseAttributions,
 }: Props) {
   const { overview, cardDiscovery, missionProgress } = dashboard;
   const discoveryPct =
@@ -209,6 +211,24 @@ export function PulseTab({
             </Button>
           </Group>
         </Stack>
+      </Paper>
+
+      <Paper bg="dark.7" p="md" radius="md">
+        <Text size="xs" fw={600} c="dimmed" mb={4}>
+          HOUSE ATTRIBUTIONS
+        </Text>
+        <Text size="xs" c="dimmed" mb="sm">
+          Invalidates every existing /h/ cookie on every phone — players will need to tap their house NFC card again.
+        </Text>
+        <Button
+          color="gray"
+          variant="light"
+          fullWidth
+          loading={actionLoading === "house-attributions-reset"}
+          onClick={onResetHouseAttributions}
+        >
+          Reset house attributions
+        </Button>
       </Paper>
 
       {activeAct < 3 && (
