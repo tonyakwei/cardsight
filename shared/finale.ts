@@ -141,7 +141,7 @@ export const FINALE_CLAUSES: FinaleClauseDefinition[] = [
   {
     id: "suppress_location",
     label: "Suppress the Location",
-    description: "Keep the temple’s location secret even if some truth escapes.",
+    description: "Do not disclose the temple’s precise location in any academic, journalistic, or public document. The houses already know where it is; the world does not have to.",
     vector: vec(-1, 2, 0, -2, 0),
   },
   {
