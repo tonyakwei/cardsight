@@ -107,24 +107,20 @@
     // Coordinates are [col, row, number?]. col 0..9, row 0..11.
     // Row 0 is the top; col 0 is the leftmost.
 
-    // QRian super-glyph J (🤐 Closers) — 12 numbered cells trace
-    // 3 vertical strokes connected at the bottom (row 4) and top (row 1)
-    // by 1-cell horizontal hops in the gap columns. The vertical strokes
-    // dominate the visual; the connectors are minor zigzag steps that
-    // cross empty/decoy cells.
+    // QRian super-glyph J (🤐 Closers) — 4 numbered cells trace ONE
+    // vertical stroke (the leftmost). The middle and right strokes are
+    // 8 unnumbered Closer cells that "stand alone" — they belong to the
+    // J glyph (3 vertical lines with 2 small gaps) but the trace doesn't
+    // pass through them. Same pattern as Drake's B (U-shape traced + an
+    // unnumbered cell standing alone inside it), just scaled up: more
+    // unnumbered cells, fewer traced cells.
     const J_CELLS = [
-      [1, 1, 1],   // top of stroke 1
+      [1, 1, 1],   // top of traced stroke
       [1, 2, 2],
       [1, 3, 3],
-      [1, 4, 4],   // bottom of stroke 1
-      [3, 4, 5],   // bottom of stroke 2 (1-cell horizontal hop across row 4)
-      [3, 3, 6],
-      [3, 2, 7],
-      [3, 1, 8],   // top of stroke 2
-      [5, 1, 9],   // top of stroke 3 (1-cell horizontal hop across row 1)
-      [5, 2, 10],
-      [5, 3, 11],
-      [5, 4, 12],  // bottom of stroke 3
+      [1, 4, 4],   // bottom of traced stroke
+      [3, 1, null], [3, 2, null], [3, 3, null], [3, 4, null], // middle stroke, unnumbered
+      [5, 1, null], [5, 2, null], [5, 3, null], [5, 4, null], // right stroke, unnumbered
     ];
 
     // QRian super-glyph A (😮 Openers) — 7 numbered cells trace
