@@ -787,7 +787,7 @@ async function main() {
         "bronze glass soap dye fragrance",
         "bronze glass soap dye essence",
       ],
-      hint: "Each station-cluster of 2 reagents was making one named compound. Match the loose bark-labels back to their stations and read each cluster as a recipe. Five compounds together tell you what they were stockpiling. Enter the five compound names in station order: 1, 2, 3, 4, 5.",
+      hint: "Each station-cluster of 2 reagents was making one named compound. Match the loose bark-labels back to their stations and read each cluster as a recipe. Five compounds together tell you what they were stockpiling. Write each compound name in its station's slot, in order.",
       hintAfterAttempts: 2,
     },
   });
@@ -929,7 +929,7 @@ async function main() {
         "dawn midnight mirage eclipse dusk",
         "dawn midnight mirage eclipse twilight",
       ],
-      hint: "Each cluster of 2 lens-slits aimed at one phenomenon. Match the loose labels to their lenses; read each cluster as a single observation. Every one of them is a moment where the sky's behavior shifts. Enter the five observations in cluster order: 1, 2, 3, 4, 5.",
+      hint: "Each cluster of 2 lens-slits aimed at one phenomenon. Match the loose labels to their lenses; read each cluster as a single observation. Every one of them is a moment where the sky's behavior shifts. Write each observation in its cluster's slot, in order.",
       hintAfterAttempts: 2,
     },
   });
@@ -989,7 +989,7 @@ async function main() {
       description:
         "Your precision explosives are dead weight without the fuse charges, and the components are scattered across the chamber. Other teams swept some up — they know what they have. The assembly manual went under with the bag. You'll have to get the parts back and reconstruct the sequence from memory.",
       puzzleDescription:
-        "Seven detonator components need to be assembled in the correct order — but the components are scattered across the chamber, and other teams swept some up in the chaos. The numbered fitter's tags (#1–#7) on each part are inventory labels only; they do not indicate assembly order.\n\nGather all three *Detonator Component* clue cards from the chamber, read each part's fitter's note for hints about where it sits in the sequence, then enter the seven component numbers in assembly order.",
+        "Seven detonator components need to be assembled in the correct order — but the components are scattered across the chamber, and other teams swept some up in the chaos. The numbered fitter's tags (#1–#7) on each part are inventory labels only; they do not indicate assembly order.\n\nGather all three *Detonator Component* clue cards from the chamber, read each part's fitter's note for hints about where it sits in the sequence, then write the seven component numbers in assembly order.",
       requiredClueSets: [{ cardSetId: csDetonatorComponent.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansFuseCharges.id,
@@ -1014,7 +1014,7 @@ async function main() {
       description:
         "Set into the far wall — a heavy stone wheel, seized with age. Channels radiate from it across the floor. Your tactical eyes read it immediately: this controls the water flow. Five QRian glyphs are carved into the wheel's face — the unlock command.",
       puzzleDescription:
-        "The wheel's face shows 6 groups of glyphs separated by carved dividers:\n\n{{{PUR}}} | {{{GET}}} | {{{HE}}} | {{{F}}} | {{{LO}}} | {{{OR}}}\n\nUse your Inscribed Chunks of Stone to decode each glyph group into letters. The groups may not align with word boundaries — read all the letters as one continuous string to find the hidden command.\n\nEnter the command verb.",
+        "The wheel's face shows 6 groups of glyphs separated by carved dividers:\n\n{{{PUR}}} | {{{GET}}} | {{{HE}}} | {{{F}}} | {{{LO}}} | {{{OR}}}\n\nUse your Inscribed Chunks of Stone to decode each glyph group into letters. The groups may not align with word boundaries — read all the letters as one continuous string to find the hidden command.\n\nWrite the command verb.",
       requiredClueSets: [{ cardSetId: csInscribedStone.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansStoneWheel.id,
@@ -1039,7 +1039,7 @@ async function main() {
       description:
         "At the center of the chamber — a stone table, and on it, a thick glass dome. Through the glass: a strange contraption with golden concentric rings, nested inside each other, etched with markings so fine they shimmer. Sealed under glass you cannot safely break without possibly destroying the object. The base has five empty slots, each with a dial of colors — a combination lock.",
       puzzleDescription:
-        "Five ceramic discs with painted color markings are needed to unlock the dome. Each disc shows a color sequence with one color missing, and a single clue word etched beneath. Each sequence represents something real that changes color — figure out what each represents, then determine the missing color.\n\nThe discs are scattered across the chamber, each held by a different team. Gather all five *Strange Painted Disc* clue cards (numbered I through V) to see each sequence and clue word, then enter the missing color for each disc in its own input below.",
+        "Five ceramic discs with painted color markings are needed to unlock the dome. Each disc shows a color sequence with one color missing, and a single clue word etched beneath. Each sequence represents something real that changes color — figure out what each represents, then determine the missing color.\n\nThe discs are scattered across the chamber, each held by a different team. Gather all five *Strange Painted Disc* clue cards (numbered I through V) to see each sequence and clue word, then write each disc's missing color in its slot.",
       requiredClueSets: [{ cardSetId: csPaintedDisc.id, count: 5 }],
       answerTemplateType: "multiple_text",
       answerId: ansAstrolabe.id,
@@ -1064,7 +1064,7 @@ async function main() {
       description:
         "Directly overhead, near the center of the chamber — thick iron chains hang from the dark above, taut and corroded green, dropping to a stone slab pulled tight against the floor. Nine positions on the chains and pulleys are marked with QRian glyphs — clearly an activation sequence.",
       puzzleDescription:
-        "Nine positions on the hoist mechanism are marked with QRian glyphs — clearly an activation phrase, but unreadable without translation. The chain links and pulley pieces that translate them broke off when the mechanism seized and scattered through the chamber.\n\nGather all three *Inscribed Metal Fragment* clue cards from the chamber, translate the glyphs at each position, then write each translated word on an index card and rearrange until the sentence forms. Enter the position numbers in sentence order.\n\n| Position | Glyph |\n|----------|-------|\n| 1 | {{{LEAVE}}} |\n| 2 | {{{WHO}}} |\n| 3 | {{{THIS}}} |\n| 4 | {{{NEVER}}} |\n| 5 | {{{WE}}} |\n| 6 | {{{THEM}}} |\n| 7 | {{{BUILT}}} |\n| 8 | {{{LET}}} |\n| 9 | {{{WILL}}} |",
+        "Nine positions on the hoist mechanism are marked with QRian glyphs — clearly an activation phrase, but unreadable without translation. The chain links and pulley pieces that translate them broke off when the mechanism seized and scattered through the chamber.\n\nGather all three *Inscribed Metal Fragment* clue cards from the chamber, translate the glyphs at each position, then write each translated word on an index card and rearrange until the sentence forms. Then write the position numbers in sentence order.\n\n| Position | Glyph |\n|----------|-------|\n| 1 | {{{LEAVE}}} |\n| 2 | {{{WHO}}} |\n| 3 | {{{THIS}}} |\n| 4 | {{{NEVER}}} |\n| 5 | {{{WE}}} |\n| 6 | {{{THEM}}} |\n| 7 | {{{BUILT}}} |\n| 8 | {{{LET}}} |\n| 9 | {{{WILL}}} |",
       requiredClueSets: [{ cardSetId: csMetalFragment.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansHoist.id,
@@ -1089,7 +1089,7 @@ async function main() {
       description:
         "Along the back wall, half-hidden behind a collapsed pillar — a dark crack in the stone scored with bright metal scratches. A faint breeze from inside that smells like old dust and old fear.",
       puzzleDescription:
-        "Inside the gap: a previous expedition's camp. A locked trunk with a note pinned to the lid:\n\n*\"If you find this, the lock code is hidden in my journal. Take the character at each position. You'll need to unscramble the letters. 1:12, 2:19, 3:25, 4:12, 5:28, 6:19, 7:8. Count every character — letters, spaces, punctuation.\"*\n\nThe journal pages are scattered — some sit on your table, others are with the houses around you. Gather all three *Mysterious Damp Page* clue cards from the chamber to read entries 1 through 7, then extract the characters, unscramble, and enter the word.",
+        "Inside the gap: a previous expedition's camp. A locked trunk with a note pinned to the lid:\n\n*\"If you find this, the lock code is hidden in my journal. Take the character at each position. You'll need to unscramble the letters. 1:12, 2:19, 3:25, 4:12, 5:28, 6:19, 7:8. Count every character — letters, spaces, punctuation.\"*\n\nThe journal pages are scattered — some sit on your table, others are with the houses around you. Gather all three *Mysterious Damp Page* clue cards from the chamber to read entries 1 through 7, then extract the characters, unscramble, and write the word.",
       requiredClueSets: [{ cardSetId: csDampPage.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansScrapedGap.id,
@@ -1120,7 +1120,7 @@ async function main() {
       description:
         "In the rush through the hidden passage, the ceremonial whips were left behind — and the floodwater is swallowing the way back. The passage branches into several half-submerged corridors, each with a QRian word carved above its entrance. A longer inscription on the nearby wall appears to describe the correct route.",
       puzzleDescription:
-        "The corridor entrances are labeled with QRian glyphs:\n\n{{{STONE}}}   {{{SILENCE}}}   {{{ANCIENT}}}   {{{OCEAN}}}   {{{TIME}}}\n\nA wall inscription reads:\n\n{{{IT EATS ALL STONE NONE CAN SEE IT}}}\n\nUse your Coded Clay Tablets to decode the glyph-to-letter mappings. The inscription is a riddle — solve it, and the answer matches one of the corridor labels.\n\nEnter the corridor name.",
+        "The corridor entrances are labeled with QRian glyphs:\n\n{{{STONE}}}   {{{SILENCE}}}   {{{ANCIENT}}}   {{{OCEAN}}}   {{{TIME}}}\n\nA wall inscription reads:\n\n{{{IT EATS ALL STONE NONE CAN SEE IT}}}\n\nUse your Coded Clay Tablets to decode the glyph-to-letter mappings. The inscription is a riddle — solve it, and the answer matches one of the corridor labels.\n\nWrite the corridor name.",
       requiredClueSets: [{ cardSetId: csClayTablet.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansWhips.id,
@@ -1145,7 +1145,7 @@ async function main() {
       description:
         "Along the lower walls, half-obscured by mineral deposits — a 3×3 grid of carved pipe sections, clearly an engineered drainage network. The source and drain are visible but seven connecting pieces are missing — bundles of grooved ceramic pipe, scattered across the floor.",
       puzzleDescription:
-        "A 3×3 pipe grid. SOURCE (top-left, opens Right) and DRAIN (bottom-right, opens Left) are fixed. Seven pipe sections must be placed so water flows through ALL 9 cells in one continuous path. Each section has specific openings (Left, Right, Top, Bottom), and one valve is sabotaged — still part of the path, but broken.\n\nThe pipe sections were dislodged by the flood and scattered across the chamber — some in your hands, others pocketed by the houses around you. Gather all three *Pipe Bundle* clue cards from the chamber to learn each section's openings and identify the sabotaged valve.\n\nEnter the valve numbers in flow order, skipping the sabotaged one.",
+        "A 3×3 pipe grid. SOURCE (top-left, opens Right) and DRAIN (bottom-right, opens Left) are fixed. Seven pipe sections must be placed so water flows through ALL 9 cells in one continuous path. Each section has specific openings (Left, Right, Top, Bottom), and one valve is sabotaged — still part of the path, but broken.\n\nThe pipe sections were dislodged by the flood and scattered across the chamber — some in your hands, others pocketed by the houses around you. Gather all three *Pipe Bundle* clue cards from the chamber to learn each section's openings and identify the sabotaged valve.\n\nWrite the valve numbers in flow order, skipping the sabotaged one.",
       requiredClueSets: [{ cardSetId: csCeramicTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansDrainage.id,
@@ -1195,7 +1195,7 @@ async function main() {
       description:
         "Peering straight across the haze of the chamber — small flat rocks, so precisely placed and stacked on one another that they form a grid in the wall. They can clearly be slid around. But several are missing — smooth slates with QRian symbols etched into them, dislodged and scattered across the chamber floor. At the grid's center: a dark, hand-shaped hollow, worn silk-smooth by what must have been hundreds of palms pressed into it over centuries.",
       puzzleDescription:
-        "Nine flat inscribed slates form a wall grid, each etched with a QRian glyph — but the slates were dislodged long ago and scattered across the chamber floor. The other teams hold some of them.\n\nGather all three *Flat Inscribed Slate* clue cards from the chamber, translate the glyph on each slate, then write each translated word on an index card and rearrange until the sentence forms. Enter the slate numbers in sentence order.\n\n| Slate | Glyph |\n|-------|-------|\n| 1 | {{{SEALED}}} |\n| 2 | {{{TOO}}} |\n| 3 | {{{FOREVER}}} |\n| 4 | {{{THOSE}}} |\n| 5 | {{{AWAY}}} |\n| 6 | {{{LONG}}} |\n| 7 | {{{WERE}}} |\n| 8 | {{{WHO}}} |\n| 9 | {{{STAYED}}} |",
+        "Nine flat inscribed slates form a wall grid, each etched with a QRian glyph — but the slates were dislodged long ago and scattered across the chamber floor. The other teams hold some of them.\n\nGather all three *Flat Inscribed Slate* clue cards from the chamber, translate the glyph on each slate, then write each translated word on an index card and rearrange until the sentence forms. Then write the slate numbers in sentence order.\n\n| Slate | Glyph |\n|-------|-------|\n| 1 | {{{SEALED}}} |\n| 2 | {{{TOO}}} |\n| 3 | {{{FOREVER}}} |\n| 4 | {{{THOSE}}} |\n| 5 | {{{AWAY}}} |\n| 6 | {{{LONG}}} |\n| 7 | {{{WERE}}} |\n| 8 | {{{WHO}}} |\n| 9 | {{{STAYED}}} |",
       requiredClueSets: [{ cardSetId: csSlate.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPanels.id,
@@ -1220,7 +1220,7 @@ async function main() {
       description:
         "Something was odd when you first entered the chamber, and now you realize what. Off to the left, beyond a low archway — a corridor that tilts *up*. After a temple where everything descends, an upward slope feels like sunlight. But three months of schematics trained you to map before you move.",
       puzzleDescription:
-        "Seven carved waymarkers once lined the corridor walls. They fell long ago, and the houses around you pocketed them off the chamber floor as worn old stones — numbered 1–7 in the catalogue, but the numbers are just labels. They do not indicate the path order.\n\nGather all three *Worn Stone Marker* clue cards from the chamber, read the seven markers, then arrange them in the order a person walking through the passage from the archway inward would encounter them.\n\nEnter the seven marker numbers as a sequence.",
+        "Seven carved waymarkers once lined the corridor walls. They fell long ago, and the houses around you pocketed them off the chamber floor as worn old stones — numbered 1–7 in the catalogue, but the numbers are just labels. They do not indicate the path order.\n\nGather all three *Worn Stone Marker* clue cards from the chamber, read the seven markers, then arrange them in the order a person walking through the passage from the archway inward would encounter them.\n\nWrite the seven marker numbers as a sequence.",
       requiredClueSets: [{ cardSetId: csStoneMarker.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansFalseExit.id,
@@ -1251,7 +1251,7 @@ async function main() {
       description:
         "Your signature grappling rigs — high-tension cable, Croft-issue hooks, the works — are stashed on the ledge where you climbed in, eight feet up. The floodwater is rising toward them. There's a dry alcove higher up the wall, well above the waterline — if you can rig a haul route, the gear is safe.",
       puzzleDescription:
-        "Seven route-setting kit components need to be assembled in the correct rigging sequence — but the bag burst when you scrambled in, and pieces of kit are scattered across the chamber floor in other teams' hands. The numbered tags (#1–#7) on each piece are inventory labels only; they do not indicate rigging order.\n\nGather all three *Unmarked Steel Hardware* clue cards from the chamber, read each component's tag for a hint about when it's needed, then enter the seven item numbers in assembly order.",
+        "Seven route-setting kit components need to be assembled in the correct rigging sequence — but the bag burst when you scrambled in, and pieces of kit are scattered across the chamber floor in other teams' hands. The numbered tags (#1–#7) on each piece are inventory labels only; they do not indicate rigging order.\n\nGather all three *Unmarked Steel Hardware* clue cards from the chamber, read each component's tag for a hint about when it's needed, then write the seven item numbers in assembly order.",
       requiredClueSets: [{ cardSetId: csSteelHardware.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansRigs.id,
@@ -1276,7 +1276,7 @@ async function main() {
       description:
         "Water pours through a crack in the far wall where a sealed passage gave way. Scattered across the floor — odd blocks with symbols marked along their edges and a letter on each face. They're clearly meant to fit together somehow.",
       puzzleDescription:
-        "Five flat stone fragments originally sealed the passage — each has a symbol on its left edge, a different symbol on its right edge, and a letter on its face. The fragments are scattered across the chamber, some in your hands, others picked up by the houses around you.\n\nGather all three *Odd Edge-Marked Block* clue cards from the chamber, then assemble the fragments in a line so adjacent edges match. Read the letters across the assembled chain and enter the word they spell.",
+        "Five flat stone fragments originally sealed the passage — each has a symbol on its left edge, a different symbol on its right edge, and a letter on its face. The fragments are scattered across the chamber, some in your hands, others picked up by the houses around you.\n\nGather all three *Odd Edge-Marked Block* clue cards from the chamber, then assemble the fragments in a line so adjacent edges match. Read the letters across the assembled chain and write the word they spell.",
       requiredClueSets: [{ cardSetId: csEdgeBlock.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansJigsaw.id,
@@ -1301,7 +1301,7 @@ async function main() {
       description:
         "Far off to the left, right at the fuzzy edge of the shadows — atop a ledge fifteen feet above the floor, a vibrantly red, sparkling porcelain vase. It catches the torchlight in flashes — impossibly intact and clean after all these years. Nothing survives centuries in a sealed chamber looking like it was fired yesterday.",
       puzzleDescription:
-        "Nine metal spokes can be driven into the wall as climbing footholds, each inscribed with a QRian glyph — but the spokes are scattered, some in your hands, others picked up by the teams around you. The QRians designed them to be placed in a specific order: top to bottom, the inscriptions read a sentence.\n\nGather all three *Inscribed Metal Spoke* clue cards from the chamber, translate the glyph on each spoke, then write each translated word on an index card and rearrange until the sentence forms. Enter the spoke numbers in sentence order.\n\n| Spoke | Glyph |\n|-------|-------|\n| 1 | {{{FIND}}} |\n| 2 | {{{EVER}}} |\n| 3 | {{{WHO}}} |\n| 4 | {{{WAY}}} |\n| 5 | {{{WILL}}} |\n| 6 | {{{THOSE}}} |\n| 7 | {{{NO}}} |\n| 8 | {{{ENTER}}} |\n| 9 | {{{OUT}}} |",
+        "Nine metal spokes can be driven into the wall as climbing footholds, each inscribed with a QRian glyph — but the spokes are scattered, some in your hands, others picked up by the teams around you. The QRians designed them to be placed in a specific order: top to bottom, the inscriptions read a sentence.\n\nGather all three *Inscribed Metal Spoke* clue cards from the chamber, translate the glyph on each spoke, then write each translated word on an index card and rearrange until the sentence forms. Then write the spoke numbers in sentence order.\n\n| Spoke | Glyph |\n|-------|-------|\n| 1 | {{{FIND}}} |\n| 2 | {{{EVER}}} |\n| 3 | {{{WHO}}} |\n| 4 | {{{WAY}}} |\n| 5 | {{{WILL}}} |\n| 6 | {{{THOSE}}} |\n| 7 | {{{NO}}} |\n| 8 | {{{ENTER}}} |\n| 9 | {{{OUT}}} |",
       requiredClueSets: [{ cardSetId: csMetalSpoke.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansVase.id,
@@ -1326,7 +1326,7 @@ async function main() {
       description:
         "In the dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face — some filled, some empty. Small bone tokens with numbers carved into them lie scattered near the base — palm-sized, smooth, clearly meant to fit into the disc's slots.",
       puzzleDescription:
-        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values — the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all three *Numbered Bone Token* clue cards from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values.\n\nEnter the three missing outer values separated by spaces, in position order (3, 5, 8).",
+        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values — the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all three *Numbered Bone Token* clue cards from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values.\n\nWrite the three missing outer values separated by spaces, in position order (3, 5, 8).",
       requiredClueSets: [{ cardSetId: csBoneToken.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansTeaching.id,
@@ -1351,7 +1351,7 @@ async function main() {
       description:
         "Against the near wall, low and easy to miss — a squat doorway set into stone rougher than the rest, as if finished in a hurry. Beyond it, darkness. On the floor, deep parallel grooves gouged into stone, wide as a body, dragging inward.",
       puzzleDescription:
-        "Inside the sealed chamber: remains, tools, and a personal inscription scratched into the wall in QRian glyphs. Use your Ancient Pottery Shards — each has glyph-to-letter pairings etched by the builders as teaching aids — to decode the inscription.\n\nThe wall inscription:\n\n{{{TELL MY CHILD I LOVED THEM STILL}}}\n\nEnter the decoded message.",
+        "Inside the sealed chamber: remains, tools, and a personal inscription scratched into the wall in QRian glyphs. Use your Ancient Pottery Shards — each has glyph-to-letter pairings etched by the builders as teaching aids — to decode the inscription.\n\nThe wall inscription:\n\n{{{TELL MY CHILD I LOVED THEM STILL}}}\n\nWrite the decoded message.",
       requiredClueSets: [{ cardSetId: csPotteryShard.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansDragMarks.id,
@@ -1926,7 +1926,7 @@ async function main() {
       description:
         "Off the side-passage and into a dim alcove: a stone table set in the corner, surface scored with rows of inset tile-slots — some filled, some empty. Above the table, a sealed compartment, no hinge. Your bomb-handler reads the gaps. *Passcode lock. The other houses are holding our missing tiles.*",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Enter the two inferred words separated by a space. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Write the two inferred words separated by a space. The compartment opens.",
       requiredClueSets: [{ cardSetId: csDrevuTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansDrevuCompartment.id,
@@ -1976,7 +1976,7 @@ async function main() {
       description:
         "One of your crew leans against the wrong stretch of wall and a panel swings inward. Behind: a low-ceilinged alcove, every surface stacked with sealed glass phials, ceramic crucibles, fired-clay jars. The smell stops you. Chemicals — not medicine, engineering. Your bomb-handler crouches. *They were making something here.* Bark labels lie scattered across the floor, torn loose when the panel slammed. The other houses have a few. You'll want them back.",
       puzzleDescription:
-        "Five station-clusters of 2 reagents each. Match the scattered bark-labels back to their stations and read each cluster as a recipe — the named compound it produces.\n\nName each compound the QRians were producing. Enter all five compound names in station order, separated by spaces:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
+        "Five station-clusters of 2 reagents each. Match the scattered bark-labels back to their stations and read each cluster as a recipe — the named compound it produces.\n\nName each compound the QRians were producing. Write each compound name in its station's slot:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
       requiredClueSets: [{ cardSetId: csBarkLabel.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansReagentAlcove.id,
@@ -2001,7 +2001,7 @@ async function main() {
       description:
         "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight, the surface scarred where someone tried — and failed — to chisel through. Your bomb-handler runs a hand along the seam. *They sealed something behind this on purpose.* You've got the Fuse Charges. Place them. There's a name carved above the seal: PRIEST PHYSICIST TOGOM. He didn't want company.",
       puzzleDescription:
-        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablet clue cards from the chamber, read the wordplay on each, write the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansReinforcedBunker.id,
@@ -2032,7 +2032,7 @@ async function main() {
       description:
         "Off the main chamber to the right: an archway you missed, choked with vines so thick you nearly walked past it. Push through. Inside, a storeroom — fired-clay jars on stone shelves, every one sealed, every one heavy. Some shelves still bear their painted labels. Others are bare, the labels fallen, scattered. Your historian inhales slow. *This was a pantry.* Whoever ate from this pantry was eating with intention. The other houses pocketed a few of the labels. You'll want them back.",
       puzzleDescription:
-        "Five shelf-clusters of 2 ingredients each. Match the scattered painted clay labels back to their shelves and read each cluster as a recipe — the named preparation it produces.\n\nName each preparation kept in this pantry. Enter each shelf's preparation in its own input below:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
+        "Five shelf-clusters of 2 ingredients each. Match the scattered painted clay labels back to their shelves and read each cluster as a recipe — the named preparation it produces.\n\nName each preparation kept in this pantry. Write each preparation in its shelf's slot:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
       requiredClueSets: [{ cardSetId: csClayShelfLabel.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansSealedPantry.id,
@@ -2082,7 +2082,7 @@ async function main() {
       description:
         "Off the side-passage and into a quiet alcove: a stone table set in the corner, surface marked in careful columns of inset tile-slots — some filled, some empty. Above the table, a sealed compartment, no hinge. Your linguist reads the rows. *Phrase-lock. Some tiles are with the other houses.*",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Enter each inferred word in its own input below. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Write each inferred word in its procedure's slot. The compartment opens.",
       requiredClueSets: [{ cardSetId: csVeshTile.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansVeshCompartment.id,
@@ -2132,7 +2132,7 @@ async function main() {
       description:
         "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. *That's a name.* The carvings name an author the others walked past — and below the inscription, a stone tile sits slightly proud of the wall. A pull-tab. The compartment behind it is untouched. Above the tile: BOTANIST THEOLOGIAN SEFA. She wanted to be found.",
       puzzleDescription:
-        "Two cryptic riddles, inscribed on the *Sefa Riddle-Tablets*, seal the inner scroll-case behind the loose ceiling tile.\n\nGather both Sefa Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
+        "Two cryptic riddles, inscribed on the *Sefa Riddle-Tablets*, seal the inner scroll-case behind the loose ceiling tile.\n\nGather both Sefa Riddle-Tablet clue cards from the chamber, read the wordplay on each, write the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csSefaTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansCeilingInscription.id,
@@ -2188,7 +2188,7 @@ async function main() {
       description:
         "Up the ledge your climber uncovered: the chamber narrows to a wall, and the wall is full of slits. Thin vertical cuts, each one no wider than a hand, set at varying heights, looking out — over the canopy, the basin, the far ridges. Set into many of the slits: amber lenses, polished smooth, each one labeled in a careful hand. Other slits are bare; their labels gone, scattered to the chamber below. Your climber goes still. *This wasn't a fortress wall.* It was an eye.",
       puzzleDescription:
-        "Five clusters of 2 slits/lenses each, every cluster tracking one observable phenomenon. Match the scattered lens-labels back to their slits and read each cluster as a single observation.\n\nName each phenomenon the QRians were observing. Enter all five observation names in cluster order, separated by spaces:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
+        "Five clusters of 2 slits/lenses each, every cluster tracking one observable phenomenon. Match the scattered lens-labels back to their slits and read each cluster as a single observation.\n\nName each phenomenon the QRians were observing. Write each observation in its cluster's slot:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
       requiredClueSets: [{ cardSetId: csLensLabel.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansSightingWall.id,
@@ -2213,7 +2213,7 @@ async function main() {
       description:
         "Off the side-passage and into a tight alcove: a stone table set in the corner, mechanism still snug — rows of inset tile-slots, some filled, some empty. Above the table, a sealed compartment, no hinge. Your point climber checks the slots. *Mechanism's plain. The other houses have what we need.*",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Enter the two inferred words separated by a space. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Write the two inferred words separated by a space. The compartment opens.",
       requiredClueSets: [{ cardSetId: csKraneTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansKraneCompartment.id,
@@ -2263,7 +2263,7 @@ async function main() {
       description:
         "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment is cut into the face of it, sealed with a wooden lid that looks impossibly fresh. Your point climber tilts her head back. *Whoever lived up there wanted to be alone.* You've got the Grappling Rigs. Set the lines. A name is carved into the lid above: PHILOSOPHER MATHEMATICIAN YENUS. He kept his work where the floor couldn't reach.",
       puzzleDescription:
-        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablet clue cards from the chamber, read the wordplay on each, write the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansHighLedge.id,
