@@ -2806,7 +2806,7 @@ async function main() {
   }[] = [
     {
       header: "Letter from a Schoolmaster",
-      description: `*From the first year of the valley schools*
+      description: `*2 Seasons After The Source · From the first year of the valley schools*
 
 This year, four children from the farms were sent to us for lessons. By the second month, two were solving proofs that my best students used to need a year to understand. One girl, Mila, corrected my star-table in front of the whole class. She was right.
 
@@ -2843,7 +2843,7 @@ Last week I found two children awake after midnight, building perfect towers in 
     },
     {
       header: "Order Limiting Second Visits",
-      description: `*Issued after repeat visits became common*
+      description: `*27 Seasons After The Source · Issued after repeat visits became common*
 
 By order of the Survey Council: no citizen may enter the bright chamber twice in the same ten-day unless called by the schools or the measuring office.
 
@@ -2854,7 +2854,7 @@ This rule is not a punishment. It is a correction. Too many who leave the chambe
     },
     {
       header: "The Fifty-Seventh Lesson",
-      description: `*Two generations after the first valley schools opened*
+      description: `*159 Seasons After The Source · Two generations after the first valley schools opened*
 
 By the fifty-seventh lesson, even the fisherman's son could derive the sky-table. We have begun promoting children before their elders can finish the proofs they wrote for them.
 
@@ -2878,7 +2878,7 @@ We are feeding the mind and forgetting the mouth.`,
     },
     {
       header: "Order to Break the Fifth Drain",
-      description: `*Written after the night returns began*
+      description: `*204 Seasons After The Source · Written after the night returns began*
 
 Valve Five is to be struck dead by chisel before dusk.
 
@@ -2926,7 +2926,7 @@ Do not pray there. Do not study there. Do not sleep near the bright stone. If yo
     },
     {
       header: "Foreman Krane's Completion Record",
-      description: `*Written during the final closing of the temple*
+      description: `*260 Seasons After The Source · Written during the final closing of the temple*
 
 West choke-point sealed at dusk. False stair cut and dressed to appear older than the true passage. Third gate lowered before noon.
 
@@ -2939,7 +2939,7 @@ Six laborers were lost today. The work continues at first light.`,
     },
     {
       header: "Testimony of Sefa Before the Closing",
-      description: `*Recorded on the last day before the lower seal was set*
+      description: `*262 Seasons After The Source · Recorded on the last day before the lower seal was set*
 
 We had the land-killing compounds. We tested them on the moss terraces, and nothing green returned. We could have made the valley unlivable and called that virtue.
 
