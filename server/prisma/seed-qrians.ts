@@ -152,13 +152,13 @@ async function main() {
 
   console.log("Creating houses...");
   const drake = await prisma.house.create({
-    data: { gameId: game.id, name: "Drake Delegation", color: "#dc2626" },
+    data: { gameId: game.id, name: "Drake Delegation", color: "#dc2626", slug: "drake" },
   });
   const jones = await prisma.house.create({
-    data: { gameId: game.id, name: "Jones Junket", color: "#ca8a04" },
+    data: { gameId: game.id, name: "Jones Junket", color: "#ca8a04", slug: "jones" },
   });
   const croft = await prisma.house.create({
-    data: { gameId: game.id, name: "Croft Company", color: "#7c3aed" },
+    data: { gameId: game.id, name: "Croft Company", color: "#7c3aed", slug: "croft" },
   });
 
   // ═══════════════════════════════════════════════════════════════════
