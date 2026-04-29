@@ -723,8 +723,8 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "it was making us obsessed",
-      acceptAlternatives: ["IT WAS MAKING US OBSESSED", "it-was-making-us-obsessed"],
-      hint: "Each red tile shows the same phrase with a different set of letters worn smooth. Lay your three tiles side by side. At every blank, the missing letter is visible on one of the other two tiles.",
+      acceptAlternatives: ["IT WAS MAKING US OBSESSED", "it-was-making-us-obsessed", "itwasmakingusobsessed", "ITWASMAKINGUSOBSESSED"],
+      hint: "Each red tile is a 21-character rewrite. At every position, the original letter is the one that appears on two of the three tiles; the lone outlier is drift. Walk the three tiles position by position.",
       hintAfterAttempts: 2,
     },
   });
@@ -789,8 +789,8 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "this place once made us wise",
-      acceptAlternatives: ["THIS PLACE ONCE MADE US WISE", "this-place-once-made-us-wise"],
-      hint: "Each amber tile shows the same phrase with a different set of letters worn smooth. Lay your three tiles side by side. At every blank, the missing letter is visible on one of the other two tiles.",
+      acceptAlternatives: ["THIS PLACE ONCE MADE US WISE", "this-place-once-made-us-wise", "thisplaceoncemadeuswise", "THISPLACEONCEMADEUSWISE"],
+      hint: "Each amber tile is a 23-character rewrite. At every position, the original letter is the one that appears on two of the three tiles; the lone outlier is drift. Walk the three tiles position by position.",
       hintAfterAttempts: 2,
     },
   });
@@ -879,8 +879,8 @@ async function main() {
     data: {
       gameId: game.id,
       correctAnswer: "until we slowly realized",
-      acceptAlternatives: ["UNTIL WE SLOWLY REALIZED", "until-we-slowly-realized"],
-      hint: "Each purple tile shows the same phrase with a different set of letters worn smooth. Lay your three tiles side by side. At every blank, the missing letter is visible on one of the other two tiles.",
+      acceptAlternatives: ["UNTIL WE SLOWLY REALIZED", "until-we-slowly-realized", "untilweslowlyrealized", "UNTILWESLOWLYREALIZED"],
+      hint: "Each purple tile is a 21-character rewrite. At every position, the original letter is the one that appears on two of the three tiles; the lone outlier is drift. Walk the three tiles position by position.",
       hintAfterAttempts: 2,
     },
   });
@@ -1878,7 +1878,7 @@ async function main() {
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Jones and Croft are already at their own sections of the wall, working amber tiles and purple. Your bomb-handler crouches at the red tiles. They wrote it this many times so the eroded ones could still be read against the rest. Some of yours are with the others. You'll want them back to read the wall whole.",
       puzzleDescription:
-        "Three red tiles, each carrying the same phrase with a different set of letter-positions worn smooth. The blanks are partitioned: every position is blanked on exactly one tile. Pool all three red tiles, fill each blank from the other two, reconstruct the phrase.\n\nWhat is carved into the red wall?",
+        "Three red tiles, each a 21-character rewrite of the same eroded inscription. The carvers' chisels drifted at scattered positions: at every position, two of the three tiles preserved the original letter and one drifted to something else. The drift pattern is different on every tile.\n\nGather all three red *Wall Tile* clue cards from the chamber. Lay the 21 characters of each tile side by side. At every position, the letter that appears on two tiles is the truth; the lone outlier is drift.\n\nWhat is carved into the red wall?",
       requiredClueSets: [{ cardSetId: csRedWallTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansRedWall.id,
@@ -1984,7 +1984,7 @@ async function main() {
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Croft are already at their own sections of the wall, working red tiles and purple. Your linguist drops at the amber tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
-        "Three amber tiles, each carrying the same phrase with a different set of letter-positions worn smooth. The blanks are partitioned: every position is blanked on exactly one tile. Pool all three amber tiles, fill each blank from the other two, reconstruct the phrase.\n\nWhat is carved into the amber wall?",
+        "Three amber tiles, each a 23-character rewrite of the same eroded inscription. The carvers' chisels drifted at scattered positions: at every position, two of the three tiles preserved the original letter and one drifted to something else. The drift pattern is different on every tile.\n\nGather all three amber *Wall Tile* clue cards from the chamber. Lay the 23 characters of each tile side by side. At every position, the letter that appears on two tiles is the truth; the lone outlier is drift.\n\nWhat is carved into the amber wall?",
       requiredClueSets: [{ cardSetId: csAmberWallTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansAmberWall.id,
@@ -2165,7 +2165,7 @@ async function main() {
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Jones are already at their own sections of the wall, working red tiles and amber. Your point climber kneels at the purple tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
-        "Three purple tiles, each carrying the same phrase with a different set of letter-positions worn smooth. The blanks are partitioned: every position is blanked on exactly one tile. Pool all three purple tiles, fill each blank from the other two, reconstruct the phrase.\n\nWhat is carved into the purple wall?",
+        "Three purple tiles, each a 21-character rewrite of the same eroded inscription. The carvers' chisels drifted at scattered positions: at every position, two of the three tiles preserved the original letter and one drifted to something else. The drift pattern is different on every tile.\n\nGather all three purple *Wall Tile* clue cards from the chamber. Lay the 21 characters of each tile side by side. At every position, the letter that appears on two tiles is the truth; the lone outlier is drift.\n\nWhat is carved into the purple wall?",
       requiredClueSets: [{ cardSetId: csPurpleWallTile.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPurpleWall.id,
@@ -2267,7 +2267,7 @@ async function main() {
     clueVisibleCategory: "Red Wall Tile",
     header: "Red Wall Tile, 1",
     description:
-      "*A pried-loose tile from the east wall, color: red. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`_T W_S M_KI_G U_ OB_ES_ED`\n\n*(Two more red tiles are out there with different worn-smooth positions. Pool all three to read it whole — at every blank, the missing letter is visible on one of the other two.)*",
+      "*A pried-loose tile from the east wall, color: red. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`XVWRSMAPINCUSOBSQSFED`\n\n*(Two more red tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original; the lone outlier is drift.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2275,7 +2275,7 @@ async function main() {
     clueVisibleCategory: "Red Wall Tile",
     header: "Red Wall Tile, 2",
     description:
-      "*A pried-loose tile from the east wall, color: red. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`I_ WA_ MA_IN_ US _BS_SS_D`\n\n*(Two more red tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: red. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`ITWAJYAKIHGTSRVSESSEW`\n\n*(Two more red tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2283,7 +2283,7 @@ async function main() {
     clueVisibleCategory: "Red Wall Tile",
     header: "Red Wall Tile, 3",
     description:
-      "*A pried-loose tile from the east wall, color: red. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`IT _AS _AK_NG _S O_SE_SE_`\n\n*(Two more red tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: red. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`ITKASMLKZNGUNOBPECSBD`\n\n*(Two more red tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [croft.id],
   });
 
@@ -2363,7 +2363,7 @@ async function main() {
     clueVisibleCategory: "Amber Wall Tile",
     header: "Amber Wall Tile, 1",
     description:
-      "*A pried-loose tile from the east wall, color: amber. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`_HI_ PLA_E O_CE _AD_ US _IS_`\n\n*(Two more amber tiles are out there with different worn-smooth positions. Pool all three to read it whole — at every blank, the missing letter is visible on one of the other two.)*",
+      "*A pried-loose tile from the east wall, color: amber. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`FHYSPKACQOVCEJADERSWIXE`\n\n*(Two more amber tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original; the lone outlier is drift.)*",
     houseIds: [jones.id],
   });
   await createClueCard({
@@ -2371,7 +2371,7 @@ async function main() {
     clueVisibleCategory: "Amber Wall Tile",
     header: "Amber Wall Tile, 2",
     description:
-      "*A pried-loose tile from the east wall, color: amber. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`T_IS _LAC_ ON_E M_DE _S W_SE`\n\n*(Two more amber tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: amber. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`THISZLAWEONNEMAPTUSKASY`\n\n*(Two more amber tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2379,7 +2379,7 @@ async function main() {
     clueVisibleCategory: "Amber Wall Tile",
     header: "Amber Wall Tile, 3",
     description:
-      "*A pried-loose tile from the east wall, color: amber. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`TH_S P__CE _NC_ MA_E U_ WI_E`\n\n*(Two more amber tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: amber. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`TRIVPLICEBNCFMGDEUQWISE`\n\n*(Two more amber tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [croft.id],
   });
 
@@ -2557,7 +2557,7 @@ async function main() {
     clueVisibleCategory: "Purple Wall Tile",
     header: "Purple Wall Tile, 1",
     description:
-      "*A pried-loose tile from the east wall, color: purple. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`_NT_L W_ SL_WL_ R_ALI_ED`\n\n*(Two more purple tiles are out there with different worn-smooth positions. Pool all three to read it whole — at every blank, the missing letter is visible on one of the other two.)*",
+      "*A pried-loose tile from the east wall, color: purple. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`UFTIKWESQOWVYREJLPZEX`\n\n*(Two more purple tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original; the lone outlier is drift.)*",
     houseIds: [croft.id],
   });
   await createClueCard({
@@ -2565,7 +2565,7 @@ async function main() {
     clueVisibleCategory: "Purple Wall Tile",
     header: "Purple Wall Tile, 2",
     description:
-      "*A pried-loose tile from the east wall, color: purple. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`U_TI_ WE _LO_LY _EA_IZ_D`\n\n*(Two more purple tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: purple. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`CNTYLWHSLOTLYBEAGIZND`\n\n*(Two more purple tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -2573,7 +2573,7 @@ async function main() {
     clueVisibleCategory: "Purple Wall Tile",
     header: "Purple Wall Tile, 3",
     description:
-      "*A pried-loose tile from the east wall, color: purple. The phrase is mostly intact, but a third of the letter-positions are eroded smooth.*\n\n`UN_IL _E S_OW_Y R_AL_ZE_`\n\n*(Two more purple tiles are out there with different worn-smooth positions. Pool all three to read it whole.)*",
+      "*A pried-loose tile from the east wall, color: purple. The carvers' chisels drifted at scattered positions; some letters survived, some drifted to look-alikes. The drift pattern is different on every tile.*\n\n`UNDILREMLFWLQRVALIKED`\n\n*(Two more purple tiles are out there with different drift patterns. Pool all three. At every position, the letter that appears on two tiles is the original.)*",
     houseIds: [jones.id],
   });
 
