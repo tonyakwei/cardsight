@@ -1928,7 +1928,7 @@ async function main() {
       description:
         "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight, the surface scarred where someone tried — and failed — to chisel through. Your bomb-handler runs a hand along the seam. *They sealed something behind this on purpose.* You've got the Fuse Charges. Place them. There's a name carved above the seal: PRIEST PHYSICIST TOGOM. He didn't want company.",
       puzzleDescription:
-        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"Round and round this bit, but it's not 'and.'\"*\n\n**Tablet II:** *\"When shuffled, it's even more explosive than 'enraged.'\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansReinforcedBunker.id,
@@ -2059,7 +2059,7 @@ async function main() {
       description:
         "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. *That's a name.* The carvings name an author the others walked past — and below the inscription, a stone tile sits slightly proud of the wall. A pull-tab. The compartment behind it is untouched. Above the tile: BOTANIST THEOLOGIAN SEFA. She wanted to be found.",
       puzzleDescription:
-        "Two cryptic riddles seal the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"It is said to flow, but it doesn't. Instead, it stands beautifully.\"*\n\n**Tablet II:** *\"You would think that you put on your bread, but instead it soars like a queen.\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two cryptic riddles, inscribed on the *Sefa Riddle-Tablets*, seal the inner scroll-case behind the loose ceiling tile.\n\nGather both Sefa Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csSefaTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansCeilingInscription.id,
@@ -2190,7 +2190,7 @@ async function main() {
       description:
         "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment is cut into the face of it, sealed with a wooden lid that looks impossibly fresh. Your point climber tilts her head back. *Whoever lived up there wanted to be alone.* You've got the Grappling Rigs. Set the lines. A name is carved into the lid above: PHILOSOPHER MATHEMATICIAN YENUS. He kept his work where the floor couldn't reach.",
       puzzleDescription:
-        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles to release the inner scroll-case. *Translated from QRian wordplay; the original puns are English-equivalent in form.*\n\n**Tablet I:** *\"The gift you always have, at all times.\"*\n\n**Tablet II:** *\"Add a G; it describes the Earth. Remove the G; it describes the Earth.\"*\n\nEnter the two riddle-answers separated by a space.",
+        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablet clue cards from the chamber, read the wordplay on each, and enter the two riddle-answers separated by a space.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
       answerTemplateType: "single_answer",
       answerId: ansHighLedge.id,
