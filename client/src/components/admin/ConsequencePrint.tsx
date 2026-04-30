@@ -298,6 +298,17 @@ export function ConsequencePrint() {
   const perPage = Number(cardsPerPage);
   const cardHeight = perPage === 3 ? "3.13in" : "4.7in";
 
+  function fitText(text: string | null) {
+    const len = text?.length ?? 0;
+    const longThreshold = perPage === 3 ? 380 : 700;
+    const xlongThreshold = perPage === 3 ? 560 : 950;
+    const xxlongThreshold = perPage === 3 ? 760 : 1200;
+    if (len > xxlongThreshold) return { fontSize: "13px", lineHeight: 1.35, titleSize: "18px" };
+    if (len > xlongThreshold)  return { fontSize: "15px", lineHeight: 1.4,  titleSize: "19px" };
+    if (len > longThreshold)   return { fontSize: "17px", lineHeight: 1.5,  titleSize: "20px" };
+    return { fontSize: "21px", lineHeight: 1.6, titleSize: "22px" };
+  }
+
   return (
     <div className="consequence-print-root">
       {/* Toolbar — hidden when printing */}
@@ -363,7 +374,9 @@ export function ConsequencePrint() {
           fontFamily: theme.baseFont,
         }}
       >
-        {allCards.map((card, i) => (
+        {allCards.map((card, i) => {
+          const fit = fitText(card.consequence);
+          return (
           <div
             key={i}
             className="consequence-card"
@@ -529,7 +542,7 @@ export function ConsequencePrint() {
                 <div
                   style={{
                     fontFamily: theme.headingFont,
-                    fontSize: "22px",
+                    fontSize: fit.titleSize,
                     fontWeight: 400,
                     color: theme.headingColor,
                     marginBottom: "0.1in",
@@ -544,8 +557,8 @@ export function ConsequencePrint() {
                 {/* Consequence text */}
                 <div
                   style={{
-                    fontSize: "21px",
-                    lineHeight: 1.6,
+                    fontSize: fit.fontSize,
+                    lineHeight: fit.lineHeight,
                     color: theme.textColor,
                     flex: 1,
                     overflow: "hidden",
@@ -557,7 +570,8 @@ export function ConsequencePrint() {
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

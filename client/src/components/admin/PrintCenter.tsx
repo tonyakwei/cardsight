@@ -42,6 +42,18 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/print/quiet-bed`,
       color: "pink",
     },
+    {
+      title: "Hanging Garden (Canopy Map)",
+      description: "10×12 canopy grid for Jones's Act 2 mission. Three articulation classes — Closers/Openers/Carriers — trace QRian J-A-W when connected; mouth-neutral faces are decoys. Print one per Jones team.",
+      path: `/admin/games/${gameId}/print/canopy-map`,
+      color: "violet",
+    },
+    {
+      title: "Reckoning Floor (Pebble Map)",
+      description: "10×12 pebble grid for Croft's Act 2 mission. Class digits 3/5/7/9 fill the cells of T-I-M-E as sets (not sequences); decoy patterns use other digits. Print one per Croft team.",
+      path: `/admin/games/${gameId}/print/reckoning-floor`,
+      color: "teal",
+    },
   ];
 
   return (

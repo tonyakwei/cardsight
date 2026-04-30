@@ -24,6 +24,8 @@ import { ArtifactCatalogPrint } from "./components/admin/ArtifactCatalogPrint";
 import { GlyphCodexPrint } from "./components/admin/GlyphCodexPrint";
 import { WelcomePlacardPrint } from "./components/admin/WelcomePlacardPrint";
 import { QuietBedGridPrint } from "./components/admin/QuietBedGridPrint";
+import { CanopyMapPrint } from "./components/admin/CanopyMapPrint";
+import { ReckoningFloorPrint } from "./components/admin/ReckoningFloorPrint";
 import { HostConsole } from "./components/admin/HostConsole";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
@@ -57,6 +59,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/print/glyph-codex" element={<GlyphCodexPrint />} />
             <Route path="games/:gameId/print/welcome-placard" element={<WelcomePlacardPrint />} />
             <Route path="games/:gameId/print/quiet-bed" element={<QuietBedGridPrint />} />
+            <Route path="games/:gameId/print/canopy-map" element={<CanopyMapPrint />} />
+            <Route path="games/:gameId/print/reckoning-floor" element={<ReckoningFloorPrint />} />
             <Route path="games/:gameId/console" element={<HostConsole />} />
           </Route>
           <Route
