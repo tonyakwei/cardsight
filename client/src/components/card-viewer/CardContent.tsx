@@ -70,6 +70,9 @@ export function CardContent({ header, description, itemName }: Props) {
             marginBottom: "1.5rem",
             color: "var(--card-accent-color)",
             lineHeight: 1.15,
+            overflowWrap: "break-word",
+            wordBreak: "break-word",
+            hyphens: "auto",
           }}
         >
           {header}
