@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 interface Props {
@@ -35,6 +36,12 @@ export function MissionRevealOverlay({
   const dark = shade(houseColor, -0.55);
   const isConfetti = phase === "confetti";
 
+  const [showConfetti, setShowConfetti] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setShowConfetti(false), 5000);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <div
       style={{
@@ -52,7 +59,7 @@ export function MissionRevealOverlay({
         padding: "1.5rem",
       }}
     >
-      <FullScreenConfetti color={houseColor} />
+      {showConfetti && <FullScreenConfetti color={houseColor} />}
 
       {!isConfetti && (
         <div
