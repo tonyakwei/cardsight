@@ -60,6 +60,12 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/print/finale-pads`,
       color: "red",
     },
+    {
+      title: "Act 3 Cards (History + Clauses)",
+      description: "3×5″ portrait cards, 3-up on letter landscape. 12 history fragments + 12 settlement clauses, themed per house (Drake / Jones / Croft). Print on cardstock; affix programmable NFC tags on the back to keep timeline verification.",
+      path: `/admin/games/${gameId}/print/act3-cards`,
+      color: "indigo",
+    },
   ];
 
   return (

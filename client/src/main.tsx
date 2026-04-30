@@ -27,6 +27,7 @@ import { QuietBedGridPrint } from "./components/admin/QuietBedGridPrint";
 import { CanopyMapPrint } from "./components/admin/CanopyMapPrint";
 import { ReckoningFloorPrint } from "./components/admin/ReckoningFloorPrint";
 import { FinalePadsPrint } from "./components/admin/FinalePadsPrint";
+import { Act3CardsPrint } from "./components/admin/Act3CardsPrint";
 import { HostConsole } from "./components/admin/HostConsole";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
@@ -63,6 +64,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/print/canopy-map" element={<CanopyMapPrint />} />
             <Route path="games/:gameId/print/reckoning-floor" element={<ReckoningFloorPrint />} />
             <Route path="games/:gameId/print/finale-pads" element={<FinalePadsPrint />} />
+            <Route path="games/:gameId/print/act3-cards" element={<Act3CardsPrint />} />
             <Route path="games/:gameId/console" element={<HostConsole />} />
           </Route>
           <Route
