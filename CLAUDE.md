@@ -80,6 +80,7 @@ cardsight/
 │   │   │       ├── MissionManager.tsx    # Mission CRUD by house tabs + act groups
 │   │   │       ├── ActBreakView.tsx      # Per-house mission results for host
 │   │   │       ├── ConsequencePrint.tsx  # Printable consequence cards, themed (Space/Explorer)
+│   │       │       ├── FinalePadsPrint.tsx   # Three letter-portrait pads (Destroy/Recontain/Open) for the Reckoning vote-by-card-placement
 │   │   │       ├── StorySheetManager.tsx  # Story sheet CRUD by house tabs + act groups
 │   │   │       ├── StorySheetPrint.tsx   # Printable story sheets with mission list
 │   │   │       ├── ShowtimeManager.tsx   # Showtime CRUD, live monitoring, force trigger/reset
@@ -283,6 +284,7 @@ Code changes deploy automatically — Railway watches `main` and rebuilds on pus
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator with physical card name toggle |
 | `/admin/games/:id/console` | HostConsole | Mobile host console — pulse, activity feed, card/mission lock, showtime control |
 | `/admin/games/:id/print` | PrintCenter | Unified print hub (story sheets, consequence cards) |
+| `/admin/games/:id/print/finale-pads` | FinalePadsPrint | Three themed letter-portrait pads (Destroy = scorched/ember, Recontain = sealed/slate, Open = gold/dawn) for the Reckoning vote-by-card-placement |
 | `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
 | `/h/:slug` | HouseClaim | Sets `cs_house` cookie for the matching house in the active game; plays a 3s themed flash animation (DrakeFlash/JonesFlash/CroftFlash/GenericFlash) |
 | `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |

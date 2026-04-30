@@ -54,6 +54,12 @@ export function PrintCenter() {
       path: `/admin/games/${gameId}/print/reckoning-floor`,
       color: "teal",
     },
+    {
+      title: "Finale Pads",
+      description: "Three letter-portrait pads — one per major outcome (Destroy / Recontain / Open). Lay them on the table at the Reckoning; players place cards on the pad they're advocating for and move them as the room argues.",
+      path: `/admin/games/${gameId}/print/finale-pads`,
+      color: "red",
+    },
   ];
 
   return (
