@@ -303,9 +303,9 @@ export function ConsequencePrint() {
     const longThreshold = perPage === 3 ? 380 : 700;
     const xlongThreshold = perPage === 3 ? 560 : 950;
     const xxlongThreshold = perPage === 3 ? 760 : 1200;
-    if (len > xxlongThreshold) return { fontSize: "13px", lineHeight: 1.35, titleSize: "18px" };
-    if (len > xlongThreshold)  return { fontSize: "15px", lineHeight: 1.4,  titleSize: "19px" };
-    if (len > longThreshold)   return { fontSize: "17px", lineHeight: 1.5,  titleSize: "20px" };
+    if (len > xxlongThreshold) return { fontSize: "12px", lineHeight: 1.3,  titleSize: "17px" };
+    if (len > xlongThreshold)  return { fontSize: "14px", lineHeight: 1.35, titleSize: "18px" };
+    if (len > longThreshold)   return { fontSize: "16px", lineHeight: 1.42, titleSize: "19px" };
     return { fontSize: "21px", lineHeight: 1.6, titleSize: "22px" };
   }
 

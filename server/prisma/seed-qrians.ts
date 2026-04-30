@@ -1259,7 +1259,7 @@ async function main() {
       consequenceCompleted:
         "The whips are secured and the team is buzzing — not because of what you retrieved, but because of how you retrieved it. You read the wall. You actually read it. The other houses are navigating this temple with torches and guesswork. You're navigating it with the language of the people who built it. Every inscription from here on isn't decoration — it's a signpost, and you're the only ones who can follow it.",
       consequenceNotCompleted:
-        "The glyph riddle is still on the wall and the corridors are still half-submerged, but the water isn't waiting. Somewhere down one of those passages, the ceremonial whips sit on a dry shelf that won't be dry much longer. Dr. Jones trusted you to carry the whips, and the whips are the thing that made this feel like a Jones expedition instead of a university field trip that got out of hand. The deeper chambers will have more words. Harder ones.",
+        "The glyph riddle is still on the wall and the corridors are still half-submerged, but the water isn't waiting. Somewhere down one of those passages, the ceremonial whips sit on a dry shelf that won't be dry much longer. Dr. Jones trusted you to carry the whips, and the whips made this feel like a Jones expedition instead of a university field trip that got out of hand. The deeper chambers will have more words. Harder ones.",
       sortOrder: 1,
     },
   });
