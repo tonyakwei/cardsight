@@ -34,6 +34,17 @@ interface PrintSheet {
   missions: PrintMission[];
 }
 
+function contrastTextOn(hex: string): string {
+  const m = hex.replace("#", "");
+  const full = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
+  if (full.length !== 6) return "#1a1a1a";
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luma > 0.6 ? "#1a1a1a" : "#ffffff";
+}
+
 // --- Theme system ---
 
 interface SheetTheme {
@@ -365,6 +376,7 @@ function SheetPage({
         width: "7.5in",
         boxSizing: "border-box",
         padding: "2.5rem",
+        paddingTop: "3rem",
         position: "relative",
         overflow: "hidden",
         background: theme.pageBg,
@@ -378,6 +390,40 @@ function SheetPage({
     >
       {theme.renderBackground?.(houseColor)}
 
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "14px",
+          background: houseColor,
+          printColorAdjust: "exact",
+          WebkitPrintColorAdjust: "exact",
+        } as React.CSSProperties}
+      />
+
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          right: "1.25rem",
+          bottom: "1rem",
+          fontFamily: theme.headingFont,
+          fontSize: "9rem",
+          fontWeight: 900,
+          lineHeight: 1,
+          color: houseColor,
+          opacity: 0.1,
+          pointerEvents: "none",
+          letterSpacing: "-0.05em",
+          printColorAdjust: "exact",
+          WebkitPrintColorAdjust: "exact",
+        } as React.CSSProperties}
+      >
+        {sheet.house.name.charAt(0).toUpperCase()}
+      </div>
+
       <div style={{ position: "relative" }}>
         {/* Title header */}
         <div
@@ -387,19 +433,25 @@ function SheetPage({
             marginBottom: "2rem",
           }}
         >
-          <div
+          <span
             style={{
+              display: "inline-block",
+              background: houseColor,
+              color: contrastTextOn(houseColor),
+              fontFamily: theme.headingFont,
               fontSize: "0.7rem",
+              fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.2em",
-              color: theme.labelColor(houseColor),
-              fontFamily: theme.headingFont,
-              fontWeight: 700,
-              marginBottom: "0.3rem",
-            }}
+              padding: "0.3rem 0.7rem",
+              borderRadius: "999px",
+              marginBottom: "0.6rem",
+              printColorAdjust: "exact",
+              WebkitPrintColorAdjust: "exact",
+            } as React.CSSProperties}
           >
             {sheet.house.name} — Act {sheet.act}
-          </div>
+          </span>
           <h1
             style={{
               fontSize: "1.6rem",
@@ -484,14 +536,35 @@ function MissionBand({
       <div style={{ flex: 1, fontSize: "0.9rem", lineHeight: 1.6 }}>
         <div
           style={{
-            fontFamily: theme.headingFont,
-            fontWeight: 700,
-            fontSize: "1.05rem",
-            color: theme.missionTitleColor(houseColor),
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
             marginBottom: "0.4rem",
           }}
         >
-          {mission.title}
+          <span
+            aria-hidden
+            style={{
+              display: "inline-block",
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              background: houseColor,
+              flexShrink: 0,
+              printColorAdjust: "exact",
+              WebkitPrintColorAdjust: "exact",
+            } as React.CSSProperties}
+          />
+          <div
+            style={{
+              fontFamily: theme.headingFont,
+              fontWeight: 700,
+              fontSize: "1.05rem",
+              color: theme.missionTitleColor(houseColor),
+            }}
+          >
+            {mission.title}
+          </div>
         </div>
         {mission.storySheetBlurb && (
           <div className="blurb-md">
@@ -514,7 +587,13 @@ function MissionBand({
             width: "84px",
             height: "84px",
             borderRadius: "4px",
-          }}
+            border: `3px solid ${houseColor}`,
+            background: "white",
+            padding: "2px",
+            boxSizing: "content-box",
+            printColorAdjust: "exact",
+            WebkitPrintColorAdjust: "exact",
+          } as React.CSSProperties}
         />
       </div>
     </div>

@@ -6,7 +6,6 @@ import {
   Stack,
   Paper,
   TextInput,
-  Box,
 } from "@mantine/core";
 import type { AdminCard } from "../../../api/admin";
 import { pcName, pcColor, pcShort } from "../../../utils/physicalCards";
@@ -99,9 +98,22 @@ function ConsoleCardRow({
   const isLoading = actionLoading === card.id;
   const examined = !!card.examinedAt;
   const destructed = !!card.selfDestructedAt;
+  const houseColors = card.cardHouses.map((ch) => ch.house.color);
 
   return (
-    <Paper bg="dark.7" p="sm" radius="md" withBorder={card.lockedOut} style={card.lockedOut ? { borderColor: "#e03131" } : undefined}>
+    <Paper
+      bg="dark.7"
+      p="sm"
+      radius="md"
+      withBorder={card.lockedOut}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        paddingLeft: houseColors.length > 0 ? 14 : undefined,
+        ...(card.lockedOut ? { borderColor: "#e03131" } : {}),
+      }}
+    >
+      {houseColors.length > 0 && <HouseStripe colors={houseColors} />}
       <Group justify="space-between" wrap="nowrap" mb={4}>
         <Group gap="xs" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
           <Badge
@@ -184,5 +196,34 @@ function ConsoleCardRow({
         </Button>
       </Group>
     </Paper>
+  );
+}
+
+function HouseStripe({ colors, width = 5 }: { colors: string[]; width?: number }) {
+  if (colors.length === 0) return null;
+  const bg =
+    colors.length === 1
+      ? colors[0]
+      : `linear-gradient(to bottom, ${colors
+          .map((c, i) => {
+            const start = (i / colors.length) * 100;
+            const end = ((i + 1) / colors.length) * 100;
+            return `${c} ${start}%, ${c} ${end}%`;
+          })
+          .join(", ")})`;
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width,
+        background: bg,
+        pointerEvents: "none",
+        zIndex: 1,
+      }}
+    />
   );
 }

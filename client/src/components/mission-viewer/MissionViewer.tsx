@@ -9,9 +9,26 @@ import { OverlayRenderer } from "../card-viewer/overlays/OverlayRenderer";
 import { MissionAnswerInput } from "./MissionAnswerInput";
 import { MissionRevealOverlay } from "./MissionRevealOverlay";
 import { RequiredItems } from "./RequiredItems";
-import type { MissionViewerResponse } from "@cardsight/shared";
+import type { MissionViewerResponse, CardDesign } from "@cardsight/shared";
 
 const HOUSE_STORAGE_KEY = "cardsight_house";
+
+function houseTintedDesign(houseColor: string): CardDesign {
+  return {
+    bgColor: "#0a0a0a",
+    bgGradient: `radial-gradient(ellipse at top, ${houseColor}1f 0%, #0a0a0a 60%)`,
+    bgImageUrl: null,
+    textColor: "#e8e8e8",
+    accentColor: houseColor,
+    secondaryColor: houseColor,
+    fontFamily: "system-ui",
+    cardStyle: "default",
+    animationIn: "fade",
+    borderStyle: null,
+    overlayEffect: null,
+    customCss: null,
+  };
+}
 
 function getStoredHouseId(): string | null {
   try {
@@ -106,10 +123,15 @@ export function MissionViewer() {
     );
   }
 
+  const activeHouse =
+    mission.houses.find((h) => h.id === selectedHouse) ?? mission.houses[0] ?? null;
+  const effectiveDesign =
+    mission.design ?? (activeHouse ? houseTintedDesign(activeHouse.color) : null);
+
   // House picker for multi-house missions
   if (!selectedHouse && mission.houses.length > 1) {
     return (
-      <CardShell design={mission.design}>
+      <CardShell design={effectiveDesign}>
         <div style={{
           display: "flex",
           flexDirection: "column",
@@ -159,8 +181,8 @@ export function MissionViewer() {
   // Locked out
   if (mission.lockedOut) {
     return (
-      <CardShell design={mission.design}>
-        <OverlayRenderer effect={mission.design?.overlayEffect ?? null} />
+      <CardShell design={effectiveDesign}>
+        <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
         <AnimationWrapper type="fade">
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60dvh", textAlign: "center", gap: "1.5rem" }}>
             <div style={{ fontSize: "2rem" }}>🔒</div>
@@ -177,9 +199,9 @@ export function MissionViewer() {
   }
 
   return (
-    <CardShell design={mission.design}>
-      <OverlayRenderer effect={mission.design?.overlayEffect ?? null} />
-      <AnimationWrapper type={mission.design?.animationIn ?? "fade"}>
+    <CardShell design={effectiveDesign}>
+      <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
+      <AnimationWrapper type={effectiveDesign?.animationIn ?? "fade"}>
         <CardContent
           header={mission.title}
           description={mission.puzzleDescription ?? mission.description}

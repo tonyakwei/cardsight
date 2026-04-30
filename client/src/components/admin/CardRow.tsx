@@ -163,9 +163,12 @@ export function CardRow({
     }
   };
 
+  const houseColors = card.cardHouses.map((ch) => ch.house.color);
+
   return (
     <div
       style={{
+        position: "relative",
         border: "1px solid var(--mantine-color-dark-5)",
         borderRadius: "8px",
         marginBottom: "8px",
@@ -178,6 +181,7 @@ export function CardRow({
         opacity: isDeleted ? 0.5 : 1,
       }}
     >
+      {houseColors.length > 0 && <HouseStripe colors={houseColors} /> }
       {/* Collapsed header row */}
       <Group
         p="sm"
@@ -439,5 +443,34 @@ export function CardRow({
         </div>
       )}
     </div>
+  );
+}
+
+function HouseStripe({ colors, width = 5 }: { colors: string[]; width?: number }) {
+  if (colors.length === 0) return null;
+  const bg =
+    colors.length === 1
+      ? colors[0]
+      : `linear-gradient(to bottom, ${colors
+          .map((c, i) => {
+            const start = (i / colors.length) * 100;
+            const end = ((i + 1) / colors.length) * 100;
+            return `${c} ${start}%, ${c} ${end}%`;
+          })
+          .join(", ")})`;
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width,
+        background: bg,
+        pointerEvents: "none",
+        zIndex: 1,
+      }}
+    />
   );
 }

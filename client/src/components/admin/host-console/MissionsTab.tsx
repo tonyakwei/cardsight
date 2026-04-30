@@ -56,9 +56,22 @@ function ConsoleMissionRow({
   actionLoading: string | null;
 }) {
   const isLoading = actionLoading === mission.id;
+  const houseColors = mission.missionHouses.map((mh) => mh.house.color);
 
   return (
-    <Paper bg="dark.7" p="sm" radius="md" withBorder={mission.lockedOut} style={mission.lockedOut ? { borderColor: "#e03131" } : undefined}>
+    <Paper
+      bg="dark.7"
+      p="sm"
+      radius="md"
+      withBorder={mission.lockedOut}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        paddingLeft: houseColors.length > 0 ? 14 : undefined,
+        ...(mission.lockedOut ? { borderColor: "#e03131" } : {}),
+      }}
+    >
+      {houseColors.length > 0 && <HouseStripe colors={houseColors} />}
       <Group justify="space-between" wrap="nowrap" mb={4}>
         <Text size="sm" fw={500} lineClamp={1} style={{ flex: 1, minWidth: 0 }}>
           {mission.title}
@@ -102,5 +115,34 @@ function ConsoleMissionRow({
         {mission.lockedOut ? "Unlock" : "Lock"}
       </Button>
     </Paper>
+  );
+}
+
+function HouseStripe({ colors, width = 5 }: { colors: string[]; width?: number }) {
+  if (colors.length === 0) return null;
+  const bg =
+    colors.length === 1
+      ? colors[0]
+      : `linear-gradient(to bottom, ${colors
+          .map((c, i) => {
+            const start = (i / colors.length) * 100;
+            const end = ((i + 1) / colors.length) * 100;
+            return `${c} ${start}%, ${c} ${end}%`;
+          })
+          .join(", ")})`;
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width,
+        background: bg,
+        pointerEvents: "none",
+        zIndex: 1,
+      }}
+    />
   );
 }

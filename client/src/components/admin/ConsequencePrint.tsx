@@ -374,7 +374,7 @@ export function ConsequencePrint() {
               overflow: "hidden",
               borderRadius: theme.borderRadius,
               marginBottom: "0.15in",
-              padding: "0.15in",
+              padding: "0.15in 0.15in 0.15in 0.4in",
               position: "relative",
               pageBreakInside: "avoid",
               background: theme.cardBg,
@@ -382,6 +382,41 @@ export function ConsequencePrint() {
           >
             {/* Theme background */}
             {theme.renderBackground(card.houseColor)}
+
+            {/* House-colored bleed strip (left edge, full height) for sorting */}
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: "0.3in",
+                background: card.houseColor,
+                WebkitPrintColorAdjust: "exact",
+                printColorAdjust: "exact",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: theme.headingFont,
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color: "#ffffff",
+                  mixBlendMode: "difference",
+                  writingMode: "vertical-rl",
+                  transform: "rotate(180deg)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {card.houseName}
+              </span>
+            </div>
 
             {/* Thick house-colored border (inset from card edge) */}
             <div
