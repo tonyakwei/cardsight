@@ -116,7 +116,7 @@ export async function submitSlotValue(
 
   // Validate answer if template is configured — reject incorrect answers
   if (slot.answerTemplateType && slot.answerId) {
-    const isCorrect = await validateAnswer(slot.answerTemplateType, slot.answerId, value);
+    const { correct: isCorrect } = await validateAnswer(slot.answerTemplateType, slot.answerId, value);
     if (!isCorrect) {
       return { accepted: false, isCorrect: false, message: "Incorrect data — the system rejected your input." };
     }

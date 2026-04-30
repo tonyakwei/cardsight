@@ -51,6 +51,7 @@ async function cleanExistingGame() {
   await prisma.scanEvent.deleteMany({ where: { gameId: gid } });
   await prisma.card.deleteMany({ where: { gameId: gid } });
   await prisma.singleAnswer.deleteMany({ where: { gameId: gid } });
+  await prisma.multipleAnswer.deleteMany({ where: { gameId: gid } });
   await prisma.design.deleteMany({ where: { gameId: gid } });
   await prisma.cardSet.deleteMany({ where: { gameId: gid } });
   await prisma.house.deleteMany({ where: { gameId: gid } });
@@ -411,6 +412,9 @@ async function main() {
       font-size: 4.5rem !important;
       letter-spacing: 0.02em;
       text-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(0, 0, 0, 0.5);
+      overflow-wrap: break-word;
+      word-break: break-word;
+      hyphens: auto;
     }
     .card-description {
       font-size: 1.4rem !important;
@@ -553,35 +557,35 @@ async function main() {
       gameId: game.id,
       fields: [
         {
-          prompt: "Disc I — Up",
+          prompt: "Disc I — missing color",
           correctAnswer: "blue",
           acceptAlternatives: ["light blue"],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Disc II — Curved",
+          prompt: "Disc II — missing color",
           correctAnswer: "green",
           acceptAlternatives: [],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Disc III — Rare",
+          prompt: "Disc III — missing color",
           correctAnswer: "pink",
           acceptAlternatives: [],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Disc IV — Harvest",
+          prompt: "Disc IV — missing color",
           correctAnswer: "brown",
           acceptAlternatives: [],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Disc V — Forge",
+          prompt: "Disc V — missing color",
           correctAnswer: "silver",
           acceptAlternatives: ["grey", "gray", "black"],
           caseSensitive: false,
@@ -712,11 +716,32 @@ async function main() {
     },
   });
 
-  const ansTeaching = await prisma.singleAnswer.create({
+  const ansTeaching = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "13 23 38",
-      acceptAlternatives: ["13, 23, 38", "132338", "13,23,38"],
+      fields: [
+        {
+          prompt: "Position 3 — Outer value",
+          correctAnswer: "13",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Position 5 — Outer value",
+          correctAnswer: "23",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Position 8 — Outer value",
+          correctAnswer: "38",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+      ],
       hint: "Try doubling each inner number. The outer is always a bit more than double — but by how much? Does the extra amount relate to where the pair sits on the disc?",
       hintAfterAttempts: 2,
     },
@@ -747,14 +772,24 @@ async function main() {
     },
   });
 
-  const ansDrevuCompartment = await prisma.singleAnswer.create({
+  const ansDrevuCompartment = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "shatter divorce",
-      acceptAlternatives: [
-        "shatter, divorce", "shatter-divorce", "SHATTER DIVORCE",
-        "fragment divorce", "break divorce", "splinter divorce", "burst divorce", "crumble divorce",
-        "shatter separate", "shatter breakup", "shatter end", "shatter regret", "shatter die",
+      fields: [
+        {
+          prompt: "Procedure I — Step 4",
+          correctAnswer: "shatter",
+          acceptAlternatives: ["fragment", "break", "splinter", "burst", "crumble"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Procedure II — Step 4",
+          correctAnswer: "divorce",
+          acceptAlternatives: ["separate", "breakup", "break up", "end", "regret", "die"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Two procedures, two answers. Procedure 1 is a fragile object failing in stages. Procedure 2 is a romantic timeline — and the QRians were pessimists who recorded only the tragic ending of any process they observed.",
       hintAfterAttempts: 2,
@@ -771,32 +806,70 @@ async function main() {
     },
   });
 
-  const ansReagentAlcove = await prisma.singleAnswer.create({
+  const ansReagentAlcove = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "bronze glass soap dye perfume",
-      acceptAlternatives: [
-        "bronze, glass, soap, dye, perfume",
-        "bronze-glass-soap-dye-perfume",
-        "BRONZE GLASS SOAP DYE PERFUME",
-        "brass glass soap dye perfume",
-        "bronze crystal soap dye perfume",
-        "bronze glass lye dye perfume",
-        "bronze glass soap pigment perfume",
-        "bronze glass soap dye scent",
-        "bronze glass soap dye fragrance",
-        "bronze glass soap dye essence",
+      fields: [
+        {
+          prompt: "Station 1 — compound",
+          correctAnswer: "bronze",
+          acceptAlternatives: ["brass"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Station 2 — compound",
+          correctAnswer: "glass",
+          acceptAlternatives: ["crystal"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Station 3 — compound",
+          correctAnswer: "soap",
+          acceptAlternatives: ["lye"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Station 4 — compound",
+          correctAnswer: "dye",
+          acceptAlternatives: ["pigment", "ink"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Station 5 — compound",
+          correctAnswer: "perfume",
+          acceptAlternatives: ["scent", "fragrance", "essence"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Each station-cluster of 2 reagents was making one named compound. Match the loose bark-labels back to their stations and read each cluster as a recipe. Five compounds together tell you what they were stockpiling. Write each compound name in its station's slot, in order.",
       hintAfterAttempts: 2,
     },
   });
 
-  const ansReinforcedBunker = await prisma.singleAnswer.create({
+  const ansReinforcedBunker = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "orbit grenade",
-      acceptAlternatives: ["orbit, grenade", "orbit-grenade", "ORBIT GRENADE"],
+      fields: [
+        {
+          prompt: "Togom Riddle-Tablet I",
+          correctAnswer: "orbit",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Togom Riddle-Tablet II",
+          correctAnswer: "grenade",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+      ],
     },
   });
 
@@ -807,35 +880,35 @@ async function main() {
       gameId: game.id,
       fields: [
         {
-          prompt: "Shelf 1 — FRUIT + FIRE",
+          prompt: "Shelf 1 — preparation",
           correctAnswer: "pepper",
           acceptAlternatives: ["peppercorn", "spice"],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Shelf 2 — OATS + STEW",
+          prompt: "Shelf 2 — preparation",
           correctAnswer: "porridge",
           acceptAlternatives: ["oatmeal", "gruel"],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Shelf 3 — PLANT + GREASE",
+          prompt: "Shelf 3 — preparation",
           correctAnswer: "oil",
           acceptAlternatives: ["oils"],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Shelf 4 — HONEY + BREAD",
+          prompt: "Shelf 4 — preparation",
           correctAnswer: "cake",
           acceptAlternatives: ["honeycake", "honey cake", "loaf"],
           caseSensitive: false,
           trimWhitespace: true,
         },
         {
-          prompt: "Shelf 5 — CREATURE + DRINK",
+          prompt: "Shelf 5 — preparation",
           correctAnswer: "milk",
           acceptAlternatives: ["cream", "dairy", "broth"],
           caseSensitive: false,
@@ -891,11 +964,25 @@ async function main() {
     },
   });
 
-  const ansCeilingInscription = await prisma.singleAnswer.create({
+  const ansCeilingInscription = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "flower butterfly",
-      acceptAlternatives: ["flower, butterfly", "flower-butterfly", "FLOWER BUTTERFLY"],
+      fields: [
+        {
+          prompt: "Sefa Riddle-Tablet I",
+          correctAnswer: "flower",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Sefa Riddle-Tablet II",
+          correctAnswer: "butterfly",
+          acceptAlternatives: [],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+      ],
       hint: "Two cryptic riddles. The first sounds like 'flow-er' when said aloud — but the thing it names doesn't flow at all. The second uses 'queen' as a clue to a specific kind of insect that adds 'butter' to its name.",
       hintAfterAttempts: 2,
     },
@@ -913,35 +1000,69 @@ async function main() {
     },
   });
 
-  const ansSightingWall = await prisma.singleAnswer.create({
+  const ansSightingWall = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "dawn midnight mirage eclipse sunset",
-      acceptAlternatives: [
-        "dawn, midnight, mirage, eclipse, sunset",
-        "dawn-midnight-mirage-eclipse-sunset",
-        "DAWN MIDNIGHT MIRAGE ECLIPSE SUNSET",
-        "sunrise midnight mirage eclipse sunset",
-        "daybreak midnight mirage eclipse sunset",
-        "dawn midnight illusion eclipse sunset",
-        "dawn midnight mirage occultation sunset",
-        "dawn midnight mirage eclipse sundown",
-        "dawn midnight mirage eclipse dusk",
-        "dawn midnight mirage eclipse twilight",
+      fields: [
+        {
+          prompt: "Cluster 1 — observation",
+          correctAnswer: "dawn",
+          acceptAlternatives: ["sunrise", "daybreak", "first light"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Cluster 2 — observation",
+          correctAnswer: "midnight",
+          acceptAlternatives: ["midnite"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Cluster 3 — observation",
+          correctAnswer: "mirage",
+          acceptAlternatives: ["illusion"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Cluster 4 — observation",
+          correctAnswer: "eclipse",
+          acceptAlternatives: ["occultation"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Cluster 5 — observation",
+          correctAnswer: "sunset",
+          acceptAlternatives: ["sundown", "dusk", "twilight"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Each cluster of 2 lens-slits aimed at one phenomenon. Match the loose labels to their lenses; read each cluster as a single observation. Every one of them is a moment where the sky's behavior shifts. Write each observation in its cluster's slot, in order.",
       hintAfterAttempts: 2,
     },
   });
 
-  const ansKraneCompartment = await prisma.singleAnswer.create({
+  const ansKraneCompartment = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "storm crash",
-      acceptAlternatives: [
-        "storm, crash", "storm-crash", "STORM CRASH",
-        "rain crash", "thunder crash", "lightning crash", "pour crash", "downpour crash", "break crash",
-        "storm flow", "storm break", "storm crest", "storm recede", "storm surge", "storm foam", "storm wash",
+      fields: [
+        {
+          prompt: "Procedure I — Step 4",
+          correctAnswer: "storm",
+          acceptAlternatives: ["rain", "thunder", "lightning", "pour", "downpour", "break"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Procedure II — Step 4",
+          correctAnswer: "crash",
+          acceptAlternatives: ["flow", "break", "crest", "recede", "surge", "foam", "wash"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Two procedures, two answers. Procedure 1 walks the sky from clear to dark — what's the climax? Procedure 2 traces the cycle of water against shore — what's the final motion?",
       hintAfterAttempts: 2,
@@ -958,13 +1079,24 @@ async function main() {
     },
   });
 
-  const ansHighLedge = await prisma.singleAnswer.create({
+  const ansHighLedge = await prisma.multipleAnswer.create({
     data: {
       gameId: game.id,
-      correctAnswer: "present ground",
-      acceptAlternatives: [
-        "present, ground", "present-ground", "PRESENT GROUND",
-        "present round",
+      fields: [
+        {
+          prompt: "Yenus Riddle-Tablet I",
+          correctAnswer: "present",
+          acceptAlternatives: ["gift", "now"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
+        {
+          prompt: "Yenus Riddle-Tablet II",
+          correctAnswer: "ground",
+          acceptAlternatives: ["round"],
+          caseSensitive: false,
+          trimWhitespace: true,
+        },
       ],
       hint: "Two cryptic riddles. The first riddle is a single word with two meanings at once — a gift, and a moment in time. The second tells you what to do with a letter: add a G, then remove it.",
       hintAfterAttempts: 2,
@@ -1120,7 +1252,7 @@ async function main() {
       description:
         "In the rush through the hidden passage, the ceremonial whips were left behind — and the floodwater is swallowing the way back. The passage branches into several half-submerged corridors, each with a QRian word carved above its entrance. A longer inscription on the nearby wall appears to describe the correct route.",
       puzzleDescription:
-        "The corridor entrances are labeled with QRian glyphs:\n\n{{{STONE}}}   {{{SILENCE}}}   {{{ANCIENT}}}   {{{OCEAN}}}   {{{TIME}}}\n\nA wall inscription reads:\n\n{{{IT EATS ALL STONE NONE CAN SEE IT}}}\n\nUse your Coded Clay Tablets to decode the glyph-to-letter mappings. The inscription is a riddle — solve it, and the answer matches one of the corridor labels.\n\nWrite the corridor name.",
+        "The corridor entrances are labeled with QRian glyphs:\n\n{{{STONE}}} | {{{SILENCE}}} | {{{ANCIENT}}} | {{{OCEAN}}} | {{{TIME}}}\n\nA wall inscription reads:\n\n{{{IT EATS ALL STONE NONE CAN SEE IT}}}\n\nUse your Coded Clay Tablets to decode the glyph-to-letter mappings. The inscription is a riddle — solve it, and the answer matches one of the corridor labels.\n\nWrite the corridor name.",
       requiredClueSets: [{ cardSetId: csClayTablet.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansWhips.id,
@@ -1326,9 +1458,9 @@ async function main() {
       description:
         "In the dead center of the chamber — a wide stone disc on a pedestal, pale and luminous. Two concentric rings of number slots scored into its face — some filled, some empty. Small bone tokens with numbers carved into them lie scattered near the base — palm-sized, smooth, clearly meant to fit into the disc's slots.",
       puzzleDescription:
-        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values — the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all three *Numbered Bone Token* clue cards from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values.\n\nWrite the three missing outer values separated by spaces, in position order (3, 5, 8).",
+        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values — the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all three *Numbered Bone Token* clue cards from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values — one per slot.",
       requiredClueSets: [{ cardSetId: csBoneToken.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansTeaching.id,
       consequenceCompleted:
         "The teaching machine works. The QRians worshipped mathematics with carved stone. Every equation was a prayer, every proof a hymn. Lara would have recognized this instantly.",
@@ -1926,9 +2058,9 @@ async function main() {
       description:
         "Off the side-passage and into a dim alcove: a stone table set in the corner, surface scored with rows of inset tile-slots — some filled, some empty. Above the table, a sealed compartment, no hinge. Your bomb-handler reads the gaps. *Passcode lock. The other houses are holding our missing tiles.*",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Write the two inferred words separated by a space. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nWrite the inferred Step 4 word for each procedure. The compartment opens once both passcodes resolve.",
       requiredClueSets: [{ cardSetId: csDrevuTile.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansDrevuCompartment.id,
       consequenceCompleted:
         "Both passcodes enter. The compartment opens. Inside: a folded record by Mason Lamenter Drevu. He wrote the order to send slave-builders to die in the Source's chamber, asked forgiveness, and saw it through anyway. He knew. He couldn't stop it. He asked forgiveness anyway. The QRians knew what they were doing to the builders, and at least one of them never made peace with it.",
@@ -1976,9 +2108,9 @@ async function main() {
       description:
         "One of your crew leans against the wrong stretch of wall and a panel swings inward. Behind: a low-ceilinged alcove, every surface stacked with sealed glass phials, ceramic crucibles, fired-clay jars. The smell stops you. Chemicals — not medicine, engineering. Your bomb-handler crouches. *They were making something here.* Bark labels lie scattered across the floor, torn loose when the panel slammed. The other houses have a few. You'll want them back.",
       puzzleDescription:
-        "Five station-clusters of 2 reagents each. Match the scattered bark-labels back to their stations and read each cluster as a recipe — the named compound it produces.\n\nName each compound the QRians were producing. Write each compound name in its station's slot:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
+        "Five station-clusters of 2 reagents each. Match the scattered bark-labels back to their stations and read each cluster as a recipe — the named compound it produces.\n\nName each compound the QRians were producing, one station at a time.",
       requiredClueSets: [{ cardSetId: csBarkLabel.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansReagentAlcove.id,
       consequenceCompleted:
         "Five compounds resolve: BRONZE, GLASS, SOAP, DYE, PERFUME. At a glance, ordinary — the working stock of any well-funded QRian workshop. But not in this alcove. Refined past tools, past cups, past cloth, past ceremony. Your bomb-handler reads the back wall — half-finished assemblies, brackets, casings, sealed reservoirs — and the picture sharpens. The QRians were assembling these compounds into something purpose-built to push back against the Source's influence directly. They were trying to fight the thing that was eating them. The seal wasn't surrender. It was Plan B.",
@@ -2001,9 +2133,9 @@ async function main() {
       description:
         "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight, the surface scarred where someone tried — and failed — to chisel through. Your bomb-handler runs a hand along the seam. *They sealed something behind this on purpose.* You've got the Fuse Charges. Place them. There's a name carved above the seal: PRIEST PHYSICIST TOGOM. He didn't want company.",
       puzzleDescription:
-        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablet clue cards from the chamber, read the wordplay on each, write the two riddle-answers separated by a space.",
+        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablet clue cards from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansReinforcedBunker.id,
       consequenceCompleted:
         "The charges blow inward. Smoke clears. Inside, on a stone shelf, the scrolls — Togom's life work. The translation: *we discovered this place; people who came back had something in their eyes — wisdom — and the effect was geographic, indestructible, and could not be destroyed.* The Source is bound to this place. Empirical, observable, indestructible. Whatever Togom thought, he thought it carefully enough to seal it behind a wall.",
@@ -2132,9 +2264,9 @@ async function main() {
       description:
         "Northeast corner of the chamber, where the ceiling slopes low to meet the wall: faint chiseled glyphs catch the lamp-light. Your linguist freezes. *That's a name.* The carvings name an author the others walked past — and below the inscription, a stone tile sits slightly proud of the wall. A pull-tab. The compartment behind it is untouched. Above the tile: BOTANIST THEOLOGIAN SEFA. She wanted to be found.",
       puzzleDescription:
-        "Two cryptic riddles, inscribed on the *Sefa Riddle-Tablets*, seal the inner scroll-case behind the loose ceiling tile.\n\nGather both Sefa Riddle-Tablet clue cards from the chamber, read the wordplay on each, write the two riddle-answers separated by a space.",
+        "Two cryptic riddles, inscribed on the *Sefa Riddle-Tablets*, seal the inner scroll-case behind the loose ceiling tile.\n\nGather both Sefa Riddle-Tablet clue cards from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csSefaTablet.id, count: 2 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansCeilingInscription.id,
       consequenceCompleted:
         "The tile pulls away. Behind it, exactly the depth of an arm: a tightly-wrapped scroll-bundle, untouched. Sefa's writing. The translation: *all those affected by the Source suddenly carried the power of a blocky, descriptive language… it exploded throughout our civilization… it affected our entire culture, intimately, perhaps too intimately.* The Source manifested in language. The QRians' blocky script — every glyph the team has been decoding all year — is the Source's signature. To write QRian was to be touched.",
@@ -2188,9 +2320,9 @@ async function main() {
       description:
         "Up the ledge your climber uncovered: the chamber narrows to a wall, and the wall is full of slits. Thin vertical cuts, each one no wider than a hand, set at varying heights, looking out — over the canopy, the basin, the far ridges. Set into many of the slits: amber lenses, polished smooth, each one labeled in a careful hand. Other slits are bare; their labels gone, scattered to the chamber below. Your climber goes still. *This wasn't a fortress wall.* It was an eye.",
       puzzleDescription:
-        "Five clusters of 2 slits/lenses each, every cluster tracking one observable phenomenon. Match the scattered lens-labels back to their slits and read each cluster as a single observation.\n\nName each phenomenon the QRians were observing. Write each observation in its cluster's slot:\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
+        "Five clusters of 2 slits/lenses each, every cluster tracking one observable phenomenon. Match the scattered lens-labels back to their slits and read each cluster as a single observation.\n\nName each phenomenon the QRians were observing, one cluster at a time.",
       requiredClueSets: [{ cardSetId: csLensLabel.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansSightingWall.id,
       consequenceCompleted:
         "Five observations resolve: DAWN, MIDNIGHT, MIRAGE, ECLIPSE, SUNSET. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe* — watching the sky's transitions for what they couldn't otherwise know. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was bound to this geography, or bigger than that. The geography is the disease, and they were the only people who knew it.",
@@ -2213,9 +2345,9 @@ async function main() {
       description:
         "Off the side-passage and into a tight alcove: a stone table set in the corner, mechanism still snug — rows of inset tile-slots, some filled, some empty. Above the table, a sealed compartment, no hinge. Your point climber checks the slots. *Mechanism's plain. The other houses have what we need.*",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nSolve both. Write the two inferred words separated by a space. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses — pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nWrite the inferred Step 4 word for each procedure. The compartment opens once both passcodes resolve.",
       requiredClueSets: [{ cardSetId: csKraneTile.id, count: 3 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansKraneCompartment.id,
       consequenceCompleted:
         "Both passcodes enter. The compartment opens. Inside: a working note by Foreman Geometer Krane. He liked it. Liked the elegance. Liked the system. *We assigned tasks by aptitude — the strong to lifting, the deft to inlay, the small to ducting. Their elimination at completion was a kindness.* The QRians weren't a uniform culture in their last days — some of them found the slave-system *beautiful*. The temple stands because somebody ran the math and called the math good.",
@@ -2263,9 +2395,9 @@ async function main() {
       description:
         "Up the gallery wall: a small ledge, twelve feet of sheer rock above the chamber floor — too high to jump, too smooth to climb. A compartment is cut into the face of it, sealed with a wooden lid that looks impossibly fresh. Your point climber tilts her head back. *Whoever lived up there wanted to be alone.* You've got the Grappling Rigs. Set the lines. A name is carved into the lid above: PHILOSOPHER MATHEMATICIAN YENUS. He kept his work where the floor couldn't reach.",
       puzzleDescription:
-        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablet clue cards from the chamber, read the wordplay on each, write the two riddle-answers separated by a space.",
+        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablet clue cards from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
-      answerTemplateType: "single_answer",
+      answerTemplateType: "multiple_text",
       answerId: ansHighLedge.id,
       consequenceCompleted:
         "The lid lifts. The compartment is small but dry — Yenus chose his ledge well. Inside: the scrolls. The translation: *this place was special… it gave us a sense of understanding which vastly accelerated our civilization… farmers became mathematicians; merchants became astronomers… little did we know that this obsession was an unstoppable force.* The Source didn't just affect them, it *gave* them — mathematics, logic, physics, all suddenly, all intuitively. Civilization-altering wisdom for free. They didn't realize until too late that the wisdom and the obsession were the same thing.",

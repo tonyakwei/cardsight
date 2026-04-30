@@ -120,7 +120,7 @@ export function AnswerInput({ answerMeta, onSubmit, onSuccess }: Props) {
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             disabled={submitting || lastResult === "correct"}
-            placeholder="Type your answer..."
+            placeholder="Write your answer..."
             style={{
               flex: 1,
               padding: "0.75rem 1rem",

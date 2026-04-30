@@ -18,6 +18,7 @@ export function MultipleAnswerInput({ cardId, answerMeta, onSolved }: Props) {
         correct: result.correct,
         attemptNumber: result.attemptNumber,
         hint: result.hint,
+        fieldResults: result.fieldResults,
       };
     },
     [cardId],

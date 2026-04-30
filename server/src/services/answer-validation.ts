@@ -24,16 +24,21 @@ function fieldMatches(given: string, field: MultipleAnswerField): boolean {
   );
 }
 
+export interface ValidationResult {
+  correct: boolean;
+  fieldResults?: boolean[];
+}
+
 export async function validateAnswer(
   type: string,
   answerId: string,
   answer: string | string[] | Record<string, string>,
-): Promise<boolean> {
+): Promise<ValidationResult> {
   if (type === "single_answer") {
     const template = await prisma.singleAnswer.findUnique({
       where: { id: answerId },
     });
-    if (!template) return false;
+    if (!template) return { correct: false };
 
     const given = typeof answer === "string" ? answer : String(answer);
     const normalize = (s: string) => {
@@ -46,21 +51,22 @@ export async function validateAnswer(
     const normalizedGiven = normalize(given);
     const normalizedCorrect = normalize(template.correctAnswer);
 
-    if (normalizedGiven === normalizedCorrect) return true;
+    if (normalizedGiven === normalizedCorrect) return { correct: true };
 
-    return template.acceptAlternatives.some(
+    const correct = template.acceptAlternatives.some(
       (alt: string) => normalize(alt) === normalizedGiven,
     );
+    return { correct };
   }
 
   if (type === "multiple_text") {
     const template = await prisma.multipleAnswer.findUnique({
       where: { id: answerId },
     });
-    if (!template) return false;
+    if (!template) return { correct: false };
 
     const fields = (template.fields as unknown as MultipleAnswerField[]) ?? [];
-    if (fields.length === 0) return false;
+    if (fields.length === 0) return { correct: false };
 
     // Normalize incoming answer to Record keyed by field index
     let givenByIdx: Record<string, string>;
@@ -72,14 +78,18 @@ export async function validateAnswer(
       givenByIdx = { "0": String(answer) };
     }
 
-    // Every field must be correct
-    return fields.every((field, idx) => {
+    const fieldResults = fields.map((field, idx) => {
       const given = givenByIdx[String(idx)];
       if (typeof given !== "string") return false;
       return fieldMatches(given, field);
     });
+
+    return {
+      correct: fieldResults.every(Boolean),
+      fieldResults,
+    };
   }
 
   // Other types not yet implemented
-  return false;
+  return { correct: false };
 }

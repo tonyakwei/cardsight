@@ -458,11 +458,13 @@ export async function checkAnswer(
   const attemptNumber = previousAttempts + 1;
 
   // Check the answer based on template type
-  const correct = await validateAnswer(
+  const validation = await validateAnswer(
     card.answerTemplateType,
     card.answerId,
     answer,
   );
+  const correct = validation.correct;
+  const fieldResults = validation.fieldResults;
 
   // Get most recent scan for timing
   const lastScan = await prisma.scanEvent.findFirst({
@@ -513,6 +515,7 @@ export async function checkAnswer(
       hint: null,
       lockedOut: false,
       message: "Correct!",
+      fieldResults,
     };
   }
 
@@ -560,6 +563,7 @@ export async function checkAnswer(
     hint,
     lockedOut,
     message: lockedOut ? "Too many attempts. This card is now locked." : "Incorrect. Try again.",
+    fieldResults,
   };
 }
 

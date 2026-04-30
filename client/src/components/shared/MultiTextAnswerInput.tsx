@@ -9,6 +9,7 @@ interface AnswerResult {
   correct: boolean;
   attemptNumber: number;
   hint: string | null;
+  fieldResults?: boolean[];
 }
 
 interface Props {
@@ -31,6 +32,14 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
   const [lastResult, setLastResult] = useState<"correct" | "incorrect" | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [redFlash, setRedFlash] = useState(false);
+  // Persists per-field correctness across attempts: once a field is confirmed
+  // correct, it stays green and locked even after subsequent submissions.
+  const [confirmedFields, setConfirmedFields] = useState<boolean[]>(() =>
+    Array.from({ length: fieldCount }, () => false),
+  );
+  const [justConfirmed, setJustConfirmed] = useState<boolean[]>(() =>
+    Array.from({ length: fieldCount }, () => false),
+  );
   const firstInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -59,6 +68,28 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
 
       setAttempts(result.attemptNumber);
 
+      // If the server returned per-field correctness OR the whole answer was
+      // correct, mark newly-confirmed fields and trigger a brief glow.
+      const nextConfirmed = [...confirmedFields];
+      const newlyConfirmed = Array.from({ length: fieldCount }, () => false);
+      const fieldResults = result.fieldResults
+        ?? (result.correct ? Array.from({ length: fieldCount }, () => true) : undefined);
+      if (fieldResults) {
+        for (let i = 0; i < fieldCount; i++) {
+          if (fieldResults[i] && !nextConfirmed[i]) {
+            nextConfirmed[i] = true;
+            newlyConfirmed[i] = true;
+          }
+        }
+        setConfirmedFields(nextConfirmed);
+        if (newlyConfirmed.some(Boolean)) {
+          setJustConfirmed(newlyConfirmed);
+          setTimeout(() => {
+            setJustConfirmed(Array.from({ length: fieldCount }, () => false));
+          }, 1200);
+        }
+      }
+
       if (result.correct) {
         setLastResult("correct");
         setShowConfetti(true);
@@ -69,8 +100,15 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
         setShake(true);
         setTimeout(() => { setShake(false); setRedFlash(false); }, 600);
         if (result.hint) setHint(result.hint);
-        // Don't clear values — let player edit and try again
-        firstInputRef.current?.focus();
+        // Don't clear values — let player edit and try again. Focus the
+        // first still-unconfirmed field so they don't tab through locks.
+        const firstUnconfirmed = nextConfirmed.findIndex((c) => !c);
+        if (firstUnconfirmed === 0 || firstUnconfirmed === -1) {
+          firstInputRef.current?.focus();
+        } else {
+          const inputs = containerRef.current?.querySelectorAll<HTMLInputElement>("input");
+          inputs?.[firstUnconfirmed]?.focus();
+        }
       }
     } catch {
       // Submission failed silently
@@ -133,16 +171,24 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
 
         {Array.from({ length: fieldCount }).map((_, idx) => {
           const promptText = labels[idx] || `Answer ${idx + 1}`;
+          const isConfirmed = confirmedFields[idx];
+          const isPulsing = justConfirmed[idx];
+          const allCorrect = lastResult === "correct";
+          const showGreen = isConfirmed || allCorrect;
+          const showRedBorder = lastResult === "incorrect" && !isConfirmed;
           return (
             <div key={idx} style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
               <span
                 style={{
                   fontSize: "0.78rem",
                   letterSpacing: "0.04em",
-                  opacity: 0.75,
+                  opacity: showGreen ? 0.95 : 0.75,
+                  color: showGreen ? "#69f0ae" : undefined,
+                  transition: "color 0.3s, opacity 0.3s",
                 }}
               >
                 {promptText}
+                {showGreen && <span style={{ marginLeft: "0.5rem", fontSize: "0.85em" }}>✓</span>}
               </span>
               <input
                 ref={idx === 0 ? firstInputRef : undefined}
@@ -152,26 +198,30 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && allFilled) handleSubmit();
                 }}
-                disabled={submitting || lastResult === "correct"}
-                placeholder="Type here..."
+                disabled={submitting || isConfirmed || allCorrect}
+                placeholder="Write here..."
                 style={{
                   padding: "0.65rem 0.9rem",
                   fontSize: "1rem",
                   borderRadius: "8px",
                   border: `1px solid ${
-                    lastResult === "correct"
-                      ? "rgba(105, 240, 174, 0.5)"
-                      : lastResult === "incorrect"
+                    showGreen
+                      ? "rgba(105, 240, 174, 0.65)"
+                      : showRedBorder
                         ? "rgba(255, 82, 82, 0.5)"
                         : "rgba(255,255,255,0.15)"
                   }`,
-                  background: lastResult === "correct"
-                    ? "rgba(105, 240, 174, 0.08)"
+                  background: showGreen
+                    ? "rgba(105, 240, 174, 0.12)"
                     : "rgba(255,255,255,0.06)",
                   color: "var(--card-text-color)",
                   fontFamily: "inherit",
                   outline: "none",
-                  transition: "border-color 0.2s, background 0.2s",
+                  transition: "border-color 0.3s, background 0.3s, box-shadow 0.3s",
+                  boxShadow: showGreen ? "0 0 12px rgba(105, 240, 174, 0.35)" : undefined,
+                  animation: isPulsing ? "fieldConfirmPulse 1.2s ease-out" : undefined,
+                  opacity: isConfirmed && !allCorrect ? 0.95 : 1,
+                  cursor: isConfirmed ? "default" : undefined,
                 }}
               />
             </div>
@@ -255,6 +305,11 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
         @keyframes redFlashAnim {
           0% { opacity: 1; }
           100% { opacity: 0; }
+        }
+        @keyframes fieldConfirmPulse {
+          0% { box-shadow: 0 0 0 rgba(105, 240, 174, 0); transform: scale(1); }
+          25% { box-shadow: 0 0 28px rgba(105, 240, 174, 0.85); transform: scale(1.015); }
+          100% { box-shadow: 0 0 12px rgba(105, 240, 174, 0.35); transform: scale(1); }
         }
       `}</style>
     </div>

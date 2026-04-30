@@ -41,6 +41,7 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
         correct: result.correct,
         attemptNumber: result.attemptNumber,
         hint: result.hint,
+        fieldResults: result.fieldResults,
       };
     },
     [missionId, houseId, onCompleted],

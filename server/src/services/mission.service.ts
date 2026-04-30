@@ -166,11 +166,13 @@ export async function checkMissionAnswer(
   });
   const attemptNumber = previousAttempts + 1;
 
-  const correct = await validateAnswer(
+  const validation = await validateAnswer(
     mission.answerTemplateType,
     mission.answerId,
     answer,
   );
+  const correct = validation.correct;
+  const fieldResults = validation.fieldResults;
 
   await prisma.missionAnswerAttempt.create({
     data: {
@@ -196,6 +198,7 @@ export async function checkMissionAnswer(
       hint: null,
       message: "Correct! Mission complete.",
       correctAnswerReveal: mission.correctAnswerReveal ?? null,
+      fieldResults,
     };
   }
 
@@ -223,6 +226,7 @@ export async function checkMissionAnswer(
     hint,
     message: "Incorrect. Try again.",
     correctAnswerReveal: null,
+    fieldResults,
   };
 }
 

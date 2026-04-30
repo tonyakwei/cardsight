@@ -123,6 +123,7 @@ export interface AnswerResponse {
   hint: string | null;
   lockedOut: boolean;
   message: string;
+  fieldResults?: boolean[];
 }
 
 // === Showtime ===
@@ -206,6 +207,7 @@ export interface MissionAnswerResponse {
   hint: string | null;
   message: string;
   correctAnswerReveal: string | null;
+  fieldResults?: boolean[];
 }
 
 // === Admin Types ===
