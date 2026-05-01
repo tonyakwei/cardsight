@@ -82,6 +82,15 @@ router.get("/games/:gameId/dashboard", async (req, res) => {
   res.json(data);
 });
 
+// === Audio Feed (ambient page) ===
+
+router.get("/games/:gameId/audio-feed", async (req, res) => {
+  const since = typeof req.query.since === "string" ? new Date(req.query.since) : null;
+  const validSince = since && !isNaN(since.getTime()) ? since : null;
+  const data = await adminService.getAudioFeed(req.params.gameId, validSince);
+  res.json(data);
+});
+
 // === Designs (read-only) ===
 
 router.get("/games/:gameId/designs", async (req, res) => {

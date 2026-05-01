@@ -29,6 +29,7 @@ import { ReckoningFloorPrint } from "./components/admin/ReckoningFloorPrint";
 import { FinalePadsPrint } from "./components/admin/FinalePadsPrint";
 import { Act3CardsPrint } from "./components/admin/Act3CardsPrint";
 import { HostConsole } from "./components/admin/HostConsole";
+import { AmbientAudio } from "./components/admin/AmbientAudio";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
 
 const theme = createTheme({
@@ -66,6 +67,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/print/finale-pads" element={<FinalePadsPrint />} />
             <Route path="games/:gameId/print/act3-cards" element={<Act3CardsPrint />} />
             <Route path="games/:gameId/console" element={<HostConsole />} />
+            <Route path="games/:gameId/ambient" element={<AmbientAudio />} />
           </Route>
           <Route
             path="*"

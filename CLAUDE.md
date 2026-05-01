@@ -283,6 +283,7 @@ Code changes deploy automatically — Railway watches `main` and rebuilds on pus
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator with physical card name toggle |
 | `/admin/games/:id/console` | HostConsole | Mobile host console — pulse, activity feed, card/mission lock, showtime control |
+| `/admin/games/:id/ambient` | AmbientAudio | Phone-on-Bluetooth-speaker page that polls the audio feed every ~1.5s and plays a gong on correct answers / "bum-bum" on incorrect ones. Uses Screen Wake Lock API to keep the phone awake; resets cursor when tab regains visibility to avoid flood of stale events. Requires audio files in `client/public/audio/` (see below). |
 | `/admin/games/:id/print` | PrintCenter | Unified print hub (story sheets, consequence cards) |
 | `/admin/games/:id/print/finale-pads` | FinalePadsPrint | Three themed letter-portrait pads (Destroy = scorched/ember, Recontain = sealed/slate, Open = gold/dawn) for the Reckoning vote-by-card-placement |
 | `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
@@ -365,6 +366,7 @@ POST  /api/admin/games/:gameId/transition-act
 
 # Live Dashboard
 GET   /api/admin/games/:gameId/dashboard
+GET   /api/admin/games/:gameId/audio-feed?since=<isoDate>   # Ambient audio feed: card/mission answer events newer than cursor
 
 # Showtimes
 GET    /api/admin/games/:gameId/showtimes

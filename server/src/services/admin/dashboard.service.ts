@@ -226,3 +226,68 @@ export async function getDashboard(gameId: string) {
     houseScans,
   };
 }
+
+// === Audio Feed ===
+//
+// Returns answer events newer than the given cursor, used by the ambient
+// audio page to play sounds when houses succeed or fail at puzzles. Skips
+// scan events (too dense for ambient sonification).
+
+export type AudioFeedEvent = {
+  id: string;
+  type: "card_correct" | "card_incorrect" | "mission_correct" | "mission_incorrect";
+  at: string;
+  house: { id: string; name: string; color: string } | null;
+};
+
+export async function getAudioFeed(gameId: string, since: Date | null) {
+  const game = await prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
+  if (!game) throw new AppError(404, "Game not found");
+
+  const whereTime = since ? { gt: since } : undefined;
+
+  const [cardAttempts, missionAttempts, gameHouses] = await Promise.all([
+    prisma.answerAttempt.findMany({
+      where: { gameId, ...(whereTime ? { attemptedAt: whereTime } : {}) },
+      orderBy: { attemptedAt: "asc" },
+      take: 50,
+      include: { house: { select: { id: true, name: true, color: true } } },
+    }),
+    prisma.missionAnswerAttempt.findMany({
+      where: { gameId, ...(whereTime ? { attemptedAt: whereTime } : {}) },
+      orderBy: { attemptedAt: "asc" },
+      take: 50,
+    }),
+    prisma.house.findMany({
+      where: { gameId },
+      select: { id: true, name: true, color: true },
+    }),
+  ]);
+
+  const houseById = new Map(gameHouses.map((h: any) => [h.id, h]));
+
+  const events: AudioFeedEvent[] = [
+    ...cardAttempts.map((a: any) => ({
+      id: a.id as string,
+      type: (a.isCorrect ? "card_correct" : "card_incorrect") as AudioFeedEvent["type"],
+      at: a.attemptedAt.toISOString(),
+      house: a.house ? { id: a.house.id, name: a.house.name, color: a.house.color } : null,
+    })),
+    ...missionAttempts.map((a: any) => {
+      const h = a.houseId ? houseById.get(a.houseId) : null;
+      return {
+        id: a.id as string,
+        type: (a.isCorrect ? "mission_correct" : "mission_incorrect") as AudioFeedEvent["type"],
+        at: a.attemptedAt.toISOString(),
+        house: h ? { id: h.id, name: h.name, color: h.color } : null,
+      };
+    }),
+  ].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+
+  const cursor =
+    events.length > 0
+      ? events[events.length - 1].at
+      : since?.toISOString() ?? new Date().toISOString();
+
+  return { cursor, events };
+}
