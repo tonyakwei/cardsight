@@ -535,18 +535,18 @@ export function Act3CardsPrint() {
         }
 
         .card-face .history-body p {
-          font-size: 16.8pt;
-          line-height: 1.18;
+          font-size: 11.76pt;
+          line-height: 1.22;
         }
         .card-face .history-body blockquote { font-style: italic; }
-        .card-face .history-body blockquote p { font-size: 16pt; }
+        .card-face .history-body blockquote p { font-size: 11.2pt; }
 
         .card-face .clause-body p {
           text-align: center;
-          font-size: 27.6pt;
+          font-size: 24.84pt;
           line-height: 1.18;
         }
-        .card-face .clause-body blockquote p { font-size: 24pt; }
+        .card-face .clause-body blockquote p { font-size: 21.6pt; }
 
         .card-face .card-foot {
           margin-top: auto;
