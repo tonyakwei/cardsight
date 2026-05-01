@@ -3073,11 +3073,11 @@ Six laborers were lost today. The work continues at first light.`,
       header: "Testimony of Sefa Before the Closing",
       description: `*262 Seasons After The Source · Recorded on the last day before the lower seal was set*
 
-We had the land-killing compounds. We tested them on the moss terraces, and nothing green returned. We could have made the valley unlivable and called that virtue.
+We had the land-killing compounds, and where we tested them, nothing green returned. We could have made the valley unlivable and called that virtue.
 
-Instead we chose the temple, though it would take our own with it. I do not know if this was courage, vanity, or merely the last form our love of order could take.
+Instead we chose the temple. I do not know if this was courage, vanity, or merely the last form our love of order could take.
 
-I know only that we chose to leave the future a danger behind stone, not a world already ruined by our fear.`,
+We chose to leave the future a danger behind stone, not a world already ruined by our fear.`,
       order: 12,
       houseIds: [jones.id],
       notes: "Consent era hinge card: the QRians chose containment over annihilation, but without moral certainty.",

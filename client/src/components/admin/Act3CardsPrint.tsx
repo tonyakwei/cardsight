@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import {
   Group,
@@ -17,7 +17,7 @@ import {
 } from "../../api/admin";
 
 const GOOGLE_FONTS =
-  "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap";
+  "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IM+Fell+DW+Pica+SC&family=IM+Fell+DW+Pica:ital@0;1&display=swap";
 
 type HouseTheme = "drake" | "jones" | "croft" | "neutral";
 type CardTheme = HouseTheme | "twilight";
@@ -113,8 +113,82 @@ function prepareCards(cards: AdminCard[]): PreparedCard[] {
   return [...history, ...clauses];
 }
 
+/**
+ * Binary-searches the largest font size (in pt) at which the ref'd element's
+ * content fits within its own clientHeight (no overflow). Children must size
+ * relative to `--fit-font-pt` for this to take effect. Waits for webfonts so
+ * we don't measure a fallback face.
+ */
+function useFitFontSize(
+  maxPt: number,
+  minPt: number,
+  contentKey: string,
+): { ref: React.RefObject<HTMLDivElement>; fontPt: number } {
+  const ref = useRef<HTMLDivElement>(null);
+  const [fontPt, setFontPt] = useState(maxPt);
+
+  useEffect(() => {
+    let cancelled = false;
+    const el = ref.current;
+    if (!el) return;
+
+    const fits = (size: number): boolean => {
+      el.style.setProperty("--fit-font-pt", `${size}pt`);
+      // Tolerance for sub-pixel rounding.
+      return el.scrollHeight <= el.clientHeight + 0.5;
+    };
+
+    const measure = () => {
+      if (cancelled || !el.isConnected) return;
+
+      // Fast path: the max already fits.
+      if (fits(maxPt)) {
+        setFontPt(maxPt);
+        return;
+      }
+
+      let lo = minPt;
+      let hi = maxPt;
+      // 14 iterations gets us within ~0.001pt — well under print resolution.
+      for (let i = 0; i < 14; i++) {
+        const mid = (lo + hi) / 2;
+        if (fits(mid)) lo = mid;
+        else hi = mid;
+      }
+      // Lock in the largest known-fitting size.
+      el.style.setProperty("--fit-font-pt", `${lo}pt`);
+      setFontPt(lo);
+    };
+
+    if (typeof document !== "undefined" && (document as any).fonts?.ready) {
+      (document as any).fonts.ready.then(measure);
+    } else {
+      measure();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [maxPt, minPt, contentKey]);
+
+  return { ref, fontPt };
+}
+
 function HistoryFace({ card }: { card: PreparedCard }) {
   const { dateline, body } = splitHistoryDescription(card.description);
+  // Split on the first " · " — first segment is the era (rendered as a pill),
+  // the rest is contextual (rendered as a small italic subtitle).
+  let eraTag: string | null = null;
+  let eraContext: string | null = null;
+  if (dateline) {
+    const sep = dateline.indexOf(" · ");
+    if (sep >= 0) {
+      eraTag = dateline.slice(0, sep).trim();
+      eraContext = dateline.slice(sep + 3).trim();
+    } else {
+      eraTag = dateline;
+    }
+  }
   return (
     <div className="card-face history">
       <div className="bg-fx" />
@@ -125,10 +199,10 @@ function HistoryFace({ card }: { card: PreparedCard }) {
         <span className="kicker">Twisting Tales · Act III · History</span>
       </header>
 
-      {dateline && (
-        <div className="dateline-block">
-          <div className="dateline">{dateline}</div>
-          <div className="dateline-rule" />
+      {eraTag && (
+        <div className="era-block">
+          <span className="era-tag">{eraTag}</span>
+          {eraContext && <div className="era-context">{eraContext}</div>}
         </div>
       )}
 
@@ -151,6 +225,7 @@ function HistoryFace({ card }: { card: PreparedCard }) {
 }
 
 function ClauseFace({ card }: { card: PreparedCard }) {
+  const { ref: bodyRef } = useFitFontSize(24.84, 11, card.description);
   return (
     <div className="card-face clause">
       <div className="bg-fx" />
@@ -169,7 +244,7 @@ function ClauseFace({ card }: { card: PreparedCard }) {
         <span className="line" />
       </div>
 
-      <div className="body clause-body">
+      <div className="body clause-body" ref={bodyRef}>
         <Markdown>{card.description}</Markdown>
       </div>
 
@@ -427,7 +502,7 @@ export function Act3CardsPrint() {
         .card-face .vignette { z-index: 2; }
         .card-face > header,
         .card-face > .title,
-        .card-face > .dateline-block,
+        .card-face > .era-block,
         .card-face > .body,
         .card-face > .rule,
         .card-face > footer { position: relative; z-index: 3; }
@@ -456,10 +531,13 @@ export function Act3CardsPrint() {
           letter-spacing: 0.01em;
         }
         .card-face .history-title {
-          font-weight: 700;
-          font-size: 14.5pt;
-          line-height: 1.1;
+          font-family: 'IM Fell DW Pica SC', 'Cormorant Garamond', serif;
+          font-weight: 400;
+          font-size: 17pt;
+          line-height: 1.08;
+          letter-spacing: 0.015em;
           text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+          margin-bottom: 0.3in;
         }
         .card-face .clause-title {
           font-weight: 800;
@@ -472,22 +550,35 @@ export function Act3CardsPrint() {
           text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
         }
 
-        .card-face .dateline-block {
-          margin: 0.04in 0 0.06in;
+        .card-face .era-block {
+          margin: 0.06in 0 0.08in;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.04in;
         }
-        .card-face .dateline {
-          font-family: 'Cormorant Garamond', serif;
+        .card-face .era-tag {
+          display: inline-block;
+          font-family: 'IM Fell DW Pica SC', 'Cinzel', serif;
+          font-weight: 400;
+          font-size: 7.4pt;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--title);
+          background: var(--era-bg, rgba(255, 255, 255, 0.06));
+          border: 0.5pt solid var(--accent);
+          border-radius: 999px;
+          padding: 0.04in 0.11in;
+          line-height: 1.05;
+          max-width: 100%;
+        }
+        .card-face .era-context {
+          font-family: 'IM Fell DW Pica', 'Cormorant Garamond', serif;
           font-style: italic;
           font-size: 8.2pt;
           line-height: 1.3;
           color: var(--accent);
           opacity: 0.92;
-        }
-        .card-face .dateline-rule {
-          height: 0.5pt;
-          background: linear-gradient(to right, transparent, var(--accent) 15%, var(--accent) 85%, transparent);
-          opacity: 0.6;
-          margin-top: 0.05in;
         }
 
         .card-face .rule {
@@ -535,18 +626,32 @@ export function Act3CardsPrint() {
         }
 
         .card-face .history-body p {
+          font-family: 'IM Fell DW Pica SC', 'Cormorant Garamond', serif;
           font-size: 11.76pt;
-          line-height: 1.22;
+          line-height: 1.32;
+          letter-spacing: 0.01em;
         }
-        .card-face .history-body blockquote { font-style: italic; }
-        .card-face .history-body blockquote p { font-size: 11.2pt; }
+        .card-face .history-body blockquote {
+          font-family: 'IM Fell DW Pica', 'Cormorant Garamond', serif;
+          font-style: italic;
+        }
+        .card-face .history-body blockquote p {
+          font-family: 'IM Fell DW Pica', 'Cormorant Garamond', serif;
+          font-size: 11.2pt;
+          letter-spacing: 0;
+        }
 
+        .card-face .clause-body {
+          --fit-font-pt: 24.84pt;
+        }
         .card-face .clause-body p {
           text-align: center;
-          font-size: 24.84pt;
+          font-size: var(--fit-font-pt);
           line-height: 1.18;
         }
-        .card-face .clause-body blockquote p { font-size: 21.6pt; }
+        .card-face .clause-body blockquote p {
+          font-size: calc(var(--fit-font-pt) * 0.87);
+        }
 
         .card-face .card-foot {
           margin-top: auto;
@@ -699,38 +804,42 @@ export function Act3CardsPrint() {
         }
 
         /* =========================================================
-           TWILIGHT — unified history palette (deep purple, gold)
+           TWILIGHT — unified history palette (cool archival blue)
+           Distinct from any house palette: oxblood / gold / violet.
+           Reads as "moonlit night sky / star-chart" — fitting the
+           QRian historical record.
            ========================================================= */
 
         .theme-twilight .card-face {
-          --bg: linear-gradient(180deg, #1a1432 0%, #0d0a1f 60%, #050309 100%);
-          --text: #e0d4f0;
-          --title: #f1d99c;
-          --accent: #d4a85f;
-          --badge-bg: rgba(13, 10, 31, 0.7);
+          --bg: linear-gradient(180deg, #163049 0%, #0a1c30 60%, #03070e 100%);
+          --text: #d8e6f4;
+          --title: #f4faff;
+          --accent: #8fc1e6;
+          --badge-bg: rgba(10, 28, 48, 0.7);
+          --era-bg: rgba(143, 193, 230, 0.13);
         }
         .theme-twilight .card-face {
-          border: 0.7pt solid rgba(212, 168, 95, 0.35);
+          border: 0.7pt solid rgba(143, 193, 230, 0.4);
         }
         .theme-twilight .card-face .bg-fx {
           background-image:
-            radial-gradient(0.8px 0.8px at 12% 18%, rgba(220, 200, 240, 0.45) 50%, transparent 100%),
-            radial-gradient(0.6px 0.6px at 28% 32%, rgba(220, 200, 240, 0.35) 50%, transparent 100%),
-            radial-gradient(0.9px 0.9px at 48% 14%, rgba(220, 200, 240, 0.45) 50%, transparent 100%),
-            radial-gradient(0.6px 0.6px at 70% 26%, rgba(220, 200, 240, 0.35) 50%, transparent 100%),
-            radial-gradient(0.8px 0.8px at 88% 18%, rgba(220, 200, 240, 0.4) 50%, transparent 100%),
-            radial-gradient(0.7px 0.7px at 14% 60%, rgba(220, 200, 240, 0.35) 50%, transparent 100%),
-            radial-gradient(0.9px 0.9px at 38% 78%, rgba(220, 200, 240, 0.4) 50%, transparent 100%),
-            radial-gradient(0.6px 0.6px at 64% 86%, rgba(220, 200, 240, 0.3) 50%, transparent 100%),
-            radial-gradient(0.8px 0.8px at 86% 70%, rgba(220, 200, 240, 0.4) 50%, transparent 100%),
-            radial-gradient(0.7px 0.7px at 50% 94%, rgba(220, 200, 240, 0.35) 50%, transparent 100%);
-          opacity: 0.75;
+            radial-gradient(0.8px 0.8px at 12% 18%, rgba(220, 234, 248, 0.55) 50%, transparent 100%),
+            radial-gradient(0.6px 0.6px at 28% 32%, rgba(220, 234, 248, 0.4) 50%, transparent 100%),
+            radial-gradient(0.9px 0.9px at 48% 14%, rgba(220, 234, 248, 0.55) 50%, transparent 100%),
+            radial-gradient(0.6px 0.6px at 70% 26%, rgba(220, 234, 248, 0.4) 50%, transparent 100%),
+            radial-gradient(0.8px 0.8px at 88% 18%, rgba(220, 234, 248, 0.5) 50%, transparent 100%),
+            radial-gradient(0.7px 0.7px at 14% 60%, rgba(220, 234, 248, 0.4) 50%, transparent 100%),
+            radial-gradient(0.9px 0.9px at 38% 78%, rgba(220, 234, 248, 0.5) 50%, transparent 100%),
+            radial-gradient(0.6px 0.6px at 64% 86%, rgba(220, 234, 248, 0.35) 50%, transparent 100%),
+            radial-gradient(0.8px 0.8px at 86% 70%, rgba(220, 234, 248, 0.5) 50%, transparent 100%),
+            radial-gradient(0.7px 0.7px at 50% 94%, rgba(220, 234, 248, 0.4) 50%, transparent 100%);
+          opacity: 0.8;
         }
         .theme-twilight .card-face .bg-mark {
           background:
-            radial-gradient(circle at 50% 50%, transparent 1in, rgba(212, 168, 95, 0.045) 1.01in, transparent 1.05in),
-            radial-gradient(circle at 50% 50%, transparent 1.45in, rgba(212, 168, 95, 0.035) 1.46in, transparent 1.5in);
-          opacity: 0.85;
+            radial-gradient(circle at 50% 50%, transparent 1in, rgba(143, 193, 230, 0.05) 1.01in, transparent 1.05in),
+            radial-gradient(circle at 50% 50%, transparent 1.45in, rgba(143, 193, 230, 0.04) 1.46in, transparent 1.5in);
+          opacity: 0.9;
         }
         .theme-twilight .card-face .vignette {
           background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
