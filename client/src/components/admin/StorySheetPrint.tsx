@@ -641,7 +641,7 @@ const THEMES: SheetTheme[] = [classicTheme, templeTheme];
 
 // --- Components ---
 
-// US Letter content area at 96 DPI with 0.5in margins
+// US Letter content area at 96 DPI with 0.5in safe margins on all sides
 const PAGE_CONTENT_HEIGHT_PX = 10 * 96; // 960px
 const PAGE_WARN_RATIO = 0.9; // warn when within 10% of overflow
 
@@ -812,7 +812,10 @@ export function StorySheetPrint() {
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; }
-          .sheet-page { margin: 0 !important; box-shadow: none !important; }
+          .sheet-page {
+            margin: 0.5in auto !important;
+            box-shadow: none !important;
+          }
         }
         @media screen {
           .sheet-page { margin: 0 auto 2rem auto; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
@@ -845,11 +848,13 @@ function SheetPage({
 }) {
   const houseColor = sheet.house.color;
   const ref = useRef<HTMLDivElement | null>(null);
+  const onMeasureRef = useRef(onMeasure);
+  onMeasureRef.current = onMeasure;
 
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const measure = () => onMeasure(el.scrollHeight);
+    const measure = () => onMeasureRef.current(el.scrollHeight);
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
@@ -859,7 +864,7 @@ function SheetPage({
       if (!img.complete) img.addEventListener("load", measure, { once: true });
     });
     return () => ro.disconnect();
-  }, [onMeasure, sheet.content, sheet.missions.length]);
+  }, [sheet.content, sheet.missions.length]);
 
   return (
     <div
@@ -867,7 +872,7 @@ function SheetPage({
       className="sheet-page"
       style={{
         pageBreakAfter: isLast ? undefined : "always",
-        width: "7.5in",
+        width: "6.5in",
         boxSizing: "border-box",
         padding: "2.5rem",
         paddingTop: "3rem",

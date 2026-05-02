@@ -67,3 +67,30 @@ body,
 body {
   background: #000;
 }
+
+@media print {
+  html,
+  body,
+  #root {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+  .mantine-AppShell-header,
+  .mantine-AppShell-navbar {
+    display: none !important;
+  }
+  .mantine-AppShell-root,
+  .mantine-AppShell-main {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    grid-template-areas: none !important;
+  }
+}
