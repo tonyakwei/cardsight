@@ -371,21 +371,24 @@ export function CardRow({
                               onChange={(v) => updateDraft("answerTemplateType", v || null)}
                               data={[
                                 { value: "single_answer", label: "Text input" },
+                                { value: "multiple_text", label: "Multiple text fields" },
                               ]}
                             />
                           )}
                         </Group>
-                        {current("isAnswerable") && current("answerTemplateType") === "single_answer" && (
-                          <AnswerTemplateEditor
-                            gameId={gameId}
-                            answerTemplateType={current("answerTemplateType")}
-                            answerId={current("answerId")}
-                            onAnswerCreated={(type, id) => {
-                              updateDraft("answerTemplateType", type);
-                              updateDraft("answerId", id);
-                            }}
-                          />
-                        )}
+                        {current("isAnswerable") &&
+                          (current("answerTemplateType") === "single_answer" ||
+                            current("answerTemplateType") === "multiple_text") && (
+                            <AnswerTemplateEditor
+                              gameId={gameId}
+                              answerTemplateType={current("answerTemplateType")}
+                              answerId={current("answerId")}
+                              onAnswerCreated={(type, id) => {
+                                updateDraft("answerTemplateType", type);
+                                updateDraft("answerId", id);
+                              }}
+                            />
+                          )}
                       </Stack>
                     </CollapsibleSection>
                   )}

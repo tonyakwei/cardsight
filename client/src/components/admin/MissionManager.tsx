@@ -515,11 +515,13 @@ function MissionRow({
                     onChange={(v) => save({ answerTemplateType: v || null })}
                     data={[
                       { value: "single_answer", label: "Text input" },
+                      { value: "multiple_text", label: "Multiple text fields" },
                     ]}
                   />
                 )}
               </Group>
-              {mission.answerTemplateType === "single_answer" && (
+              {(mission.answerTemplateType === "single_answer" ||
+                mission.answerTemplateType === "multiple_text") && (
                 <AnswerTemplateEditor
                   gameId={gameId}
                   answerTemplateType={mission.answerTemplateType}
