@@ -110,11 +110,14 @@ export function GlyphCodexPrint() {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; padding: 0 !important; }
           @page { size: letter portrait; margin: 0.5in; }
-          .codex-page { box-shadow: none !important; margin: 0 !important; }
+          .codex-page {
+            box-shadow: none !important;
+            margin: 0.5in auto !important;
+          }
         }
 
         .codex-page {
-          max-width: 8.5in;
+          max-width: 6.5in;
           margin: 0 auto;
           padding: 36px 44px;
           background: ${PARCHMENT};

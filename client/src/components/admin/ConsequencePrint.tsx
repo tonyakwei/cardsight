@@ -369,7 +369,7 @@ export function ConsequencePrint() {
       {/* Printable cards */}
       <div
         style={{
-          maxWidth: "8.5in",
+          maxWidth: "7.5in",
           margin: "0 auto",
           fontFamily: theme.baseFont,
         }}

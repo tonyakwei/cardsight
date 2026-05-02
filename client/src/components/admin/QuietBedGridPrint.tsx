@@ -175,10 +175,13 @@ export function QuietBedGridPrint() {
         @media print {
           .no-print { display: none !important; }
           body { background: #fff !important; margin: 0 !important; }
-          .quiet-bed-page { color: #1a1a1a !important; }
+          .quiet-bed-page {
+            color: #1a1a1a !important;
+            margin: 0.5in auto !important;
+          }
         }
         .quiet-bed-page {
-          width: 7.5in;
+          width: 6.5in;
           margin: 0 auto;
           padding: 0;
           box-sizing: border-box;

@@ -158,7 +158,8 @@ export function ArtifactCatalogPrint() {
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          @page { size: letter portrait; margin: 0.3in; }
+          @page { size: letter portrait; margin: 0.5in; }
+          .catalog-page { margin: 0.5in auto !important; }
         }
         @media screen {
           .catalog-page { margin-bottom: 2rem; }
@@ -176,7 +177,7 @@ function CatalogPage({ act }: { act: number }) {
     <div
       className="catalog-page"
       style={{
-        maxWidth: "8in",
+        maxWidth: "7in",
         margin: "0 auto",
         padding: "0.3in 0.35in",
         position: "relative",
