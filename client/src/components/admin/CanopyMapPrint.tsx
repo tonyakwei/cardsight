@@ -213,9 +213,9 @@ export function CanopyMapPrint() {
         }
         .canopy-map-grid {
           display: grid;
-          grid-template-columns: repeat(${COLS}, 0.75in);
-          grid-auto-rows: 0.75in;
-          width: 7.5in;
+          grid-template-columns: repeat(${COLS}, 0.65in);
+          grid-auto-rows: 0.65in;
+          width: 6.5in;
           gap: 0;
           border-left: 1px solid #cbb;
           border-top: 1px solid #cbb;
