@@ -559,9 +559,9 @@ export function ConsequencePrint() {
 
   function fitText(text: string | null) {
     const len = text?.length ?? 0;
-    const longThreshold = perPage === 3 ? 380 : 700;
-    const xlongThreshold = perPage === 3 ? 560 : 950;
-    const xxlongThreshold = perPage === 3 ? 760 : 1200;
+    const longThreshold = perPage === 3 ? 230 : 430;
+    const xlongThreshold = perPage === 3 ? 430 : 800;
+    const xxlongThreshold = perPage === 3 ? 630 : 1100;
     if (len > xxlongThreshold) return { fontSize: "12px", lineHeight: 1.3,  titleSize: "17px" };
     if (len > xlongThreshold)  return { fontSize: "14px", lineHeight: 1.35, titleSize: "18px" };
     if (len > longThreshold)   return { fontSize: "16px", lineHeight: 1.42, titleSize: "19px" };

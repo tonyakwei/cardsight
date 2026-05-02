@@ -2066,7 +2066,7 @@ async function main() {
       consequenceCompleted:
         "Both passcodes enter. The compartment opens. Inside: a folded record by Mason Lamenter Drevu. He wrote the order to send slave-builders to die in the Source's chamber, asked forgiveness, and saw it through anyway. He knew. He couldn't stop it. He asked forgiveness anyway. The QRians knew what they were doing to the builders, and at least one of them never made peace with it.",
       consequenceNotCompleted:
-        "The compartment stays sealed; the lock holds. The host's voice goes quiet — *we came close.* Drevu's record stays inside. We will not learn whose forgiveness he asked for, or whether he meant it. File and press on.",
+        "The compartment stays sealed; the lock holds. *We came close.* Drevu's record stays inside. We will not learn whose forgiveness he asked for, or whether he meant it. File and press on.",
       sortOrder: 2,
     },
   });
@@ -2080,7 +2080,7 @@ async function main() {
       storySheetBlurb:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your bomb-handler crouches at the red tiles — carved this many times so the wall would still say it after the wall failed. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
-        "The wall says: **IT WAS MAKING US OBSESSED**. Not the Source. The PLACE. The QRians felt it happening — they were the ones writing it down, watching themselves go obsessive, and writing it down was part of what was making them obsessive. Jones found a line above this one. Croft found another. Read all three together when the host calls it: the QRians wrote you a sentence across the whole wall.",
+        "The wall says: **IT WAS MAKING US OBSESSED**. Not the Source. The PLACE. The QRians felt it happening — they were the ones writing it down, watching themselves go obsessive, and writing it down was part of what was making them obsessive.",
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Jones and Croft are already at their own sections of the wall, working amber tiles and purple. Your bomb-handler crouches at the red tiles. They wrote it this many times so the eroded ones could still be read against the rest. Some of yours are with the others. You'll want them back to read the wall whole.",
       puzzleDescription:
@@ -2089,7 +2089,7 @@ async function main() {
       answerTemplateType: "single_answer",
       answerId: ansRedWall.id,
       consequenceCompleted:
-        "The wall says: IT WAS MAKING US OBSESSED. Not the Source — the place. The QRians felt it happening, and they were the ones writing it down, watching themselves go obsessive, recording the diagnosis in the act of being broken. Across all three houses, the wall reads: *THIS PLACE ONCE MADE US WISE / UNTIL WE SLOWLY REALIZED / IT WAS MAKING US OBSESSED.* They wrote the confession at scale because they wanted anyone to read it.",
+        "The wall says: IT WAS MAKING US OBSESSED. Not the Source — the place. The QRians felt it happening, and they were the ones writing it down, watching themselves go obsessive, recording the diagnosis in the act of being broken.",
       consequenceNotCompleted:
         "Without the red tiles, the closing line is unreadable. We caught only fragments — *MAKING US* — and don't know what made them what. File the wall as conclusive of nothing and press on.",
       sortOrder: 3,
@@ -2186,7 +2186,7 @@ async function main() {
       storySheetBlurb:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your linguist drops at the amber tiles. It's a confession the QRians wrote at scale. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
-        "The wall says: **THIS PLACE ONCE MADE US WISE**. The QRians' opening confession. They didn't come here as scientists who made a discovery. They came here because being here MADE them scientists — the place itself was the source of their wisdom, and they knew it. Drake found a line below this one. Croft found another. Read all three together when the host calls it: the wall writes a sentence across every house in the room.",
+        "The wall says: **THIS PLACE ONCE MADE US WISE**. The QRians' opening confession. They didn't come here as scientists who made a discovery. They came here because being here MADE them scientists — the place itself was the source of their wisdom, and they knew it.",
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Croft are already at their own sections of the wall, working red tiles and purple. Your linguist drops at the amber tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
@@ -2195,7 +2195,7 @@ async function main() {
       answerTemplateType: "single_answer",
       answerId: ansAmberWall.id,
       consequenceCompleted:
-        "The wall says: THIS PLACE ONCE MADE US WISE. The QRians' opening confession. They didn't come here as scientists who made a discovery — they came here because being here MADE them scientists. The place was the source of their wisdom, and they knew it. Across all three houses, the wall reads: *THIS PLACE ONCE MADE US WISE / UNTIL WE SLOWLY REALIZED / IT WAS MAKING US OBSESSED.* The first line is not a celebration. It's the first line of an autopsy.",
+        "The wall says: THIS PLACE ONCE MADE US WISE. The QRians' opening confession. They didn't come here as scientists who made a discovery — they came here because being here MADE them scientists. The place was the source of their wisdom, and they knew it. The line is not a celebration. It's the first line of an autopsy.",
       consequenceNotCompleted:
         "Without the amber tiles, the opening line is broken. *PLACE* and *WISE* stand out from the corruption, but how they connect stays lost. File and press on.",
       sortOrder: 2,
@@ -2222,7 +2222,7 @@ async function main() {
       consequenceCompleted:
         "VEIN. SNEEZE. Vesh chose his lock from the body's vocabulary — the channels that carry, the reflex that expels — because that's what *he* believed the Source was doing to them. Whether he was right is another question. But the framework he locked his record behind is the same framework he used to decide who to send. He wrote it like a ledger: *the construction was assigned to expendable labor; their disposal at completion was logistical.* No anguish, no pride, just the cycles. The QRians had a class system that absorbed the moral cost without flinching, and Vesh wrote the receipt.",
       consequenceNotCompleted:
-        "The compartment stays sealed; the lock holds. The host's voice goes quiet — *we came close.* Vesh's record stays inside. We will not learn how cleanly he chose to write his cycles. File and press on.",
+        "The compartment stays sealed; the lock holds. *We came close.* Vesh's record stays inside. We will not learn how cleanly he chose to write his cycles. File and press on.",
       sortOrder: 3,
     },
   });
@@ -2353,7 +2353,7 @@ async function main() {
       consequenceCompleted:
         "Both passcodes enter. The compartment opens. Inside: a working note by Foreman Geometer Krane. He liked it. Liked the elegance. Liked the system. *We assigned tasks by aptitude — the strong to lifting, the deft to inlay, the small to ducting. Their elimination at completion was a kindness.* The QRians weren't a uniform culture in their last days — some of them found the slave-system *beautiful*. The temple stands because somebody ran the math and called the math good.",
       consequenceNotCompleted:
-        "The compartment stays sealed; the lock holds. The host's voice goes quiet — *we came close.* Krane's record stays inside. We will not learn what he found elegant, or why. File and press on.",
+        "The compartment stays sealed; the lock holds. *We came close.* Krane's record stays inside. We will not learn what he found elegant, or why. File and press on.",
       sortOrder: 3,
     },
   });
@@ -2367,7 +2367,7 @@ async function main() {
       storySheetBlurb:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your point climber kneels at the purple tiles — the hinge of the confession, wisdom turning to obsession slowly enough to write down. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
-        "The wall says: **UNTIL WE SLOWLY REALIZED**. The middle of a sentence. The hinge. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall. Jones found the start. Drake found the end. Read all three together when the host calls it: there's a complete confession on this wall.",
+        "The wall says: **UNTIL WE SLOWLY REALIZED**. The hinge of a sentence. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall.",
       description:
         "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over — hundreds of stacked rewrites, each eroded in its own way. Behind you, you realize: Drake and Jones are already at their own sections of the wall, working red tiles and amber. Your point climber kneels at the purple tiles. *They wrote it this many times so the eroded ones could still be read against the rest.* Some of yours are with the others. You'll want them back.",
       puzzleDescription:
@@ -2376,7 +2376,7 @@ async function main() {
       answerTemplateType: "single_answer",
       answerId: ansPurpleWall.id,
       consequenceCompleted:
-        "The wall says: UNTIL WE SLOWLY REALIZED. The middle of a sentence. The hinge. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall. Across all three houses, the wall reads: *THIS PLACE ONCE MADE US WISE / UNTIL WE SLOWLY REALIZED / IT WAS MAKING US OBSESSED.* They watched themselves become what they were becoming, and they had a word for that watching: *slowly.* They had time to write it down. They had time to anticipate a reader. We are the reader.",
+        "The wall says: UNTIL WE SLOWLY REALIZED. The hinge of a sentence. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall. They watched themselves become what they were becoming, and they had a word for that watching: *slowly.* They had time to write it down. They had time to anticipate a reader.",
       consequenceNotCompleted:
         "Without the purple tiles, the middle line stays in pieces. *SLOWLY* survived the most readings. Whatever was happening slowly, we don't know what. File and press on.",
       sortOrder: 4,
