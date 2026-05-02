@@ -35,10 +35,13 @@ export interface GameSummary {
   updatedAt: string;
 }
 
+export type PrintTheme = "classic" | "temple";
+
 export interface GameDetail extends GameSummary {
   designCount: number;
   finishedCount: number;
   blurNudgeEnabled: boolean;
+  printTheme: PrintTheme;
   historyTimelineArmed: boolean;
   historyTimelineAttemptIndex: number;
   historyTimelineSolvedAt: string | null;

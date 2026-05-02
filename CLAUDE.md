@@ -152,7 +152,7 @@ cardsight/
 
 ## Data model overview
 
-- **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived), `currentAct` (tracks which act is live, updated by `transitionAct`), history timeline runtime state (`historyTimelineArmed`, `historyTimelineAttemptIndex`, `historyTimelineSolvedAt`), and finale adjudication state (`finaleOutcome`, `finaleClauseIds`). Only one active at a time.
+- **Game** — one complete configuration for an evening. Has status (draft/active/completed/archived), `currentAct` (tracks which act is live, updated by `transitionAct`), `printTheme` (`'classic' | 'temple'`, drives the visual style of all themed print outputs for the game), history timeline runtime state (`historyTimelineArmed`, `historyTimelineAttemptIndex`, `historyTimelineSolvedAt`), and finale adjudication state (`finaleOutcome`, `finaleClauseIds`). Only one active at a time.
 - **Card** — a QR-scannable unit of content. Belongs to a game. Has a required `physicalCardId` (UUID linking to an entry in `physical-cards.json` — unique per game per act) and a required `act` field (Int, default 1). The same physical card can map to different game cards in different acts, enabling physical card reuse across acts (54 cards serve all 3 acts; collected and redistributed at act breaks). Three naming layers: `cardSet.name` for dev tracking/mission grouping (e.g., "Stone"), `clueVisibleCategory` for the player-facing item name shown on scan (e.g., "Broken Stone Lettering"), and `header` (optional) for per-card narrative flavor headings shown on the card content (e.g., "The Fragment of Orion"). The physical card's permanent printed name (e.g., "Nervous Bumblebee") lives in `physical-cards.json` and is looked up by `physicalCardId`. Has a design, optional answer template, optional self-destruct timer, and a `subtype`: `standard`, `history`, or `reference`. History cards may also have `historyTimelineOrder`. Can be assigned to a CardSet and multiple Houses. Standard cards show a splash gate before content; history cards bypass the splash and go straight to their text unless the host has armed the timeline check; reference cards always bypass the splash and open directly to their text. Cards have a `complexity` field: `simple` (default) shows the item directly, `complex` shows a puzzle with an answer input and reveals `clueContent` on solve.
 - **CardSet** — first-class grouping (e.g., "Signals", "Navigation"). Has name, color, admin notes (editable inline). Cards are filtered by set in the admin. Set reviews track which sets have been reviewed since last edit. Each set tab shows which missions reference it.
 - **House** — a team/agency (e.g., "Alpha", "Bravo"). Has name, optional `slug` (used by `/h/:slug` cookie tagging), and color. Cards have a many-to-many relationship with houses via CardHouse join table.
@@ -184,7 +184,7 @@ cardsight/
 - **Missions are player-scannable** — each mission has a QR code linking to `/m/:missionId`. The MissionViewer shows the narrative/puzzle, required clue categories, and an answer input. For multi-house missions, a house picker (stored in sessionStorage as `cardsight_house`) appears first. Mission QR codes are separate from the physical card deck — they're printed on story sheets. Analytics tracked via `MissionScanEvent` and `MissionAnswerAttempt` tables.
 - **Missions reference CardSet IDs, not specific cards** — `requiredClueSets` is an array of `{ cardSetId, count }`. This means the mission structure survives across game runs even if specific clue cards change.
 - **Act consequences are configurable per-mission** — `MissionConsequence` records define what happens when a mission succeeds or fails at act end. Types: `warning` (text shown on a target mission), `lock` (locks a target mission with explanation), `redistribute` (reminder to host about physical card redistribution). When admin hits "End Act", `transitionAct` evaluates each mission's completion per house and creates `TriggeredConsequence` records. Lock consequences immediately set `lockedOut` on the target mission. Warning consequences are fetched by the player-facing mission viewer and displayed as yellow callouts. Redistribute consequences appear in the act break view for the host. All consequences are configurable per-mission in the admin with type, target mission, trigger condition (on failure/success), and message.
-- **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a themed print preview with switchable themes (Space, Explorer), markdown rendering, Google Fonts (loaded dynamically), and `print-color-adjust: exact` for dark backgrounds. Theme system is defined in `ConsequencePrint.tsx` via a `CardTheme` interface driving fonts, colors, backgrounds, and border styles. Print link lives in MissionManager toolbar.
+- **Consequence cards are physical** — printed on card stock (2-3 per US letter page), not shown on phone screens. The admin has a themed print preview, markdown rendering, Google Fonts (loaded dynamically), and `print-color-adjust: exact` for dark backgrounds. Theme system is defined in `ConsequencePrint.tsx` via a `CardTheme` interface driving fonts, colors, backgrounds, and border styles; the active theme is selected from the game's `printTheme` (`temple → adventureTheme`, `classic → spaceTheme`). Print link lives in MissionManager toolbar.
 - **Act transitions are explicit** — "End Act N" button locks current act's cards, unlocks next act's cards, updates `game.currentAct`, evaluates mission consequences, and navigates to the act break view. The `currentAct` field is the authoritative source for which act a game is in — used by the QR scan resolver and dashboard.
 - **Showtime uses polling, not WebSockets** — FILLING phase polls every 3s, SYNCING phase polls every 500ms, REVEALED phase stops. In a room of people shouting a countdown, sub-second stagger is imperceptible.
 - **Sync press is server-authoritative** — each house POSTs their press timestamp. Server checks within a Prisma transaction if all presses fall within the sync window. If not, resets all presses atomically.
@@ -278,7 +278,7 @@ Code changes deploy automatically — Railway watches `main` and rebuilds on pus
 | `/admin/games/:id/story-sheets` | StorySheetManager | Story sheet CRUD by house tabs + act groups |
 | `/admin/games/:id/story-sheets/print` | StorySheetPrint | Printable story sheets with mission lists |
 | `/admin/games/:id/act-break` | ActBreakView | Per-house mission results, consequence texts for host to read |
-| `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), switchable themes (Space/Explorer), markdown support |
+| `/admin/games/:id/act-break/print` | ConsequencePrint | Printable consequence cards (2-3 per US letter), themed by `game.printTheme`, markdown support |
 | `/admin/games/:id/dashboard` | LiveDashboard | Real-time stats: scans, discovery, answers, mission progress (auto-polls every 5s) |
 | `/admin/games/:id/showtimes` | ShowtimeManager | Showtime CRUD, slot config, live monitoring, force trigger/reset |
 | `/admin/games/:id/simulator` | TableSimulator | Card-to-table distribution simulator with physical card name toggle |
@@ -322,7 +322,7 @@ GET   /api/admin/games
 GET   /api/admin/games/:gameId
 POST  /api/admin/games
 POST  /api/admin/games/:gameId/duplicate
-PATCH /api/admin/games/:gameId/settings    # Toggle game-level settings (blurNudgeEnabled)
+PATCH /api/admin/games/:gameId/settings    # Toggle game-level settings (blurNudgeEnabled, printTheme)
 
 # Cards
 GET   /api/admin/games/:gameId/cards
@@ -406,7 +406,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Mission system (CRUD, house assignment, required clue sets, consequence texts, QR codes, player-facing viewer at `/m/:missionId` with house picker, required clues display, answer input)
 - Mission auto-completion when linked mission card is answered correctly
 - Act break view (per-house mission results with consequence texts for host)
-- Consequence card print preview (2-3 per US letter page, switchable themes: Space with Audiowide/Exo 2 fonts + nebula bg, Explorer with Cinzel/Crimson Text fonts + aged parchment bg, markdown rendering)
+- Consequence card print preview (2-3 per US letter page, theme follows `game.printTheme`: Space with Audiowide/Exo 2 fonts + nebula bg, Adventure/Explorer with Cinzel/Crimson Text fonts + aged parchment bg, markdown rendering)
 - Live game dashboard (real-time scans, card discovery, answer attempts, mission progress, auto-polls every 5s)
 - Act transition workflow (lock current act cards, unlock next act cards, evaluate and trigger mission consequences)
 - Act consequences system (configurable per-mission: warning/lock/redistribute, triggered on act end, shown in act break view and player mission viewer)

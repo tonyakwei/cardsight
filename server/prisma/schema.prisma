@@ -38,6 +38,7 @@ model Game {
   status          GameStatus @default(draft)
   currentAct      Int        @default(1) @map("current_act")
   blurNudgeEnabled Boolean   @default(false) @map("blur_nudge_enabled")
+  printTheme      String     @default("classic") @map("print_theme")
   historyTimelineArmed Boolean @default(false) @map("history_timeline_armed")
   historyTimelineAttemptIndex Int @default(0) @map("history_timeline_attempt_index")
   historyTimelineAttemptedCardIds String[] @default([]) @map("history_timeline_attempted_card_ids") @db.Uuid

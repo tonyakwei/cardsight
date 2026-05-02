@@ -1,9 +1,29 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { Text, Stack, Paper, Group, Button } from "@mantine/core";
+import { Text, Stack, Paper, Group, Button, Select, Loader } from "@mantine/core";
+import { fetchGame, updateGameSettings, type GameDetail } from "../../api/admin";
 
 export function PrintCenter() {
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
+  const [game, setGame] = useState<GameDetail | null>(null);
+  const [savingTheme, setSavingTheme] = useState(false);
+
+  useEffect(() => {
+    if (!gameId) return;
+    fetchGame(gameId).then(setGame);
+  }, [gameId]);
+
+  async function handleThemeChange(value: string | null) {
+    if (!gameId || !value || (value !== "classic" && value !== "temple")) return;
+    setSavingTheme(true);
+    try {
+      const result = await updateGameSettings(gameId, { printTheme: value });
+      setGame((g) => (g ? { ...g, printTheme: result.printTheme } : g));
+    } finally {
+      setSavingTheme(false);
+    }
+  }
 
   const printOptions = [
     {
@@ -14,7 +34,7 @@ export function PrintCenter() {
     },
     {
       title: "Consequence Cards",
-      description: "Themed consequence cards for act breaks (2-3 per page). Switchable themes: Space, Explorer.",
+      description: "Themed consequence cards for act breaks (2-3 per page). Visual style follows the game's print theme.",
       path: `/admin/games/${gameId}/act-break/print`,
       color: "yellow",
     },
@@ -74,6 +94,31 @@ export function PrintCenter() {
       <Text size="sm" c="dimmed" mb="lg">
         Generate printable materials for your game.
       </Text>
+
+      <Paper withBorder p="md" mb="lg">
+        <Group justify="space-between" wrap="nowrap">
+          <div>
+            <Text size="sm" fw={600}>Print theme</Text>
+            <Text size="xs" c="dimmed" mt={2}>
+              Visual style applied to themed print outputs (story sheets, consequence cards). Set once per game.
+            </Text>
+          </div>
+          <Group gap="xs">
+            {savingTheme && <Loader size="xs" color="yellow" />}
+            <Select
+              w={180}
+              value={game?.printTheme ?? "classic"}
+              onChange={handleThemeChange}
+              disabled={!game || savingTheme}
+              data={[
+                { label: "Classic", value: "classic" },
+                { label: "Temple", value: "temple" },
+              ]}
+              allowDeselect={false}
+            />
+          </Group>
+        </Group>
+      </Paper>
 
       <Stack gap="md">
         {printOptions.map((opt) => (

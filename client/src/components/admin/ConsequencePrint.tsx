@@ -222,8 +222,8 @@ export function ConsequencePrint() {
   const [loading, setLoading] = useState(true);
   const [act, setAct] = useState(searchParams.get("act") ?? "1");
   const [cardsPerPage, setCardsPerPage] = useState("3");
-  const [themeId, setThemeId] = useState("space");
 
+  const themeId = game?.printTheme === "temple" ? "adventure" : "space";
   const theme = THEMES.find((t) => t.id === themeId) ?? spaceTheme;
 
   const loadData = useCallback(async () => {
@@ -327,12 +327,6 @@ export function ConsequencePrint() {
             </Text>
           </Group>
           <Group gap="sm">
-            <SegmentedControl
-              size="xs"
-              value={themeId}
-              onChange={setThemeId}
-              data={THEMES.map((t) => ({ label: t.label, value: t.id }))}
-            />
             <SegmentedControl
               size="xs"
               value={act}

@@ -76,6 +76,7 @@ export async function getGame(gameId: string) {
     designCount: game._count.designs,
     finishedCount,
     blurNudgeEnabled: game.blurNudgeEnabled,
+    printTheme: (game.printTheme === "temple" ? "temple" : "classic") as "classic" | "temple",
     historyTimelineArmed: game.historyTimelineArmed,
     historyTimelineAttemptIndex: game.historyTimelineAttemptIndex,
     historyTimelineSolvedAt: game.historyTimelineSolvedAt?.toISOString() ?? null,
@@ -363,19 +364,25 @@ async function dupStorySheets(tx: any, gameId: string, newGameId: string, houseM
 
 export async function updateGameSettings(
   gameId: string,
-  data: { blurNudgeEnabled?: boolean },
+  data: { blurNudgeEnabled?: boolean; printTheme?: "classic" | "temple" },
 ) {
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) throw new AppError(404, "Game not found");
 
-  const updateData = pickAllowedFields(data, ["blurNudgeEnabled"]);
+  const updateData = pickAllowedFields(data, ["blurNudgeEnabled", "printTheme"]);
+  if (updateData.printTheme && !["classic", "temple"].includes(updateData.printTheme)) {
+    throw new AppError(400, "Invalid printTheme");
+  }
 
   const updated = await prisma.game.update({
     where: { id: gameId },
     data: updateData,
   });
 
-  return { blurNudgeEnabled: updated.blurNudgeEnabled };
+  return {
+    blurNudgeEnabled: updated.blurNudgeEnabled,
+    printTheme: (updated.printTheme === "temple" ? "temple" : "classic") as "classic" | "temple",
+  };
 }
 
 // Activate one game and demote any other active game to "completed".

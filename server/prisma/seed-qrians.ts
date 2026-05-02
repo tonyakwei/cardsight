@@ -144,6 +144,7 @@ async function main() {
       description:
         "Three expedition teams enter a sealed temple built by the QRians — a civilization that fused mathematics and religion. The temple was sealed centuries ago with warnings carved into every surface. Three acts: The Flood, The Corruption, The Dying Light.",
       status: "active",
+      printTheme: "temple",
     },
   });
 

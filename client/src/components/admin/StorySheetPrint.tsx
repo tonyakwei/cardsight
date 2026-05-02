@@ -657,11 +657,10 @@ export function StorySheetPrint() {
   const [game, setGame] = useState<GameDetail | null>(null);
   const [sheets, setSheets] = useState<PrintSheet[]>([]);
   const [act, setAct] = useState("1");
-  const [themeId, setThemeId] = useState("classic");
   const [loading, setLoading] = useState(true);
   const [overflows, setOverflows] = useState<Record<string, OverflowState>>({});
 
-  const theme = THEMES.find((t) => t.id === themeId) ?? classicTheme;
+  const theme = THEMES.find((t) => t.id === game?.printTheme) ?? classicTheme;
 
   const recordHeight = useCallback((sheetId: string, height: number) => {
     setOverflows((prev) => {
@@ -728,12 +727,6 @@ export function StorySheetPrint() {
             </Text>
           </Group>
           <Group gap="sm">
-            <SegmentedControl
-              size="xs"
-              value={themeId}
-              onChange={setThemeId}
-              data={THEMES.map((t) => ({ label: t.label, value: t.id }))}
-            />
             <SegmentedControl
               size="xs"
               value={act}
