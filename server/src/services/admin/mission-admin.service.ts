@@ -222,6 +222,10 @@ export async function getActBreakSummary(gameId: string, act: number) {
         consequenceImage: m.isCompleted
           ? m.consequenceImageCompleted
           : m.consequenceImageNotCompleted,
+        consequenceCompleted: m.consequenceCompleted ?? null,
+        consequenceNotCompleted: m.consequenceNotCompleted ?? null,
+        consequenceImageCompleted: m.consequenceImageCompleted ?? null,
+        consequenceImageNotCompleted: m.consequenceImageNotCompleted ?? null,
       })),
       triggeredConsequences: houseTriggered,
       completedCount: houseMissions.filter((m: any) => m.isCompleted).length,

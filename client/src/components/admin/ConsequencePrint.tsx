@@ -20,6 +20,17 @@ import {
   type AdminHouse,
 } from "../../api/admin";
 
+function contrastTextOn(hex: string): string {
+  const m = hex.replace("#", "");
+  const full = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
+  if (full.length !== 6) return "#ffffff";
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luma > 0.6 ? "#1a1a1a" : "#ffffff";
+}
+
 // --- Theme definitions ---
 
 interface CardTheme {
@@ -34,7 +45,7 @@ interface CardTheme {
   strongColor: string;
   borderRadius: string;
   /** Render background layers behind the card content */
-  renderBackground: (houseColor: string) => React.ReactNode;
+  renderBackground: (houseColor: string, act: number) => React.ReactNode;
   /** Border style for the inset frame */
   borderStyle: (houseColor: string) => string;
   /** Extra CSS for markdown text */
@@ -109,7 +120,7 @@ const adventureTheme: CardTheme = {
   strongColor: "#f0dfa8",
   borderRadius: "4px",
   borderStyle: () => "3px solid #b8963a",
-  renderBackground: (houseColor: string) => (
+  renderBackground: (houseColor: string, act: number) => (
     <>
       {/* Aged parchment / torchlight glow */}
       <div
@@ -159,12 +170,240 @@ const adventureTheme: CardTheme = {
           `,
         }}
       />
+      {act === 1 && <ConsequenceFloodAccents />}
+      {act === 2 && <ConsequenceVineAccents />}
     </>
   ),
   markdownStyles: `
     .consequence-text strong { color: #f0dfa8; }
   `,
 };
+
+function ConsequenceFloodAccents() {
+  return (
+    <>
+      {/* Submerged wash — bottom 45% turns deep teal */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: "45%",
+          background:
+            "linear-gradient(180deg, rgba(40,90,120,0) 0%, rgba(50,110,140,0.30) 55%, rgba(70,140,170,0.55) 100%)",
+          pointerEvents: "none",
+          printColorAdjust: "exact",
+          WebkitPrintColorAdjust: "exact",
+        } as React.CSSProperties}
+      />
+      {/* Surface wave (top of flood) */}
+      <svg
+        aria-hidden
+        viewBox="0 0 720 36"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: "45%",
+          width: "100%",
+          height: "16px",
+          opacity: 0.9,
+          pointerEvents: "none",
+        }}
+      >
+        <path
+          d="M 0 18 Q 50 4 100 18 T 200 18 T 300 18 T 400 18 T 500 18 T 600 18 T 720 18"
+          stroke="rgba(160, 215, 235, 0.75)"
+          strokeWidth="1.6"
+          fill="none"
+        />
+      </svg>
+      {/* Secondary submerged wave */}
+      <svg
+        aria-hidden
+        viewBox="0 0 720 30"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: "30%",
+          width: "100%",
+          height: "12px",
+          opacity: 0.55,
+          pointerEvents: "none",
+        }}
+      >
+        <path
+          d="M 0 15 Q 80 6 160 15 T 320 15 T 480 15 T 640 15 T 720 15"
+          stroke="rgba(160, 215, 235, 0.6)"
+          strokeWidth="1.1"
+          fill="none"
+        />
+      </svg>
+      {/* Bubbles rising in the lower band */}
+      <svg
+        aria-hidden
+        viewBox="0 0 720 200"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: "100%",
+          height: "45%",
+          opacity: 0.8,
+          pointerEvents: "none",
+        }}
+      >
+        <g stroke="rgba(180, 220, 240, 0.85)" strokeWidth="1" fill="none">
+          <circle cx="120" cy="170" r="3.5" />
+          <circle cx="135" cy="135" r="2.2" />
+          <circle cx="290" cy="180" r="3" />
+          <circle cx="305" cy="145" r="2" />
+          <circle cx="455" cy="160" r="3.2" />
+          <circle cx="470" cy="125" r="2.3" />
+          <circle cx="610" cy="175" r="3" />
+          <circle cx="625" cy="140" r="2.1" />
+          <circle cx="395" cy="190" r="2" />
+          <circle cx="540" cy="195" r="1.8" />
+        </g>
+      </svg>
+    </>
+  );
+}
+
+function ConsequenceVineCorner({
+  transform,
+  position,
+}: {
+  transform: string;
+  position: React.CSSProperties;
+}) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 240 240"
+      style={{
+        position: "absolute",
+        width: "130px",
+        height: "130px",
+        opacity: 0.7,
+        pointerEvents: "none",
+        transform,
+        transformOrigin: "center",
+        ...position,
+      }}
+    >
+      <g stroke="rgba(190, 155, 80, 0.9)" strokeWidth="1.7" fill="none" strokeLinecap="round">
+        <path d="M 4 18 Q 50 44 82 70 T 142 116 Q 168 140 156 178" />
+        <path d="M 22 4 Q 56 30 72 60 T 112 116" />
+        <path d="M 56 48 Q 80 62 88 80" />
+      </g>
+      <g fill="rgba(120, 150, 75, 0.9)">
+        <ellipse cx="50" cy="44" rx="11" ry="5" transform="rotate(-30 50 44)" />
+        <ellipse cx="92" cy="80" rx="12" ry="5.5" transform="rotate(20 92 80)" />
+        <ellipse cx="140" cy="130" rx="10" ry="4.8" transform="rotate(55 140 130)" />
+        <ellipse cx="68" cy="72" rx="7" ry="3.4" transform="rotate(40 68 72)" />
+        <ellipse cx="118" cy="58" rx="9" ry="4" transform="rotate(-12 118 58)" />
+      </g>
+      <g fill="rgba(150, 175, 95, 0.85)">
+        <ellipse cx="60" cy="55" rx="4" ry="2" transform="rotate(-30 60 55)" />
+        <ellipse cx="105" cy="92" rx="4.5" ry="2.2" transform="rotate(20 105 92)" />
+      </g>
+    </svg>
+  );
+}
+
+function ConsequenceVineAccents() {
+  return (
+    <>
+      {/* Faint mossy green wash */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(80, 110, 60, 0.06)",
+          pointerEvents: "none",
+          printColorAdjust: "exact",
+          WebkitPrintColorAdjust: "exact",
+        } as React.CSSProperties}
+      />
+      {/* A faint top-edge vine swag, scaled for the wide-short card */}
+      <svg
+        aria-hidden
+        viewBox="0 0 720 50"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          left: "150px",
+          right: "150px",
+          top: "4px",
+          height: "28px",
+          opacity: 0.55,
+          pointerEvents: "none",
+        }}
+      >
+        <path
+          d="M 0 25 Q 60 5 120 25 T 240 25 T 360 25 T 480 25 T 600 25 T 720 25"
+          stroke="rgba(190, 155, 80, 0.85)"
+          strokeWidth="1.6"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <g fill="rgba(120, 150, 75, 0.85)">
+          <ellipse cx="60" cy="14" rx="9" ry="4" transform="rotate(-25 60 14)" />
+          <ellipse cx="180" cy="36" rx="9" ry="4" transform="rotate(25 180 36)" />
+          <ellipse cx="300" cy="14" rx="9" ry="4" transform="rotate(-25 300 14)" />
+          <ellipse cx="420" cy="36" rx="9" ry="4" transform="rotate(25 420 36)" />
+          <ellipse cx="540" cy="14" rx="9" ry="4" transform="rotate(-25 540 14)" />
+          <ellipse cx="660" cy="36" rx="9" ry="4" transform="rotate(25 660 36)" />
+        </g>
+      </svg>
+      {/* Mirrored bottom-edge vine swag */}
+      <svg
+        aria-hidden
+        viewBox="0 0 720 50"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          left: "150px",
+          right: "150px",
+          bottom: "4px",
+          height: "28px",
+          opacity: 0.55,
+          pointerEvents: "none",
+          transform: "scaleY(-1)",
+        }}
+      >
+        <path
+          d="M 0 25 Q 60 5 120 25 T 240 25 T 360 25 T 480 25 T 600 25 T 720 25"
+          stroke="rgba(190, 155, 80, 0.85)"
+          strokeWidth="1.6"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <g fill="rgba(120, 150, 75, 0.85)">
+          <ellipse cx="60" cy="14" rx="9" ry="4" transform="rotate(-25 60 14)" />
+          <ellipse cx="180" cy="36" rx="9" ry="4" transform="rotate(25 180 36)" />
+          <ellipse cx="300" cy="14" rx="9" ry="4" transform="rotate(-25 300 14)" />
+          <ellipse cx="420" cy="36" rx="9" ry="4" transform="rotate(25 420 36)" />
+          <ellipse cx="540" cy="14" rx="9" ry="4" transform="rotate(-25 540 14)" />
+          <ellipse cx="660" cy="36" rx="9" ry="4" transform="rotate(25 660 36)" />
+        </g>
+      </svg>
+      <ConsequenceVineCorner transform="" position={{ top: 0, left: 0 }} />
+      <ConsequenceVineCorner transform="scaleX(-1)" position={{ top: 0, right: 0 }} />
+      <ConsequenceVineCorner transform="scaleY(-1)" position={{ bottom: 0, left: 0 }} />
+      <ConsequenceVineCorner transform="scale(-1, -1)" position={{ bottom: 0, right: 0 }} />
+    </>
+  );
+}
 
 const THEMES: CardTheme[] = [spaceTheme, adventureTheme];
 
@@ -222,6 +461,7 @@ export function ConsequencePrint() {
   const [loading, setLoading] = useState(true);
   const [act, setAct] = useState(searchParams.get("act") ?? "1");
   const [cardsPerPage, setCardsPerPage] = useState("3");
+  const [outcomeMode, setOutcomeMode] = useState<"both" | "success" | "failure" | "actual">("both");
 
   const themeId = game?.printTheme === "temple" ? "adventure" : "space";
   const theme = THEMES.find((t) => t.id === themeId) ?? spaceTheme;
@@ -282,14 +522,33 @@ export function ConsequencePrint() {
 
   for (const entry of summary) {
     for (const m of entry.missions) {
-      if (m.consequence) {
+      const showSuccess =
+        outcomeMode === "both" ||
+        outcomeMode === "success" ||
+        (outcomeMode === "actual" && m.isCompleted);
+      const showFailure =
+        outcomeMode === "both" ||
+        outcomeMode === "failure" ||
+        (outcomeMode === "actual" && !m.isCompleted);
+
+      if (showSuccess && m.consequenceCompleted) {
         allCards.push({
           houseName: entry.house.name,
           houseColor: entry.house.color,
           title: m.title,
-          isCompleted: m.isCompleted,
-          consequence: m.consequence,
-          consequenceImage: m.consequenceImage,
+          isCompleted: true,
+          consequence: m.consequenceCompleted,
+          consequenceImage: m.consequenceImageCompleted,
+        });
+      }
+      if (showFailure && m.consequenceNotCompleted) {
+        allCards.push({
+          houseName: entry.house.name,
+          houseColor: entry.house.color,
+          title: m.title,
+          isCompleted: false,
+          consequence: m.consequenceNotCompleted,
+          consequenceImage: m.consequenceImageNotCompleted,
         });
       }
     }
@@ -335,6 +594,17 @@ export function ConsequencePrint() {
                 { label: "Act 1", value: "1" },
                 { label: "Act 2", value: "2" },
                 { label: "Act 3", value: "3" },
+              ]}
+            />
+            <SegmentedControl
+              size="xs"
+              value={outcomeMode}
+              onChange={(v) => setOutcomeMode(v as typeof outcomeMode)}
+              data={[
+                { label: "Both", value: "both" },
+                { label: "Success", value: "success" },
+                { label: "Failure", value: "failure" },
+                { label: "Actual", value: "actual" },
               ]}
             />
             <SegmentedControl
@@ -388,9 +658,9 @@ export function ConsequencePrint() {
             }}
           >
             {/* Theme background */}
-            {theme.renderBackground(card.houseColor)}
+            {theme.renderBackground(card.houseColor, Number(act))}
 
-            {/* House-colored bleed strip (left edge, full height) for sorting */}
+            {/* Outcome bleed strip (left edge, full height) — green for complete, red for failed */}
             <div
               style={{
                 position: "absolute",
@@ -398,7 +668,7 @@ export function ConsequencePrint() {
                 top: 0,
                 bottom: 0,
                 width: "0.3in",
-                background: card.houseColor,
+                background: card.isCompleted ? "#2e7d32" : "#c62828",
                 WebkitPrintColorAdjust: "exact",
                 printColorAdjust: "exact",
                 display: "flex",
@@ -415,13 +685,12 @@ export function ConsequencePrint() {
                   letterSpacing: "0.25em",
                   textTransform: "uppercase",
                   color: "#ffffff",
-                  mixBlendMode: "difference",
                   writingMode: "vertical-rl",
                   transform: "rotate(180deg)",
                   whiteSpace: "nowrap",
                 }}
               >
-                {card.houseName}
+                {card.isCompleted ? "Mission Complete" : "Mission Failed"}
               </span>
             </div>
 
@@ -454,33 +723,34 @@ export function ConsequencePrint() {
               ) : (
                 <div
                   style={{
-                    width: "1.5in",
-                    minWidth: "1.5in",
+                    width: "0.75in",
+                    minWidth: "0.75in",
                     margin: "0.15in",
                     borderRadius: "4px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     background: `linear-gradient(180deg, ${card.houseColor}22 0%, ${card.houseColor}11 100%)`,
+                    overflow: "hidden",
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      width: "0.8in",
-                      height: "0.8in",
-                      borderRadius: "50%",
-                      border: `3px solid ${card.houseColor}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "24px",
-                      fontWeight: 700,
-                      color: card.houseColor,
                       fontFamily: theme.headingFont,
-                    }}
+                      fontSize: "44px",
+                      fontWeight: 700,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: card.houseColor,
+                      transform: "rotate(-90deg)",
+                      whiteSpace: "nowrap",
+                      lineHeight: 1,
+                      WebkitPrintColorAdjust: "exact",
+                      printColorAdjust: "exact",
+                    } as React.CSSProperties}
                   >
-                    {card.houseName[0]}
-                  </div>
+                    {card.houseName.split(" ")[0]}
+                  </span>
                 </div>
               )}
 
@@ -494,11 +764,10 @@ export function ConsequencePrint() {
                   overflow: "hidden",
                 }}
               >
-                {/* House label + status */}
+                {/* House tag */}
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
                     alignItems: "center",
                     marginBottom: "0.12in",
                   }}
@@ -506,29 +775,19 @@ export function ConsequencePrint() {
                   <span
                     style={{
                       fontFamily: theme.headingFont,
-                      fontSize: "13px",
-                      fontWeight: 400,
-                      letterSpacing: "0.1em",
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      letterSpacing: "0.18em",
                       textTransform: "uppercase",
-                      color: card.houseColor,
-                    }}
+                      color: contrastTextOn(card.houseColor),
+                      background: card.houseColor,
+                      padding: "3px 10px",
+                      borderRadius: "999px",
+                      WebkitPrintColorAdjust: "exact",
+                      printColorAdjust: "exact",
+                    } as React.CSSProperties}
                   >
                     {card.houseName}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: theme.headingFont,
-                      fontSize: "12px",
-                      fontWeight: 400,
-                      letterSpacing: "0.05em",
-                      textTransform: "uppercase",
-                      color: card.isCompleted ? "#4caf50" : "#ef5350",
-                      padding: "4px 12px",
-                      borderRadius: "3px",
-                      border: `1px solid ${card.isCompleted ? "#4caf50" : "#ef5350"}`,
-                    }}
-                  >
-                    {card.isCompleted ? "Mission Complete" : "Mission Failed"}
                   </span>
                 </div>
 

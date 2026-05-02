@@ -224,6 +224,10 @@ export interface ActBreakHouse {
     completedAt: string | null;
     consequence: string | null;
     consequenceImage: string | null;
+    consequenceCompleted: string | null;
+    consequenceNotCompleted: string | null;
+    consequenceImageCompleted: string | null;
+    consequenceImageNotCompleted: string | null;
   }[];
   triggeredConsequences: AdminTriggeredConsequence[];
   completedCount: number;
