@@ -1568,7 +1568,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, II",
     description:
-      "**Sequence:** **?** → Yellow → Brown → Black\n\n**Clue:** *Curved*",
+      "A second ceramic disc, the painted rim chipped along one edge. Etched beneath: a single clue word.\n\n**Sequence:** **?** → Yellow → Brown → Black\n\n**Clue:** *Curved*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1576,7 +1576,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, III",
     description:
-      "**Sequence:** Red → **?** → Brown\n\n**Clue:** *Rare*",
+      "A small ceramic disc, half its painted rim worn to grey. Etched beneath: a single clue word.\n\n**Sequence:** Red → **?** → Brown\n\n**Clue:** *Rare*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1584,7 +1584,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, IV",
     description:
-      "**Sequence:** Green → Yellow → Orange → Red → **?**\n\n**Clue:** *Harvest*",
+      "A wide ceramic disc, the colors still bright where silt protected them. Etched beneath: a single clue word.\n\n**Sequence:** Green → Yellow → Orange → Red → **?**\n\n**Clue:** *Harvest*",
     houseIds: [drake.id],
   });
   await createClueCard({
@@ -1592,7 +1592,7 @@ async function main() {
     clueVisibleCategory: "Strange Painted Disc",
     header: "Strange Painted Disc, V",
     description:
-      "**Sequence:** **?** → Red → Orange → Yellow\n\n**Clue:** *Forge*",
+      "A heavy ceramic disc, recovered face-down from the chamber floor. Etched beneath: a single clue word.\n\n**Sequence:** **?** → Red → Orange → Yellow\n\n**Clue:** *Forge*",
     houseIds: [drake.id],
   });
 
