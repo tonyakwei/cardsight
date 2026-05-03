@@ -41,7 +41,7 @@ type Block = {
   body: string;  // the slice [start, end)
 };
 
-type MissionBlock = Block & { title: string; answerVar: string | null };
+type MissionBlock = Block & { title: string; answerVar: string | null; varName: string | null };
 type AnswerBlock = Block & { kind: "single" | "multiple"; varName: string };
 type CardSetCreateBlock = Block & { varName: string; setName: string };
 type HouseCreateBlock = Block & { varName: string; houseName: string };
@@ -50,6 +50,11 @@ type CardCreateBlock = Block & {
   // For createClueCard({...}) calls
   cardSetVar: string;
   act: number;
+};
+type MissionConsequenceBlock = Block & {
+  sourceMissionVar: string;
+  targetMissionVar: string | null;
+  type: string;
 };
 
 type FieldEdit = {
@@ -343,6 +348,7 @@ function encodeJsString(value: string): string {
 type SeedIndex = {
   src: string;
   missionsByTitle: Map<string, MissionBlock>;
+  missionVarByTitle: Map<string, string>; // mission title → var name (when `const m_X = ...` was found)
   answersByVar: Map<string, AnswerBlock>;
   cardSetByVar: Map<string, CardSetCreateBlock>;
   cardSetVarByName: Map<string, string>;
@@ -350,10 +356,13 @@ type SeedIndex = {
   houseVarByName: Map<string, string>;
   storySheetByHouseAct: Map<string, StorySheetBlock>;
   cardsBySetActOrdered: Map<string, CardCreateBlock[]>; // key = `${cardSetVar}|${act}`
+  // key = `${sourceVar}|${targetVar ?? "null"}|${type}`
+  missionConsequencesByKey: Map<string, MissionConsequenceBlock>;
 };
 
 function parseSeed(src: string): SeedIndex {
   const missionsByTitle = new Map<string, MissionBlock>();
+  const missionVarByTitle = new Map<string, string>();
   const answersByVar = new Map<string, AnswerBlock>();
   const cardSetByVar = new Map<string, CardSetCreateBlock>();
   const cardSetVarByName = new Map<string, string>();
@@ -361,11 +370,12 @@ function parseSeed(src: string): SeedIndex {
   const houseVarByName = new Map<string, string>();
   const storySheetByHouseAct = new Map<string, StorySheetBlock>();
   const cardsBySetActOrdered = new Map<string, CardCreateBlock[]>();
+  const missionConsequencesByKey = new Map<string, MissionConsequenceBlock>();
 
   // Find every prisma.X.create( ... ) and createClueCard( ... ) call.
   // For each, locate the matching ')' via paren walker.
   const callPattern =
-    /(prisma\.(mission|singleAnswer|multipleAnswer|cardSet|house|storySheet|card)\.create\s*\(|createClueCard\s*\()/g;
+    /(prisma\.(mission|singleAnswer|multipleAnswer|cardSet|house|storySheet|card|missionConsequence)\.create\s*\(|createClueCard\s*\()/g;
 
   let match: RegExpExecArray | null;
   while ((match = callPattern.exec(src))) {
@@ -384,6 +394,7 @@ function parseSeed(src: string): SeedIndex {
     if (callKind === "mission") {
       const title = readStringField(src, blockStart, blockEnd, "title");
       const answerVar = readIdentField(src, blockStart, blockEnd, "answerId");
+      const varName = readPrecedingConstName(src, blockStart);
       if (title) {
         missionsByTitle.set(title, {
           start: blockStart,
@@ -391,7 +402,11 @@ function parseSeed(src: string): SeedIndex {
           body,
           title,
           answerVar,
+          varName,
         });
+        if (varName) {
+          missionVarByTitle.set(title, varName);
+        }
       }
     } else if (callKind === "singleAnswer" || callKind === "multipleAnswer") {
       // Find the `const ansFoo = await ...` to extract var name
@@ -466,12 +481,40 @@ function parseSeed(src: string): SeedIndex {
     } else if (callKind === "card") {
       // Direct prisma.card.create — these are Act 3 history/reference cards.
       // We don't sync these via this script (they're array-driven in seed).
+    } else if (callKind === "missionConsequence") {
+      const sourceExpr = readIdentField(src, blockStart, blockEnd, "sourceMissionId");
+      const targetExpr = readIdentField(src, blockStart, blockEnd, "targetMissionId");
+      const type = readStringField(src, blockStart, blockEnd, "type");
+      const sourceVar = sourceExpr ? sourceExpr.replace(/\.id$/, "") : null;
+      const targetVar = targetExpr ? targetExpr.replace(/\.id$/, "") : null;
+      if (sourceVar && type) {
+        const key = `${sourceVar}|${targetVar ?? "null"}|${type}`;
+        if (missionConsequencesByKey.has(key)) {
+          // Multiple consequences could share (source, target, type) with
+          // different triggerOnFailure/Success flags. We don't have a
+          // disambiguator from the DB side beyond type+target, so skip dupes
+          // with a warning rather than silently overwriting.
+          console.warn(
+            `[warn] duplicate missionConsequence anchor: ${key} — only the first will be synced`
+          );
+        } else {
+          missionConsequencesByKey.set(key, {
+            start: blockStart,
+            end: blockEnd,
+            body,
+            sourceMissionVar: sourceVar,
+            targetMissionVar: targetVar,
+            type,
+          });
+        }
+      }
     }
   }
 
   return {
     src,
     missionsByTitle,
+    missionVarByTitle,
     answersByVar,
     cardSetByVar,
     cardSetVarByName,
@@ -479,6 +522,7 @@ function parseSeed(src: string): SeedIndex {
     houseVarByName,
     storySheetByHouseAct,
     cardsBySetActOrdered,
+    missionConsequencesByKey,
   };
 }
 
@@ -1022,9 +1066,76 @@ async function main() {
     }
   }
 
+  // ─── Mission consequences (act-break warning/lock/redistribute) ──
+  let consequencesChanged = 0;
+  // DB consequences whose source mission is in scope
+  const sourceMissionIds = missions.map((m) => m.id);
+  if (sourceMissionIds.length > 0) {
+    const dbConsequences = await prisma.missionConsequence.findMany({
+      where: { sourceMissionId: { in: sourceMissionIds } },
+      include: {
+        sourceMission: { select: { title: true } },
+        targetMission: { select: { title: true } },
+      },
+    });
+    for (const dc of dbConsequences) {
+      const sourceVar = seed.missionVarByTitle.get(dc.sourceMission.title);
+      if (!sourceVar) {
+        console.warn(
+          `[warn] consequence on "${dc.sourceMission.title}" — source mission var unknown in seed, skipping`
+        );
+        continue;
+      }
+      let targetVar: string | null = null;
+      if (dc.targetMissionId) {
+        if (!dc.targetMission) {
+          console.warn(
+            `[warn] consequence ${dc.id}: targetMissionId set but join missing, skipping`
+          );
+          continue;
+        }
+        targetVar = seed.missionVarByTitle.get(dc.targetMission.title) ?? null;
+        if (!targetVar) {
+          console.warn(
+            `[warn] consequence on "${dc.sourceMission.title}" → "${dc.targetMission.title}" — target mission var unknown in seed, skipping`
+          );
+          continue;
+        }
+      }
+      const key = `${sourceVar}|${targetVar ?? "null"}|${dc.type}`;
+      const block = seed.missionConsequencesByKey.get(key);
+      if (!block) {
+        console.warn(
+          `[warn] no seed block for consequence anchor ${key} (source="${dc.sourceMission.title}"${dc.targetMission ? `, target="${dc.targetMission.title}"` : ""}, type=${dc.type}) — skipping`
+        );
+        continue;
+      }
+      const f = findFieldValue(src, block.start, block.end, "message");
+      if (!f) {
+        console.warn(`[warn] consequence ${key}: no message field — skipping`);
+        continue;
+      }
+      const seedVal = decodeJsString(src, f.valueStart, f.valueEnd);
+      const dbVal = dc.message ?? "";
+      if (seedVal === dbVal) continue;
+      consequencesChanged++;
+      const targetLabel = dc.targetMission ? ` → "${dc.targetMission.title}"` : "";
+      console.log(
+        `\n=== Consequence "${dc.sourceMission.title}"${targetLabel} type=${dc.type} ===`
+      );
+      printFieldDiff("message", seedVal, dbVal);
+      replacements.push({
+        start: f.valueStart,
+        end: f.valueEnd,
+        newText: encodeJsString(dbVal),
+        context: `missionConsequence(${key}).message`,
+      });
+    }
+  }
+
   // ─── Summary ─────────────────────────────────────────────────────
   console.log(
-    `\n${replacements.length === 0 ? "no changes needed." : `${missionsChanged} missions, ${cardsChanged} cards, ${answersChanged} answers, ${sheetsChanged} sheets would change.`}`
+    `\n${replacements.length === 0 ? "no changes needed." : `${missionsChanged} missions, ${cardsChanged} cards, ${answersChanged} answers, ${sheetsChanged} sheets, ${consequencesChanged} consequences would change.`}`
   );
 
   if (replacements.length === 0) {
