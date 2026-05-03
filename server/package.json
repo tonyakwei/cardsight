@@ -9,7 +9,8 @@
     "start": "node dist/server/src/index.js",
     "prisma": "prisma",
     "db:seed-qrians": "tsx prisma/seed-qrians.ts",
-    "db:seed-qrians:prod": "tsx scripts/seed-qrians-prod.ts"
+    "db:seed-qrians:prod": "tsx scripts/seed-qrians-prod.ts",
+    "sync-seed": "tsx scripts/sync-seed-from-db.ts"
   },
   "dependencies": {
     "@cardsight/shared": "workspace:*",
