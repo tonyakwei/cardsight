@@ -114,7 +114,13 @@ export function AnswerInput({ answerMeta, onSubmit, onSuccess, large }: Props) {
         >
           Your answer
         </label>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: large ? "column" : "row",
+            gap: large ? "0.75rem" : "0.5rem",
+          }}
+        >
           <input
             ref={inputRef}
             type="text"
@@ -151,8 +157,8 @@ export function AnswerInput({ answerMeta, onSubmit, onSuccess, large }: Props) {
             onClick={handleSubmit}
             disabled={!value.trim() || submitting || lastResult === "correct"}
             style={{
-              padding: "0.75rem 1.25rem",
-              fontSize: "0.9rem",
+              padding: large ? "1rem 1.5rem" : "0.75rem 1.25rem",
+              fontSize: large ? "1.05rem" : "0.9rem",
               fontWeight: 600,
               borderRadius: "8px",
               border: "none",
@@ -165,6 +171,7 @@ export function AnswerInput({ answerMeta, onSubmit, onSuccess, large }: Props) {
               opacity: !value.trim() || submitting ? 0.5 : 1,
               transition: "opacity 0.2s, background 0.2s",
               whiteSpace: "nowrap",
+              width: large ? "100%" : undefined,
             }}
           >
             {submitting ? "..." : lastResult === "correct" ? "✓" : "Submit"}
