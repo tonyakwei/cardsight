@@ -150,6 +150,9 @@ function FloodAccents() {
   return (
     <>
       {/* deep rising water tint — taller, darker */}
+      {/* Opacities halved from the original (0.42 → 0.21 etc.) so the bottom
+          band prints as a gentle blue tint rather than a near-black brick on
+          consumer printers, which over-ink layered low-opacity gradients. */}
       <div
         aria-hidden
         style={{
@@ -159,7 +162,7 @@ function FloodAccents() {
           bottom: 0,
           height: "40%",
           background:
-            "linear-gradient(180deg, rgba(40,95,115,0) 0%, rgba(38,92,112,0.16) 40%, rgba(28,80,102,0.30) 75%, rgba(20,68,92,0.42) 100%)",
+            "linear-gradient(180deg, rgba(40,95,115,0) 0%, rgba(38,92,112,0.08) 40%, rgba(28,80,102,0.15) 75%, rgba(20,68,92,0.21) 100%)",
           pointerEvents: "none",
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact",
@@ -173,9 +176,9 @@ function FloodAccents() {
           inset: 0,
           pointerEvents: "none",
           background: `
-            radial-gradient(ellipse 220px 160px at 0% 100%, rgba(20,60,82,0.28) 0%, transparent 70%),
-            radial-gradient(ellipse 220px 160px at 100% 100%, rgba(20,60,82,0.28) 0%, transparent 70%),
-            radial-gradient(ellipse 280px 80px at 50% 100%, rgba(15,55,78,0.22) 0%, transparent 80%)
+            radial-gradient(ellipse 220px 160px at 0% 100%, rgba(20,60,82,0.14) 0%, transparent 70%),
+            radial-gradient(ellipse 220px 160px at 100% 100%, rgba(20,60,82,0.14) 0%, transparent 70%),
+            radial-gradient(ellipse 280px 80px at 50% 100%, rgba(15,55,78,0.11) 0%, transparent 80%)
           `,
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact",
@@ -477,12 +480,14 @@ function VineAccents() {
   return (
     <>
       {/* stronger green wash over the page */}
+      {/* Tints halved so consumer printers don't render the cream page as
+          gray-green sludge under combined low-opacity layers. */}
       <div
         aria-hidden
         style={{
           position: "absolute",
           inset: 0,
-          background: "rgba(70, 100, 55, 0.07)",
+          background: "rgba(70, 100, 55, 0.035)",
           pointerEvents: "none",
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact",
@@ -496,9 +501,9 @@ function VineAccents() {
           inset: 0,
           pointerEvents: "none",
           background: `
-            radial-gradient(ellipse 90px 50px at 4% 38%, rgba(70,110,55,0.18) 0%, transparent 70%),
-            radial-gradient(ellipse 110px 60px at 96% 62%, rgba(70,110,55,0.18) 0%, transparent 70%),
-            radial-gradient(ellipse 70px 40px at 50% 96%, rgba(70,110,55,0.14) 0%, transparent 70%)
+            radial-gradient(ellipse 90px 50px at 4% 38%, rgba(70,110,55,0.09) 0%, transparent 70%),
+            radial-gradient(ellipse 110px 60px at 96% 62%, rgba(70,110,55,0.09) 0%, transparent 70%),
+            radial-gradient(ellipse 70px 40px at 50% 96%, rgba(70,110,55,0.07) 0%, transparent 70%)
           `,
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact",

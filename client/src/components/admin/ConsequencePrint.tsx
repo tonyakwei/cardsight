@@ -467,18 +467,36 @@ export function ConsequencePrint() {
 
   const themeId = game?.printTheme === "temple" ? "adventure" : "space";
   const baseTheme = THEMES.find((t) => t.id === themeId) ?? spaceTheme;
-  // Plain print: keep the theme's fonts (titles still feel right) but strip
-  // the dark card background and decorative gradient layers, so cheap
-  // printers don't render purple ovals or near-black bands.
+  // Plain print: keeps the theme's fonts (titles still feel right) and
+  // adapts to the source theme. Adventure → lit parchment (cream paper,
+  // dark brown text, gold border preserved, single subtle house-color
+  // glow that prints as a clean tint). Space → fully neutral white card
+  // (the space theme is too far from anything paper-friendly to keep
+  // flourishes from). In both cases the dark backgrounds and decorative
+  // gradient layers that misrender on consumer printers are gone.
+  const isAdventure = baseTheme.id === "adventure";
   const theme: CardTheme = plainPrint
     ? {
         ...baseTheme,
-        cardBg: "#ffffff",
-        textColor: "#1a1a1a",
-        headingColor: "#1a1a1a",
-        strongColor: "#000",
-        renderBackground: () => null,
-        borderStyle: (houseColor: string) => `2px solid ${houseColor}`,
+        cardBg: isAdventure ? "#f5e6c8" : "#ffffff",
+        textColor: isAdventure ? "#2a1d0e" : "#1a1a1a",
+        headingColor: isAdventure ? "#3d2817" : "#1a1a1a",
+        strongColor: isAdventure ? "#1a1208" : "#000",
+        renderBackground: isAdventure
+          ? (houseColor: string) => (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  pointerEvents: "none",
+                  background: `radial-gradient(ellipse at 50% 50%, ${houseColor}10 0%, transparent 70%)`,
+                }}
+              />
+            )
+          : () => null,
+        borderStyle: isAdventure
+          ? () => "3px solid #b8963a"
+          : (houseColor: string) => `2px solid ${houseColor}`,
       }
     : baseTheme;
 

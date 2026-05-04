@@ -720,6 +720,7 @@ export function Act3CardsPrint() {
 
         .theme-drake .card-face {
           --bg: radial-gradient(ellipse at 50% 38%, #5a1410 0%, #2a0907 60%, #0e0302 100%);
+          --bg-solid: #0e0302;
           --text: #f3d5b5;
           --title: #ffb074;
           --accent: #ff8a4a;
@@ -743,7 +744,14 @@ export function Act3CardsPrint() {
             radial-gradient(1.6px 1.6px at 50% 96%, rgba(255, 140, 60, 0.8) 50%, transparent 100%);
         }
         .theme-drake .card-face .bg-mark {
+          /* mask-image is silently dropped by most PDF generators and print
+             drivers, which would render the pattern across the whole card.
+             Faking the soft circular reveal with a stacked radial-gradient
+             that paints the card's outer color over everything beyond the
+             visible area — pattern shows where the overlay is transparent,
+             vanishes where the overlay matches the card background. */
           background:
+            radial-gradient(circle at 50% 50%, transparent 0in, transparent 0.9in, var(--bg-solid) 1.7in),
             repeating-conic-gradient(
               from 0deg at 50% 50%,
               rgba(255, 90, 30, 0.05) 0deg,
@@ -751,8 +759,6 @@ export function Act3CardsPrint() {
               transparent 2.5deg,
               transparent 11deg
             );
-          mask-image: radial-gradient(circle at 50% 50%, #000 0in, #000 0.9in, transparent 1.7in);
-          -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0in, #000 0.9in, transparent 1.7in);
         }
         .theme-drake .card-face .vignette {
           background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
@@ -764,6 +770,7 @@ export function Act3CardsPrint() {
 
         .theme-jones .card-face {
           --bg: radial-gradient(ellipse at 50% 30%, #5a3e0f 0%, #2c1f06 60%, #0e0904 100%);
+          --bg-solid: #0e0904;
           --text: #fbeed0;
           --title: #ffd56a;
           --accent: #f0b73a;
@@ -773,7 +780,11 @@ export function Act3CardsPrint() {
           border: 0.7pt solid rgba(202, 138, 4, 0.5);
         }
         .theme-jones .card-face .bg-fx {
+          /* See Drake bg-mark note — same mask-image-replaced-with-overlay
+             pattern, but elliptical and centered higher to keep the
+             scholar's-light glow up around the kicker. */
           background:
+            radial-gradient(ellipse at 50% 28%, transparent 0in, transparent 0.7in, var(--bg-solid) 3in),
             repeating-conic-gradient(
               from -90deg at 50% 28%,
               rgba(255, 220, 130, 0.08) 0deg,
@@ -781,8 +792,6 @@ export function Act3CardsPrint() {
               transparent 2.5deg,
               transparent 13deg
             );
-          mask-image: radial-gradient(ellipse at 50% 28%, #000 0in, #000 0.7in, transparent 3in);
-          -webkit-mask-image: radial-gradient(ellipse at 50% 28%, #000 0in, #000 0.7in, transparent 3in);
           opacity: 0.85;
         }
         .theme-jones .card-face .bg-mark {
@@ -807,6 +816,7 @@ export function Act3CardsPrint() {
 
         .theme-croft .card-face {
           --bg: radial-gradient(ellipse at 50% 38%, #321558 0%, #1b0a35 60%, #080214 100%);
+          --bg-solid: #080214;
           --text: #ece0fc;
           --title: #d6bdff;
           --accent: #b89dff;
@@ -841,6 +851,7 @@ export function Act3CardsPrint() {
 
         .theme-twilight .card-face {
           --bg: linear-gradient(180deg, #163049 0%, #0a1c30 60%, #03070e 100%);
+          --bg-solid: #03070e;
           --text: #d8e6f4;
           --title: #f4faff;
           --accent: #8fc1e6;
@@ -880,6 +891,7 @@ export function Act3CardsPrint() {
 
         .theme-neutral .card-face {
           --bg: radial-gradient(ellipse at 50% 38%, #2a2a2e 0%, #141417 60%, #060608 100%);
+          --bg-solid: #060608;
           --text: #d8d8de;
           --title: #f0f0f4;
           --accent: #aab0bd;
