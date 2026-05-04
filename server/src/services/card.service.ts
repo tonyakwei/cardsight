@@ -93,41 +93,24 @@ async function resolveCard<T>(
 }
 
 /**
- * Memory-card redirect: when a `memory` subtype card is scanned, the URL is
- * irrelevant — the cookie's house decides which memory card's content to
- * return and which house's mission count to gate against.
+ * Memory-card gate: each memory card already targets a specific house via
+ * `memoryHouseId`, so the scanned card is the source of truth — no cookie
+ * redirect needed. Whoever scans the Drake-table card sees Drake's memory,
+ * gated against Drake's mission count. Whoever scans the Jones-table card
+ * sees Jones's memory, etc.
  *
- * Returns the (possibly swapped) card and a lock state. A lock with reason
- * "no-cookie" or "not-enough-missions" should render the locked screen.
+ * Returns the scanned card and a lock state.
  */
-async function resolveMemoryRedirect(
+async function resolveMemoryGate(
   scanned: ViewerCard,
-  houseId: string | undefined,
 ): Promise<{
-  card: ViewerCard;
   lockReason: MemoryLockReason | null;
   lockMessage: string | null;
 }> {
-  if (!houseId) {
-    return { card: scanned, lockReason: "no-cookie", lockMessage: null };
-  }
-
-  const ownCard = await prisma.card.findFirst({
-    where: {
-      gameId: scanned.gameId,
-      subtype: "memory",
-      memoryHouseId: houseId,
-      act: scanned.act,
-      deletedAt: null,
-    },
-    include: viewerInclude,
-  });
-
-  // Cookie holds a house that has no memory card in this game/act —
-  // treat as "no cookie" so the player gets the badge prompt rather
-  // than a confusing empty content page.
-  if (!ownCard) {
-    return { card: scanned, lockReason: "no-cookie", lockMessage: null };
+  // No memoryHouseId is admin misconfiguration — let the content through
+  // rather than wedging the player on a locked screen with no escape.
+  if (!scanned.memoryHouseId) {
+    return { lockReason: null, lockMessage: null };
   }
 
   const completedCount = await prisma.mission.count({
@@ -135,33 +118,32 @@ async function resolveMemoryRedirect(
       gameId: scanned.gameId,
       act: scanned.act,
       completedAt: { not: null },
-      missionHouses: { some: { houseId } },
+      missionHouses: { some: { houseId: scanned.memoryHouseId } },
     },
   });
 
   if (completedCount < MEMORY_MISSIONS_REQUIRED) {
     return {
-      card: ownCard,
       lockReason: "not-enough-missions",
-      lockMessage: ownCard.lockoutMessage,
+      lockMessage: scanned.lockoutMessage,
     };
   }
 
-  return { card: ownCard, lockReason: null, lockMessage: null };
+  return { lockReason: null, lockMessage: null };
 }
 
 export async function getCardForViewer(
   cardId: string,
-  houseId?: string,
+  _houseId?: string,
 ): Promise<CardViewerResponse> {
-  let card = await resolveCard(cardId, fetchViewerCard);
+  const card = await resolveCard(cardId, fetchViewerCard);
 
-  // Memory cards: cookie chooses the content + the gate target.
+  // Memory cards: gate is per-card (the card's memoryHouseId chooses both
+  // whose memory plays and whose mission count is checked). No cookie.
   let memoryLockReason: MemoryLockReason | null = null;
   let memoryLockMessage: string | null = null;
   if (card.subtype === "memory") {
-    const result = await resolveMemoryRedirect(card, houseId);
-    card = result.card;
+    const result = await resolveMemoryGate(card);
     memoryLockReason = result.lockReason;
     memoryLockMessage = result.lockMessage;
   }
@@ -459,9 +441,9 @@ export async function recordScan(
 
 export async function examineCard(
   cardId: string,
-  houseId?: string,
+  _houseId?: string,
 ): Promise<ExamineResponse> {
-  let card = await resolveCard(cardId, (id) =>
+  const card = await resolveCard(cardId, (id) =>
     prisma.card.findUnique({
       where: { id },
       select: {
@@ -475,35 +457,6 @@ export async function examineCard(
       },
     }),
   );
-
-  // Memory cards: examine flips the splash off for the SCANNER's own card,
-  // not the physically-scanned card. Without a cookie there's no examine —
-  // they're stuck on the locked screen.
-  if (card.subtype === "memory") {
-    if (!houseId) {
-      return { selfDestructedAt: null };
-    }
-    const ownCard = await prisma.card.findFirst({
-      where: {
-        gameId: card.gameId,
-        subtype: "memory",
-        memoryHouseId: houseId,
-        act: card.act,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        gameId: true,
-        act: true,
-        subtype: true,
-        examinedAt: true,
-        selfDestructTimer: true,
-        selfDestructedAt: true,
-      },
-    });
-    if (!ownCard) return { selfDestructedAt: null };
-    card = ownCard;
-  }
 
   const updateData: Record<string, any> = {};
 
