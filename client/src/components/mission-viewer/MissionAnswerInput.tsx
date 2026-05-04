@@ -10,9 +10,10 @@ interface Props {
   houseId?: string;
   answerMeta: AnswerMeta | null;
   onCompleted: (revealText: string | null) => void;
+  onLocked?: () => void;
 }
 
-export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted }: Props) {
+export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted, onLocked }: Props) {
   const handleSingleSubmit = useCallback(
     async (answer: string) => {
       const result = await postMissionAnswer(missionId, answer, houseId, getSessionHash());
@@ -21,6 +22,8 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
       // AnswerInput's local 2.2s celebration.
       if (result.correct) {
         onCompleted(result.correctAnswerReveal ?? null);
+      } else if (result.lockedOut) {
+        onLocked?.();
       }
       return {
         correct: result.correct,
@@ -28,7 +31,7 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
         hint: result.hint,
       };
     },
-    [missionId, houseId, onCompleted],
+    [missionId, houseId, onCompleted, onLocked],
   );
 
   const handleMultiSubmit = useCallback(
@@ -36,6 +39,8 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
       const result = await postMissionAnswer(missionId, answers, houseId, getSessionHash());
       if (result.correct) {
         onCompleted(result.correctAnswerReveal ?? null);
+      } else if (result.lockedOut) {
+        onLocked?.();
       }
       return {
         correct: result.correct,
@@ -44,7 +49,7 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
         fieldResults: result.fieldResults,
       };
     },
-    [missionId, houseId, onCompleted],
+    [missionId, houseId, onCompleted, onLocked],
   );
 
   // onSuccess is a no-op — the parent already fired onCompleted immediately

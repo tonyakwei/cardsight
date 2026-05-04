@@ -202,29 +202,53 @@ export async function checkMissionAnswer(
     };
   }
 
-  // Check for hints
+  // Check hint + lockout against the answer template
   let hint: string | null = null;
+  let lockedOut = false;
+  let templateMaxAttempts: number | null = null;
+  let templateHint: string | null = null;
+  let templateHintEnabled = false;
+  let templateHintAfterAttempts = 3;
+
   if (mission.answerTemplateType === "single_answer") {
     const template = await prisma.singleAnswer.findUnique({
       where: { id: mission.answerId },
     });
-    if (template?.hintEnabled && template?.hint && attemptNumber >= template.hintAfterAttempts) {
-      hint = template.hint;
-    }
+    templateMaxAttempts = template?.maxAttempts ?? null;
+    templateHint = template?.hint ?? null;
+    templateHintEnabled = template?.hintEnabled ?? false;
+    templateHintAfterAttempts = template?.hintAfterAttempts ?? 3;
   } else if (mission.answerTemplateType === "multiple_text") {
     const template = await prisma.multipleAnswer.findUnique({
       where: { id: mission.answerId },
     });
-    if (template?.hintEnabled && template?.hint && attemptNumber >= template.hintAfterAttempts) {
-      hint = template.hint;
-    }
+    templateMaxAttempts = template?.maxAttempts ?? null;
+    templateHint = template?.hint ?? null;
+    templateHintEnabled = template?.hintEnabled ?? false;
+    templateHintAfterAttempts = template?.hintAfterAttempts ?? 3;
+  }
+
+  if (templateHintEnabled && templateHint && attemptNumber >= templateHintAfterAttempts) {
+    hint = templateHint;
+  }
+
+  if (templateMaxAttempts && attemptNumber >= templateMaxAttempts) {
+    await prisma.mission.update({
+      where: { id: mission.id },
+      data: {
+        lockedOut: true,
+        lockedOutReason: "Too many incorrect attempts.",
+      },
+    });
+    lockedOut = true;
   }
 
   return {
     correct: false,
     attemptNumber,
     hint,
-    message: "Incorrect. Try again.",
+    lockedOut,
+    message: lockedOut ? "Too many attempts. This mission is now locked." : "Incorrect. Try again.",
     correctAnswerReveal: null,
     fieldResults,
   };

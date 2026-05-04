@@ -255,6 +255,18 @@ export function MissionViewer() {
             houseId={selectedHouse ?? undefined}
             answerMeta={mission.answerMeta}
             onCompleted={handleCompleted}
+            onLocked={() => {
+              setMission((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      lockedOut: true,
+                      lockedOutReason: prev.lockedOutReason ?? "Too many incorrect attempts.",
+                      isAnswerable: false,
+                    }
+                  : prev,
+              );
+            }}
           />
         )}
       </AnimationWrapper>

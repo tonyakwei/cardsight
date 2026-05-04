@@ -208,6 +208,7 @@ export interface MissionAnswerResponse {
   message: string;
   correctAnswerReveal: string | null;
   fieldResults?: boolean[];
+  lockedOut?: boolean;
 }
 
 // === Admin Types ===
