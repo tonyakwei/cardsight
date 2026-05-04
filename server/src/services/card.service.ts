@@ -10,7 +10,32 @@ import type {
   ExamineResponse,
   AnswerResponse,
   HistoryTimelineScanResult,
+  MemoryLockReason,
 } from "@cardsight/shared";
+
+const MEMORY_MISSIONS_REQUIRED = 3;
+
+const viewerInclude = {
+  design: true,
+  game: {
+    select: {
+      blurNudgeEnabled: true,
+      historyTimelineArmed: true,
+      historyTimelineSolvedAt: true,
+    },
+  },
+} as const;
+
+type ViewerCard = NonNullable<
+  Awaited<ReturnType<typeof fetchViewerCard>>
+>;
+
+function fetchViewerCard(id: string) {
+  return prisma.card.findUnique({
+    where: { id },
+    include: viewerInclude,
+  });
+}
 
 /**
  * Resolve a cardId that may be either a game card UUID or a physical card UUID.
@@ -67,27 +92,83 @@ async function resolveCard<T>(
   throw new AppError(404, "Card not found");
 }
 
+/**
+ * Memory-card redirect: when a `memory` subtype card is scanned, the URL is
+ * irrelevant — the cookie's house decides which memory card's content to
+ * return and which house's mission count to gate against.
+ *
+ * Returns the (possibly swapped) card and a lock state. A lock with reason
+ * "no-cookie" or "not-enough-missions" should render the locked screen.
+ */
+async function resolveMemoryRedirect(
+  scanned: ViewerCard,
+  houseId: string | undefined,
+): Promise<{
+  card: ViewerCard;
+  lockReason: MemoryLockReason | null;
+  lockMessage: string | null;
+}> {
+  if (!houseId) {
+    return { card: scanned, lockReason: "no-cookie", lockMessage: null };
+  }
+
+  const ownCard = await prisma.card.findFirst({
+    where: {
+      gameId: scanned.gameId,
+      subtype: "memory",
+      memoryHouseId: houseId,
+      act: scanned.act,
+      deletedAt: null,
+    },
+    include: viewerInclude,
+  });
+
+  // Cookie holds a house that has no memory card in this game/act —
+  // treat as "no cookie" so the player gets the badge prompt rather
+  // than a confusing empty content page.
+  if (!ownCard) {
+    return { card: scanned, lockReason: "no-cookie", lockMessage: null };
+  }
+
+  const completedCount = await prisma.mission.count({
+    where: {
+      gameId: scanned.gameId,
+      act: scanned.act,
+      completedAt: { not: null },
+      missionHouses: { some: { houseId } },
+    },
+  });
+
+  if (completedCount < MEMORY_MISSIONS_REQUIRED) {
+    return {
+      card: ownCard,
+      lockReason: "not-enough-missions",
+      lockMessage: ownCard.lockoutMessage,
+    };
+  }
+
+  return { card: ownCard, lockReason: null, lockMessage: null };
+}
+
 export async function getCardForViewer(
   cardId: string,
+  houseId?: string,
 ): Promise<CardViewerResponse> {
-  const card = await resolveCard(cardId, (id) =>
-    prisma.card.findUnique({
-      where: { id },
-      include: {
-        design: true,
-        game: {
-          select: {
-            blurNudgeEnabled: true,
-            historyTimelineArmed: true,
-            historyTimelineSolvedAt: true,
-          },
-        },
-      },
-    }),
-  );
+  let card = await resolveCard(cardId, fetchViewerCard);
+
+  // Memory cards: cookie chooses the content + the gate target.
+  let memoryLockReason: MemoryLockReason | null = null;
+  let memoryLockMessage: string | null = null;
+  if (card.subtype === "memory") {
+    const result = await resolveMemoryRedirect(card, houseId);
+    card = result.card;
+    memoryLockReason = result.lockReason;
+    memoryLockMessage = result.lockMessage;
+  }
 
   const isHistoryCard = card.subtype === "history";
   const isReferenceCard = card.subtype === "reference";
+  const isMemoryCard = card.subtype === "memory";
   const isDirectViewCard = isHistoryCard || isReferenceCard;
   const historyTimelineTotalCards = isHistoryCard
     ? await prisma.card.count({
@@ -105,13 +186,16 @@ export async function getCardForViewer(
 
   if (card.lockedOut) {
     status = "locked_out";
+  } else if (isMemoryCard && memoryLockReason) {
+    status = "memory_locked";
   } else if (
     !isDirectViewCard &&
+    !isMemoryCard &&
     card.selfDestructedAt &&
     new Date() > new Date(card.selfDestructedAt)
   ) {
     status = "self_destructed";
-  } else if (!isDirectViewCard && card.isSolved) {
+  } else if (!isDirectViewCard && !isMemoryCard && card.isSolved) {
     status = "answered";
   }
 
@@ -123,7 +207,8 @@ export async function getCardForViewer(
   // Show answer meta when available, OR when self-destructed but answer should remain visible
   let answerMeta: AnswerMeta | null = null;
   const isComplex = card.complexity === "complex";
-  const isAnswerable = !isDirectViewCard && isComplex && card.isAnswerable;
+  const skipsMechanics = isDirectViewCard || isMemoryCard;
+  const isAnswerable = !skipsMechanics && isComplex && card.isAnswerable;
   const showAnswer =
     status === "available" ||
     (status === "self_destructed" && card.answerVisibleAfterDestruct);
@@ -137,13 +222,15 @@ export async function getCardForViewer(
   }
 
   // For complex cards that are solved, reveal the clueContent
-  const clueContent = !isDirectViewCard && isComplex && card.isSolved ? card.clueContent : null;
+  const clueContent = !skipsMechanics && isComplex && card.isSolved ? card.clueContent : null;
 
   return {
     id: card.id,
     header: card.header,
     description:
-      status === "self_destructed" ? null : card.description,
+      status === "self_destructed" || status === "memory_locked"
+        ? null
+        : card.description,
     clueVisibleCategory: card.clueVisibleCategory,
     complexity: card.complexity as CardComplexity,
     subtype: card.subtype,
@@ -155,15 +242,15 @@ export async function getCardForViewer(
     selfDestructText:
       card.selfDestructText ??
       "This card's information is no longer available.",
-    selfDestructedAt: isDirectViewCard ? null : card.selfDestructedAt?.toISOString() ?? null,
-    selfDestructTimer: isDirectViewCard ? null : card.selfDestructTimer,
+    selfDestructedAt: skipsMechanics ? null : card.selfDestructedAt?.toISOString() ?? null,
+    selfDestructTimer: skipsMechanics ? null : card.selfDestructTimer,
     isExamined: isDirectViewCard || card.examinedAt !== null,
     examinedAt: card.examinedAt?.toISOString() ?? null,
     examineText: card.examineText,
     isAnswerable,
-    answerTemplateType: isDirectViewCard ? null : card.answerTemplateType,
+    answerTemplateType: skipsMechanics ? null : card.answerTemplateType,
     answerMeta,
-    answerVisibleAfterDestruct: isDirectViewCard ? false : card.answerVisibleAfterDestruct,
+    answerVisibleAfterDestruct: skipsMechanics ? false : card.answerVisibleAfterDestruct,
     isSolved: card.isSolved,
     blurNudgeEnabled: card.game.blurNudgeEnabled,
     historyTimeline: isHistoryCard
@@ -174,6 +261,8 @@ export async function getCardForViewer(
         isSolved: card.game.historyTimelineSolvedAt !== null,
       }
       : null,
+    memoryLockReason,
+    memoryLockMessage,
   };
 }
 
@@ -370,18 +459,51 @@ export async function recordScan(
 
 export async function examineCard(
   cardId: string,
+  houseId?: string,
 ): Promise<ExamineResponse> {
-  const card = await resolveCard(cardId, (id) =>
+  let card = await resolveCard(cardId, (id) =>
     prisma.card.findUnique({
       where: { id },
       select: {
         id: true,
+        gameId: true,
+        act: true,
+        subtype: true,
         examinedAt: true,
         selfDestructTimer: true,
         selfDestructedAt: true,
       },
     }),
   );
+
+  // Memory cards: examine flips the splash off for the SCANNER's own card,
+  // not the physically-scanned card. Without a cookie there's no examine —
+  // they're stuck on the locked screen.
+  if (card.subtype === "memory") {
+    if (!houseId) {
+      return { selfDestructedAt: null };
+    }
+    const ownCard = await prisma.card.findFirst({
+      where: {
+        gameId: card.gameId,
+        subtype: "memory",
+        memoryHouseId: houseId,
+        act: card.act,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        gameId: true,
+        act: true,
+        subtype: true,
+        examinedAt: true,
+        selfDestructTimer: true,
+        selfDestructedAt: true,
+      },
+    });
+    if (!ownCard) return { selfDestructedAt: null };
+    card = ownCard;
+  }
 
   const updateData: Record<string, any> = {};
 

@@ -7,7 +7,7 @@ const router: RouterType = Router();
 
 // GET /api/cards/:cardId — Card content for viewer
 router.get("/:cardId", async (req, res) => {
-  const card = await cardService.getCardForViewer(req.params.cardId);
+  const card = await cardService.getCardForViewer(req.params.cardId, req.houseId);
   res.json(card);
 });
 
@@ -28,7 +28,7 @@ router.post("/:cardId/scan", async (req, res) => {
 
 // POST /api/cards/:cardId/examine — Player examines the card (starts self-destruct timer)
 router.post("/:cardId/examine", async (req, res) => {
-  const result = await cardService.examineCard(req.params.cardId);
+  const result = await cardService.examineCard(req.params.cardId, req.houseId);
   res.json(result);
 });
 

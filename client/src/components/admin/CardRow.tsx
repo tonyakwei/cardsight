@@ -257,6 +257,7 @@ export function CardRow({
           )}
           {card.subtype === "history" && <Badge size="xs" variant="dot" color="violet">History</Badge>}
           {card.subtype === "reference" && <Badge size="xs" variant="dot" color="blue">Reference</Badge>}
+          {card.subtype === "memory" && <Badge size="xs" variant="dot" color="pink">Memory</Badge>}
           {card.historyTimelineOrder !== null && (
             <Badge size="xs" variant="outline" color="violet">
               Order {card.historyTimelineOrder}
@@ -352,19 +353,34 @@ export function CardRow({
                         { value: "standard", label: "Standard" },
                         { value: "history", label: "History" },
                         { value: "reference", label: "Reference" },
+                        { value: "memory", label: "Memory" },
                       ]}
                     />
-                    <NumberInput
-                      label="Timeline Order"
-                      size="xs"
-                      value={card.historyTimelineOrder ?? ""}
-                      onChange={(v) => {
-                        const next = v === "" || v === null || v === undefined ? null : Number(v);
-                        if (next !== card.historyTimelineOrder) save({ historyTimelineOrder: next });
-                      }}
-                      min={1}
-                      disabled={card.subtype !== "history"}
-                    />
+                    {card.subtype === "memory" ? (
+                      <Select
+                        label="Memory House"
+                        size="xs"
+                        value={card.memoryHouseId ?? ""}
+                        onChange={(v) => save({ memoryHouseId: v || null })}
+                        data={[
+                          { value: "", label: "(None)" },
+                          ...houses.map((h) => ({ value: h.id, label: h.name })),
+                        ]}
+                        clearable
+                      />
+                    ) : (
+                      <NumberInput
+                        label="Timeline Order"
+                        size="xs"
+                        value={card.historyTimelineOrder ?? ""}
+                        onChange={(v) => {
+                          const next = v === "" || v === null || v === undefined ? null : Number(v);
+                          if (next !== card.historyTimelineOrder) save({ historyTimelineOrder: next });
+                        }}
+                        min={1}
+                        disabled={card.subtype !== "history"}
+                      />
+                    )}
                   </Group>
 
                   <CollapsibleSection sectionKey="card-content" label="Content">
@@ -400,7 +416,13 @@ export function CardRow({
                       </Group>
                       <Textarea
                         key={`${inputKeyBase}-description`}
-                        label={card.subtype === "history" ? "History Text (Markdown)" : card.subtype === "reference" ? "Reference Text (Markdown)" : card.complexity === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"}
+                        label={
+                          card.subtype === "history" ? "History Text (Markdown)"
+                            : card.subtype === "reference" ? "Reference Text (Markdown)"
+                            : card.subtype === "memory" ? "Memory Story (Markdown)"
+                            : card.complexity === "complex" ? "Puzzle Description (Markdown)"
+                            : "Clue Content (Markdown)"
+                        }
                         size="xs"
                         minRows={5}
                         maxRows={12}
@@ -498,6 +520,26 @@ export function CardRow({
                             placeholder="This card's information is no longer available."
                           />
                         </>
+                      ) : card.subtype === "memory" ? (
+                        <Stack gap="sm">
+                          <Textarea
+                            key={`${inputKeyBase}-lockoutMessage`}
+                            label="Lockout Message"
+                            description="Shown when the scanner's house hasn't completed enough missions yet."
+                            size="xs"
+                            minRows={3}
+                            maxRows={6}
+                            autosize
+                            defaultValue={card.lockoutMessage ?? ""}
+                            onBlur={(e) => {
+                              const val = e.target.value || null;
+                              if (val !== (card.lockoutMessage ?? null)) save({ lockoutMessage: val });
+                            }}
+                          />
+                          <Text size="xs" c="dimmed">
+                            Memory cards skip self-destruct and answers. At scan time, the cookie's house picks which memory card's content the player sees and which house's mission count gates the lock — the scanned card's identity is irrelevant.
+                          </Text>
+                        </Stack>
                       ) : (
                         <Text size="xs" c="dimmed">
                           {card.subtype === "history"

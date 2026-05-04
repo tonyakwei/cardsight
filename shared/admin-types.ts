@@ -80,6 +80,9 @@ export interface AdminCard {
   examineText: string | null;
   answerVisibleAfterDestruct: boolean;
   historyTimelineOrder: number | null;
+  memoryHouseId: string | null;
+  memoryHouse: HouseRef | null;
+  lockoutMessage: string | null;
   isFinished: boolean;
   isSolved: boolean;
   sortOrder: number;

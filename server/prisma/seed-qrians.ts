@@ -21,6 +21,42 @@ const GAME_NAME = "Temple of the QRians";
 const physicalCardIndex: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
 let designByCardSet: Record<string, string> = {};
 
+// Three white physical cards reserved for the "A Trip Down Memory Lane" cards.
+// One placed at each table — the cookie's house decides which memory plays.
+const MEMORY_PHYSICAL_IDS = {
+  drake: "ea00af39-b3bb-457b-98c3-6db7cd83ad5f", // Forgotten Snowflake (white #1)
+  jones: "83296f7e-1fe9-4c79-83db-e43da386915f", // Motherly Moon       (white #2)
+  croft: "5462a9e9-ea11-4824-bb06-e273cbd6d525", // Propitious Dove     (white #3)
+} as const;
+const MEMORY_PHYSICAL_IDS_LIST = Object.values(MEMORY_PHYSICAL_IDS);
+
+const MEMORY_LOCKOUT_MESSAGE =
+  "Your team is far too busy fulfilling missions to reflect on their past. Do some more missions and try scanning this card again.";
+
+const MEMORY_STORY_DRAKE = `*From the eyes of a person from Drake Delegation...*
+
+He had his boots up on the desk and his shirt half-tucked, the way he always did. The ring on the chain at his throat caught the light when he leaned forward. "Sign here," he said, sliding the license across. "Don't read it. They never write the fun parts down."
+
+I picked up the pen. He grinned. "Listen. Out there, you're going to be the only one in the room who thinks something's possible. That feeling — everybody else looking at you like you've lost it — that's how you'll know you're close. Always be bold. Have a confidence nobody else gets to share. That's the whole job."
+
+He flipped a stick of dynamite end over end and caught it without watching. "Welcome to the trade." I nodded. Slowly, then quickly. It was time to make some noise.`;
+
+const MEMORY_STORY_JONES = `*From the eyes of a person from Jones Junket...*
+
+He didn't turn around when I came in. The fedora sat on the desk, the way it had every afternoon I'd come, for fifteen years. "Sit down," he said, his back still to me. Then, after a long moment: "You're ready."
+
+I started to say something. He held up a hand. "There are things out there you will never accept. Things you will never understand. That isn't what worries me." He turned then, and the scar on his chin caught the lamp. "Promise me you will stay curious. All of it. Even when it costs you."
+
+He slid a coiled whip across the desk — new leather, still stiff, the grip wrapped tight. I nodded. Slowly, then quickly. It was time to take up the mantle.`;
+
+const MEMORY_STORY_CROFT = `*From the eyes of a person from Croft Company...*
+
+She walked ten paces ahead of me down the trail, the braid swinging against her pack, her boots leaving sharp prints in the wet earth. "—and the Hittite vassal treaties echo this almost word for word, which is how we know the tablet was political and not religious, though of course the priest-class would have read both functions into it, the way the second-dynasty scribes did in Ugarit, which —" She kept going. I had stopped writing two sentences ago. The rain was cooling on the back of my neck.
+
+She stopped. Did not turn fully — just enough to see me over her shoulder, her face very calm. "Someday you'll know all this, and more too." Then she turned and walked on, still talking, the words slipping into the canopy above us.
+
+I nodded. Slowly, then quickly. It was time to start catching up.`;
+
 // ─── Helpers ────────────────────────────────────────────────────────
 
 async function cleanExistingGame() {
@@ -125,6 +161,14 @@ async function main() {
     [physicalCards[i], physicalCards[j]] = [physicalCards[j], physicalCards[i]];
   }
 
+  // Reserve 3 specific white cards for the "A Trip Down Memory Lane" cards
+  // (one per house). Pulling them out of the shuffle pool now keeps clue
+  // cards from being assigned the same UUIDs.
+  for (const reservedId of MEMORY_PHYSICAL_IDS_LIST) {
+    const idx = physicalCards.findIndex((p) => p.id === reservedId);
+    if (idx !== -1) physicalCards.splice(idx, 1);
+  }
+
   // ═══════════════════════════════════════════════════════════════════
   // GAME
   // ═══════════════════════════════════════════════════════════════════
@@ -161,6 +205,54 @@ async function main() {
   });
   const croft = await prisma.house.create({
     data: { gameId: game.id, name: "Croft Company", color: "#7c3aed", slug: "croft" },
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // MEMORY CARDS — "A Trip Down Memory Lane" (Act 1)
+  // ═══════════════════════════════════════════════════════════════════
+  // Three white physical cards, one per house. At scan time the cookie's
+  // house decides which memory plays — the scanned card's identity is
+  // irrelevant. Gated by completing 3 missions in Act 1.
+
+  console.log("Creating memory cards...");
+  await prisma.card.create({
+    data: {
+      gameId: game.id,
+      physicalCardId: MEMORY_PHYSICAL_IDS.drake,
+      act: 1,
+      subtype: "memory",
+      memoryHouseId: drake.id,
+      header: "A Trip Down Memory Lane",
+      description: MEMORY_STORY_DRAKE,
+      lockoutMessage: MEMORY_LOCKOUT_MESSAGE,
+      complexity: "simple",
+    },
+  });
+  await prisma.card.create({
+    data: {
+      gameId: game.id,
+      physicalCardId: MEMORY_PHYSICAL_IDS.jones,
+      act: 1,
+      subtype: "memory",
+      memoryHouseId: jones.id,
+      header: "A Trip Down Memory Lane",
+      description: MEMORY_STORY_JONES,
+      lockoutMessage: MEMORY_LOCKOUT_MESSAGE,
+      complexity: "simple",
+    },
+  });
+  await prisma.card.create({
+    data: {
+      gameId: game.id,
+      physicalCardId: MEMORY_PHYSICAL_IDS.croft,
+      act: 1,
+      subtype: "memory",
+      memoryHouseId: croft.id,
+      header: "A Trip Down Memory Lane",
+      description: MEMORY_STORY_CROFT,
+      lockoutMessage: MEMORY_LOCKOUT_MESSAGE,
+      complexity: "simple",
+    },
   });
 
   // ═══════════════════════════════════════════════════════════════════

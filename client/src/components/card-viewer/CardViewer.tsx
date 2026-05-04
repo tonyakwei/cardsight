@@ -17,6 +17,7 @@ import { SelfDestructTimer } from "./SelfDestructTimer";
 import { AnimationWrapper } from "./animations/AnimationWrapper";
 import { OverlayRenderer } from "./overlays/OverlayRenderer";
 import { PhysicalCardFlash, isPhysicalCard } from "./PhysicalCardFlash";
+import { MemoryView } from "./MemoryView";
 import type { CardViewerResponse, HistoryTimelineScanResult } from "@cardsight/shared";
 
 export function CardViewer() {
@@ -132,6 +133,10 @@ export function CardViewer() {
     );
   }
   if (notFound || !card) return <NotFoundState />;
+
+  if (card.subtype === "memory") {
+    return <MemoryView card={card} onExamine={handleExamine} />;
+  }
 
   const isHistoryCard = card.subtype === "history";
   const isReferenceCard = card.subtype === "reference";

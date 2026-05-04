@@ -100,6 +100,7 @@ model House {
 
   cards                  CardHouse[]
   tableCards             Card[]          @relation("TableAssignment")
+  memoryCards            Card[]          @relation("MemoryHouse")
   missionHouses          MissionHouse[]
   showtimeSlots          ShowtimeSlot[]
   triggeredConsequences  TriggeredConsequence[]
@@ -151,6 +152,9 @@ model Card {
   examineText               String?   @map("examine_text")
   answerVisibleAfterDestruct Boolean  @default(true) @map("answer_visible_after_destruct")
   historyTimelineOrder Int?           @map("history_timeline_order")
+  memoryHouseId       String?             @map("memory_house_id") @db.Uuid
+  memoryHouse         House?              @relation("MemoryHouse", fields: [memoryHouseId], references: [id])
+  lockoutMessage      String?             @map("lockout_message")
   tableHouseId        String?             @map("table_house_id") @db.Uuid
   tableHouse          House?              @relation("TableAssignment", fields: [tableHouseId], references: [id])
   sortOrder           Int                 @default(0) @map("sort_order")
@@ -174,6 +178,7 @@ enum CardSubtype {
   standard
   history
   reference
+  memory
 }
 
 model Design {

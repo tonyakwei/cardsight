@@ -39,6 +39,7 @@ const cardInclude = {
   cardHouses: {
     include: { house: { select: houseSelect } },
   },
+  memoryHouse: { select: houseSelect },
 };
 
 export async function listCards(
@@ -84,6 +85,7 @@ export async function updateCard(gameId: string, cardId: string, data: Record<st
   const updateData = pickAllowedFields(data, [
     "physicalCardId", "header", "description", "clueContent", "complexity", "act",
     "cardSetId", "clueVisibleCategory", "notes", "subtype", "historyTimelineOrder",
+    "memoryHouseId", "lockoutMessage",
     "designId", "answerTemplateType", "answerId", "isAnswerable",
     "lockedOut", "lockedOutReason",
     "selfDestructTimer", "selfDestructText",

@@ -9,9 +9,16 @@ export type AnswerTemplateType =
   | "photo_select";
 
 export type CardComplexity = "simple" | "complex";
-export type CardSubtype = "standard" | "history" | "reference";
+export type CardSubtype = "standard" | "history" | "reference" | "memory";
 
-export type CardStatus = "available" | "locked_out" | "self_destructed" | "answered";
+export type CardStatus =
+  | "available"
+  | "locked_out"
+  | "self_destructed"
+  | "answered"
+  | "memory_locked";
+
+export type MemoryLockReason = "no-cookie" | "not-enough-missions";
 
 export type ConsequenceType = "warning" | "lock" | "redistribute";
 
@@ -71,6 +78,10 @@ export interface CardViewerResponse {
 
   // History timeline
   historyTimeline: HistoryTimelineCardState | null;
+
+  // Memory cards (subtype === "memory")
+  memoryLockReason: MemoryLockReason | null;
+  memoryLockMessage: string | null;
 }
 
 export interface HistoryTimelineCardState {
