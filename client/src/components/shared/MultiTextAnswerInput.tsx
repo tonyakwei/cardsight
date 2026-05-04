@@ -16,9 +16,11 @@ interface Props {
   answerMeta: AnswerMeta | null;
   onSubmit: (answers: Record<string, string>) => Promise<AnswerResult>;
   onSuccess: () => void;
+  /** Use a 2x font size for missions (better thumb-typing on phones). */
+  large?: boolean;
 }
 
-export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props) {
+export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess, large }: Props) {
   const labels = useMemo(() => answerMeta?.labels ?? [], [answerMeta]);
   const fieldCount = labels.length;
 
@@ -204,8 +206,8 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
                 disabled={submitting || isConfirmed || allCorrect}
                 placeholder="Write here..."
                 style={{
-                  padding: "0.65rem 0.9rem",
-                  fontSize: "1rem",
+                  padding: large ? "0.9rem 1.05rem" : "0.65rem 0.9rem",
+                  fontSize: large ? "2rem" : "1rem",
                   borderRadius: "8px",
                   border: `1px solid ${
                     showGreen

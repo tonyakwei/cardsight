@@ -15,9 +15,11 @@ interface Props {
   answerMeta: AnswerMeta | null;
   onSubmit: (answer: string) => Promise<AnswerResult>;
   onSuccess: () => void;
+  /** Use a 2x font size for missions (better thumb-typing on phones). */
+  large?: boolean;
 }
 
-export function AnswerInput({ answerMeta, onSubmit, onSuccess }: Props) {
+export function AnswerInput({ answerMeta, onSubmit, onSuccess, large }: Props) {
   const [value, setValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [shake, setShake] = useState(false);
@@ -126,8 +128,8 @@ export function AnswerInput({ answerMeta, onSubmit, onSuccess }: Props) {
             placeholder="Write your answer..."
             style={{
               flex: 1,
-              padding: "0.75rem 1rem",
-              fontSize: "1rem",
+              padding: large ? "1rem 1.1rem" : "0.75rem 1rem",
+              fontSize: large ? "2rem" : "1rem",
               borderRadius: "8px",
               border: `1px solid ${
                 lastResult === "correct"

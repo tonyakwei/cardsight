@@ -60,6 +60,7 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
         answerMeta={answerMeta}
         onSubmit={handleMultiSubmit}
         onSuccess={() => {}}
+        large
       />
     );
   }
@@ -69,6 +70,7 @@ export function MissionAnswerInput({ missionId, houseId, answerMeta, onCompleted
       answerMeta={answerMeta}
       onSubmit={handleSingleSubmit}
       onSuccess={() => {}}
+      large
     />
   );
 }
