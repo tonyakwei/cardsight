@@ -18,6 +18,7 @@ import {
   Checkbox,
   Switch,
   Grid,
+  Tooltip,
 } from "@mantine/core";
 import {
   fetchMissions,
@@ -433,32 +434,14 @@ function MissionRow({
                 }}
                 styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }}
               />
-              <Group grow>
-                <Select
-                  label="Design"
-                  size="xs"
-                  clearable
-                  value={mission.designId ?? ""}
-                  onChange={(val) => save({ designId: val || null })}
-                  data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]}
-                />
-                <div>
-                  <Text size="xs" fw={500} mb={4}>QR Code</Text>
-                  <Button
-                    size="xs"
-                    variant="light"
-                    color="yellow"
-                    onClick={() => {
-                      const a = document.createElement("a");
-                      a.href = getMissionQRUrl(gameId, mission.id);
-                      a.download = `qr-mission-${mission.title.slice(0, 20).replace(/\s/g, "-")}.png`;
-                      a.click();
-                    }}
-                  >
-                    Download QR
-                  </Button>
-                </div>
-              </Group>
+              <Select
+                label="Design"
+                size="xs"
+                clearable
+                value={mission.designId ?? ""}
+                onChange={(val) => save({ designId: val || null })}
+                data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]}
+              />
             </Stack>
           </CollapsibleSection>
 
@@ -612,7 +595,36 @@ function MissionRow({
         </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 4 }}>
-            <PhonePreview missionId={mission.id} />
+            <Stack align="center" gap="md">
+              <PhonePreview missionId={mission.id} />
+              <Stack align="center" gap={6} style={{ width: "100%", maxWidth: 280 }}>
+                <Tooltip label="Click to download the QR code PNG">
+                  <img
+                    src={getMissionQRUrl(gameId, mission.id)}
+                    alt={`QR code for ${mission.title}`}
+                    onClick={() => {
+                      const a = document.createElement("a");
+                      a.href = getMissionQRUrl(gameId, mission.id);
+                      a.download = `qr-mission-${mission.title.slice(0, 20).replace(/\s/g, "-")}.png`;
+                      a.click();
+                    }}
+                    style={{
+                      width: "100%",
+                      maxWidth: 220,
+                      aspectRatio: "1 / 1",
+                      background: "#fff",
+                      padding: 8,
+                      borderRadius: 6,
+                      cursor: "pointer",
+                      display: "block",
+                    }}
+                  />
+                </Tooltip>
+                <Text size="xs" c="dimmed">
+                  Encodes <code>alltogethernow.land/m/{mission.id.slice(0, 8)}…</code>
+                </Text>
+              </Stack>
+            </Stack>
           </Grid.Col>
         </Grid>
       </Collapse>
