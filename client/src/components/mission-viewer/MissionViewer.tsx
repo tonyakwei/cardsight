@@ -204,7 +204,7 @@ export function MissionViewer() {
       <AnimationWrapper type={effectiveDesign?.animationIn ?? "fade"}>
         <CardContent
           header={mission.title}
-          description={mission.puzzleDescription ?? mission.description}
+          description={mission.puzzleDescription}
         />
 
         {mission.warnings.length > 0 && (

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   Group,
   Text,
@@ -32,6 +32,7 @@ import {
 import { PhonePreview } from "./PhonePreview";
 import { AnswerTemplateEditor } from "./AnswerTemplateEditor";
 import { CollapsibleSection } from "./CollapsibleSection";
+import { SavedToast } from "./SavedToast";
 import { pcLabel as physicalLabel, pcName as physicalName, physicalCardOptions } from "../../utils/physicalCards";
 
 interface Props {
@@ -55,37 +56,55 @@ export function CardRow({
   onHousesChanged, onCardSetsChanged, onReorder,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [draft, setDraft] = useState<Record<string, any>>({});
+  const [savedFlash, setSavedFlash] = useState(false);
   const isDeleted = !!card.deletedAt;
 
-  const hasChanges = Object.keys(draft).length > 0;
+  // Race protection: in-flight guard + queued pending desired patch.
+  // Patches are field-level partial updates; while a save is in flight, new
+  // patches are merged into pendingRef and flushed when the running save resolves.
+  const savingRef = useRef(false);
+  const pendingRef = useRef<Record<string, any> | null>(null);
+  const flashTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const updateDraft = (field: string, value: any) => {
-    setDraft((prev) => ({ ...prev, [field]: value }));
-  };
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    };
+  }, []);
 
-  const save = useCallback(async () => {
-    if (!hasChanges) return;
-    setSaving(true);
-    try {
-      const updated = await updateCard(gameId, card.id, draft);
-      onCardUpdated(updated);
-      setDraft({});
-    } finally {
-      setSaving(false);
-    }
-  }, [gameId, card.id, draft, hasChanges, onCardUpdated]);
+  const flashSaved = useCallback(() => {
+    setSavedFlash(true);
+    if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = setTimeout(() => setSavedFlash(false), 1500);
+  }, []);
 
-  const toggleFinished = useCallback(async () => {
-    setSaving(true);
-    try {
-      const updated = await updateCard(gameId, card.id, { isFinished: !card.isFinished });
-      onCardUpdated(updated);
-    } finally {
-      setSaving(false);
-    }
-  }, [gameId, card.id, card.isFinished, onCardUpdated]);
+  const save = useCallback(
+    async (data: Record<string, any>): Promise<void> => {
+      if (savingRef.current) {
+        // Merge into pending; latest value wins per-field.
+        pendingRef.current = { ...(pendingRef.current ?? {}), ...data };
+        return;
+      }
+      savingRef.current = true;
+      try {
+        const updated = await updateCard(gameId, card.id, data);
+        onCardUpdated(updated);
+        flashSaved();
+      } finally {
+        savingRef.current = false;
+        const queued = pendingRef.current;
+        pendingRef.current = null;
+        if (queued) {
+          void save(queued);
+        }
+      }
+    },
+    [gameId, card.id, onCardUpdated, flashSaved],
+  );
+
+  const toggleFinished = useCallback(() => {
+    void save({ isFinished: !card.isFinished });
+  }, [card.isFinished, save]);
 
   const handleReset = useCallback(async () => {
     if (!window.confirm(`Reset card ${physicalLabel(card.physicalCardId)}? This clears self-destruct, solved status, and all scan/answer data.`)) return;
@@ -104,12 +123,7 @@ export function CardRow({
     onCardUpdated(updated);
   }, [gameId, card.id, onCardUpdated]);
 
-  const currentHouseIds = "houseIds" in draft
-    ? draft.houseIds
-    : card.cardHouses.map((ch) => ch.house.id);
-
-  const current = (field: string) =>
-    field in draft ? draft[field] : (card as any)[field];
+  const currentHouseIds = card.cardHouses.map((ch) => ch.house.id);
 
   const relativeTime = (iso: string) => {
     const diff = Date.now() - new Date(iso).getTime();
@@ -145,9 +159,9 @@ export function CardRow({
       if (!name) return;
       const created = await createCardSet(gameId, { name });
       onCardSetsChanged();
-      updateDraft("cardSetId", created.id);
+      void save({ cardSetId: created.id });
     } else {
-      updateDraft("cardSetId", value || null);
+      void save({ cardSetId: value || null });
     }
   };
 
@@ -157,13 +171,20 @@ export function CardRow({
       if (!name) return;
       const created = await createHouse(gameId, { name });
       onHousesChanged();
-      updateDraft("houseIds", values.filter((v) => v !== "__create__").concat(created.id));
+      void save({ houseIds: values.filter((v) => v !== "__create__").concat(created.id) });
     } else {
-      updateDraft("houseIds", values);
+      void save({ houseIds: values });
     }
   };
 
   const houseColors = card.cardHouses.map((ch) => ch.house.color);
+
+  // Use a per-card key suffix on uncontrolled text inputs so that an external
+  // refresh of `card` (e.g. parent reload, reset) re-mounts the inputs with
+  // the new defaultValue. updatedAt is bumped server-side on every PUT, but
+  // re-mounting on every save would steal focus mid-edit. So key on card.id
+  // only — local edits are already authoritative until blur.
+  const inputKeyBase = card.id;
 
   return (
     <div
@@ -181,6 +202,7 @@ export function CardRow({
         opacity: isDeleted ? 0.5 : 1,
       }}
     >
+      <SavedToast visible={savedFlash} />
       {houseColors.length > 0 && <HouseStripe colors={houseColors} /> }
       {/* Collapsed header row */}
       <Group
@@ -280,19 +302,52 @@ export function CardRow({
                 <Stack gap="sm">
                   {/* Always visible: identity fields */}
                   <Group grow>
-                    <NumberInput label="Act" size="xs" value={current("act") ?? ""} onChange={(v) => updateDraft("act", v || null)} min={1} max={5} />
+                    <NumberInput
+                      label="Act"
+                      size="xs"
+                      value={card.act ?? ""}
+                      onChange={(v) => {
+                        const next = v === "" || v === null || v === undefined ? null : Number(v);
+                        if (next !== card.act) save({ act: next });
+                      }}
+                      min={1}
+                      max={5}
+                    />
                   </Group>
-                  <Select label="Physical Card" size="xs" searchable value={current("physicalCardId")} onChange={(v) => updateDraft("physicalCardId", v)} data={physicalCardOptions} />
+                  <Select
+                    label="Physical Card"
+                    size="xs"
+                    searchable
+                    value={card.physicalCardId}
+                    onChange={(v) => {
+                      if (v && v !== card.physicalCardId) save({ physicalCardId: v });
+                    }}
+                    data={physicalCardOptions}
+                  />
                   <Group grow>
-                    <Select label="Card Set" size="xs" value={current("cardSetId") ?? ""} onChange={handleCardSetChange} data={cardSetData} clearable />
-                    <MultiSelect label="Houses" size="xs" value={currentHouseIds} onChange={handleHousesChange} data={houseData} placeholder="Select houses..." />
+                    <Select
+                      label="Card Set"
+                      size="xs"
+                      value={card.cardSetId ?? ""}
+                      onChange={handleCardSetChange}
+                      data={cardSetData}
+                      clearable
+                    />
+                    <MultiSelect
+                      label="Houses"
+                      size="xs"
+                      value={currentHouseIds}
+                      onChange={handleHousesChange}
+                      data={houseData}
+                      placeholder="Select houses..."
+                    />
                   </Group>
                   <Group grow>
                     <Select
                       label="Subtype"
                       size="xs"
-                      value={current("subtype") ?? "standard"}
-                      onChange={(v) => updateDraft("subtype", v || "standard")}
+                      value={card.subtype ?? "standard"}
+                      onChange={(v) => save({ subtype: v || "standard" })}
                       data={[
                         { value: "standard", label: "Standard" },
                         { value: "history", label: "History" },
@@ -302,73 +357,203 @@ export function CardRow({
                     <NumberInput
                       label="Timeline Order"
                       size="xs"
-                      value={current("historyTimelineOrder") ?? ""}
-                      onChange={(v) => updateDraft("historyTimelineOrder", v || null)}
+                      value={card.historyTimelineOrder ?? ""}
+                      onChange={(v) => {
+                        const next = v === "" || v === null || v === undefined ? null : Number(v);
+                        if (next !== card.historyTimelineOrder) save({ historyTimelineOrder: next });
+                      }}
                       min={1}
-                      disabled={current("subtype") !== "history"}
+                      disabled={card.subtype !== "history"}
                     />
                   </Group>
 
                   <CollapsibleSection sectionKey="card-content" label="Content">
                     <Stack gap="sm">
-                      <TextInput label="Header" size="xs" value={current("header") ?? ""} onChange={(e) => updateDraft("header", e.target.value || null)} />
+                      <TextInput
+                        key={`${inputKeyBase}-header`}
+                        label="Header"
+                        size="xs"
+                        defaultValue={card.header ?? ""}
+                        onBlur={(e) => {
+                          const val = e.target.value || null;
+                          if (val !== (card.header ?? null)) save({ header: val });
+                        }}
+                      />
                       <Group grow>
-                        <TextInput label="Visible Category" size="xs" value={current("clueVisibleCategory") ?? ""} onChange={(e) => updateDraft("clueVisibleCategory", e.target.value || null)} />
-                        <Select label="Complexity" size="xs" value={current("complexity") ?? "simple"} onChange={(v) => updateDraft("complexity", v || "simple")} data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]} />
+                        <TextInput
+                          key={`${inputKeyBase}-clueVisibleCategory`}
+                          label="Visible Category"
+                          size="xs"
+                          defaultValue={card.clueVisibleCategory ?? ""}
+                          onBlur={(e) => {
+                            const val = e.target.value || null;
+                            if (val !== (card.clueVisibleCategory ?? null)) save({ clueVisibleCategory: val });
+                          }}
+                        />
+                        <Select
+                          label="Complexity"
+                          size="xs"
+                          value={card.complexity ?? "simple"}
+                          onChange={(v) => save({ complexity: v || "simple" })}
+                          data={[{ value: "simple", label: "Simple (clue only)" }, { value: "complex", label: "Complex (puzzle + clue)" }]}
+                        />
                       </Group>
-                      <Textarea label={current("subtype") === "history" ? "History Text (Markdown)" : current("subtype") === "reference" ? "Reference Text (Markdown)" : current("complexity") === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"} size="xs" minRows={5} maxRows={12} autosize value={current("description") ?? ""} onChange={(e) => updateDraft("description", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }} />
-                      {current("complexity") === "complex" && current("subtype") === "standard" && (
-                        <Textarea label="Revealed Clue (shown after solve)" size="xs" minRows={3} maxRows={8} autosize value={current("clueContent") ?? ""} onChange={(e) => updateDraft("clueContent", e.target.value || null)} styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem", background: "rgba(105, 240, 174, 0.04)", borderColor: "rgba(105, 240, 174, 0.15)" } }} />
+                      <Textarea
+                        key={`${inputKeyBase}-description`}
+                        label={card.subtype === "history" ? "History Text (Markdown)" : card.subtype === "reference" ? "Reference Text (Markdown)" : card.complexity === "complex" ? "Puzzle Description (Markdown)" : "Clue Content (Markdown)"}
+                        size="xs"
+                        minRows={5}
+                        maxRows={12}
+                        autosize
+                        defaultValue={card.description ?? ""}
+                        onBlur={(e) => {
+                          const val = e.target.value || null;
+                          if (val !== (card.description ?? null)) save({ description: val });
+                        }}
+                        styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem" } }}
+                      />
+                      {card.complexity === "complex" && card.subtype === "standard" && (
+                        <Textarea
+                          key={`${inputKeyBase}-clueContent`}
+                          label="Revealed Clue (shown after solve)"
+                          size="xs"
+                          minRows={3}
+                          maxRows={8}
+                          autosize
+                          defaultValue={card.clueContent ?? ""}
+                          onBlur={(e) => {
+                            const val = e.target.value || null;
+                            if (val !== (card.clueContent ?? null)) save({ clueContent: val });
+                          }}
+                          styles={{ input: { fontFamily: "'Courier New', monospace", fontSize: "0.8rem", background: "rgba(105, 240, 174, 0.04)", borderColor: "rgba(105, 240, 174, 0.15)" } }}
+                        />
                       )}
-                      <Textarea label="Admin Notes" size="xs" minRows={2} maxRows={5} autosize value={current("notes") ?? ""} onChange={(e) => updateDraft("notes", e.target.value || null)} styles={{ input: { background: "rgba(212, 168, 67, 0.04)", borderColor: "rgba(212, 168, 67, 0.15)" } }} />
+                      <Textarea
+                        key={`${inputKeyBase}-notes`}
+                        label="Admin Notes"
+                        size="xs"
+                        minRows={2}
+                        maxRows={5}
+                        autosize
+                        defaultValue={card.notes ?? ""}
+                        onBlur={(e) => {
+                          const val = e.target.value || null;
+                          if (val !== (card.notes ?? null)) save({ notes: val });
+                        }}
+                        styles={{ input: { background: "rgba(212, 168, 67, 0.04)", borderColor: "rgba(212, 168, 67, 0.15)" } }}
+                      />
                     </Stack>
                   </CollapsibleSection>
 
                   <CollapsibleSection sectionKey="card-behavior" label="Behavior">
                     <Stack gap="sm">
-                      <Select label="Design" size="xs" value={current("designId") ?? ""} onChange={(v) => updateDraft("designId", v || null)} data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]} clearable />
-                      {current("subtype") === "standard" ? (
+                      <Select
+                        label="Design"
+                        size="xs"
+                        value={card.designId ?? ""}
+                        onChange={(v) => save({ designId: v || null })}
+                        data={[{ value: "", label: "(None)" }, ...designs.map((d) => ({ value: d.id, label: d.name }))]}
+                        clearable
+                      />
+                      {card.subtype === "standard" ? (
                         <>
-                          <TextInput label="Examine Button Text" size="xs" value={current("examineText") ?? ""} onChange={(e) => updateDraft("examineText", e.target.value || null)} placeholder="Examine (default)" />
+                          <TextInput
+                            key={`${inputKeyBase}-examineText`}
+                            label="Examine Button Text"
+                            size="xs"
+                            defaultValue={card.examineText ?? ""}
+                            onBlur={(e) => {
+                              const val = e.target.value || null;
+                              if (val !== (card.examineText ?? null)) save({ examineText: val });
+                            }}
+                            placeholder="Examine (default)"
+                          />
                           <Group grow>
-                            <NumberInput label="Self-Destruct (seconds)" size="xs" value={current("selfDestructTimer") ?? ""} onChange={(v) => updateDraft("selfDestructTimer", v || null)} min={0} />
-                            <Switch label="Answer visible after destruct" size="xs" checked={current("answerVisibleAfterDestruct")} onChange={(e) => updateDraft("answerVisibleAfterDestruct", e.currentTarget.checked)} />
+                            <NumberInput
+                              label="Self-Destruct (seconds)"
+                              size="xs"
+                              value={card.selfDestructTimer ?? ""}
+                              onChange={(v) => {
+                                const next = v === "" || v === null || v === undefined ? null : Number(v);
+                                if (next !== card.selfDestructTimer) save({ selfDestructTimer: next });
+                              }}
+                              min={0}
+                            />
+                            <Switch
+                              label="Answer visible after destruct"
+                              size="xs"
+                              checked={card.answerVisibleAfterDestruct}
+                              onChange={(e) => save({ answerVisibleAfterDestruct: e.currentTarget.checked })}
+                            />
                           </Group>
-                          <TextInput label="Self-Destruct Text" size="xs" value={current("selfDestructText") ?? ""} onChange={(e) => updateDraft("selfDestructText", e.target.value || null)} placeholder="This card's information is no longer available." />
+                          <TextInput
+                            key={`${inputKeyBase}-selfDestructText`}
+                            label="Self-Destruct Text"
+                            size="xs"
+                            defaultValue={card.selfDestructText ?? ""}
+                            onBlur={(e) => {
+                              const val = e.target.value || null;
+                              if (val !== (card.selfDestructText ?? null)) save({ selfDestructText: val });
+                            }}
+                            placeholder="This card's information is no longer available."
+                          />
                         </>
                       ) : (
                         <Text size="xs" c="dimmed">
-                          {current("subtype") === "history"
+                          {card.subtype === "history"
                             ? "History cards skip the examine gate, never show the blur nudge, and go straight to their text unless the host has armed the timeline check."
                             : "Reference cards skip the examine gate, never show the blur nudge, and always open directly to their text."}
                         </Text>
                       )}
                       <Group grow>
-                        <Switch label="Locked Out" size="xs" color="red" checked={current("lockedOut")} onChange={(e) => updateDraft("lockedOut", e.currentTarget.checked)} />
-                        <TextInput label="Lock Reason" size="xs" value={current("lockedOutReason") ?? ""} onChange={(e) => updateDraft("lockedOutReason", e.target.value || null)} disabled={!current("lockedOut")} />
+                        <Switch
+                          label="Locked Out"
+                          size="xs"
+                          color="red"
+                          checked={card.lockedOut}
+                          onChange={(e) => save({ lockedOut: e.currentTarget.checked })}
+                        />
+                        <TextInput
+                          key={`${inputKeyBase}-lockedOutReason`}
+                          label="Lock Reason"
+                          size="xs"
+                          defaultValue={card.lockedOutReason ?? ""}
+                          onBlur={(e) => {
+                            const val = e.target.value || null;
+                            if (val !== (card.lockedOutReason ?? null)) save({ lockedOutReason: val });
+                          }}
+                          disabled={!card.lockedOut}
+                        />
                       </Group>
                     </Stack>
                   </CollapsibleSection>
 
-                  {current("complexity") === "complex" && current("subtype") === "standard" && (
+                  {card.complexity === "complex" && card.subtype === "standard" && (
                     <CollapsibleSection sectionKey="card-answer" label="Answer">
                       <Stack gap="sm">
                         <Group grow>
-                          <Switch label="Answerable" size="xs" color="cyan" checked={current("isAnswerable")} onChange={(e) => {
-                            updateDraft("isAnswerable", e.currentTarget.checked);
-                            if (!e.currentTarget.checked) {
-                              updateDraft("answerTemplateType", null);
-                              updateDraft("answerId", null);
-                            } else if (!current("answerTemplateType")) {
-                              updateDraft("answerTemplateType", "single_answer");
-                            }
-                          }} />
-                          {current("isAnswerable") && (
+                          <Switch
+                            label="Answerable"
+                            size="xs"
+                            color="cyan"
+                            checked={card.isAnswerable}
+                            onChange={(e) => {
+                              const checked = e.currentTarget.checked;
+                              if (!checked) {
+                                save({ isAnswerable: false, answerTemplateType: null, answerId: null });
+                              } else if (!card.answerTemplateType) {
+                                save({ isAnswerable: true, answerTemplateType: "single_answer" });
+                              } else {
+                                save({ isAnswerable: true });
+                              }
+                            }}
+                          />
+                          {card.isAnswerable && (
                             <Select
                               label="Answer type"
                               size="xs"
-                              value={current("answerTemplateType") ?? ""}
-                              onChange={(v) => updateDraft("answerTemplateType", v || null)}
+                              value={card.answerTemplateType ?? ""}
+                              onChange={(v) => save({ answerTemplateType: v || null })}
                               data={[
                                 { value: "single_answer", label: "Text input" },
                                 { value: "multiple_text", label: "Multiple text fields" },
@@ -376,16 +561,15 @@ export function CardRow({
                             />
                           )}
                         </Group>
-                        {current("isAnswerable") &&
-                          (current("answerTemplateType") === "single_answer" ||
-                            current("answerTemplateType") === "multiple_text") && (
+                        {card.isAnswerable &&
+                          (card.answerTemplateType === "single_answer" ||
+                            card.answerTemplateType === "multiple_text") && (
                             <AnswerTemplateEditor
                               gameId={gameId}
-                              answerTemplateType={current("answerTemplateType")}
-                              answerId={current("answerId")}
+                              answerTemplateType={card.answerTemplateType}
+                              answerId={card.answerId}
                               onAnswerCreated={(type, id) => {
-                                updateDraft("answerTemplateType", type);
-                                updateDraft("answerId", id);
+                                save({ answerTemplateType: type, answerId: id });
                               }}
                             />
                           )}
@@ -403,13 +587,7 @@ export function CardRow({
                         Delete
                       </Button>
                     </Group>
-                    <Group gap="xs">
-                      {hasChanges && <Text size="xs" c="yellow.5">Unsaved changes</Text>}
-                      {hasChanges && <Button size="xs" variant="subtle" color="gray" onClick={() => setDraft({})}>Discard</Button>}
-                      <Button size="xs" color="yellow" onClick={save} disabled={!hasChanges} loading={saving}>
-                        Save Changes
-                      </Button>
-                    </Group>
+                    <Text size="xs" c="dimmed">Changes save on blur</Text>
                   </Group>
                 </Stack>
               </Grid.Col>

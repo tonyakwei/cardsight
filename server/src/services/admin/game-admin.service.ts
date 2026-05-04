@@ -232,7 +232,7 @@ async function dupAnswers(tx: any, gameId: string, newGameId: string): Promise<I
         gameId: newGameId, correctAnswer: a.correctAnswer,
         caseSensitive: a.caseSensitive, trimWhitespace: a.trimWhitespace,
         acceptAlternatives: a.acceptAlternatives,
-        hint: a.hint, hintAfterAttempts: a.hintAfterAttempts,
+        hint: a.hint, hintEnabled: a.hintEnabled, hintAfterAttempts: a.hintAfterAttempts,
       },
     });
     map.set(a.id, n.id);
@@ -631,6 +631,7 @@ export async function createAnswerTemplate(gameId: string, type: string, data: R
         trimWhitespace: data.trimWhitespace ?? true,
         acceptAlternatives: data.acceptAlternatives ?? [],
         hint: data.hint ?? null,
+        hintEnabled: data.hintEnabled ?? false,
         hintAfterAttempts: data.hintAfterAttempts ?? 3,
         maxAttempts: data.maxAttempts ?? null,
       },
@@ -643,6 +644,7 @@ export async function createAnswerTemplate(gameId: string, type: string, data: R
         gameId,
         fields: data.fields ?? [],
         hint: data.hint ?? null,
+        hintEnabled: data.hintEnabled ?? false,
         hintAfterAttempts: data.hintAfterAttempts ?? 3,
         maxAttempts: data.maxAttempts ?? null,
       },
@@ -661,7 +663,7 @@ export async function updateAnswerTemplate(gameId: string, type: string, id: str
 
     const updateData = pickAllowedFields(data, [
       "correctAnswer", "caseSensitive", "trimWhitespace",
-      "acceptAlternatives", "hint", "hintAfterAttempts", "maxAttempts",
+      "acceptAlternatives", "hint", "hintEnabled", "hintAfterAttempts", "maxAttempts",
     ]);
 
     return prisma.singleAnswer.update({ where: { id }, data: updateData });
@@ -674,7 +676,7 @@ export async function updateAnswerTemplate(gameId: string, type: string, id: str
     }
 
     const updateData = pickAllowedFields(data, [
-      "fields", "hint", "hintAfterAttempts", "maxAttempts",
+      "fields", "hint", "hintEnabled", "hintAfterAttempts", "maxAttempts",
     ]);
 
     return prisma.multipleAnswer.update({ where: { id }, data: updateData });

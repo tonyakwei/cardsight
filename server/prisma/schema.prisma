@@ -212,6 +212,7 @@ model SingleAnswer {
   trimWhitespace    Boolean  @default(true) @map("trim_whitespace")
   acceptAlternatives String[] @map("accept_alternatives")
   hint              String?
+  hintEnabled       Boolean  @default(false) @map("hint_enabled")
   hintAfterAttempts Int      @default(3) @map("hint_after_attempts")
   maxAttempts       Int?     @map("max_attempts")
   createdAt         DateTime @default(now()) @map("created_at")
@@ -234,6 +235,7 @@ model MultipleAnswer {
   //   trimWhitespace: boolean
   // }
   hint              String?
+  hintEnabled       Boolean  @default(false) @map("hint_enabled")
   hintAfterAttempts Int      @default(3) @map("hint_after_attempts")
   maxAttempts       Int?     @map("max_attempts")
   createdAt         DateTime @default(now()) @map("created_at")

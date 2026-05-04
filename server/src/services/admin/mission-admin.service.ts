@@ -65,6 +65,7 @@ export async function createMission(gameId: string, data: Record<string, any>) {
       "requiredClueSets", "answerTemplateType", "answerId", "designId",
       "consequenceCompleted", "consequenceNotCompleted",
       "consequenceImageCompleted", "consequenceImageNotCompleted",
+      "correctAnswerReveal",
       "sortOrder", "notes",
     ]),
   };
@@ -104,6 +105,7 @@ export async function updateMission(gameId: string, missionId: string, data: Rec
     "isCompleted", "completedAt", "lockedOut", "lockedOutReason",
     "consequenceCompleted", "consequenceNotCompleted",
     "consequenceImageCompleted", "consequenceImageNotCompleted",
+    "correctAnswerReveal",
     "sortOrder", "notes",
   ]);
 

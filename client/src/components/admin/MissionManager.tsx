@@ -405,18 +405,6 @@ function MissionRow({
           <CollapsibleSection sectionKey="mission-content" label="Content">
             <Stack gap="sm">
               <Textarea
-                label="Description (narrative briefing)"
-                size="xs"
-                autosize
-                minRows={2}
-                maxRows={8}
-                defaultValue={mission.description}
-                onBlur={(e) => {
-                  if (e.target.value !== mission.description)
-                    save({ description: e.target.value });
-                }}
-              />
-              <Textarea
                 label="Story Sheet Blurb (printed under the story brief — markdown)"
                 size="xs"
                 autosize
@@ -529,6 +517,21 @@ function MissionRow({
                   onAnswerCreated={(type, id) => {
                     save({ answerTemplateType: type, answerId: id });
                   }}
+                  revealField={
+                    <Textarea
+                      label="Reveal Text (shown after correct answer — markdown)"
+                      size="xs"
+                      autosize
+                      minRows={2}
+                      maxRows={6}
+                      defaultValue={mission.correctAnswerReveal ?? ""}
+                      onBlur={(e) => {
+                        const val = e.target.value;
+                        const current = mission.correctAnswerReveal ?? "";
+                        if (val !== current) save({ correctAnswerReveal: val || null });
+                      }}
+                    />
+                  }
                 />
               )}
             </Stack>

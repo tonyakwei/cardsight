@@ -130,6 +130,7 @@ export interface SingleAnswerTemplate {
   trimWhitespace: boolean;
   acceptAlternatives: string[];
   hint: string | null;
+  hintEnabled: boolean;
   hintAfterAttempts: number;
   maxAttempts: number | null;
 }
@@ -153,6 +154,7 @@ export interface MultipleAnswerTemplate {
   gameId: string;
   fields: MultipleAnswerField[];
   hint: string | null;
+  hintEnabled: boolean;
   hintAfterAttempts: number;
   maxAttempts: number | null;
 }
@@ -182,6 +184,7 @@ export interface AdminMission {
   consequenceNotCompleted: string | null;
   consequenceImageCompleted: string | null;
   consequenceImageNotCompleted: string | null;
+  correctAnswerReveal: string | null;
   sortOrder: number;
   notes: string | null;
   missionHouses: { id: string; house: HouseRef }[];

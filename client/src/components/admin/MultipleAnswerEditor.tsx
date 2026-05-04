@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   Stack,
   TextInput,
@@ -19,11 +19,20 @@ import {
   updateAnswerTemplate,
 } from "../../api/admin";
 import type { MultipleAnswerTemplate, MultipleAnswerField } from "@cardsight/shared";
+import { SavedToast } from "./SavedToast";
 
 interface Props {
   gameId: string;
   answerId: string | null;
   onAnswerCreated: (type: string, id: string) => void;
+}
+
+interface SaveData {
+  fields: MultipleAnswerField[];
+  hint: string | null;
+  hintEnabled: boolean;
+  hintAfterAttempts: number;
+  maxAttempts: number | null;
 }
 
 const emptyField = (): MultipleAnswerField => ({
@@ -37,19 +46,27 @@ const emptyField = (): MultipleAnswerField => ({
 export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Props) {
   const [template, setTemplate] = useState<MultipleAnswerTemplate | null>(null);
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [savedFlash, setSavedFlash] = useState(false);
 
   const [fields, setFields] = useState<MultipleAnswerField[]>([emptyField(), emptyField()]);
   const [hint, setHint] = useState("");
+  const [hintEnabled, setHintEnabled] = useState(false);
   const [hintAfterAttempts, setHintAfterAttempts] = useState(3);
   const [maxAttempts, setMaxAttempts] = useState<number | null>(null);
 
   // Per-field "alternative input" buffer for the tag-input UI
   const [altInputs, setAltInputs] = useState<string[]>([]);
 
+  // Save coordination
+  const savingRef = useRef(false);
+  const pendingRef = useRef<SaveData | null>(null);
+  const lastSavedRef = useRef<SaveData | null>(null);
+  const flashTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     if (!answerId) {
       setTemplate(null);
+      lastSavedRef.current = null;
       return;
     }
     setLoading(true);
@@ -64,13 +81,25 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
           caseSensitive: f.caseSensitive ?? false,
           trimWhitespace: f.trimWhitespace ?? true,
         }));
-        setFields(loadedFields.length > 0 ? loadedFields : [emptyField()]);
-        setAltInputs(loadedFields.map(() => ""));
+        const initialFields = loadedFields.length > 0 ? loadedFields : [emptyField()];
+        setFields(initialFields);
+        setAltInputs(initialFields.map(() => ""));
         setHint(tt.hint ?? "");
+        setHintEnabled(tt.hintEnabled);
         setHintAfterAttempts(tt.hintAfterAttempts);
         setMaxAttempts(tt.maxAttempts);
+        lastSavedRef.current = {
+          fields: initialFields,
+          hint: tt.hint ?? null,
+          hintEnabled: tt.hintEnabled,
+          hintAfterAttempts: tt.hintAfterAttempts,
+          maxAttempts: tt.maxAttempts,
+        };
       })
-      .catch(() => setTemplate(null))
+      .catch(() => {
+        setTemplate(null);
+        lastSavedRef.current = null;
+      })
       .finally(() => setLoading(false));
   }, [gameId, answerId]);
 
@@ -84,14 +113,108 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
     });
   }, [fields.length]);
 
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    };
+  }, []);
+
+  const flashSaved = useCallback(() => {
+    setSavedFlash(true);
+    if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = setTimeout(() => setSavedFlash(false), 1500);
+  }, []);
+
+  const performSave = useCallback(
+    async (data: SaveData): Promise<void> => {
+      // All fields must have a non-empty correctAnswer (preserve old disabled semantics)
+      if (!data.fields.every((f) => f.correctAnswer.trim().length > 0)) return;
+
+      if (savingRef.current) {
+        pendingRef.current = data;
+        return;
+      }
+
+      savingRef.current = true;
+      try {
+        if (template && answerId) {
+          const updated = (await updateAnswerTemplate(
+            gameId,
+            "multiple_text",
+            answerId,
+            data,
+          )) as MultipleAnswerTemplate;
+          setTemplate(updated);
+        } else {
+          const created = (await createAnswerTemplate(
+            gameId,
+            "multiple_text",
+            data,
+          )) as MultipleAnswerTemplate;
+          setTemplate(created);
+          onAnswerCreated("multiple_text", created.id);
+        }
+        lastSavedRef.current = data;
+        flashSaved();
+      } finally {
+        savingRef.current = false;
+        const queued = pendingRef.current;
+        pendingRef.current = null;
+        if (queued && JSON.stringify(queued) !== JSON.stringify(data)) {
+          void performSave(queued);
+        }
+      }
+    },
+    [gameId, answerId, template, onAnswerCreated, flashSaved],
+  );
+
+  const buildData = useCallback(
+    (overrides: Partial<SaveData> = {}): SaveData => ({
+      fields,
+      hint: hint.trim() || null,
+      hintEnabled,
+      hintAfterAttempts,
+      maxAttempts,
+      ...overrides,
+    }),
+    [fields, hint, hintEnabled, hintAfterAttempts, maxAttempts],
+  );
+
+  const saveIfChanged = useCallback(
+    (data: SaveData) => {
+      const last = lastSavedRef.current;
+      if (last && JSON.stringify(last) === JSON.stringify(data)) return;
+      void performSave(data);
+    },
+    [performSave],
+  );
+
+  // Functional update helpers that also trigger a save with the new fields
+  const mutateFieldsAndSave = (mutator: (prev: MultipleAnswerField[]) => MultipleAnswerField[]) => {
+    setFields((prev) => {
+      const next = mutator(prev);
+      saveIfChanged(buildData({ fields: next }));
+      return next;
+    });
+  };
+
   const updateField = (idx: number, patch: Partial<MultipleAnswerField>) => {
     setFields((prev) => prev.map((f, i) => (i === idx ? { ...f, ...patch } : f)));
   };
 
-  const addField = () => setFields((prev) => [...prev, emptyField()]);
+  // Used for text-input blurs on prompt/correctAnswer — fields state has already been
+  // updated character by character; on blur, push the latest fields snapshot.
+  const blurField = () => {
+    saveIfChanged(buildData());
+  };
+
+  const addField = () => {
+    mutateFieldsAndSave((prev) => [...prev, emptyField()]);
+  };
+
   const removeField = (idx: number) => {
     if (fields.length <= 1) return;
-    setFields((prev) => prev.filter((_, i) => i !== idx));
+    mutateFieldsAndSave((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const addAlternative = (idx: number) => {
@@ -99,57 +222,21 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
     if (!val) return;
     const current = fields[idx].acceptAlternatives;
     if (current.includes(val)) return;
-    updateField(idx, { acceptAlternatives: [...current, val] });
+    const newField = { ...fields[idx], acceptAlternatives: [...current, val] };
+    mutateFieldsAndSave((prev) => prev.map((f, i) => (i === idx ? newField : f)));
     setAltInputs((prev) => prev.map((v, i) => (i === idx ? "" : v)));
   };
 
   const removeAlternative = (idx: number, altIdx: number) => {
     const current = fields[idx].acceptAlternatives;
-    updateField(idx, {
+    const newField = {
+      ...fields[idx],
       acceptAlternatives: current.filter((_, i) => i !== altIdx),
-    });
+    };
+    mutateFieldsAndSave((prev) => prev.map((f, i) => (i === idx ? newField : f)));
   };
 
-  const save = useCallback(async () => {
-    setSaving(true);
-    const data = {
-      fields,
-      hint: hint.trim() || null,
-      hintAfterAttempts,
-      maxAttempts,
-    };
-
-    if (template && answerId) {
-      const updated = (await updateAnswerTemplate(
-        gameId,
-        "multiple_text",
-        answerId,
-        data,
-      )) as MultipleAnswerTemplate;
-      setTemplate(updated);
-    } else {
-      const created = (await createAnswerTemplate(
-        gameId,
-        "multiple_text",
-        data,
-      )) as MultipleAnswerTemplate;
-      setTemplate(created);
-      onAnswerCreated("multiple_text", created.id);
-    }
-    setSaving(false);
-  }, [
-    gameId, answerId, template, fields, hint, hintAfterAttempts, maxAttempts, onAnswerCreated,
-  ]);
-
   if (loading) return <Loader size="xs" color="yellow" />;
-
-  const allValid = fields.every((f) => f.correctAnswer.trim().length > 0);
-  const hasChanges = template
-    ? JSON.stringify(fields) !== JSON.stringify(template.fields) ||
-      hint !== (template.hint ?? "") ||
-      hintAfterAttempts !== template.hintAfterAttempts ||
-      maxAttempts !== template.maxAttempts
-    : allValid;
 
   return (
     <Stack
@@ -165,14 +252,16 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
         <Text size="xs" fw={600} c="yellow.5">
           Multi-Text Answer Template {template ? "" : "(new)"}
         </Text>
-        <Button
-          size="xs"
-          variant="subtle"
-          color="yellow"
-          onClick={addField}
-        >
-          + Add field
-        </Button>
+        <Group gap="xs">
+          <Button
+            size="xs"
+            variant="subtle"
+            color="yellow"
+            onClick={addField}
+          >
+            + Add field
+          </Button>
+        </Group>
       </Group>
 
       {fields.map((field, idx) => (
@@ -209,6 +298,7 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
               onChange={(e) =>
                 updateField(idx, { prompt: e.target.value || null })
               }
+              onBlur={blurField}
             />
 
             <TextInput
@@ -217,6 +307,7 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
               placeholder="Required answer for this field..."
               value={field.correctAnswer}
               onChange={(e) => updateField(idx, { correctAnswer: e.target.value })}
+              onBlur={blurField}
               required
             />
 
@@ -283,17 +374,25 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
                 size="xs"
                 label={<Text size="xs">Case sensitive</Text>}
                 checked={field.caseSensitive}
-                onChange={(e) =>
-                  updateField(idx, { caseSensitive: e.currentTarget.checked })
-                }
+                onChange={(e) => {
+                  const v = e.currentTarget.checked;
+                  const newField = { ...fields[idx], caseSensitive: v };
+                  mutateFieldsAndSave((prev) =>
+                    prev.map((f, i) => (i === idx ? newField : f)),
+                  );
+                }}
               />
               <Switch
                 size="xs"
                 label={<Text size="xs">Trim whitespace</Text>}
                 checked={field.trimWhitespace}
-                onChange={(e) =>
-                  updateField(idx, { trimWhitespace: e.currentTarget.checked })
-                }
+                onChange={(e) => {
+                  const v = e.currentTarget.checked;
+                  const newField = { ...fields[idx], trimWhitespace: v };
+                  mutateFieldsAndSave((prev) =>
+                    prev.map((f, i) => (i === idx ? newField : f)),
+                  );
+                }}
               />
             </Group>
           </Stack>
@@ -302,49 +401,60 @@ export function MultipleAnswerEditor({ gameId, answerId, onAnswerCreated }: Prop
 
       <Divider my="xs" />
 
-      <Textarea
-        label="Hint (shown after N wrong attempts)"
+      <Switch
         size="xs"
-        autosize
-        minRows={1}
-        maxRows={3}
-        placeholder="Optional hint shown after a failure..."
-        value={hint}
-        onChange={(e) => setHint(e.target.value)}
+        label={<Text size="xs">Show hint to players</Text>}
+        checked={hintEnabled}
+        onChange={(e) => {
+          const v = e.currentTarget.checked;
+          setHintEnabled(v);
+          saveIfChanged(buildData({ hintEnabled: v }));
+        }}
       />
 
-      <Group grow>
-        <NumberInput
-          label="Show hint after N attempts"
-          size="xs"
-          min={1}
-          max={20}
-          value={hintAfterAttempts}
-          onChange={(val) => setHintAfterAttempts(Number(val) || 3)}
-        />
-        <NumberInput
-          label="Lock out after N attempts"
-          size="xs"
-          min={1}
-          max={50}
-          placeholder="No limit"
-          value={maxAttempts ?? ""}
-          onChange={(val) => setMaxAttempts(val ? Number(val) : null)}
-          allowDecimal={false}
-        />
-      </Group>
+      {hintEnabled && (
+        <>
+          <Textarea
+            label="Hint (shown after N wrong attempts)"
+            size="xs"
+            autosize
+            minRows={1}
+            maxRows={3}
+            placeholder="Optional hint shown after a failure..."
+            value={hint}
+            onChange={(e) => setHint(e.target.value)}
+            onBlur={() => saveIfChanged(buildData())}
+          />
+          <NumberInput
+            label="Show hint after N attempts"
+            size="xs"
+            min={1}
+            max={20}
+            value={hintAfterAttempts}
+            onChange={(val) => {
+              const n = Number(val) || 3;
+              setHintAfterAttempts(n);
+              saveIfChanged(buildData({ hintAfterAttempts: n }));
+            }}
+          />
+        </>
+      )}
 
-      <Group justify="flex-end">
-        <Button
-          size="xs"
-          color="yellow"
-          loading={saving}
-          disabled={!hasChanges || !allValid}
-          onClick={save}
-        >
-          {template ? "Update Answer" : "Create Answer"}
-        </Button>
-      </Group>
+      <NumberInput
+        label="Lock out after N attempts"
+        size="xs"
+        min={1}
+        max={50}
+        placeholder="No limit"
+        value={maxAttempts ?? ""}
+        onChange={(val) => {
+          const n = val ? Number(val) : null;
+          setMaxAttempts(n);
+          saveIfChanged(buildData({ maxAttempts: n }));
+        }}
+        allowDecimal={false}
+      />
+      <SavedToast visible={savedFlash} />
     </Stack>
   );
 }

@@ -527,6 +527,7 @@ export async function checkAnswer(
       where: { id: card.answerId },
     });
     if (
+      template?.hintEnabled &&
       template?.hint &&
       attemptNumber >= template.hintAfterAttempts
     ) {
@@ -545,7 +546,7 @@ export async function checkAnswer(
     const template = await prisma.multipleAnswer.findUnique({
       where: { id: card.answerId },
     });
-    if (template?.hint && attemptNumber >= template.hintAfterAttempts) {
+    if (template?.hintEnabled && template?.hint && attemptNumber >= template.hintAfterAttempts) {
       hint = template.hint;
     }
     if (template?.maxAttempts && attemptNumber >= template.maxAttempts) {
@@ -584,7 +585,7 @@ async function buildAnswerMeta(
     });
     return {
       type: "single_answer",
-      hintAvailable: !!template?.hint,
+      hintAvailable: !!(template?.hintEnabled && template?.hint),
       hintAfterAttempts: template?.hintAfterAttempts ?? 3,
     };
   }
@@ -597,7 +598,7 @@ async function buildAnswerMeta(
     return {
       type: "multiple_text",
       labels: fields.map((f) => f.prompt ?? ""),
-      hintAvailable: !!template?.hint,
+      hintAvailable: !!(template?.hintEnabled && template?.hint),
       hintAfterAttempts: template?.hintAfterAttempts ?? 3,
     };
   }
