@@ -1250,7 +1250,7 @@ async function main() {
         {
           prompt: "Yenus Riddle-Tablet I",
           correctAnswer: "present",
-          acceptAlternatives: ["gift", "now"],
+          acceptAlternatives: [],
           caseSensitive: false,
           trimWhitespace: true,
         },
