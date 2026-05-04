@@ -10,6 +10,7 @@ import {
   Button,
   SegmentedControl,
   ActionIcon,
+  Switch,
 } from "@mantine/core";
 import {
   fetchGame,
@@ -462,9 +463,24 @@ export function ConsequencePrint() {
   const [act, setAct] = useState(searchParams.get("act") ?? "1");
   const [cardsPerPage, setCardsPerPage] = useState("3");
   const [outcomeMode, setOutcomeMode] = useState<"both" | "success" | "failure" | "actual">("both");
+  const [plainPrint, setPlainPrint] = useState(false);
 
   const themeId = game?.printTheme === "temple" ? "adventure" : "space";
-  const theme = THEMES.find((t) => t.id === themeId) ?? spaceTheme;
+  const baseTheme = THEMES.find((t) => t.id === themeId) ?? spaceTheme;
+  // Plain print: keep the theme's fonts (titles still feel right) but strip
+  // the dark card background and decorative gradient layers, so cheap
+  // printers don't render purple ovals or near-black bands.
+  const theme: CardTheme = plainPrint
+    ? {
+        ...baseTheme,
+        cardBg: "#ffffff",
+        textColor: "#1a1a1a",
+        headingColor: "#1a1a1a",
+        strongColor: "#000",
+        renderBackground: () => null,
+        borderStyle: (houseColor: string) => `2px solid ${houseColor}`,
+      }
+    : baseTheme;
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -615,6 +631,13 @@ export function ConsequencePrint() {
                 { label: "2/page", value: "2" },
                 { label: "3/page", value: "3" },
               ]}
+            />
+            <Switch
+              size="sm"
+              checked={plainPrint}
+              onChange={(e) => setPlainPrint(e.currentTarget.checked)}
+              label="Plain print"
+              color="yellow"
             />
             <Button size="sm" color="yellow" onClick={() => window.print()}>
               Print

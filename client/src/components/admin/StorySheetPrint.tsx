@@ -9,6 +9,7 @@ import {
   ActionIcon,
   Badge,
   Stack,
+  Switch,
 } from "@mantine/core";
 import Markdown from "react-markdown";
 import {
@@ -659,8 +660,13 @@ export function StorySheetPrint() {
   const [act, setAct] = useState("1");
   const [loading, setLoading] = useState(true);
   const [overflows, setOverflows] = useState<Record<string, OverflowState>>({});
+  const [plainPrint, setPlainPrint] = useState(false);
 
-  const theme = THEMES.find((t) => t.id === game?.printTheme) ?? classicTheme;
+  // Plain Print forces the classic theme (cream paper, no flood/vine
+  // accents) so cheap printers don't render the dramatic dark layers.
+  const theme = plainPrint
+    ? classicTheme
+    : THEMES.find((t) => t.id === game?.printTheme) ?? classicTheme;
 
   const recordHeight = useCallback((sheetId: string, height: number) => {
     setOverflows((prev) => {
@@ -736,6 +742,13 @@ export function StorySheetPrint() {
                 { label: "Act 2", value: "2" },
                 { label: "Act 3", value: "3" },
               ]}
+            />
+            <Switch
+              size="sm"
+              checked={plainPrint}
+              onChange={(e) => setPlainPrint(e.currentTarget.checked)}
+              label="Plain print"
+              color="yellow"
             />
             <Button size="sm" color="yellow" onClick={() => window.print()}>
               Print
