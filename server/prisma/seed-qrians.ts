@@ -996,7 +996,7 @@ async function main() {
       gameId: game.id,
       correctAnswer: "time",
       acceptAlternatives: ["TIME", "Time"],
-      hint: "Four calculation tablets, four digit-classes (3, 5, 7, 9). For each, find every numbered instance on the pebble floor and connect them in order. The path traces a letter. Four letters, one word.",
+      hint: "For each, find every numbered instance on the pebble floor and connect them in order. The path traces a letter. What kind of letter? Four letters, one word.",
       hintAfterAttempts: 2,
     },
   });
@@ -2028,20 +2028,20 @@ async function main() {
       act: 2,
       title: "Powder of the Quiet Bed",
       storySheetBlurb:
-        "Sweeping across the far wall bedded in vines, you stop. What looked like a garden \u2014 flower arrangements pinned to vines \u2014 is actually a grid. The same shapes, repeating in patterns. Your medic says it: it's writing. Whatever the pharmacist was making, the wall keeps the recipe. Working notes are scattered across the floor \u2014 you'll need them before the wall means anything\u2026",
+        "Sweeping across the far wall bedded in vines, you stop. What looked like a garden — flower arrangements pinned to vines — is actually a grid. The same shapes, repeating in patterns. Your medic says it: the flowers are extremely intentionally planted. Whatever the pharmacist here was making, the arrangement of the flowers probably communicates something about what they were working on... Working notes are scattered across the floor — you'll need them before the wall means anything…",
       correctAnswerReveal:
-        "The three shapes resolve: B \u2014 Y \u2014 E. Not a formula. Not a dosing instruction. A farewell. The pharmacist embedded a goodbye in the arrangement of every plant in this room. Batch A was the sedative. Batch B was the paralytic. Batch C was the terminal compound. Together they didn't just quiet the builders \u2014 they ended them. The QRians said goodbye to their own labor force in the language of botany, and left the word hidden in the wall they built.",
+        "The three shapes resolve: B — Y — E. Not a formula. Not a dosing instruction. A farewell. The pharmacist embedded a goodbye in the arrangement of every plant in this room. The team's medic tells you: Batch A was the sedative. Batch B was the paralytic. Batch C was the terminal compound. Together they didn't just quiet the builders — they ended them. The QRians said goodbye to their own labor force in the language of botany, and left the word hidden in the wall they built.",
       description:
         "",
       puzzleDescription:
-        "The pharmacist's working notes describe three batches \u2014 A, B, and C \u2014 each pinned across the wall as one specific variety of flower. For each batch, find every numbered specimen of that flower-type on the printed grid, then connect them in the order the pharmacist marked them \u2014 the connecting line traces a single letter. If a batch flower has no number, it belongs to the glyph but stands alone. Three letters spell a single English word.\n\nWhat does the wall say?",
+        "It takes a while, but you bombmen slowly understand the pharmacist's working note. They describe three batches of flowers — A, B, and C — each pinned across the wall as one specific variety of flower. For each batch, every numbered specimen of that flower-type on the printed grid, can be connected in the order the pharmacist marked them - to trace a QRian letter. If a flower in the batch has no number, it belongs to the glyph but stands alone. Three letters should spell a single English word.\n\nWhat does the wall say?",
       requiredClueSets: [{ cardSetId: csApothecaryNote.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansPowderQuietBed.id,
       consequenceCompleted:
-        "The three shapes resolve: B \u2014 Y \u2014 E. A farewell. The pharmacist embedded a goodbye in the arrangement of every plant in this room. Batch A was the sedative. Batch B was the paralytic. Batch C was the terminal compound. The Green Department wasn't a medicine garden \u2014 it was an execution chamber dressed up as horticulture.",
+        "As terrifying as this revelation of the terminal herbal mixture is, you all get a feeling it was done with zero malice. It was done almost as a sense of sad duty, and it was recorded artfully. Why did they choose to do this? ",
       consequenceNotCompleted:
-        "The grid means nothing without the notes to decode it. We're carrying a map we can't read. Whatever the pharmacist was tracking in those batch ledgers stays in the wall. File the grid as unresolved intelligence and press on.",
+        "The flower grid means nothing without the notes to decode it. We're carrying a map we can't read. Whatever the pharmacist was trying to do with these flowers stays hidden to you...",
       sortOrder: 1,
     },
   });
@@ -2053,18 +2053,18 @@ async function main() {
       act: 2,
       title: "Drevu's Compartment",
       storySheetBlurb:
-        "Off the side-passage and into a dim alcove: a stone table set in the corner, surface scored with rows of inset tile-slots. Above it, a sealed compartment, no hinge. Your bomb-handler reads the gaps. Passcode lock. Whoever Drevu was, he wrote it down before he sealed it. The other houses are holding tiles you'll need back\u2026",
+        "Off the side-passage and into a dim alcove: a stone table set in the corner, surface scored with rows of inset tile-slots. Above it, a sealed compartment, no hinge. Your bomb-handler reads the gaps. Some weird passcode lock. Whoever Drevu was, he wrote it down before he sealed it. The other houses are holding tiles you'll need back…",
       correctAnswerReveal:
         "Both passcodes enter. The compartment opens. Inside: a folded record by **Mason Lamenter Drevu**.\n> *'We had no choice. The Source corrupts those who linger. We cannot send our scholars to build, our priests, our mathematicians \u2014 any of them taken by the work, taken by the place, lost to the obsession. So we sent the others. The unprotected. The ones who would carry the work but not the worth. They build without knowing what they build. They will not return. None of them. We have written the order. We will see it through. Forgive us. There was no other way.'*",
       description:
         "",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses \u2014 pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ \u2192 ___ \u2192 ___ \u2192 **?**\nProcedure II goes: ___ \u2192 ___ \u2192 ___ \u2192 **?**\n\nWrite the inferred Step 4 word for each procedure. The compartment opens once both passcodes resolve.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Slots 1, 2, and 3 are not here but probably scattered with the teams. **But slot 4 of each procedure is legitimately missing.** You're going to need to infer the word that completes the progression somehow...\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nOnce you figure out slot 4 of each progression you'll be able to open the compartment...",
       requiredClueSets: [{ cardSetId: csDrevuTile.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansDrevuCompartment.id,
       consequenceCompleted:
-        "Both passcodes enter. The compartment opens. Inside: a folded record by Mason Lamenter Drevu. He wrote the order to send slave-builders to die in the Source's chamber, asked forgiveness, and saw it through anyway. He knew. He couldn't stop it. He asked forgiveness anyway. The QRians knew what they were doing to the builders, and at least one of them never made peace with it.",
+        "You're touched by this Drevu character. He knew. He couldn't stop what he had to do. He asked forgiveness anyway. The QRians knew what they were doing to the builders, and at least one of them never made peace with it.",
       consequenceNotCompleted:
         "The compartment stays sealed; the lock holds. *We came close.* Drevu's record stays inside. We will not learn whose forgiveness he asked for, or whether he meant it. File and press on.",
       sortOrder: 2,
@@ -2078,9 +2078,9 @@ async function main() {
       act: 2,
       title: "The Wall of Repetitions, Red",
       storySheetBlurb:
-        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your bomb-handler crouches at the red tiles \u2014 carved this many times so the wall would still say it after the wall failed. Some of yours are with the others \u2014 you'll want them back\u2026",
+        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. You see the other expedition teams examining the wall, too. Hundreds of stacked rewrites, each eroded in its own way. Your bomb-handler crouches at the red tiles — carved this many times so the wall would still say it after the wall failed. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
-        "The wall says: **IT WAS MAKING US OBSESSED**. Not the Source. The PLACE. The QRians felt it happening \u2014 they were the ones writing it down, watching themselves go obsessive, and writing it down was part of what was making them obsessive.",
+        "The wall says: **IT WAS MAKING US OBSESSED**. But what is \"it\"? And you feel like there is more to the message. Maybe you are missing something?",
       description:
         "",
       puzzleDescription:
@@ -2089,9 +2089,9 @@ async function main() {
       answerTemplateType: "single_answer",
       answerId: ansRedWall.id,
       consequenceCompleted:
-        "The wall says: IT WAS MAKING US OBSESSED. Not the Source \u2014 the place. The QRians felt it happening, and they were the ones writing it down, watching themselves go obsessive, recording the diagnosis in the act of being broken.",
+        "The wall says: IT WAS MAKING US OBSESSED. What is it? Some thing? Some place? Some one? The QRians felt something happening, and they were the ones writing it down, watching themselves go obsessive, recording the diagnosis in the act of being broken... If only they had a big enough bomb to solve their problem...",
       consequenceNotCompleted:
-        "Without the red tiles, the closing line is unreadable. We caught only fragments \u2014 *MAKING US* \u2014 and don't know what made them what. File the wall as conclusive of nothing and press on.",
+        "You don't figure out what the nonsense on the wall is. Your stomachs grumble from hunger... Little did you know, you just let everyone down.",
       sortOrder: 3,
     },
   });
@@ -2103,18 +2103,18 @@ async function main() {
       act: 2,
       title: "The Reagent Alcove",
       storySheetBlurb:
-        "One of your crew leans against the wrong wall and a panel swings inward. Behind: a low-ceilinged alcove stacked with sealed phials, crucibles, fired-clay jars. Your bomb-handler crouches. Five compounds, refined past anything practical. They were arming against something. Bark labels lie scattered across the floor \u2014 some yours, others taken. You'll want them back\u2026",
+        "One of your crew leans against the wrong wall and a panel swings inward. He collapses on his behind. But, behind his behind: a low-ceilinged alcove stacked with sealed phials, crucibles, fired-clay jars. Your fuse-carrier crouches. Five compounds, refined very carefully. They were making something. Maybe arming against something... Bark labels lie scattered across the floor — some yours, others taken. You'll want them back…",
       correctAnswerReveal:
-        "Five compounds resolve: **BRONZE. GLASS. SOAP. DYE. PERFUME.** At a glance, ordinary \u2014 the working stock of any well-funded QRian workshop. But not in *this* alcove. The bronze is refined past tools. The glass past cups. The dyes too saturated for cloth, the perfumes too concentrated for ceremony. Whoever stocked this room wasn't decorating. Your bomb-handler reads the back wall \u2014 half-finished assemblies, brackets, casings, sealed reservoirs \u2014 and the picture sharpens. The QRians were taking the most everyday compounds their civilization knew how to refine, and combining them into something *purpose-built*. Crafted weapons. Counter-instruments. Preparations to push back against the Source's influence directly. They were trying to fight the thing that was eating them.",
+        "You all think... At a glance, ordinary — the working stock of any well-funded QRian workshop. But not in *this* alcove. The bronze is refined past tools. The glass past cups. The dyes too saturated for cloth, the perfumes too concentrated for ceremony. Whoever stocked this room wasn't decorating. The QRians were taking the most everyday compounds their civilization knew how to refine, and strengthening and combining them into something *purpose-built*. To counter something? You all wonder if that's true - or if your militaristic minds just think it's true.",
       description:
         "",
       puzzleDescription:
-        "Five station-clusters of 2 reagents each. Match the scattered bark-labels back to their stations and read each cluster as a recipe \u2014 the named compound it produces.\n\nName each compound the QRians were producing, one station at a time.",
+        "Five station-clusters of 2 reagents each. The scattered bark-labels, with their dual labels, can be read as a recipe for the named compound.\n\nFind out each compound the QRians were producing, one station at a time.",
       requiredClueSets: [{ cardSetId: csBarkLabel.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansReagentAlcove.id,
       consequenceCompleted:
-        "Five compounds resolve: BRONZE, GLASS, SOAP, DYE, PERFUME. At a glance, ordinary \u2014 the working stock of any well-funded QRian workshop. But not in this alcove. Refined past tools, past cups, past cloth, past ceremony. Your bomb-handler reads the back wall \u2014 half-finished assemblies, brackets, casings, sealed reservoirs \u2014 and the picture sharpens. The QRians were assembling these compounds into something purpose-built to push back against the Source's influence directly. They were trying to fight the thing that was eating them. The seal wasn't surrender. It was Plan B.",
+        "You all wonder what the QRians were trying to create. You are not sure what it was, but everyone in your team respects people that can plan, build... and fight back, if need be.",
       consequenceNotCompleted:
         "Without the labels, the alcove is a chemist's vault of unmarked reagents and half-built apparatus. We know they were making something. We don't know what. File the panel and press on.",
       sortOrder: 4,
@@ -2128,18 +2128,18 @@ async function main() {
       act: 2,
       title: "The Reinforced Bunker",
       storySheetBlurb:
-        "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight. Your bomb-handler runs a hand along the seam. Whatever Togom hid in there, he sealed it from his own people. You've got the Fuse Charges \u2014 place them. A name is carved above: PRIEST PHYSICIST TOGOM. Riddle-tablets are nearby \u2014 gather them\u2026",
+        "Past the central archway, into a side gallery: one stretch of wall is *wrong*. The masonry too dense, the cuts too tight. Your match-striker runs a hand along the seam. Whatever Togom hid in there, he sealed it from his own people. You've got the Fuse Charges — place them. A name is carved above: PRIEST PHYSICIST TOGOM. Riddle-tablets are nearby — gather them…",
       correctAnswerReveal:
         "The charges blow inward. Smoke clears. The bunker is small \u2014 barely a closet \u2014 and inside, on a stone shelf, are the scrolls. Togom's life work, sealed for whoever could solve his riddles. Your linguist unrolls the topmost. The translation reads:\n> *'We discovered this place on one of our expeditions. People who came back from this place suddenly had something in their eyes \u2014 some sort of wisdom. We eventually held more expeditions to this area, and realized that all who came toward this area and stayed there for a while would suddenly become a lot more logical in their thinking. It had to do with the area itself. Nothing we destroyed or built seemed to prevent this consequence. The effect could not be destroyed.'*",
       description:
         "",
       puzzleDescription:
-        "Two-stage gate. First, place the saved Fuse Charges (Act 1 crew item) to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
+        "Two-stage gate. First, place the **saved Fuse Charges** to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
       answerTemplateType: "multiple_text",
       answerId: ansReinforcedBunker.id,
       consequenceCompleted:
-        "The charges blow inward. Smoke clears. Inside, on a stone shelf, the scrolls \u2014 Togom's life work. The translation: *we discovered this place; people who came back had something in their eyes \u2014 wisdom \u2014 and the effect was geographic, indestructible, and could not be destroyed.* The Source is bound to this place. Empirical, observable, indestructible. Whatever Togom thought, he thought it carefully enough to seal it behind a wall.",
+        "The things you learn from the scrolls blow your mind... er, metaphorically, not literally. Nevertheless, there was some sort of wisdom in this place? How did it work? You think it would be good, once you leave this place, to run some good, deep mathematical analyses...",
       consequenceNotCompleted:
         "Without the charges, the bunker stays sealed; or with the riddles unsolved, the inner case refuses to open. Either way, Togom's scrolls stay locked behind stone. File for now and press on.",
       sortOrder: 5,
@@ -2159,18 +2159,18 @@ async function main() {
       act: 2,
       title: "The Sealed Pantry",
       storySheetBlurb:
-        "Off the main chamber to the right: an archway you missed, choked with vines. Push through. A storeroom \u2014 fired-clay jars on stone shelves, every one sealed. Some shelves still bear painted labels. Others are bare, the labels fallen. Whoever ate from this pantry was eating with intention. The fallen labels are scattered \u2014 some pocketed, you'll want them back\u2026",
+        "Off the main chamber to the right: an archway you missed, choked with vines. Push through. A storeroom — fired-clay jars on stone shelves, every one sealed. Some shelves still bear painted labels. Others are bare, the labels fallen. Whoever ate from this pantry was eating with intention. But what intention? The fallen labels are scattered — some pocketed, you'll want them back…",
       correctAnswerReveal:
         "Five preparations resolve: **PEPPER. PORRIDGE. OIL. CAKE. MILK.** Look at your kitchen at home \u2014 none of these would surprise you. But that's the point. To the QRians of this era, these weren't kitchen staples. They were *nootropics*. Pepper sharpened the senses. Porridge anchored the body. Oil eased thought. Cake \u2014 sweetened with honey \u2014 kept the mind warm and present. Milk steadied a person whose center was slipping. Every jar in this pantry is a food the QRians of this period genuinely believed could armor the mind against drift. They medicated themselves with breakfast. With dinner. With the everyday stock of a kitchen, deliberately preserved, deliberately stored, deliberately *kept*. They were eating their way through the contagion in the only language their medical understanding offered.",
       description:
         "",
       puzzleDescription:
-        "Five shelf-clusters of 2 ingredients each. Match the scattered painted clay labels back to their shelves and read each cluster as a recipe \u2014 the named preparation it produces.\n\nName each preparation kept in this pantry. Write each preparation in its shelf's slot:\n\n1. ___ + ___ \u2192 ?\n2. ___ + ___ \u2192 ?\n3. ___ + ___ \u2192 ?\n4. ___ + ___ \u2192 ?\n5. ___ + ___ \u2192 ?",
+        "Five shelf-clusters of 2 ingredients each. Match the scattered painted clay labels back to their shelves and read each cluster as a recipe — the named preparation it produces.\n\nName each preparation kept in this pantry. Let's find out what was being communicated by these recipes...\n\n1. ___ + ___ → ?\n2. ___ + ___ → ?\n3. ___ + ___ → ?\n4. ___ + ___ → ?\n5. ___ + ___ → ?",
       requiredClueSets: [{ cardSetId: csClayShelfLabel.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansSealedPantry.id,
       consequenceCompleted:
-        "Five preparations resolve: PEPPER, PORRIDGE, OIL, CAKE, MILK. Look at your kitchen at home \u2014 none of these would surprise you. But that's the point. To the QRians of this era, these weren't kitchen staples. They were *nootropics*: pepper sharpened the senses, porridge anchored the body, oil eased thought, cake kept the mind warm, milk steadied a slipping center. Every jar in this pantry is a food the QRians genuinely believed could armor the mind against drift. They medicated themselves with breakfast, with dinner, with the everyday stock of a kitchen \u2014 eating their way through the contagion in the only language their medical understanding offered.",
+        "They medicated themselves with breakfast. The QRians weren't superstitious — they were precise, drafting a defense out of their everyday kitchen. Folk pharmacology, ethnobotany, proto-medicine — there's a paper in this room, maybe a department. The question you carry out is the one you can't answer yet: did it work?",
       consequenceNotCompleted:
         "Without the labels, the pantry is rows of sealed jars and silent shelves. We know they ate here. We don't know what they ate or why they kept it. File the storeroom as ambiguous and press on.",
       sortOrder: 1,
@@ -2184,9 +2184,9 @@ async function main() {
       act: 2,
       title: "The Wall of Repetitions, Amber",
       storySheetBlurb:
-        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your linguist drops at the amber tiles. It's a confession the QRians wrote at scale. Some of yours are with the others \u2014 you'll want them back\u2026",
+        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. You see the other expedition teams examining the wall, too. Hundreds of stacked rewrites, each eroded in its own way. Your linguist drops at the amber tiles. It's a confession the QRians wrote at scale. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
-        "The wall says: **THIS PLACE ONCE MADE US WISE**. The QRians' opening confession. They didn't come here as scientists who made a discovery. They came here because being here MADE them scientists \u2014 the place itself was the source of their wisdom, and they knew it.",
+        "The wall says: **THIS PLACE ONCE MADE US WISE**. *Once.* Past tense. They wouldn't carve a wall this many times for something they still had — whatever made them wise, they lost it. There's more on the other walls. Are you missing something?",
       description:
         "",
       puzzleDescription:
@@ -2195,9 +2195,9 @@ async function main() {
       answerTemplateType: "single_answer",
       answerId: ansAmberWall.id,
       consequenceCompleted:
-        "The wall says: THIS PLACE ONCE MADE US WISE. The QRians' opening confession. They didn't come here as scientists who made a discovery \u2014 they came here because being here MADE them scientists. The place was the source of their wisdom, and they knew it. The line is not a celebration. It's the first line of an autopsy.",
+        "THIS PLACE ONCE MADE US WISE. The QRians aren't claiming credit. They're filing a confession: every field they're famous for, every breakthrough, was on loan from this place. They were tenants in their own genius. And the past tense is what bothers you — what did they do that made the gift stop?",
       consequenceNotCompleted:
-        "Without the amber tiles, the opening line is broken. *PLACE* and *WISE* stand out from the corruption, but how they connect stays lost. File and press on.",
+        "Three eroded copies should have converged on the truth. They didn't — not for your team. The first line of the QRians' confession stays scattered. *PLACE* and *WISE* glare out from the corruption with nothing between them. Dr. Jones would have gotten this. The team doesn't say so out loud.",
       sortOrder: 2,
     },
   });
@@ -2211,16 +2211,16 @@ async function main() {
       storySheetBlurb:
         "Off the side-passage and into a quiet alcove: a stone table in the corner, surface marked in careful columns of inset tile-slots. Above it, a sealed compartment, no hinge. Your linguist reads the rows. Phrase-lock. Vesh logged something this place wanted forgotten. Some of your tiles are with the other houses \u2014 you'll need them back\u2026",
       correctAnswerReveal:
-        "Both passcodes resolve. **VEIN. SNEEZE.** Vesh chose his lock from the body's own vocabulary \u2014 what carries, and what the body tries to expel. He believed the Source moved through bodies the way pollen moves through tissue, and he locked his record with words that proved it to himself. Whether he was right or not, his framework is the framework he used to decide who to send. The compartment opens. Inside: a logged record by **Witness Chronicler Vesh**.\n> *'The construction was assigned to expendable labor. The decision was made on the principle that exposure to the Source would corrupt any individual of consequence to our civilization, and we could not afford the loss. The expendable population \u2014 captured peoples, criminals, the unaccountable \u2014 were directed to the work. They built in shifts of approximately forty days. Their disposal at completion was logistical. The temple was completed in less than two cycles, an impressive output. Records to follow.'*",
+        "The compartment opens. Inside: a logged record by **Witness Chronicler Vesh**. You see a scroll...\n\n> *'The construction was assigned to expendable labor. The decision was made on the principle that exposure to the Source would corrupt any individual of consequence to our civilization, and we could not afford the loss. The expendable population — captured peoples, criminals, the unaccountable — were directed to the work. They built in shifts of approximately forty days. Their disposal at completion was logistical. The temple was completed in less than two cycles, an impressive output. Records to follow.'*\n\nVesh chose his lock from the body's own vocabulary — what carries, and what the body tries to expel. He believed that whatever was here moved through bodies the way pollen moves through tissue, and he locked his record with words that proved it to himself. Whether he was right or not, his framework is the framework he used to decide who to send. ",
       description:
         "",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses \u2014 pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ \u2192 ___ \u2192 ___ \u2192 **?**\nProcedure II goes: ___ \u2192 ___ \u2192 ___ \u2192 **?**\n\nSolve both. Write each inferred word in its procedure's slot. The compartment opens.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Slots 1, 2, and 3 are not here but probably scattered with the teams. **But slot 4 of each procedure is legitimately missing.** You're going to need to infer the word that completes the progression somehow...\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nOnce you figure out slot 4 of each progression you'll be able to open the compartment...",
       requiredClueSets: [{ cardSetId: csVeshTile.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansVeshCompartment.id,
       consequenceCompleted:
-        "VEIN. SNEEZE. Vesh chose his lock from the body's vocabulary \u2014 the channels that carry, the reflex that expels \u2014 because that's what *he* believed the Source was doing to them. Whether he was right is another question. But the framework he locked his record behind is the same framework he used to decide who to send. He wrote it like a ledger: *the construction was assigned to expendable labor; their disposal at completion was logistical.* No anguish, no pride, just the cycles. The QRians had a class system that absorbed the moral cost without flinching, and Vesh wrote the receipt.",
+        "The QRians had a class system that absorbed the moral cost of what it took to build this temple without flinching, and Vesh wrote the receipt. No anguish, no pride, just the cycles. \n\nYou wonder, what was it like... Did he enjoy doing the math?",
       consequenceNotCompleted:
         "The compartment stays sealed; the lock holds. *We came close.* Vesh's record stays inside. We will not learn how cleanly he chose to write his cycles. File and press on.",
       sortOrder: 3,
@@ -2234,20 +2234,20 @@ async function main() {
       act: 2,
       title: "The Hanging Garden of Names",
       storySheetBlurb:
-        "Through the doors and into the dome: a greenhouse three stories high, glass long shattered, vines hanging in a forest of root-curtains. Each braid weighted at its tip with a fired-clay tag. Thousands. They turn slow in the draft. Each tag is a name. Strike the wrong one and the canopy buries the room. Burial-rite fragments lie scattered \u2014 some yours, some pocketed. *Your historian lifts a corner of one and watches it powder in their hand. The fragments don't keep. None of them will. Whatever each one says, we'll have it for a minute once it's open \u2014 and so will the houses holding ours.*",
+        "Through the doors and into the dome: a greenhouse three stories high — slits through stone instead of glass — full of hanging vines. Many are weighted at their tips with a bonelike tag. Thousands. They turn slow in the draft from the slits. Each tag appears to have a small face on its underside, visible only from below. And all the tags are arranged, in the vines, in a strange ritualistic order... As if they spell something, in three dimensions, that you can only read by lying back and looking up... Incredible...",
       correctAnswerReveal:
-        "Three shapes resolve: J \u2014 A \u2014 W. The tags weren't tags. When a QRian died, they kept the speaking-bone \u2014 the only part of the body that had carried words. Bone crumbled; clay replaced it; the names stayed. This garden isn't a wonder of the temple. It's a library of voices, kept in the shape of the part of the body that voiced them. You weren't reading a wall. You were reading the dead. They classified their own corpses by phonetic articulation. They could not stop classifying. They could not stop.",
+        "You did it. It's \"J — A — W\". It makes sense. The bonelike structures you are seeing are the parts of the jaws of dead QRians. They found the power of speech and communication so beautiful and so specific to each person, that is how they memorized them - and as bones can last thousands of years - they felt that the souls of their citizens could hopefully last for years too...",
       description:
         "",
       puzzleDescription:
-        "The canopy hangs at lethal density \u2014 any contact-retrieval drops the curtain onto a floor pressure-plate that completes the seal. Only a precision whip-crack can drop a single tag. You have a printed overhead map of the canopy. Each burial-rite fragment names one glyph-class (closers / openers / carriers, sorted by phonetic articulation) and tells you to strike each instance in numerical order. Each card's strike-sequence traces one QRian super-glyph. Three cards \u2192 three letters \u2192 one English word.\n\nWhat hangs in this garden?",
+        "The canopy hangs at high altitude and high density. Lie face-up beneath it — each tag shows a small face on its underside, visible only from below: closed mouth, open mouth, or mid-mouth. The face marks the class of the tag's glyph (closers, openers, carriers) by the QRian phonetic articulation it carried.\n\nEach *Burial-Rite Fragment* names one class and the ritual order in which to strike its tags. Crack the whips precisely — these vines are too close-packed to pull by hand, and a clumsy strike will drop the wrong names. After completing a fragment's rite, lie face-up again: the empty positions where that class's tags hung now outline a single QRian super-glyph against the surviving canopy — a single English letter.\n\nThree fragments, three letters, one English word. What must this place say?",
       requiredClueSets: [{ cardSetId: csBurialRiteFragment.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansHangingGarden.id,
       consequenceCompleted:
-        "Three shapes resolve: J \u2014 A \u2014 W. The tags weren't tags. When a QRian died, they kept the speaking-bone \u2014 the only part of the body that had carried words. Bone crumbled; clay replaced it; the names stayed. This garden is a library of voices, kept in the shape of the part of the body that voiced them. They classified their own corpses by phonetic articulation. They could not stop classifying. They could not stop.",
+        "You are all touched by this - but you wonder - why would they construct such a wonderful design?",
       consequenceNotCompleted:
-        "Without the whips, the canopy is unreachable \u2014 the only path through this room is under it. The team picks along the central walkway with eyes down, hands clenched, the dead clicking softly above. We will not learn what was hung here. File and press on.",
+        "You don't figure out what beauties are here. Just another mystery left unsolved. It gives you a terrible bellyache.",
       sortOrder: 4,
     },
   });
@@ -2270,7 +2270,7 @@ async function main() {
       answerTemplateType: "multiple_text",
       answerId: ansCeilingInscription.id,
       consequenceCompleted:
-        "The tile pulls away. Behind it, exactly the depth of an arm: a tightly-wrapped scroll-bundle, untouched. Sefa's writing. The translation: *all those affected by the Source suddenly carried the power of a blocky, descriptive language\u2026 it exploded throughout our civilization\u2026 it affected our entire culture, intimately, perhaps too intimately.* The Source manifested in language. The QRians' blocky script \u2014 every glyph the team has been decoding all year \u2014 is the Source's signature. To write QRian was to be touched.",
+        "You almost cheer at reading this smoking gun. It explains so much! If you can just take this scroll outside this temple, you'll be the most famous researchers the world has ever seen. You might even get biopics! But - back to reality - what the scroll admits is jaw-dropping. What kind of power was here?",
       consequenceNotCompleted:
         "Sefa's compartment is open but the inner cylinder won't release without the riddle-answers. Her scrolls stay wrapped in their case. We came so close. File for now and press on.",
       sortOrder: 5,
@@ -2290,20 +2290,20 @@ async function main() {
       act: 2,
       title: "The Reckoning Floor",
       storySheetBlurb:
-        "Down the steps and across the chamber floor: a wide stone slab, set with thousands of pebbles, each carved with a single number. Your engineer crouches and starts mapping it \u2014 and stops. They were measuring how much time they had. The floor froze where the answer ran out. Calculation tablets are scattered \u2014 find them and read what's frozen here\u2026",
+        "Down the steps and across the chamber floor: a wide stone slab, set with thousands of pebbles, each carved with a single number. Your engineer crouches and starts tracing stones with their fingers. They stop and look up. \"They were measuring something... Calculating something...\" Can you find out what?",
       correctAnswerReveal:
-        "Four shapes resolve: T \u2014 I \u2014 M \u2014 E. Not a quantity. Not a duration. The word itself. The QRians' math couldn't separate counting from spelling \u2014 when they ran a calculation about something, the calculation produced the name of what they were counting. The answer to *how long do we have* was TIME, written out in the only thing that could write it: a measurement of itself. The calculator embedded the question and the answer in the same field of stones, and the floor froze where the answer ran out. They knew. They counted. They knew.",
+        "TIME. The QRian language was so intertwined with mathematics, that they could communicate what they were calculating... as they calculated it. It seems the QRians were calculating something about time. How long they'd been around? How long the world had existed? Or perhaps how long they had left?",
       description:
         "",
       puzzleDescription:
-        "Four calculation tablets \u2014 one per digit-class (3, 5, 7, 9). For each digit-class, find every pebble on the printed floor carved with that digit. The pebbles for one class together form the shape of a single QRian super-glyph \u2014 one letter per class. Four super-glyphs spell a single English word.\n\nDecoy pebbles bear other digits and may cluster into deceptive shapes \u2014 only the four class digits matter.\n\nWhat were the QRians measuring?",
+        "There are some tablets cast across the floor with some QRian markings. It seems clear that these tablets can help certain parts of the calculation floor come to light... You don't know how, but you do know that QRian mathematics and language seem intimately intertwined...\n\nYou're going to need to find all those Calculation Tablets first.",
       requiredClueSets: [{ cardSetId: csCalculationTablet.id, count: 4 }],
       answerTemplateType: "single_answer",
       answerId: ansReckoningFloor.id,
       consequenceCompleted:
-        "Four shapes resolve: T \u2014 I \u2014 M \u2014 E. Not a quantity. Not a duration. The word itself. The QRians' math couldn't separate counting from spelling \u2014 when they ran a calculation about something, the calculation produced the name of what they were counting. The answer to *how long do we have* was TIME, written in the only thing that could write it: a measurement of itself. They knew. They counted. They knew.",
+        "It's clear that this civilization had a level of mathematical understanding so far developed, it's almost like they were cognitively different. It's weird and wonderful at the same time to the team, but now you're wondering... Where are they?",
       consequenceNotCompleted:
-        "Without the calculator's working notes, the pebble floor is a frozen abacus running no software. We know they were measuring something. Not what. File the field as ambiguous and press on.",
+        "Without the calculator's working notes, the pebble floor is a frozen abacus running no software. We know they were measuring something. Not what. File the find as ambiguous and press on. You're sexy climbers, not eggheads.",
       sortOrder: 1,
     },
   });
@@ -2317,18 +2317,18 @@ async function main() {
       storySheetBlurb:
         "Up the ledge your climber uncovered: the chamber narrows to a wall full of slits. Thin vertical cuts, each no wider than a hand, looking out over canopy and basin and far ridges. Set into many: amber lenses, polished smooth, each labeled. The QRians were measuring whether this place was special. The lenses know. Other slits are bare; their labels fell and scattered. *The first one your climber lifts crumbles in their fingers. They glance at you, then at the doors the other houses came through. Every label in this room is on the same clock \u2014 ours, theirs, all of them.*",
       correctAnswerReveal:
-        "Five observations resolve. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe*. They watched the sky for what they couldn't otherwise know \u2014 where they sat in the bigger pattern, what their place was relative to fixed stars, how the weather over this valley differed from the weather over every other valley. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was *here* \u2014 bound to this geography \u2014 or whether it was bigger than that.",
+        "Yes, this is right. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe*. They watched the sky for what they couldn't otherwise know — where they sat in the bigger pattern, what their place was relative to fixed stars, how the weather over this valley differed from the weather over every other valley. This place was very, very special to them. They built this lens wall to find out *how* special. It's like they thought here was... **the Source** of something... Or in Cartesian terms... an origin...",
       description:
         "",
       puzzleDescription:
-        "Five clusters of 2 slits/lenses each, every cluster tracking one observable phenomenon. Match the scattered lens-labels back to their slits and read each cluster as a single observation.\n\nName each phenomenon the QRians were observing, one cluster at a time.",
+        "There are five clusters of 2 slits/lenses each, every cluster tracking one observable phenomenon. The dual names of the clusters, when imaginatively understood, will help you realize exactly what each lens was for.\n\nFind out each phenomenon the QRians were observing, one cluster at a time.",
       requiredClueSets: [{ cardSetId: csLensLabel.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansSightingWall.id,
       consequenceCompleted:
-        "Five observations resolve: DAWN, MIDNIGHT, MIRAGE, ECLIPSE, SUNSET. Not weather forecasting. Not crop timing. Not warfare reconnaissance. The QRians were *triangulating their own location in the universe* \u2014 watching the sky's transitions for what they couldn't otherwise know. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was bound to this geography, or bigger than that. The geography is the disease, and they were the only people who knew it.",
+        "The QRians were *triangulating their own location in the universe* — watching the sky's transitions for what they couldn't otherwise know. This place was special to them. They built this wall to find out *how* special. They were measuring whether the Source was bound to this geography, or bigger than that. ",
       consequenceNotCompleted:
-        "Without the labels, the lenses look out on an indifferent horizon. We know they watched. We don't know what they were watching for. File the wall as observatory of unknown purpose and press on.",
+        "Without the labels, the lenses look out on an indifferent horizon. They say something... But we don't know what they were watching for. File the wall as an observatory of unknown purpose and press on. They probably just liked the sunsets.",
       sortOrder: 2,
     },
   });
@@ -2340,18 +2340,18 @@ async function main() {
       act: 2,
       title: "Krane's Compartment",
       storySheetBlurb:
-        "Off the side-passage and into a tight alcove: a stone table set in the corner, mechanism still snug \u2014 rows of inset tile-slots, some filled, some empty. Above it, a sealed compartment, no hinge. Your point climber checks the slots. Mechanism's plain. Krane built the temple. He left a working note before he sealed it. The other houses have tiles you'll need back\u2026",
+        "Off the side-passage and into a tight alcove: a stone table set in the corner, mechanism still snug — rows of inset tile-slots, some filled, some empty. Above it, a sealed compartment, no hinge. Your point climber checks the slots. It probably still works - it might help open the compartment above. \"Krane\" helped design this temple. This individual left a signed working note behind, before he sealed the compartment. The other houses have tiles you'll need back…",
       correctAnswerReveal:
-        "Both passcodes enter. The compartment opens. Inside: a working note by **Foreman Geometer Krane**.\n> *'The labor system was elegant. We needed builders we could afford to lose. We had them. The captives were efficient when motivated, the criminals when threatened, and the unmarked when convinced of purpose. We assigned tasks by aptitude \u2014 the strong to lifting, the deft to inlay, the small to ducting. The work proceeded smoothly. Their elimination at completion was a kindness; we would not return them to a world they could not rejoin. The temple stands as proof.'*",
+        "Both passcodes enter. The compartment opens. Inside: another working note by **Foreman Geometer Krane**.\n> *'The labor system was elegant. We needed builders we could afford to lose. We had them. The captives were efficient when motivated, the criminals when threatened, and the **unchanged** when convinced of purpose. We assigned tasks by aptitude — the strong to lifting, the deft to inlay, the small to ducting. The work proceeded smoothly. Their elimination at completion was a kindness; we would not return them to a world we have decided they can no longer rejoin. The temple stands as proof of what we gained... and what we lost.'*",
       description:
         "",
       puzzleDescription:
-        "The stone table holds two procedure-rows of four inset tile-slots each. Steps 1, 2, and 3 of each procedure carry word-tiles distributed across the three houses \u2014 pool them by trading. **Step 4 of each procedure is blank. Your job is to infer the word that completes the progression.**\n\nProcedure I goes: ___ \u2192 ___ \u2192 ___ \u2192 **?**\nProcedure II goes: ___ \u2192 ___ \u2192 ___ \u2192 **?**\n\nWrite the inferred Step 4 word for each procedure. The compartment opens once both passcodes resolve.",
+        "The stone table holds two procedure-rows of four inset tile-slots each. Slots 1, 2, and 3 are not here but probably scattered with the teams. **But slot 4 of each procedure is legitimately missing.** You're going to need to infer the word that completes the progression somehow...\n\nProcedure I goes: ___ → ___ → ___ → **?**\nProcedure II goes: ___ → ___ → ___ → **?**\n\nOnce you figure out slot 4 of each progression you'll be able to open the compartment...",
       requiredClueSets: [{ cardSetId: csKraneTile.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansKraneCompartment.id,
       consequenceCompleted:
-        "Both passcodes enter. The compartment opens. Inside: a working note by Foreman Geometer Krane. He liked it. Liked the elegance. Liked the system. *We assigned tasks by aptitude \u2014 the strong to lifting, the deft to inlay, the small to ducting. Their elimination at completion was a kindness.* The QRians weren't a uniform culture in their last days \u2014 some of them found the slave-system *beautiful*. The temple stands because somebody ran the math and called the math good.",
+        "A lot of civilizations build these temples with their slaves, with their convicts - but there's something special here. Eliminating the people that helped build the temple? Why build this temple at all? Why have a flood system? What was this for... And who were the... **unchanged**?",
       consequenceNotCompleted:
         "The compartment stays sealed; the lock holds. *We came close.* Krane's record stays inside. We will not learn what he found elegant, or why. File and press on.",
       sortOrder: 3,
@@ -2365,9 +2365,9 @@ async function main() {
       act: 2,
       title: "The Wall of Repetitions, Purple",
       storySheetBlurb:
-        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. Hundreds of stacked rewrites, each eroded in its own way. Your point climber kneels at the purple tiles \u2014 the hinge of the confession, wisdom turning to obsession slowly enough to write down. Some of yours are with the others \u2014 you'll want them back\u2026",
+        "Through the doorway and into the long chamber: the temple's east wall stretches floor-to-ceiling, carved with the same QRian phrase repeated over and over. You see the other expedition teams examining the wall, too. Hundreds of stacked rewrites, each eroded in its own way. Your point climber kneels at the purple tiles — the hinge of the confession, wisdom turning to obsession slowly enough to write down. Some of yours are with the others — you'll want them back…",
       correctAnswerReveal:
-        "The wall says: **UNTIL WE SLOWLY REALIZED**. The hinge of a sentence. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall.",
+        "The wall says: **UNTIL WE SLOWLY REALIZED**. It seems to be part of a sentence. Are you missing something?",
       description:
         "",
       puzzleDescription:
@@ -2376,9 +2376,9 @@ async function main() {
       answerTemplateType: "single_answer",
       answerId: ansPurpleWall.id,
       consequenceCompleted:
-        "The wall says: UNTIL WE SLOWLY REALIZED. The hinge of a sentence. Wisdom turning to obsession, slowly enough to inscribe the realization mid-fall. They watched themselves become what they were becoming, and they had a word for that watching: *slowly.* They had time to write it down. They had time to anticipate a reader.",
+        "\"UNTIL WE SLOWLY REALIZED.\" As beautiful as this place is, it's also grim. Something amazing and terrifying was happening here.",
       consequenceNotCompleted:
-        "Without the purple tiles, the middle line stays in pieces. *SLOWLY* survived the most readings. Whatever was happening slowly, we don't know what. File and press on.",
+        "You don't have time to look at ancient chicken scratch, especially when there are so many transcription errors. Strangely, though - you have a feeling you let everyone down...",
       sortOrder: 4,
     },
   });
@@ -2396,12 +2396,12 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "Two-stage gate. First, set the saved Grappling Rigs (Act 1 crew item) and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
+        "Two-stage gate. First, set the **saved Grappling Rigs** and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
       answerTemplateType: "multiple_text",
       answerId: ansHighLedge.id,
       consequenceCompleted:
-        "The lid lifts. The compartment is small but dry \u2014 Yenus chose his ledge well. Inside: the scrolls. The translation: *this place was special\u2026 it gave us a sense of understanding which vastly accelerated our civilization\u2026 farmers became mathematicians; merchants became astronomers\u2026 little did we know that this obsession was an unstoppable force.* The Source didn't just affect them, it *gave* them \u2014 mathematics, logic, physics, all suddenly, all intuitively. Civilization-altering wisdom for free. They didn't realize until too late that the wisdom and the obsession were the same thing.",
+        "The translation: *this place was special… it gave us a sense of understanding which vastly accelerated our civilization… farmers became mathematicians; merchants became astronomers… little did we know that this obsession was an unstoppable force.* The Source didn't just affect them, it *gave* them — mathematics, logic, physics, all suddenly, all intuitively. Civilization-altering wisdom for free. They didn't realize until too late that the wisdom and the obsession were the same thing.",
       consequenceNotCompleted:
         "Without the rigs, the ledge is unreachable \u2014 Yenus chose his elevation well. Or with the riddles unsolved, the inner case won't release. Either way, the scrolls stay out of reach. File and press on.",
       sortOrder: 5,
@@ -2621,7 +2621,7 @@ async function main() {
     clueVisibleCategory: "Burial-Rite Fragment",
     header: "Burial-Rite Fragment, Folded",
     description:
-      "*A folded scrap of inscribed bark — sorting instructions for the canopy.*\n\n\"Strike first the **speakers** — every glyph that closes the mouth. The dead spoke our names back to us in the order we forgot them; we wrote each name on the bone that had carried it. Crack each in turn.\"\n\n*(Use the printed canopy map. Mark every closer-class glyph with a sequence number, then crack them in numerical order. The path traces a single letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
+      "*A folded scrap of inscribed bark — sorting instructions for the canopy.*\n\n\"Strike first the **speakers** — every glyph that closes the mouth. The dead spoke our names back to us in the order we forgot them; we wrote each name on the bone that had carried it. Crack each in turn.\"\n\n*(Lie face-up beneath the canopy. Identify every closer-class face on the undersides above you. Strike them in the ritual order this fragment gives. The closer-class gaps in the canopy will outline a single letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
     houseIds: [jones.id],
@@ -2631,7 +2631,7 @@ async function main() {
     clueVisibleCategory: "Burial-Rite Fragment",
     header: "Burial-Rite Fragment, Charred",
     description:
-      "*A charred scrap, edges blackened.*\n\n\"Then the **openers** — glyphs that part the lips. We did not bury our scholars. To bury would have meant we stopped recording. We hung them instead, where the wind could still move through what they had said. Crack in turn; let each one fall.\"\n\n*(Mark every opener-class glyph; crack in sequence. The path traces a second letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
+      "*A charred scrap, edges blackened.*\n\n\"Then the **openers** — glyphs that part the lips. We did not bury our scholars. To bury would have meant we stopped recording. We hung them instead, where the wind could still move through what they had said. Crack in turn; let each one fall.\"\n\n*(Identify every opener-class face on the undersides above you; strike in the ritual order. The opener-class gaps will outline a second letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
     houseIds: [croft.id],
@@ -2641,7 +2641,7 @@ async function main() {
     clueVisibleCategory: "Burial-Rite Fragment",
     header: "Burial-Rite Fragment, Half-Erased",
     description:
-      "*A half-erased scrap; some text remains legible.*\n\n\"Last, the **carriers** — glyphs that ride the breath out. A name is only the shape the jaw makes when the body is gone. Strike them in the order the breath leaves.\"\n\n*(Mark every carrier-class glyph; crack in sequence. The path traces the third and final letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
+      "*A half-erased scrap; some text remains legible.*\n\n\"Last, the **carriers** — glyphs that ride the breath out. A name is only the shape the jaw makes when the body is gone. Strike them in the order the breath leaves.\"\n\n*(Identify every carrier-class face on the undersides above you; strike in the ritual order. The carrier-class gaps will outline the third and final letter.)*\n\n*The bark is brittle — it won't survive your warmth long.*",
     selfDestructTimer: 60,
     selfDestructText: "The fragment crumbles to ash between your fingers.",
     houseIds: [drake.id],
@@ -2715,7 +2715,7 @@ async function main() {
     clueVisibleCategory: "Lens-Label",
     header: "Lens-Label",
     description:
-      "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, LIE\n\n**Cluster 4 (2 lenses):** SHADOW, SUN\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
+      "Lens-labels, fallen from the sighting wall.\n\n**Cluster 3 (2 lenses):** HEAT, FALSEHOOD\n\n**Cluster 4 (2 lenses):** SHADOW, SUN\n\n*The labels are sun-bleached past safety — they flake apart on contact.*",
     selfDestructTimer: 60,
     selfDestructText: "The label flakes apart in the chamber air. Nothing readable remains.",
     houseIds: [drake.id],

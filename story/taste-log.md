@@ -6,6 +6,28 @@ For each entry: what changed, where, why. If a pattern shows up twice, lift it i
 
 ---
 
+## 2026-05-03 — Narrative debt: QRian → English translation
+
+**The recurring problem:** Almost every house's Act 1 missions hinge on players translating QRian glyphs into English (or English letters that spell English words). This requires a diegetic justification for *why* such a mapping exists in the world — why a fictional ancient civilization's script can be cleanly decoded into modern English by 1930s-equivalent expedition teams in the middle of a flooding temple.
+
+**How the missions paper over it (catalogued for retro purposes):**
+- Drake Stone Wheel: "Inscribed Chunks of Stone" with explicit `{{{P}}} = P` translation keys etched onto them by the QRians themselves — i.e., the QRians *labeled their own writing* with Latin equivalents. Convenient.
+- Croft Drag Marks: "Ancient Pottery Shards" described as "glyph-to-letter pairings etched by the builders as teaching aids."
+- Croft Vase / Drake Hoist: cards say the metallic labels "appear to be translations the QRians made themselves for their language" — same trick, more vague.
+- Jones Whips: "Coded Clay Tablets" with the same glyph-to-letter mapping mechanic.
+- Jones Sliding Panels: hand-waves it via "your research of QRian scripts will likely be able to help you translate" — leans on the team's prior expertise.
+
+Each mission essentially has to write a small in-world prop ("here's a Rosetta Stone") to launder the puzzle. It's tolerable individually but reads as a pattern across the whole game. Some teams have *teaching aids*, others have *pre-decoded labels*, others have *prior research* — the inconsistency makes the mechanic feel arbitrary.
+
+**The retro lesson:** Decide the world's stance on QRian language *before* designing puzzles, then puzzles inherit a single coherent story for translation. Some options that would have collapsed all the patches into one rule:
+- The QRians built the temple to *teach* — every puzzle is a graded exercise, glyph→letter mappings are pedagogical scaffolding (matches the "school" reveal in Jones Offerings — would be free to lean into).
+- A founding expedition (Dr. Jones's mentor, say) cracked the basic alphabet decades ago, and every team carries the same partial codex; richer vocabulary requires solving puzzles to unlock more.
+- The temple itself is a translation device: the architecture *forces* glyph→letter equivalence as you progress (the temple wants to be read).
+
+**Status:** Filed for the next story. The QRian story is shipping with the patchwork.
+
+---
+
 ## 2026-05-03 — Drake voice (observed, not prescribed)
 
 **What:** Patterns noticed in Anthony's hand-edited Drake Act 1 text. These are *Drake's* voice — Croft and Jones almost certainly have their own. Don't generalize these into rules for all houses.
