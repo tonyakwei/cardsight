@@ -7,6 +7,7 @@ import {
   Button,
   ActionIcon,
   SegmentedControl,
+  Switch,
 } from "@mantine/core";
 import Markdown from "react-markdown";
 import {
@@ -280,6 +281,7 @@ export function Act3CardsPrint() {
   const [cards, setCards] = useState<AdminCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
+  const [plainPrint, setPlainPrint] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!gameId) return;
@@ -331,7 +333,7 @@ export function Act3CardsPrint() {
   const clauseCount = prepared.filter((c) => c.kind === "clause").length;
 
   return (
-    <div>
+    <div className={plainPrint ? "plain-print" : undefined}>
       <link rel="stylesheet" href={GOOGLE_FONTS} />
 
       <div className="no-print" style={{ marginBottom: "1.25rem" }}>
@@ -358,6 +360,13 @@ export function Act3CardsPrint() {
                 { label: `History (${historyCount})`, value: "history" },
                 { label: `Clauses (${clauseCount})`, value: "clause" },
               ]}
+            />
+            <Switch
+              size="sm"
+              checked={plainPrint}
+              onChange={(e) => setPlainPrint(e.currentTarget.checked)}
+              label="Plain print"
+              color="yellow"
             />
             <Button size="sm" color="yellow" onClick={() => window.print()}>
               Print
@@ -407,6 +416,26 @@ export function Act3CardsPrint() {
             box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
             background: #1b1410;
           }
+        }
+
+        /* ============ Plain print: paper-friendly override ============
+           Cheap printers + most PDF generators silently drop CSS
+           mask-image, which gates many of the special background
+           layers. The result on paper is just the dark base color
+           with no detail — uglier than the screen preview. Plain
+           print rips the dark theme entirely: white card, dark text,
+           no decorative layers. */
+        .plain-print .page { background: white !important; }
+        .plain-print .card-face {
+          --bg: #ffffff !important;
+          --text: #1a1a1a !important;
+          color: #1a1a1a !important;
+          border: 2px solid currentColor;
+        }
+        .plain-print .card-face .bg-fx,
+        .plain-print .card-face .bg-mark,
+        .plain-print .card-face .vignette {
+          display: none !important;
         }
 
         /* ============ Page (letter landscape, 3-up) ============ */
