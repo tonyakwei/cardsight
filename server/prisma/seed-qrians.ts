@@ -1285,7 +1285,7 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "Seven detonator components need to be assembled in the correct order \u2014 but the components are scattered across the chamber, and other teams swept some up in the chaos. The numbered fitter's tags (#1\u2013#7) on each part are inventory labels only; they do not indicate assembly order.\n\nGather all three *Detonator Component*s from the chamber, read each part's fitter's note for hints about where it sits in the sequence, then write the seven component numbers in assembly order.",
+        "Seven detonator components need to be assembled in the correct order — but the components are scattered across the chamber, and other teams swept some up in the chaos. (The labels on the inventory (#1–#7) do not indicate assembly order).\n\nYou're going to have to gather all *Detonator Component*s from the chamber, read each part's numbered label for hints about where it sits in the sequence, then assemble the detonator in order.\n\nWhat's the order?",
       requiredClueSets: [{ cardSetId: csDetonatorComponent.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansFuseCharges.id,

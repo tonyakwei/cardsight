@@ -372,14 +372,17 @@ function parseSeed(src: string): SeedIndex {
   const cardsBySetActOrdered = new Map<string, CardCreateBlock[]>();
   const missionConsequencesByKey = new Map<string, MissionConsequenceBlock>();
 
-  // Find every prisma.X.create( ... ) and createClueCard( ... ) call.
-  // For each, locate the matching ')' via paren walker.
+  // Find every prisma.X.create( ... ), createClueCard( ... ), and
+  // createMission( ... ) call. For each, locate the matching ')' via
+  // paren walker.
   const callPattern =
-    /(prisma\.(mission|singleAnswer|multipleAnswer|cardSet|house|storySheet|card|missionConsequence)\.create\s*\(|createClueCard\s*\()/g;
+    /(prisma\.(mission|singleAnswer|multipleAnswer|cardSet|house|storySheet|card|missionConsequence)\.create\s*\(|createClueCard\s*\(|createMission\s*\()/g;
 
   let match: RegExpExecArray | null;
   while ((match = callPattern.exec(src))) {
-    const callKind = match[2] ?? "createClueCard";
+    const callKind =
+      match[2] ??
+      (match[0].startsWith("createMission") ? "mission" : "createClueCard");
     // Find the '(' position
     let parenStart = match.index + match[0].length - 1;
     if (src[parenStart] !== "(") {
