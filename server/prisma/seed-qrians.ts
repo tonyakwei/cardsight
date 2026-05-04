@@ -2885,6 +2885,20 @@ async function main() {
     },
   });
 
+  // Croft M3 Teaching Stone success → host narrates a bonus discovery
+  await prisma.missionConsequence.create({
+    data: {
+      sourceMissionId: m_croft_t2.id,
+      targetMissionId: null,
+      type: "redistribute",
+      triggerOnFailure: false,
+      triggerOnSuccess: true,
+      message:
+        "Team did really well - make some story about how well they did, and how they will find extra items",
+      sortOrder: 0,
+    },
+  });
+
   // ═══════════════════════════════════════════════════════════════════
   // ACT 3 HISTORY CARDS
   // ═══════════════════════════════════════════════════════════════════
