@@ -69,6 +69,13 @@ export function MissionViewer() {
       } else {
         setSelectedHouse(null);
       }
+
+      // Revisit of an already-completed mission: jump straight to the reveal
+      // panel (no confetti, no puzzle prompt). They've earned this view once.
+      if (data.isCompleted) {
+        setRevealText(data.correctAnswerReveal);
+        setRevealPhase("revealed");
+      }
     } catch (err) {
       if (err instanceof MissionNotFoundError) {
         setNotFound(true);

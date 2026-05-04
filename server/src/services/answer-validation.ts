@@ -29,6 +29,23 @@ export interface ValidationResult {
   fieldResults?: boolean[];
 }
 
+/**
+ * True when the canonical correct answer is numeric — used to hint the
+ * mobile keyboard (`inputMode="numeric"`). Permissive: accepts thousands
+ * separators ("1,234"), space-separated groups ("1 234"), decimals,
+ * and a leading minus sign. Alternatives are intentionally ignored —
+ * the numeric keypad already forces the player to type bare digits, so
+ * non-numeric alternatives ("forty-two") can't actually be entered.
+ */
+const NUMERIC_LOOSE_RE = /^-?[\d\s,]+(\.\d+)?$/;
+
+export function answerIsNumeric(correct: string): boolean {
+  const trimmed = correct.trim();
+  if (!trimmed) return false;
+  if (!NUMERIC_LOOSE_RE.test(trimmed)) return false;
+  return /\d/.test(trimmed);
+}
+
 export async function validateAnswer(
   type: string,
   answerId: string,

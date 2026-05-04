@@ -116,6 +116,9 @@ export function AnswerInput({ answerMeta, onSubmit, onSuccess }: Props) {
           <input
             ref={inputRef}
             type="text"
+            inputMode={answerMeta?.numeric ? "numeric" : undefined}
+            pattern={answerMeta?.numeric ? "[0-9]*" : undefined}
+            autoComplete={answerMeta?.numeric ? "off" : undefined}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}

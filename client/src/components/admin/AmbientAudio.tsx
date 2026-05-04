@@ -37,6 +37,7 @@ export function AmbientAudio() {
 
   const [running, setRunning] = useState(false);
   const [includeCardEvents, setIncludeCardEvents] = useState(true);
+  const [playMissSound, setPlayMissSound] = useState(true);
   const [wakeStatus, setWakeStatus] = useState<WakeStatus>("off");
   const [recent, setRecent] = useState<AudioFeedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -48,10 +49,15 @@ export function AmbientAudio() {
   const audiosRef = useRef<Record<string, HTMLAudioElement>>({});
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
   const includeCardEventsRef = useRef(includeCardEvents);
+  const playMissSoundRef = useRef(playMissSound);
 
   useEffect(() => {
     includeCardEventsRef.current = includeCardEvents;
   }, [includeCardEvents]);
+
+  useEffect(() => {
+    playMissSoundRef.current = playMissSound;
+  }, [playMissSound]);
 
   const playNextInQueue = useCallback(() => {
     if (playingRef.current) return;
@@ -95,11 +101,16 @@ export function AmbientAudio() {
 
   const enqueue = useCallback(
     (events: AudioFeedEvent[]) => {
-      const filtered = includeCardEventsRef.current
+      let filtered = includeCardEventsRef.current
         ? events
         : events.filter(
             (e) => e.type === "mission_correct" || e.type === "mission_incorrect",
           );
+      if (!playMissSoundRef.current) {
+        filtered = filtered.filter(
+          (e) => e.type !== "card_incorrect" && e.type !== "mission_incorrect",
+        );
+      }
       if (filtered.length === 0) return;
       playQueueRef.current.push(...filtered);
       playNextInQueue();
@@ -290,13 +301,22 @@ export function AmbientAudio() {
           )}
         </Group>
 
-        <Switch
-          checked={includeCardEvents}
-          onChange={(e) => setIncludeCardEvents(e.currentTarget.checked)}
-          label="Include card answer events"
-          description="Off = only mission successes/misses (sparser, more dramatic)."
-          color="yellow"
-        />
+        <Stack gap="sm">
+          <Switch
+            checked={includeCardEvents}
+            onChange={(e) => setIncludeCardEvents(e.currentTarget.checked)}
+            label="Include card answer events"
+            description="Off = only mission successes/misses (sparser, more dramatic)."
+            color="yellow"
+          />
+          <Switch
+            checked={playMissSound}
+            onChange={(e) => setPlayMissSound(e.currentTarget.checked)}
+            label="Play sound on misses"
+            description='Off = only the gong plays on correct answers. Mute the "bum-bum" if it gets annoying.'
+            color="yellow"
+          />
+        </Stack>
 
         {running && (
           <Group gap="xs" mt="md">

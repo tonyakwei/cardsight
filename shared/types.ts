@@ -103,6 +103,10 @@ export interface AnswerMeta {
   // Hint info
   hintAvailable: boolean;
   hintAfterAttempts?: number;
+  // Mobile-keyboard hint: true when the expected answer is purely numeric.
+  // For multiple_text, `numericFields[i]` aligns with `labels[i]`.
+  numeric?: boolean;
+  numericFields?: boolean[];
 }
 
 export interface ScanResponse {

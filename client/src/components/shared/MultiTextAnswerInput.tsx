@@ -193,6 +193,9 @@ export function MultiTextAnswerInput({ answerMeta, onSubmit, onSuccess }: Props)
               <input
                 ref={idx === 0 ? firstInputRef : undefined}
                 type="text"
+                inputMode={answerMeta?.numericFields?.[idx] ? "numeric" : undefined}
+                pattern={answerMeta?.numericFields?.[idx] ? "[0-9]*" : undefined}
+                autoComplete={answerMeta?.numericFields?.[idx] ? "off" : undefined}
                 value={values[idx] ?? ""}
                 onChange={(e) => setValueAt(idx, e.target.value)}
                 onKeyDown={(e) => {

@@ -36,11 +36,15 @@ export function MissionRevealOverlay({
   const dark = shade(houseColor, -0.55);
   const isConfetti = phase === "confetti";
 
-  const [showConfetti, setShowConfetti] = useState(true);
+  // Confetti fires once on the just-completed flow (mounts in "confetti").
+  // Skip it entirely when the overlay opens straight into "revealed" — that's
+  // a revisit of an already-completed mission, no celebration needed.
+  const [showConfetti, setShowConfetti] = useState(phase === "confetti");
   useEffect(() => {
+    if (!showConfetti) return;
     const t = setTimeout(() => setShowConfetti(false), 5000);
     return () => clearTimeout(t);
-  }, []);
+  }, [showConfetti]);
 
   return (
     <div

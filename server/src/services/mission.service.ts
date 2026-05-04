@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../middleware/error-handler.js";
-import { validateAnswer } from "./answer-validation.js";
+import { validateAnswer, answerIsNumeric } from "./answer-validation.js";
 import { buildDesign } from "./design-builder.js";
 import type {
   MissionViewerResponse,
@@ -273,6 +273,7 @@ async function buildAnswerMeta(
       type: "single_answer",
       hintAvailable: !!(template?.hintEnabled && template?.hint),
       hintAfterAttempts: template?.hintAfterAttempts ?? 3,
+      numeric: template ? answerIsNumeric(template.correctAnswer) : false,
     };
   }
 
@@ -280,12 +281,18 @@ async function buildAnswerMeta(
     const template = await prisma.multipleAnswer.findUnique({
       where: { id: answerId },
     });
-    const fields = (template?.fields as unknown as { prompt?: string | null }[]) ?? [];
+    const fields = (template?.fields as unknown as {
+      prompt?: string | null;
+      correctAnswer?: string;
+    }[]) ?? [];
     return {
       type: "multiple_text",
       labels: fields.map((f) => f.prompt ?? ""),
       hintAvailable: !!(template?.hintEnabled && template?.hint),
       hintAfterAttempts: template?.hintAfterAttempts ?? 3,
+      numericFields: fields.map((f) =>
+        f.correctAnswer ? answerIsNumeric(f.correctAnswer) : false,
+      ),
     };
   }
 
