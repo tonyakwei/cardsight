@@ -17,4 +17,5 @@ Files here are the source of truth for story decisions and authoring guidance. I
 - `mission-design-principles.md` — Evergreen principles for mission structure and story card briefs
 - `story-production-playbook.md` — History-derived lessons and a reusable agent review workflow for future stories
 - `taste-guide.md` — Inferred writing taste, anti-patterns, and annotated examples for future story work
+- `date-night-story-games.md` — Two-player date-night story-game learnings and current deck drafts
 - `story-cards/` — Player-facing story card drafts per house per act

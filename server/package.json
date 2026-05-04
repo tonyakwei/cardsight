@@ -8,6 +8,8 @@
     "build": "tsc && mkdir -p dist/shared && cp ../shared/physical-cards.json dist/shared/",
     "start": "node dist/server/src/index.js",
     "prisma": "prisma",
+    "db:seed-date-night": "node --import tsx/esm prisma/seed-date-night.ts",
+    "db:seed-date-night:prod": "tsx scripts/seed-date-night-prod.ts",
     "db:seed-qrians": "tsx prisma/seed-qrians.ts",
     "db:seed-qrians:prod": "tsx scripts/seed-qrians-prod.ts",
     "sync-seed": "tsx scripts/sync-seed-from-db.ts"
