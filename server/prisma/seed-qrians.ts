@@ -21,6 +21,76 @@ const GAME_NAME = "Temple of the QRians";
 const physicalCardIndex: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
 let designByCardSet: Record<string, string> = {};
 
+// Stable UUIDs locked in 2026-05-04. Reseeds reuse these so printed mission
+// QR codes (on story sheets) and saved cs_house cookies on player phones
+// keep working. To add a new mission, generate a fresh UUID with
+// `node -e "console.log(crypto.randomUUID())"` and slot it in by title.
+// NEVER reuse a UUID for a different mission — old printed QRs would route
+// to the wrong content.
+const STABLE_GAME_ID = "c4743025-8672-4a08-9833-29594252693b";
+const STABLE_HOUSE_IDS = {
+  drake: "930e42aa-6e84-4a63-b346-74eacf0e1f03",
+  jones: "13397b03-825e-40c1-9385-d15e97d18da6",
+  croft: "2f24877d-333e-435a-9700-f981c90c3d5f",
+} as const;
+const STABLE_MISSION_IDS: Record<string, string> = {
+  // Act 1 — Drake
+  "Secure Your Fuse Charges": "d3b7e743-85c1-4d8b-977e-246ae8d0360a",
+  "Operate the Stone Wheel": "96257809-4a39-4b17-b995-3f1d489a1bad",
+  "Reach the Shadow Astrolabe": "643cd86a-9017-444b-8171-a188ec7366d7",
+  "Activate the Construction Hoist": "2e48c0e5-29fc-4214-9921-1c3157e5b861",
+  "Investigate the Scraped Gap": "331188df-4e55-4130-bbcd-4ae58018e762",
+  // Act 1 — Jones
+  "Retrieve Your Ceremonial Whips": "49769804-1a04-44e3-8634-86ee5d606392",
+  "Activate the Ancient Drainage": "54876e1c-044b-47a1-9776-43720f59832d",
+  "Sort the Scattered Offerings": "4a138024-face-42e5-915f-aa9229461089",
+  "Examine the Sliding Panels": "7ca0d122-d186-4baa-8709-7b37ba73633d",
+  "Map the False Exit": "7a6e5782-3dfa-44b8-bee1-5da7aceeb4da",
+  // Act 1 — Croft
+  "Recover Your Grappling Rigs": "642a4b7f-34fe-4c81-a37a-a53d7a512118",
+  "Solve the Stone Jigsaw": "f2ccad0c-bbc5-456f-a78b-fba72522fd1f",
+  "Reach the Impossible Vase": "f91e0d04-3046-472a-ab80-f712063a9a76",
+  "Activate the Teaching Stone": "427d6720-e6ae-4dfb-bf66-32c54d2e0f78",
+  "Follow the Drag Marks": "d5f92a51-ed24-4658-9e9f-a87d3abd6310",
+  // Act 2 — Drake
+  "Powder of the Quiet Bed": "91d694e0-311a-4134-b864-744edd74f9f7",
+  "Drevu's Compartment": "1d45338f-58f8-40ec-994a-65013c5d1c72",
+  "The Wall of Repetitions, Red": "6b2c42b9-0764-46ca-9379-86faedc28e2e",
+  "The Reagent Alcove": "213f3323-85da-4fc1-bc9f-aa10f357a94b",
+  "The Reinforced Bunker": "75ca2bb8-b166-418f-aa09-3c0ca573331b",
+  // Act 2 — Jones
+  "The Sealed Pantry": "09047829-3e1c-4cbe-9eaf-8244b5ed1f8e",
+  "The Wall of Repetitions, Amber": "764404ed-eeae-4a9f-9fed-125c4ec8bf8c",
+  "Vesh's Compartment": "7bb89378-2ab9-4d0c-ba1a-679e1b53ae4a",
+  "The Hanging Garden of Names": "55202ffb-52a4-4ec6-94b1-84f693209832",
+  "The Ceiling Inscription": "3ad37d5a-d0ae-4b86-adc9-29196ed4dcc3",
+  // Act 2 — Croft
+  "The Reckoning Floor": "7da0d896-5027-4c08-acfb-7a9cdc952065",
+  "The Sighting Wall": "a5ad8223-54bb-4062-85a0-8a7bfe0cef48",
+  "Krane's Compartment": "b420b5bb-e8a5-4ef2-8eda-07b0edefdf96",
+  "The Wall of Repetitions, Purple": "838fd464-b0bd-417b-bc3d-4c22097994d0",
+  "The High Ledge": "6257519d-9a59-47a7-83e5-2156a6a579e0",
+};
+
+/**
+ * Drop-in replacement for prisma.mission.create that auto-injects the stable
+ * UUID looked up by title. Throws if the title isn't registered above —
+ * forces every new mission to get a stable ID before it ships.
+ */
+async function createMission(args: Parameters<typeof prisma.mission.create>[0]) {
+  const title = (args.data as { title?: string }).title;
+  if (!title) {
+    throw new Error("createMission: data.title is required");
+  }
+  const id = STABLE_MISSION_IDS[title];
+  if (!id) {
+    throw new Error(
+      `createMission: no stable UUID for "${title}". Add one to STABLE_MISSION_IDS.`,
+    );
+  }
+  return prisma.mission.create({ ...args, data: { id, ...args.data } });
+}
+
 // Three white physical cards reserved for the "A Trip Down Memory Lane" cards.
 // One placed at each table — the cookie's house decides which memory plays.
 const MEMORY_PHYSICAL_IDS = {
@@ -184,6 +254,7 @@ async function main() {
   console.log("Creating game...");
   const game = await prisma.game.create({
     data: {
+      id: STABLE_GAME_ID,
       name: GAME_NAME,
       description:
         "Three expedition teams enter a sealed temple built by the QRians — a civilization that fused mathematics and religion. The temple was sealed centuries ago with warnings carved into every surface. Three acts: The Flood, The Corruption, The Dying Light.",
@@ -198,13 +269,13 @@ async function main() {
 
   console.log("Creating houses...");
   const drake = await prisma.house.create({
-    data: { gameId: game.id, name: "Drake Delegation", color: "#dc2626", slug: "drake" },
+    data: { id: STABLE_HOUSE_IDS.drake, gameId: game.id, name: "Drake Delegation", color: "#dc2626", slug: "drake" },
   });
   const jones = await prisma.house.create({
-    data: { gameId: game.id, name: "Jones Junket", color: "#ca8a04", slug: "jones" },
+    data: { id: STABLE_HOUSE_IDS.jones, gameId: game.id, name: "Jones Junket", color: "#ca8a04", slug: "jones" },
   });
   const croft = await prisma.house.create({
-    data: { gameId: game.id, name: "Croft Company", color: "#7c3aed", slug: "croft" },
+    data: { id: STABLE_HOUSE_IDS.croft, gameId: game.id, name: "Croft Company", color: "#7c3aed", slug: "croft" },
   });
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1202,7 +1273,7 @@ async function main() {
 
   console.log("Creating Act 1 missions — Drake...");
 
-  const m_drake_crew = await prisma.mission.create({
+  const m_drake_crew = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1227,7 +1298,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_crew.id, [drake.id]);
 
-  const m_drake_flood = await prisma.mission.create({
+  const m_drake_flood = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1252,7 +1323,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_flood.id, [drake.id]);
 
-  const m_drake_t1 = await prisma.mission.create({
+  const m_drake_t1 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1277,7 +1348,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_t1.id, [drake.id]);
 
-  const m_drake_t2 = await prisma.mission.create({
+  const m_drake_t2 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1302,7 +1373,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_t2.id, [drake.id]);
 
-  const m_drake_t3 = await prisma.mission.create({
+  const m_drake_t3 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1333,7 +1404,7 @@ async function main() {
 
   console.log("Creating Act 1 missions — Jones...");
 
-  const m_jones_crew = await prisma.mission.create({
+  const m_jones_crew = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1358,7 +1429,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_crew.id, [jones.id]);
 
-  const m_jones_flood = await prisma.mission.create({
+  const m_jones_flood = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1383,7 +1454,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_flood.id, [jones.id]);
 
-  const m_jones_t1 = await prisma.mission.create({
+  const m_jones_t1 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1408,7 +1479,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_t1.id, [jones.id]);
 
-  const m_jones_t2 = await prisma.mission.create({
+  const m_jones_t2 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1433,7 +1504,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_t2.id, [jones.id]);
 
-  const m_jones_t3 = await prisma.mission.create({
+  const m_jones_t3 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1464,7 +1535,7 @@ async function main() {
 
   console.log("Creating Act 1 missions — Croft...");
 
-  const m_croft_crew = await prisma.mission.create({
+  const m_croft_crew = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1489,7 +1560,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_crew.id, [croft.id]);
 
-  const m_croft_flood = await prisma.mission.create({
+  const m_croft_flood = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1514,7 +1585,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_flood.id, [croft.id]);
 
-  const m_croft_t1 = await prisma.mission.create({
+  const m_croft_t1 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1539,7 +1610,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_t1.id, [croft.id]);
 
-  const m_croft_t2 = await prisma.mission.create({
+  const m_croft_t2 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -1564,7 +1635,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_t2.id, [croft.id]);
 
-  const m_croft_t3 = await prisma.mission.create({
+  const m_croft_t3 = await createMission({
     data: {
       gameId: game.id,
       act: 1,
@@ -2075,7 +2146,7 @@ async function main() {
 
   console.log("Creating Act 2 missions — Drake...");
 
-  const m_drake_a2_powder = await prisma.mission.create({
+  const m_drake_a2_powder = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2100,7 +2171,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_a2_powder.id, [drake.id]);
 
-  const m_drake_a2_drevu = await prisma.mission.create({
+  const m_drake_a2_drevu = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2125,7 +2196,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_a2_drevu.id, [drake.id]);
 
-  const m_drake_a2_redwall = await prisma.mission.create({
+  const m_drake_a2_redwall = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2150,7 +2221,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_a2_redwall.id, [drake.id]);
 
-  const m_drake_a2_alcove = await prisma.mission.create({
+  const m_drake_a2_alcove = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2175,7 +2246,7 @@ async function main() {
   });
   await assignMissionHouses(m_drake_a2_alcove.id, [drake.id]);
 
-  const m_drake_a2_bunker = await prisma.mission.create({
+  const m_drake_a2_bunker = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2206,7 +2277,7 @@ async function main() {
 
   console.log("Creating Act 2 missions — Jones...");
 
-  const m_jones_a2_pantry = await prisma.mission.create({
+  const m_jones_a2_pantry = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2231,7 +2302,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_a2_pantry.id, [jones.id]);
 
-  const m_jones_a2_amberwall = await prisma.mission.create({
+  const m_jones_a2_amberwall = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2256,7 +2327,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_a2_amberwall.id, [jones.id]);
 
-  const m_jones_a2_vesh = await prisma.mission.create({
+  const m_jones_a2_vesh = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2281,7 +2352,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_a2_vesh.id, [jones.id]);
 
-  const m_jones_a2_garden = await prisma.mission.create({
+  const m_jones_a2_garden = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2306,7 +2377,7 @@ async function main() {
   });
   await assignMissionHouses(m_jones_a2_garden.id, [jones.id]);
 
-  const m_jones_a2_ceiling = await prisma.mission.create({
+  const m_jones_a2_ceiling = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2337,7 +2408,7 @@ async function main() {
 
   console.log("Creating Act 2 missions — Croft...");
 
-  const m_croft_a2_floor = await prisma.mission.create({
+  const m_croft_a2_floor = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2362,7 +2433,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_a2_floor.id, [croft.id]);
 
-  const m_croft_a2_sighting = await prisma.mission.create({
+  const m_croft_a2_sighting = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2387,7 +2458,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_a2_sighting.id, [croft.id]);
 
-  const m_croft_a2_krane = await prisma.mission.create({
+  const m_croft_a2_krane = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2412,7 +2483,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_a2_krane.id, [croft.id]);
 
-  const m_croft_a2_purplewall = await prisma.mission.create({
+  const m_croft_a2_purplewall = await createMission({
     data: {
       gameId: game.id,
       act: 2,
@@ -2437,7 +2508,7 @@ async function main() {
   });
   await assignMissionHouses(m_croft_a2_purplewall.id, [croft.id]);
 
-  const m_croft_a2_ledge = await prisma.mission.create({
+  const m_croft_a2_ledge = await createMission({
     data: {
       gameId: game.id,
       act: 2,
