@@ -122,8 +122,8 @@ export function WelcomePlacardPrint() {
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          @page { size: letter portrait; margin: 0; }
-          .print-sheet { box-shadow: none !important; margin: 0 !important; }
+          @page { size: letter portrait; margin: 0.5in; }
+          .print-sheet { box-shadow: none !important; margin: 0 !important; padding: 0.4in 0 0 !important; background: transparent !important; }
         }
 
         @media screen {
@@ -136,7 +136,7 @@ export function WelcomePlacardPrint() {
         }
 
         .print-sheet {
-          width: 8.5in;
+          width: 7.5in;
           margin: 0 auto;
           display: flex;
           flex-direction: column;
@@ -153,7 +153,7 @@ export function WelcomePlacardPrint() {
         .placard {
           position: relative;
           width: 6in;
-          height: 3.5in;
+          height: 3.1in;
           padding: 0.18in 0.28in;
           color: #ecdfc4;
           background: radial-gradient(ellipse at 50% 38%, #4a3d2c 0%, #312719 55%, #1d160e 100%);

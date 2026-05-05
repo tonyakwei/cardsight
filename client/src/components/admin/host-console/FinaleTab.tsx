@@ -156,11 +156,14 @@ export function FinaleTab({
         ) : (
           <Stack gap="sm">
             <div>
-              <Text size="sm" fw={700}>
+              <Text size="sm" fw={700} mb={4}>
                 {epilogue.title}
               </Text>
+              <Text size="xs" fw={700} c="yellow.3">
+                Read This First
+              </Text>
               <Text size="xs" c="dimmed" mt={4}>
-                {epilogue.opening}
+                {epilogue.decision}
               </Text>
             </div>
 
@@ -193,6 +196,15 @@ export function FinaleTab({
                 </Text>
               </Paper>
             ))}
+
+            <div>
+              <Text size="xs" fw={700} c="yellow.3">
+                Close With This
+              </Text>
+              <Text size="xs" c="dimmed" mt={4}>
+                {epilogue.closing}
+              </Text>
+            </div>
           </Stack>
         )}
       </Paper>

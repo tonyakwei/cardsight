@@ -30,7 +30,8 @@ export interface FinaleOutcomeDefinition {
   vector: DimensionVector;
   epilogue: {
     title: string;
-    opening: string;
+    decision: string;
+    closing: string;
   };
 }
 
@@ -77,8 +78,9 @@ export interface FinaleEpilogueSection {
 
 export interface FinaleEpilogue {
   title: string;
-  opening: string;
+  decision: string;
   sections: FinaleEpilogueSection[];
+  closing: string;
   paragraphs: string[];
 }
 
@@ -110,7 +112,8 @@ export const FINALE_OUTCOMES: FinaleOutcomeDefinition[] = [
     vector: vec(-2, 2, 2, -2, 0),
     epilogue: {
       title: "The Source Was Broken",
-      opening: "In the end, the chamber did not survive. The Source was broken, its light extinguished, and the question of what to do with it was answered in stone and ruin.",
+      decision: "The room chose to destroy the Source, but only under the settlement you all agreed upon.",
+      closing: "In the end, the chamber did not survive. Its light was extinguished, its workings broken, and whatever hold it had once kept on the living was answered in stone and ruin.",
     },
   },
   {
@@ -120,7 +123,8 @@ export const FINALE_OUTCOMES: FinaleOutcomeDefinition[] = [
     vector: vec(-1, 2, 2, -2, 0),
     epilogue: {
       title: "The Chamber Was Sealed Again",
-      opening: "In the end, the chamber was sealed again. The Source remained beneath stone, not destroyed and not freed, but returned to locks, witness, and warning.",
+      decision: "The room chose to seal the chamber again, but only under the settlement you all agreed upon.",
+      closing: "In the end, the chamber was sealed again. The Source remained beneath stone, not destroyed and not freed, but returned to locks, witness, and warning.",
     },
   },
   {
@@ -130,7 +134,8 @@ export const FINALE_OUTCOMES: FinaleOutcomeDefinition[] = [
     vector: vec(2, -2, -1, 2, 0),
     epilogue: {
       title: "The Chamber Was Opened",
-      opening: "In the end, the chamber was opened to the living. The Source remained in the world, and the future inherited access to it along with its danger.",
+      decision: "The room chose to open the chamber for study, but only under the settlement you all agreed upon.",
+      closing: "In the end, the chamber was opened to the living. Its danger was not ended, only inherited, and the future took it into its keeping with open eyes.",
     },
   },
 ];
@@ -226,9 +231,9 @@ export const FINALE_HOUSES: FinaleHouseDefinition[] = [
     },
     epilogueFocus: "What was remembered",
     epilogue: {
-      vindicated: "Enough survived for the QRians to return to history as a people, not a cautionary tale. Their warnings were copied into schoolbooks, their star tables studied by lamplight, and their small human voices — the kitchen complaint, the clinic note, the schoolmaster's pride — entered the world again.",
-      compromised: "Some truth survived, but never whole. Archives swelled with copied walls and careful sketches, yet every serious history bent around the same missing places: a diagram that broke off mid-thought, a catalog card marked tablet missing, a lecture hall screen filled by the blank panel everyone learned to argue over.",
-      horrified: "Too much was lost. The QRians passed into public memory as warning more than people: a paragraph in school texts, a case of fragments in museums, a civilization invoked with certainty and understood entire by no institution at all.",
+      vindicated: "Enough survived for the QRians to enter schoolbooks worldwide as a civilization, not a fable. Their warnings were recopied in classrooms, their star tables studied by lamplight, and in museum halls glass cases held the kitchen complaint, the clinic note, the schoolmaster's pride: small human records that gave the dead their voices back.",
+      compromised: "Some truth survived, but never whole. Museum halls filled with copied walls, careful sketches, and fragments under glass, and experts knew that something immense had happened there; but year by year the blank spaces told the truer story, until scholarship gave up on mastery and settled for the knowledge that the QRians had built something the living would never fully understand.",
+      horrified: "Too much was lost, and the QRians passed half into history and half into myth. Schoolbooks reduced them to a warning, museums displayed fragments like relics from a legend, and each generation inherited the same uneasy feeling: that a great civilization had once stood here, but had vanished before it could truly be known.",
     },
   },
   {
@@ -246,9 +251,9 @@ export const FINALE_HOUSES: FinaleHouseDefinition[] = [
     },
     epilogueFocus: "What was guarded",
     epilogue: {
-      vindicated: "Stewardship hardened into custom. Entry required three houses, custody passed through more than one hand, and the sealed gate appeared in training manuals as the image of how the living were meant to govern dangerous wonders.",
-      compromised: "The safeguards held, but only by effort. Boards multiplied, permits thickened, and every few years a boot-mark past the warning line or a forged transit order reminded the world that caution had become procedure, not conviction.",
-      horrified: "Stewardship thinned into paperwork. Private collections fattened, crates traveled under false labels, and the temple became the precedent patrons cited whenever they wanted institutions to treat a danger as an acquisition rather than a trust.",
+      vindicated: "Stewardship became a living custom. Years later, any descent began the same way: three signatures in the ledger, three witnesses at the gate, three sets of eyes on every crate carried back into daylight. Museums changed their rules around the chamber, and the sealed stair entered expedition training as the story of how dangerous wonders were meant to be kept from becoming private kingdoms.",
+      compromised: "The safeguards survived, but only as a story people had to keep retelling. One season it was a forged transit order, another a boot-mark beyond the warning line, another a crate opened where it should not have been; and so boards multiplied, rules thickened, and every institution that dealt with the chamber learned the same hard lesson, that stewardship was never finished, only maintained.",
+      horrified: "Stewardship collapsed into possession. Patrons funded private descents, crates left camp under false labels, and museum wings quietly filled with objects no one could honestly explain. In time the temple was cited less as a warning than as the case that proved even dangerous wonders could be divided, displayed, and owned.",
     },
   },
   {
@@ -321,9 +326,14 @@ function buildFinaleEpilogue(
 
   return {
     title: outcome.epilogue.title,
-    opening: outcome.epilogue.opening,
+    decision: outcome.epilogue.decision,
     sections,
-    paragraphs: [outcome.epilogue.opening, ...sections.map((section) => section.text)],
+    closing: outcome.epilogue.closing,
+    paragraphs: [
+      outcome.epilogue.decision,
+      ...sections.map((section) => section.text),
+      outcome.epilogue.closing,
+    ],
   };
 }
 
