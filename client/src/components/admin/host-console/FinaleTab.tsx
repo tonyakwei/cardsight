@@ -22,6 +22,7 @@ export function FinaleTab({
   actionLoading,
 }: FinaleTabProps) {
   const { outcomeId, clauseIds, evaluation } = finale;
+  const epilogue = evaluation.epilogue;
 
   return (
     <Stack gap="sm">
@@ -142,6 +143,58 @@ export function FinaleTab({
             </Paper>
           ))}
         </Stack>
+      </Paper>
+
+      <Paper bg="dark.7" p="md" radius="md">
+        <Text size="xs" fw={600} c="dimmed" mb="xs">
+          EPILOGUE PREVIEW
+        </Text>
+        {!epilogue ? (
+          <Text size="xs" c="dimmed">
+            Choose a major outcome to generate the epilogue backbone.
+          </Text>
+        ) : (
+          <Stack gap="sm">
+            <div>
+              <Text size="sm" fw={700}>
+                {epilogue.title}
+              </Text>
+              <Text size="xs" c="dimmed" mt={4}>
+                {epilogue.opening}
+              </Text>
+            </div>
+
+            {epilogue.sections.map((section) => (
+              <Paper key={section.houseId} bg="dark.6" p="sm" radius="md">
+                <Group justify="space-between" mb={6}>
+                  <Text size="xs" fw={700}>
+                    {section.heading}
+                  </Text>
+                  <Group gap="xs">
+                    <Badge color="gray" variant="outline">
+                      {section.label}
+                    </Badge>
+                    <Badge
+                      color={
+                        section.band === "vindicated"
+                          ? "green"
+                          : section.band === "compromised"
+                            ? "yellow"
+                            : "red"
+                      }
+                      variant="light"
+                    >
+                      {section.band.toUpperCase()}
+                    </Badge>
+                  </Group>
+                </Group>
+                <Text size="xs" c="dimmed">
+                  {section.text}
+                </Text>
+              </Paper>
+            ))}
+          </Stack>
+        )}
       </Paper>
 
       <Button

@@ -28,6 +28,10 @@ export interface FinaleOutcomeDefinition {
   label: string;
   description: string;
   vector: DimensionVector;
+  epilogue: {
+    title: string;
+    opening: string;
+  };
 }
 
 export interface FinaleClauseDefinition {
@@ -46,6 +50,8 @@ export interface FinaleHouseDefinition {
     compromisedMin: number;
   };
   consequences: Record<FinaleBand, string>;
+  epilogueFocus: string;
+  epilogue: Record<FinaleBand, string>;
 }
 
 export interface FinaleSelection {
@@ -61,11 +67,27 @@ export interface FinaleHouseResult {
   consequence: string;
 }
 
+export interface FinaleEpilogueSection {
+  houseId: FinaleHouseId;
+  label: string;
+  heading: string;
+  band: FinaleBand;
+  text: string;
+}
+
+export interface FinaleEpilogue {
+  title: string;
+  opening: string;
+  sections: FinaleEpilogueSection[];
+  paragraphs: string[];
+}
+
 export interface FinaleEvaluation {
   valid: boolean;
   errors: string[];
   selection: FinaleSelection;
   houseResults: FinaleHouseResult[];
+  epilogue: FinaleEpilogue | null;
 }
 
 function vec(
@@ -86,18 +108,30 @@ export const FINALE_OUTCOMES: FinaleOutcomeDefinition[] = [
     label: "Destroy the Source",
     description: "End the danger now by destroying the Source, even at the cost of future knowledge and access.",
     vector: vec(-2, 2, 2, -2, 0),
+    epilogue: {
+      title: "The Source Was Broken",
+      opening: "In the end, the chamber did not survive. The Source was broken, its light extinguished, and the question of what to do with it was answered in stone and ruin.",
+    },
   },
   {
     id: "recontain_source",
     label: "Recontain the Source",
     description: "Restore containment and leave the Source closed off rather than opened or annihilated.",
     vector: vec(-1, 2, 2, -2, 0),
+    epilogue: {
+      title: "The Chamber Was Sealed Again",
+      opening: "In the end, the chamber was sealed again. The Source remained beneath stone, not destroyed and not freed, but returned to locks, witness, and warning.",
+    },
   },
   {
     id: "open_for_research",
     label: "Open It for Research",
     description: "Permit controlled access to the Source for study and preservation in the present generation.",
     vector: vec(2, -2, -1, 2, 0),
+    epilogue: {
+      title: "The Chamber Was Opened",
+      opening: "In the end, the chamber was opened to the living. The Source remained in the world, and the future inherited access to it along with its danger.",
+    },
   },
 ];
 
@@ -190,6 +224,12 @@ export const FINALE_HOUSES: FinaleHouseDefinition[] = [
       compromised: "Jones accepts the settlement, but with the lasting sense that too much of the Source may have been lost or hidden.",
       horrified: "Jones leaves convinced that panic and force have erased a discovery that should have been understood.",
     },
+    epilogueFocus: "What was remembered",
+    epilogue: {
+      vindicated: "Enough survived for the QRians to return to history as a people, not a cautionary tale. Their warnings were copied into schoolbooks, their star tables studied by lamplight, and their small human voices — the kitchen complaint, the clinic note, the schoolmaster's pride — entered the world again.",
+      compromised: "Some truth survived, but never whole. Archives swelled with copied walls and careful sketches, yet every serious history bent around the same missing places: a diagram that broke off mid-thought, a catalog card marked tablet missing, a lecture hall screen filled by the blank panel everyone learned to argue over.",
+      horrified: "Too much was lost. The QRians passed into public memory as warning more than people: a paragraph in school texts, a case of fragments in museums, a civilization invoked with certainty and understood entire by no institution at all.",
+    },
   },
   {
     id: "croft",
@@ -203,6 +243,12 @@ export const FINALE_HOUSES: FinaleHouseDefinition[] = [
       vindicated: "Croft believes the room acted as a responsible steward: danger constrained, ownership shared, and recklessness denied.",
       compromised: "Croft can live with the settlement, but not without unease about what may still escape or be mishandled later.",
       horrified: "Croft leaves convinced the group has repeated the QRians’ mistake by trusting something that should never have been opened lightly.",
+    },
+    epilogueFocus: "What was guarded",
+    epilogue: {
+      vindicated: "Stewardship hardened into custom. Entry required three houses, custody passed through more than one hand, and the sealed gate appeared in training manuals as the image of how the living were meant to govern dangerous wonders.",
+      compromised: "The safeguards held, but only by effort. Boards multiplied, permits thickened, and every few years a boot-mark past the warning line or a forged transit order reminded the world that caution had become procedure, not conviction.",
+      horrified: "Stewardship thinned into paperwork. Private collections fattened, crates traveled under false labels, and the temple became the precedent patrons cited whenever they wanted institutions to treat a danger as an acquisition rather than a trust.",
     },
   },
   {
@@ -218,6 +264,12 @@ export const FINALE_HOUSES: FinaleHouseDefinition[] = [
       compromised: "Drake accepts the outcome, but worries the danger was managed rather than truly settled.",
       horrified: "Drake leaves convinced the group has left a live wound behind for some later generation to suffer.",
     },
+    epilogueFocus: "What continued",
+    epilogue: {
+      vindicated: "Because the ending felt final, the old obsession that the Source brought never found its way back into ordinary life. Clinics never had to name it, houses never wrote rules for second descents, and families were spared the small domestic terrors of hidden stones, cold meals, and sleepless counting after midnight.",
+      compromised: "The danger of the Source's obsession effect was checked, but it taught the world new habits. Expedition medicine learned the signs first — the missed meal, the midnight copying, the request for one more descent — and before long every serious house had rules about who could go below, who could return, and who was never sent alone.",
+      horrified: "The danger of the Source's obsession effect was never truly contained. Universities, workhouses, and households alike learned to fear the touched: the sleepless counters, the gentle voices, the hidden stones in drawers and under beds. Clinics filled, second-descent rules spread, and a soft new etiquette grew around people everyone suspected were already beginning to change.",
+    },
   },
 ];
 
@@ -228,6 +280,10 @@ export const FINALE_OUTCOME_BY_ID = Object.fromEntries(
 export const FINALE_CLAUSE_BY_ID = Object.fromEntries(
   FINALE_CLAUSES.map((clause) => [clause.id, clause]),
 ) as Record<FinaleClauseId, FinaleClauseDefinition>;
+
+export const FINALE_HOUSE_BY_ID = Object.fromEntries(
+  FINALE_HOUSES.map((house) => [house.id, house]),
+) as Record<FinaleHouseId, FinaleHouseDefinition>;
 
 function dot(weights: DimensionVector, vector: DimensionVector): number {
   return (
@@ -243,6 +299,32 @@ function getBand(score: number, house: FinaleHouseDefinition): FinaleBand {
   if (score >= house.thresholds.vindicatedMin) return "vindicated";
   if (score >= house.thresholds.compromisedMin) return "compromised";
   return "horrified";
+}
+
+function buildFinaleEpilogue(
+  selection: FinaleSelection,
+  houseResults: FinaleHouseResult[],
+): FinaleEpilogue | null {
+  if (!selection.outcomeId) return null;
+
+  const outcome = FINALE_OUTCOME_BY_ID[selection.outcomeId];
+  const sections = houseResults.map((result) => {
+    const house = FINALE_HOUSE_BY_ID[result.houseId];
+    return {
+      houseId: result.houseId,
+      label: result.label,
+      heading: house.epilogueFocus,
+      band: result.band,
+      text: house.epilogue[result.band],
+    };
+  });
+
+  return {
+    title: outcome.epilogue.title,
+    opening: outcome.epilogue.opening,
+    sections,
+    paragraphs: [outcome.epilogue.opening, ...sections.map((section) => section.text)],
+  };
 }
 
 export function evaluateFinaleSelection(
@@ -310,5 +392,6 @@ export function evaluateFinaleSelection(
     errors,
     selection,
     houseResults,
+    epilogue: buildFinaleEpilogue(selection, houseResults),
   };
 }
