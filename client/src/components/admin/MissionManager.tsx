@@ -19,6 +19,7 @@ import {
   Switch,
   Grid,
   Tooltip,
+  Anchor,
 } from "@mantine/core";
 import {
   fetchMissions,
@@ -620,9 +621,15 @@ function MissionRow({
                     }}
                   />
                 </Tooltip>
-                <Text size="xs" c="dimmed">
-                  Encodes <code>alltogethernow.land/m/{mission.id.slice(0, 8)}…</code>
-                </Text>
+                <Anchor
+                  href={`${window.location.origin}/m/${mission.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="xs"
+                  style={{ wordBreak: "break-all", textAlign: "center" }}
+                >
+                  {window.location.origin}/m/{mission.id}
+                </Anchor>
               </Stack>
             </Stack>
           </Grid.Col>
