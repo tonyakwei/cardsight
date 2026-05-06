@@ -6,30 +6,25 @@ import { CardShell } from "../card-viewer/CardShell";
 import { CardContent } from "../card-viewer/CardContent";
 import { AnimationWrapper } from "../card-viewer/animations/AnimationWrapper";
 import { OverlayRenderer } from "../card-viewer/overlays/OverlayRenderer";
-import { FloodBackground } from "./FloodBackground";
-import { LeafyBackground } from "./LeafyBackground";
 import { MissionAnswerInput } from "./MissionAnswerInput";
 import { MissionDoors } from "./MissionDoors";
 import { MissionRevealOverlay } from "./MissionRevealOverlay";
 import { RequiredItems } from "./RequiredItems";
+import { getActTheme, type ActTheme } from "./actThemes";
 import type { MissionViewerResponse, CardDesign } from "@cardsight/shared";
 
 const HOUSE_STORAGE_KEY = "cardsight_house";
 
-// Acts 1 and 2 each render a live ambient background layer (flood / leafy)
-// behind the CardShell. The shell background is therefore partly transparent
-// so the layer shows through, with a darker veil over the content area for
-// readability. Other acts use the original opaque dark fill.
-function houseTintedDesign(houseColor: string, act: number): CardDesign {
-  let bgColor = "#0a0a0a";
-  let bgGradient = `radial-gradient(ellipse at top, ${houseColor}1f 0%, #0a0a0a 60%)`;
-  if (act === 1) {
-    bgColor = "transparent";
-    bgGradient = `radial-gradient(ellipse at top, ${houseColor}33 0%, transparent 55%), linear-gradient(180deg, rgba(6,14,26,0.92) 0%, rgba(6,14,26,0.86) 55%, rgba(6,14,26,0.4) 82%, rgba(6,14,26,0.05) 100%)`;
-  } else if (act === 2) {
-    bgColor = "transparent";
-    bgGradient = `radial-gradient(ellipse at top, ${houseColor}33 0%, transparent 55%), linear-gradient(180deg, rgba(8,16,12,0.92) 0%, rgba(8,16,12,0.86) 55%, rgba(8,16,12,0.4) 82%, rgba(8,16,12,0.05) 100%)`;
-  }
+// When an act has a registered theme, the CardShell sits on top of an
+// animated ambient layer (see actThemes.ts). The shell background is
+// therefore partly transparent, with a dark veil over the content area
+// keeping the puzzle text readable while the backdrop shows through at
+// the edges. Acts with no registered theme use the original opaque fill.
+function houseTintedDesign(houseColor: string, theme: ActTheme | null): CardDesign {
+  const bgColor = theme ? "transparent" : "#0a0a0a";
+  const bgGradient = theme
+    ? `radial-gradient(ellipse at top, ${houseColor}33 0%, transparent 55%), linear-gradient(180deg, rgba(${theme.veilRgb},0.92) 0%, rgba(${theme.veilRgb},0.86) 55%, rgba(${theme.veilRgb},0.4) 82%, rgba(${theme.veilRgb},0.05) 100%)`
+    : `radial-gradient(ellipse at top, ${houseColor}1f 0%, #0a0a0a 60%)`;
   return {
     bgColor,
     bgGradient,
@@ -44,12 +39,6 @@ function houseTintedDesign(houseColor: string, act: number): CardDesign {
     overlayEffect: null,
     customCss: null,
   };
-}
-
-function AmbientBackground({ act }: { act: number }) {
-  if (act === 1) return <FloodBackground />;
-  if (act === 2) return <LeafyBackground />;
-  return null;
 }
 
 function getStoredHouseId(): string | null {
@@ -166,18 +155,18 @@ export function MissionViewer() {
 
   const activeHouse =
     mission.houses.find((h) => h.id === selectedHouse) ?? mission.houses[0] ?? null;
+  // Custom mission designs opt out of the per-act ambient backdrop — they
+  // paint their own background.
+  const actTheme = mission.design ? null : getActTheme(mission.act);
   const effectiveDesign =
-    mission.design ?? (activeHouse ? houseTintedDesign(activeHouse.color, mission.act) : null);
-  // The ambient layer (flood for Act 1, leafy for Act 2) sits behind the
-  // CardShell whenever a mission is using the default house-tinted design.
-  // Custom mission designs opt out (they paint their own backdrop).
-  const showAmbient = !mission.design && (mission.act === 1 || mission.act === 2);
+    mission.design ?? (activeHouse ? houseTintedDesign(activeHouse.color, actTheme) : null);
+  const Ambient = actTheme?.Ambient ?? null;
 
   // House picker for multi-house missions
   if (!selectedHouse && mission.houses.length > 1) {
     return (
       <>
-        {showAmbient && <AmbientBackground act={mission.act} />}
+        {Ambient && <Ambient />}
         <CardShell design={effectiveDesign}>
         <div style={{
           display: "flex",
@@ -230,7 +219,7 @@ export function MissionViewer() {
   if (mission.lockedOut) {
     return (
       <>
-        {showAmbient && <AmbientBackground act={mission.act} />}
+        {Ambient && <Ambient />}
         <CardShell design={effectiveDesign}>
         <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
         <AnimationWrapper type="fade">
@@ -251,7 +240,7 @@ export function MissionViewer() {
 
   return (
     <>
-      {showAmbient && <AmbientBackground act={mission.act} />}
+      {Ambient && <Ambient />}
       <CardShell design={effectiveDesign}>
       <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
       <AnimationWrapper type={effectiveDesign?.animationIn ?? "fade"}>
