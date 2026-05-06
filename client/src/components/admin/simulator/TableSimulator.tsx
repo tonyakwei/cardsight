@@ -118,6 +118,18 @@ export function TableSimulator() {
   const actCards = cards.filter((c) => c.act === actNum);
   const unassigned = actCards.filter((c) => !c.tableHouseId);
 
+  // Physical cards NOT used in this act — pull these from the deck before shuffling.
+  const usedPhysicalIds = new Set(actCards.map((c) => c.physicalCardId));
+  const excludedPhysical = physicalCards
+    .filter((pc) => !usedPhysicalIds.has(pc.id))
+    .sort((a, b) => {
+      const colorOrder = ["red", "yellow", "green", "blue", "purple", "white"];
+      const ca = colorOrder.indexOf(a.color);
+      const cb = colorOrder.indexOf(b.color);
+      if (ca !== cb) return ca - cb;
+      return a.number - b.number;
+    });
+
   const handleDrop = useCallback((cardId: string, tableHouseId: string | null) => {
     setCards((prev) =>
       prev.map((c) => (c.id === cardId ? { ...c, tableHouseId } : c)),
@@ -227,6 +239,52 @@ export function TableSimulator() {
             ))}
           </Tabs.List>
         </Tabs>
+
+        {/* Pull-from-deck panel */}
+        {actNum && excludedPhysical.length > 0 && (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: "10px 12px",
+              border: "1px solid #4a3a1a",
+              borderRadius: 6,
+              background: "#1a1208",
+            }}
+          >
+            <Text size="sm" fw={700} c="yellow" mb={6}>
+              Pull these from the deck — Act {actNum} ({excludedPhysical.length} cards NOT in play)
+            </Text>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 10px" }}>
+              {excludedPhysical.map((pc) => (
+                <span
+                  key={pc.id}
+                  style={{
+                    fontSize: 12,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                    padding: "2px 6px",
+                    border: "1px solid #333",
+                    borderRadius: 3,
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      background: pc.color,
+                      border: pc.color === "white" ? "1px solid #888" : "none",
+                    }}
+                  />
+                  <strong>{pc.number}</strong>
+                  <span style={{ color: "#aaa" }}>{pc.name}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Table columns */}
         <div
