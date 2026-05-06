@@ -6,6 +6,8 @@ import { CardShell } from "../card-viewer/CardShell";
 import { CardContent } from "../card-viewer/CardContent";
 import { AnimationWrapper } from "../card-viewer/animations/AnimationWrapper";
 import { OverlayRenderer } from "../card-viewer/overlays/OverlayRenderer";
+import { FloodBackground } from "./FloodBackground";
+import { LeafyBackground } from "./LeafyBackground";
 import { MissionAnswerInput } from "./MissionAnswerInput";
 import { MissionDoors } from "./MissionDoors";
 import { MissionRevealOverlay } from "./MissionRevealOverlay";
@@ -14,10 +16,23 @@ import type { MissionViewerResponse, CardDesign } from "@cardsight/shared";
 
 const HOUSE_STORAGE_KEY = "cardsight_house";
 
-function houseTintedDesign(houseColor: string): CardDesign {
+// Acts 1 and 2 each render a live ambient background layer (flood / leafy)
+// behind the CardShell. The shell background is therefore partly transparent
+// so the layer shows through, with a darker veil over the content area for
+// readability. Other acts use the original opaque dark fill.
+function houseTintedDesign(houseColor: string, act: number): CardDesign {
+  let bgColor = "#0a0a0a";
+  let bgGradient = `radial-gradient(ellipse at top, ${houseColor}1f 0%, #0a0a0a 60%)`;
+  if (act === 1) {
+    bgColor = "transparent";
+    bgGradient = `radial-gradient(ellipse at top, ${houseColor}33 0%, transparent 55%), linear-gradient(180deg, rgba(6,14,26,0.92) 0%, rgba(6,14,26,0.86) 55%, rgba(6,14,26,0.4) 82%, rgba(6,14,26,0.05) 100%)`;
+  } else if (act === 2) {
+    bgColor = "transparent";
+    bgGradient = `radial-gradient(ellipse at top, ${houseColor}33 0%, transparent 55%), linear-gradient(180deg, rgba(8,16,12,0.92) 0%, rgba(8,16,12,0.86) 55%, rgba(8,16,12,0.4) 82%, rgba(8,16,12,0.05) 100%)`;
+  }
   return {
-    bgColor: "#0a0a0a",
-    bgGradient: `radial-gradient(ellipse at top, ${houseColor}1f 0%, #0a0a0a 60%)`,
+    bgColor,
+    bgGradient,
     bgImageUrl: null,
     textColor: "#e8e8e8",
     accentColor: houseColor,
@@ -29,6 +44,12 @@ function houseTintedDesign(houseColor: string): CardDesign {
     overlayEffect: null,
     customCss: null,
   };
+}
+
+function AmbientBackground({ act }: { act: number }) {
+  if (act === 1) return <FloodBackground />;
+  if (act === 2) return <LeafyBackground />;
+  return null;
 }
 
 function getStoredHouseId(): string | null {
@@ -146,12 +167,18 @@ export function MissionViewer() {
   const activeHouse =
     mission.houses.find((h) => h.id === selectedHouse) ?? mission.houses[0] ?? null;
   const effectiveDesign =
-    mission.design ?? (activeHouse ? houseTintedDesign(activeHouse.color) : null);
+    mission.design ?? (activeHouse ? houseTintedDesign(activeHouse.color, mission.act) : null);
+  // The ambient layer (flood for Act 1, leafy for Act 2) sits behind the
+  // CardShell whenever a mission is using the default house-tinted design.
+  // Custom mission designs opt out (they paint their own backdrop).
+  const showAmbient = !mission.design && (mission.act === 1 || mission.act === 2);
 
   // House picker for multi-house missions
   if (!selectedHouse && mission.houses.length > 1) {
     return (
-      <CardShell design={effectiveDesign}>
+      <>
+        {showAmbient && <AmbientBackground act={mission.act} />}
+        <CardShell design={effectiveDesign}>
         <div style={{
           display: "flex",
           flexDirection: "column",
@@ -194,14 +221,17 @@ export function MissionViewer() {
           </div>
         </div>
         <style>{`@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }`}</style>
-      </CardShell>
+        </CardShell>
+      </>
     );
   }
 
   // Locked out
   if (mission.lockedOut) {
     return (
-      <CardShell design={effectiveDesign}>
+      <>
+        {showAmbient && <AmbientBackground act={mission.act} />}
+        <CardShell design={effectiveDesign}>
         <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
         <AnimationWrapper type="fade">
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60dvh", textAlign: "center", gap: "1.5rem" }}>
@@ -214,12 +244,15 @@ export function MissionViewer() {
             )}
           </div>
         </AnimationWrapper>
-      </CardShell>
+        </CardShell>
+      </>
     );
   }
 
   return (
-    <CardShell design={effectiveDesign}>
+    <>
+      {showAmbient && <AmbientBackground act={mission.act} />}
+      <CardShell design={effectiveDesign}>
       <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
       <AnimationWrapper type={effectiveDesign?.animationIn ?? "fade"}>
         <CardContent
@@ -320,6 +353,7 @@ export function MissionViewer() {
           onDismiss={() => setRevealPhase("idle")}
         />
       )}
-    </CardShell>
+      </CardShell>
+    </>
   );
 }
