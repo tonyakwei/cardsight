@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, type ReactNode } from "react";
 import { useParams } from "react-router";
 import { fetchMission, postMissionScan, MissionNotFoundError } from "../../api/missions";
 import { getSessionHash } from "../../utils/session";
@@ -55,6 +55,8 @@ function storeHouseId(houseId: string) {
   } catch {}
 }
 
+const DEFAULT_DOOR_ACCENT = "#d4a574";
+
 export function MissionViewer() {
   const { missionId } = useParams<{ missionId: string }>();
   const [mission, setMission] = useState<MissionViewerResponse | null>(null);
@@ -64,7 +66,10 @@ export function MissionViewer() {
   const [selectedHouse, setSelectedHouse] = useState<string | null>(getStoredHouseId);
   const [revealPhase, setRevealPhase] = useState<"idle" | "confetti" | "revealed">("idle");
   const [revealText, setRevealText] = useState<string | null>(null);
-  const [doorsState, setDoorsState] = useState<"pending" | "playing" | "done">("pending");
+  // Doors mount immediately on first render and stay closed until the
+  // mission data arrives, masking the fetch round-trip behind a temple-door
+  // beat. They then slide open and unmount.
+  const [doorsState, setDoorsState] = useState<"closed" | "opening" | "done">("closed");
 
   const loadMission = useCallback(async () => {
     if (!missionId) return;
@@ -108,16 +113,22 @@ export function MissionViewer() {
     postMissionScan(missionId, selectedHouse ?? undefined, session).catch(() => {});
   }, [missionId, mission?.id]);
 
-  // Trigger the door-opening flourish the first time a player lands on the
-  // puzzle view: only when we're actually about to render the puzzle (not the
-  // house picker, not a locked or already-completed mission).
+  // Drive the doors state machine.
+  //  closed  → opening: data has loaded and the next view is a real puzzle/picker
+  //  closed  → done:    skip the slide entirely (revisit, locked, not-found)
   useEffect(() => {
-    if (doorsState !== "pending") return;
-    if (loading || !mission) return;
-    if (mission.isCompleted || mission.lockedOut) return;
-    if (!selectedHouse && mission.houses.length > 1) return;
-    setDoorsState("playing");
-  }, [loading, mission, selectedHouse, doorsState]);
+    if (doorsState !== "closed") return;
+    if (notFound) {
+      setDoorsState("done");
+      return;
+    }
+    if (loading || !mission) return; // still waiting on the fetch
+    if (mission.isCompleted || mission.lockedOut) {
+      setDoorsState("done");
+      return;
+    }
+    setDoorsState("opening");
+  }, [loading, mission, notFound, doorsState]);
 
   const handleHouseSelect = (houseId: string) => {
     setSelectedHouse(houseId);
@@ -136,38 +147,37 @@ export function MissionViewer() {
     setTimeout(() => setRevealPhase("revealed"), 2500);
   }, [revealPhase]);
 
-  if (loading) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100dvh", color: "#888" }}>
-        Loading...
-      </div>
-    );
-  }
+  // === Derived view state (safe to compute even when mission is null) ===
 
-  if (notFound || !mission) {
-    return (
+  const activeHouse =
+    mission?.houses.find((h) => h.id === selectedHouse) ?? mission?.houses[0] ?? null;
+  const actTheme = mission && !mission.design ? getActTheme(mission.act) : null;
+  const effectiveDesign: CardDesign | null =
+    mission?.design ?? (activeHouse ? houseTintedDesign(activeHouse.color, actTheme) : null);
+  const Ambient = actTheme?.Ambient ?? null;
+  const doorAccent = effectiveDesign?.accentColor ?? activeHouse?.color ?? DEFAULT_DOOR_ACCENT;
+
+  // === Pick the content branch ===
+
+  let content: ReactNode;
+
+  if (notFound) {
+    content = (
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", minHeight: "100dvh", color: "#888", textAlign: "center", padding: "2rem" }}>
         <div style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>Mission not found</div>
         <div style={{ fontSize: "0.85rem", opacity: 0.6 }}>This QR code may be invalid or the mission may have been removed.</div>
       </div>
     );
-  }
-
-  const activeHouse =
-    mission.houses.find((h) => h.id === selectedHouse) ?? mission.houses[0] ?? null;
-  // Custom mission designs opt out of the per-act ambient backdrop — they
-  // paint their own background.
-  const actTheme = mission.design ? null : getActTheme(mission.act);
-  const effectiveDesign =
-    mission.design ?? (activeHouse ? houseTintedDesign(activeHouse.color, actTheme) : null);
-  const Ambient = actTheme?.Ambient ?? null;
-
-  // House picker for multi-house missions
-  if (!selectedHouse && mission.houses.length > 1) {
-    return (
-      <>
-        {Ambient && <Ambient />}
-        <CardShell design={effectiveDesign}>
+  } else if (loading || !mission) {
+    // Minimal dark backdrop sitting beneath the closed doors. The doors
+    // mask this entirely; tap-to-skip will reveal it briefly until data
+    // lands.
+    content = (
+      <div style={{ minHeight: "100dvh", background: "#0a0a0a" }} />
+    );
+  } else if (!selectedHouse && mission.houses.length > 1) {
+    content = (
+      <CardShell design={effectiveDesign}>
         <div style={{
           display: "flex",
           flexDirection: "column",
@@ -210,17 +220,11 @@ export function MissionViewer() {
           </div>
         </div>
         <style>{`@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }`}</style>
-        </CardShell>
-      </>
+      </CardShell>
     );
-  }
-
-  // Locked out
-  if (mission.lockedOut) {
-    return (
-      <>
-        {Ambient && <Ambient />}
-        <CardShell design={effectiveDesign}>
+  } else if (mission.lockedOut) {
+    content = (
+      <CardShell design={effectiveDesign}>
         <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
         <AnimationWrapper type="fade">
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60dvh", textAlign: "center", gap: "1.5rem" }}>
@@ -233,102 +237,105 @@ export function MissionViewer() {
             )}
           </div>
         </AnimationWrapper>
-        </CardShell>
-      </>
+      </CardShell>
+    );
+  } else {
+    content = (
+      <CardShell design={effectiveDesign}>
+        <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
+        <AnimationWrapper type={effectiveDesign?.animationIn ?? "fade"}>
+          <CardContent
+            header={mission.title}
+            description={mission.puzzleDescription}
+          />
+
+          {mission.warnings.length > 0 && (
+            <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              {mission.warnings.map((w, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    borderRadius: "8px",
+                    background: "rgba(255, 200, 0, 0.08)",
+                    border: "1px solid rgba(255, 200, 0, 0.25)",
+                    fontSize: "0.85rem",
+                    lineHeight: 1.6,
+                    color: "#ffd54f",
+                  }}
+                >
+                  {w}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {mission.requiredClueSets.length > 0 && (
+            <RequiredItems itemSets={mission.requiredClueSets} />
+          )}
+
+          {mission.isCompleted && (
+            <div style={{
+              marginTop: "2rem",
+              padding: "1.25rem",
+              borderRadius: "12px",
+              background: justCompleted ? "rgba(105, 240, 174, 0.12)" : "rgba(255,255,255,0.05)",
+              border: justCompleted ? "1px solid rgba(105, 240, 174, 0.3)" : "1px solid rgba(255,255,255,0.1)",
+              textAlign: "center",
+              animation: justCompleted ? "solvedPulse 0.6s ease-out" : undefined,
+            }}>
+              <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>✓</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 600, color: justCompleted ? "#69f0ae" : "var(--card-accent-color)" }}>
+                {justCompleted ? "Correct! Mission complete." : "This mission has been completed"}
+              </div>
+            </div>
+          )}
+
+          {mission.isAnswerable && missionId && (
+            <MissionAnswerInput
+              missionId={missionId}
+              houseId={selectedHouse ?? undefined}
+              answerMeta={mission.answerMeta}
+              onCompleted={handleCompleted}
+              onLocked={() => {
+                setMission((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        lockedOut: true,
+                        lockedOutReason: prev.lockedOutReason ?? "Too many incorrect attempts.",
+                        isAnswerable: false,
+                      }
+                    : prev,
+                );
+              }}
+            />
+          )}
+        </AnimationWrapper>
+
+        <style>{`
+          @keyframes solvedPulse {
+            0% { transform: scale(0.95); opacity: 0; }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); opacity: 1; }
+          }
+        `}</style>
+      </CardShell>
     );
   }
 
   return (
     <>
       {Ambient && <Ambient />}
-      <CardShell design={effectiveDesign}>
-      <OverlayRenderer effect={effectiveDesign?.overlayEffect ?? null} />
-      <AnimationWrapper type={effectiveDesign?.animationIn ?? "fade"}>
-        <CardContent
-          header={mission.title}
-          description={mission.puzzleDescription}
-        />
-
-        {mission.warnings.length > 0 && (
-          <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            {mission.warnings.map((w, i) => (
-              <div
-                key={i}
-                style={{
-                  padding: "0.75rem 1rem",
-                  borderRadius: "8px",
-                  background: "rgba(255, 200, 0, 0.08)",
-                  border: "1px solid rgba(255, 200, 0, 0.25)",
-                  fontSize: "0.85rem",
-                  lineHeight: 1.6,
-                  color: "#ffd54f",
-                }}
-              >
-                {w}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {mission.requiredClueSets.length > 0 && (
-          <RequiredItems itemSets={mission.requiredClueSets} />
-        )}
-
-        {mission.isCompleted && (
-          <div style={{
-            marginTop: "2rem",
-            padding: "1.25rem",
-            borderRadius: "12px",
-            background: justCompleted ? "rgba(105, 240, 174, 0.12)" : "rgba(255,255,255,0.05)",
-            border: justCompleted ? "1px solid rgba(105, 240, 174, 0.3)" : "1px solid rgba(255,255,255,0.1)",
-            textAlign: "center",
-            animation: justCompleted ? "solvedPulse 0.6s ease-out" : undefined,
-          }}>
-            <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>✓</div>
-            <div style={{ fontSize: "0.95rem", fontWeight: 600, color: justCompleted ? "#69f0ae" : "var(--card-accent-color)" }}>
-              {justCompleted ? "Correct! Mission complete." : "This mission has been completed"}
-            </div>
-          </div>
-        )}
-
-        {mission.isAnswerable && missionId && (
-          <MissionAnswerInput
-            missionId={missionId}
-            houseId={selectedHouse ?? undefined}
-            answerMeta={mission.answerMeta}
-            onCompleted={handleCompleted}
-            onLocked={() => {
-              setMission((prev) =>
-                prev
-                  ? {
-                      ...prev,
-                      lockedOut: true,
-                      lockedOutReason: prev.lockedOutReason ?? "Too many incorrect attempts.",
-                      isAnswerable: false,
-                    }
-                  : prev,
-              );
-            }}
-          />
-        )}
-      </AnimationWrapper>
-
-      <style>{`
-        @keyframes solvedPulse {
-          0% { transform: scale(0.95); opacity: 0; }
-          50% { transform: scale(1.02); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-      `}</style>
-
-      {doorsState === "playing" && (
+      {content}
+      {doorsState !== "done" && (
         <MissionDoors
-          accentColor={effectiveDesign?.accentColor ?? "#d4a574"}
+          accentColor={doorAccent}
+          phase={doorsState}
           onDone={() => setDoorsState("done")}
         />
       )}
-
-      {revealPhase !== "idle" && (
+      {revealPhase !== "idle" && mission && (
         <MissionRevealOverlay
           phase={revealPhase}
           houseColor={
@@ -342,7 +349,6 @@ export function MissionViewer() {
           onDismiss={() => setRevealPhase("idle")}
         />
       )}
-      </CardShell>
     </>
   );
 }

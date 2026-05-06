@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 
 interface Props {
   accentColor: string;
+  // "closed": doors stay shut with the seam pulsing — used to mask the
+  //           initial fetch. Tap-to-skip still works.
+  // "opening": run the hold + slide animation, then fire onDone.
+  phase: "closed" | "opening";
   onDone: () => void;
 }
 
@@ -9,17 +13,18 @@ const HOLD_MS = 300;
 const SLIDE_MS = 1400;
 const TOTAL_MS = HOLD_MS + SLIDE_MS;
 
-export function MissionDoors({ accentColor, onDone }: Props) {
-  const [opening, setOpening] = useState(false);
+export function MissionDoors({ accentColor, phase, onDone }: Props) {
+  const [sliding, setSliding] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setOpening(true), HOLD_MS);
+    if (phase !== "opening") return;
+    const t1 = setTimeout(() => setSliding(true), HOLD_MS);
     const t2 = setTimeout(onDone, TOTAL_MS);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [onDone]);
+  }, [phase, onDone]);
 
   const stoneTexture =
     "repeating-linear-gradient(180deg, transparent 0, transparent 14px, rgba(255,255,255,0.025) 14px, rgba(255,255,255,0.025) 15px)";
@@ -47,7 +52,7 @@ export function MissionDoors({ accentColor, onDone }: Props) {
           background: `${stoneTexture}, ${stoneGradient}`,
           borderRight: `2px solid ${accentColor}`,
           boxShadow: `inset -12px 0 32px rgba(0,0,0,0.6), 6px 0 24px ${accentColor}33`,
-          transform: opening ? "translateX(-100%)" : "translateX(0)",
+          transform: sliding ? "translateX(-100%)" : "translateX(0)",
           transition: `transform ${SLIDE_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
         }}
       />
@@ -61,7 +66,7 @@ export function MissionDoors({ accentColor, onDone }: Props) {
           background: `${stoneTexture}, linear-gradient(225deg, #14110f 0%, #2a231e 45%, #1a1614 100%)`,
           borderLeft: `2px solid ${accentColor}`,
           boxShadow: `inset 12px 0 32px rgba(0,0,0,0.6), -6px 0 24px ${accentColor}33`,
-          transform: opening ? "translateX(100%)" : "translateX(0)",
+          transform: sliding ? "translateX(100%)" : "translateX(0)",
           transition: `transform ${SLIDE_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
         }}
       />
@@ -74,11 +79,11 @@ export function MissionDoors({ accentColor, onDone }: Props) {
           width: "2px",
           marginLeft: "-1px",
           background: `linear-gradient(to bottom, transparent 0%, ${accentColor} 20%, ${accentColor} 80%, transparent 100%)`,
-          opacity: opening ? 0 : 1,
+          opacity: sliding ? 0 : 1,
           transition: "opacity 0.4s ease-out",
           boxShadow: `0 0 18px ${accentColor}, 0 0 36px ${accentColor}88`,
           pointerEvents: "none",
-          animation: opening ? undefined : "missionSeamPulse 1.4s ease-in-out infinite",
+          animation: sliding ? undefined : "missionSeamPulse 1.4s ease-in-out infinite",
         }}
       />
       <style>{`
