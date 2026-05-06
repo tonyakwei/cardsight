@@ -41,6 +41,7 @@ export interface GameDetail extends GameSummary {
   designCount: number;
   finishedCount: number;
   blurNudgeEnabled: boolean;
+  blurNudgeDurationMs: number;
   printTheme: PrintTheme;
   historyTimelineArmed: boolean;
   historyTimelineAttemptIndex: number;

@@ -1,15 +1,21 @@
 import { useState, useEffect, useRef } from "react";
 
-const BLUR_DURATION_MS = 5000;
+const DEFAULT_NUDGE_DURATION_MS = 5000;
 
 interface Props {
   nudgeEnabled?: boolean;
+  nudgeDurationMs?: number;
 }
 
-export function VisibilityGuard({ nudgeEnabled = false }: Props) {
+export function VisibilityGuard({
+  nudgeEnabled = false,
+  nudgeDurationMs = DEFAULT_NUDGE_DURATION_MS,
+}: Props) {
   const [hidden, setHidden] = useState(false);
   const [fadingIn, setFadingIn] = useState(false);
   const clearTimer = useRef<ReturnType<typeof setTimeout>>();
+  const durationRef = useRef(nudgeDurationMs);
+  durationRef.current = nudgeDurationMs;
 
   useEffect(() => {
     const handleChange = () => {
@@ -18,14 +24,14 @@ export function VisibilityGuard({ nudgeEnabled = false }: Props) {
         setFadingIn(false);
         if (clearTimer.current) clearTimeout(clearTimer.current);
       } else if (nudgeEnabled) {
-        // Keep overlay visible for BLUR_DURATION_MS with nudge message
+        // Keep overlay visible for the configured duration with nudge message
         clearTimer.current = setTimeout(() => {
           setFadingIn(true);
           setTimeout(() => {
             setHidden(false);
             setFadingIn(false);
           }, 400);
-        }, BLUR_DURATION_MS);
+        }, durationRef.current);
       } else {
         // Original behavior — fade out quickly
         setFadingIn(true);

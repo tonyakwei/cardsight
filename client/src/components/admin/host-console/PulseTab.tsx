@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Group,
   Text,
@@ -8,6 +9,7 @@ import {
   Progress,
   Switch,
   Box,
+  NumberInput,
 } from "@mantine/core";
 import type { DashboardData } from "../../../api/admin";
 
@@ -17,7 +19,9 @@ interface Props {
   onEndAct: (act: number) => void;
   actionLoading: string | null;
   blurNudgeEnabled: boolean;
+  blurNudgeDurationMs: number;
   onToggleBlurNudge: (enabled: boolean) => void;
+  onSetBlurNudgeDuration: (ms: number) => void;
   historyTimelineArmed: boolean;
   historyTimelineAttemptIndex: number;
   historyTimelineSolvedAt: string | null;
@@ -33,7 +37,9 @@ export function PulseTab({
   onEndAct,
   actionLoading,
   blurNudgeEnabled,
+  blurNudgeDurationMs,
   onToggleBlurNudge,
+  onSetBlurNudgeDuration,
   historyTimelineArmed,
   historyTimelineAttemptIndex,
   historyTimelineSolvedAt,
@@ -138,18 +144,26 @@ export function PulseTab({
       </Paper>
 
       <Paper bg="dark.7" p="md" radius="md">
-        <Group justify="space-between">
-          <div>
-            <Text size="sm" fw={500}>Blur Nudge</Text>
-            <Text size="xs" c="dimmed">Remind players to write things down</Text>
-          </div>
-          <Switch
-            checked={blurNudgeEnabled}
-            onChange={(e) => onToggleBlurNudge(e.currentTarget.checked)}
-            color="yellow"
-            size="md"
+        <Stack gap="sm">
+          <Group justify="space-between">
+            <div>
+              <Text size="sm" fw={500}>Blur Nudge</Text>
+              <Text size="xs" c="dimmed">Remind players to write things down</Text>
+            </div>
+            <Switch
+              checked={blurNudgeEnabled}
+              onChange={(e) => onToggleBlurNudge(e.currentTarget.checked)}
+              color="yellow"
+              size="md"
+            />
+          </Group>
+          <BlurNudgeDurationInput
+            valueMs={blurNudgeDurationMs}
+            disabled={!blurNudgeEnabled}
+            saving={actionLoading === "blur-nudge-duration"}
+            onCommit={onSetBlurNudgeDuration}
           />
-        </Group>
+        </Stack>
       </Paper>
 
       <Paper bg="dark.7" p="md" radius="md">
@@ -246,6 +260,65 @@ export function PulseTab({
         </Button>
       )}
     </Stack>
+  );
+}
+
+function BlurNudgeDurationInput({
+  valueMs,
+  disabled,
+  saving,
+  onCommit,
+}: {
+  valueMs: number;
+  disabled: boolean;
+  saving: boolean;
+  onCommit: (ms: number) => void;
+}) {
+  // Edit in seconds locally; commit to ms on blur or Enter so polling doesn't clobber typing.
+  const [draft, setDraft] = useState<number | string>(valueMs / 1000);
+  useEffect(() => {
+    setDraft(valueMs / 1000);
+  }, [valueMs]);
+
+  function commit() {
+    const seconds = typeof draft === "number" ? draft : parseFloat(draft);
+    if (!Number.isFinite(seconds)) {
+      setDraft(valueMs / 1000);
+      return;
+    }
+    const clamped = Math.max(0, Math.min(60, seconds));
+    const ms = Math.round(clamped * 1000);
+    if (ms === valueMs) {
+      setDraft(clamped);
+      return;
+    }
+    onCommit(ms);
+  }
+
+  return (
+    <Group justify="space-between" align="center">
+      <Text size="xs" c="dimmed">
+        Hold duration (seconds)
+      </Text>
+      <NumberInput
+        value={draft}
+        onChange={setDraft}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            (e.currentTarget as HTMLInputElement).blur();
+          }
+        }}
+        disabled={disabled || saving}
+        min={0}
+        max={60}
+        step={0.5}
+        decimalScale={1}
+        size="xs"
+        w={90}
+        styles={{ input: { textAlign: "right" } }}
+      />
+    </Group>
   );
 }
 

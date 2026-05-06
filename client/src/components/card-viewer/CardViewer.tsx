@@ -178,7 +178,10 @@ export function CardViewer() {
     <CardShell design={card.design}>
       <OverlayRenderer effect={card.design?.overlayEffect ?? null} />
       {examined && card.status === "available" && !isDirectViewCard && (
-        <VisibilityGuard nudgeEnabled={card.blurNudgeEnabled} />
+        <VisibilityGuard
+          nudgeEnabled={card.blurNudgeEnabled}
+          nudgeDurationMs={card.blurNudgeDurationMs}
+        />
       )}
 
       {/* Locked out */}

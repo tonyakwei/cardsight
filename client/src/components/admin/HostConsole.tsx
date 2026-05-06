@@ -148,6 +148,12 @@ export function HostConsole() {
     );
   }
 
+  function doSetBlurNudgeDuration(ms: number) {
+    doAction("blur-nudge-duration", () =>
+      updateGameSettings(gameId!, { blurNudgeDurationMs: ms }).then(() => {}),
+    );
+  }
+
   function doArmHistoryTimeline() {
     doAction("history-arm", () =>
       armHistoryTimeline(gameId!).then(() => {}),
@@ -287,7 +293,9 @@ export function HostConsole() {
             onEndAct={doEndAct}
             actionLoading={actionLoading}
             blurNudgeEnabled={game.blurNudgeEnabled}
+            blurNudgeDurationMs={game.blurNudgeDurationMs}
             onToggleBlurNudge={doToggleBlurNudge}
+            onSetBlurNudgeDuration={doSetBlurNudgeDuration}
             historyTimelineArmed={game.historyTimelineArmed}
             historyTimelineAttemptIndex={game.historyTimelineAttemptIndex}
             historyTimelineSolvedAt={game.historyTimelineSolvedAt}

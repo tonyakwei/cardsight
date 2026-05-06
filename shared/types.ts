@@ -75,6 +75,7 @@ export interface CardViewerResponse {
 
   // Game-level settings
   blurNudgeEnabled: boolean;
+  blurNudgeDurationMs: number;
 
   // History timeline
   historyTimeline: HistoryTimelineCardState | null;

@@ -20,6 +20,7 @@ const viewerInclude = {
   game: {
     select: {
       blurNudgeEnabled: true,
+      blurNudgeDurationMs: true,
       historyTimelineArmed: true,
       historyTimelineSolvedAt: true,
     },
@@ -235,6 +236,7 @@ export async function getCardForViewer(
     answerVisibleAfterDestruct: skipsMechanics ? false : card.answerVisibleAfterDestruct,
     isSolved: card.isSolved,
     blurNudgeEnabled: card.game.blurNudgeEnabled,
+    blurNudgeDurationMs: card.game.blurNudgeDurationMs,
     historyTimeline: isHistoryCard
       ? {
         order: card.historyTimelineOrder,

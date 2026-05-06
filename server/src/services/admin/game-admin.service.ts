@@ -76,6 +76,7 @@ export async function getGame(gameId: string) {
     designCount: game._count.designs,
     finishedCount,
     blurNudgeEnabled: game.blurNudgeEnabled,
+    blurNudgeDurationMs: game.blurNudgeDurationMs,
     printTheme: (game.printTheme === "temple" ? "temple" : "classic") as "classic" | "temple",
     historyTimelineArmed: game.historyTimelineArmed,
     historyTimelineAttemptIndex: game.historyTimelineAttemptIndex,
@@ -364,14 +365,28 @@ async function dupStorySheets(tx: any, gameId: string, newGameId: string, houseM
 
 export async function updateGameSettings(
   gameId: string,
-  data: { blurNudgeEnabled?: boolean; printTheme?: "classic" | "temple" },
+  data: {
+    blurNudgeEnabled?: boolean;
+    blurNudgeDurationMs?: number;
+    printTheme?: "classic" | "temple";
+  },
 ) {
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) throw new AppError(404, "Game not found");
 
-  const updateData = pickAllowedFields(data, ["blurNudgeEnabled", "printTheme"]);
+  const updateData = pickAllowedFields(data, [
+    "blurNudgeEnabled",
+    "blurNudgeDurationMs",
+    "printTheme",
+  ]);
   if (updateData.printTheme && !["classic", "temple"].includes(updateData.printTheme)) {
     throw new AppError(400, "Invalid printTheme");
+  }
+  if (updateData.blurNudgeDurationMs !== undefined) {
+    const ms = updateData.blurNudgeDurationMs;
+    if (!Number.isInteger(ms) || ms < 0 || ms > 60000) {
+      throw new AppError(400, "blurNudgeDurationMs must be an integer between 0 and 60000");
+    }
   }
 
   const updated = await prisma.game.update({
@@ -381,6 +396,7 @@ export async function updateGameSettings(
 
   return {
     blurNudgeEnabled: updated.blurNudgeEnabled,
+    blurNudgeDurationMs: updated.blurNudgeDurationMs,
     printTheme: (updated.printTheme === "temple" ? "temple" : "classic") as "classic" | "temple",
   };
 }

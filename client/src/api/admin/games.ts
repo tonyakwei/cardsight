@@ -49,8 +49,16 @@ export async function activateGame(
 
 export async function updateGameSettings(
   gameId: string,
-  data: { blurNudgeEnabled?: boolean; printTheme?: "classic" | "temple" },
-): Promise<{ blurNudgeEnabled: boolean; printTheme: "classic" | "temple" }> {
+  data: {
+    blurNudgeEnabled?: boolean;
+    blurNudgeDurationMs?: number;
+    printTheme?: "classic" | "temple";
+  },
+): Promise<{
+  blurNudgeEnabled: boolean;
+  blurNudgeDurationMs: number;
+  printTheme: "classic" | "temple";
+}> {
   const res = await adminFetch(`${BASE}/games/${gameId}/settings`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
