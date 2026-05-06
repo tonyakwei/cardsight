@@ -1360,7 +1360,7 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "There's 9 separate chains, each inscribed with QRian glyphs - and it appears that each chain had a metallic label attached to it. Good news: those metallic labels appear to be translations the QRians made themselves for their language! Bad news: The metallic labels themselves for the chains broke off when the mechanism seized during your explosion and scattered throughout the chamber.\n\nGather all 9 *Inscribed Metal Fragment*s, and figure out what order you have to pull the chains to get the hoist to work. The QRians did love their mysterious messages...\n\n| Chain | Glyph |\n|-------|-------|\n| 1 | {{{LEAVE}}} |\n| 2 | {{{WHO}}} |\n| 3 | {{{THIS}}} |\n| 4 | {{{NEVER}}} |\n| 5 | {{{WE}}} |\n| 6 | {{{TO}}} |\n| 7 | {{{BUILT}}} |\n| 8 | {{{GET}}} |\n| 9 | {{{WILL}}} |",
+        "There's 9 separate chains, each inscribed with QRian glyphs - and it appears that each chain had a metallic label attached to it.\n\nGood news: those metallic labels appear to be translations the QRians made themselves for their language!\n\nBad news: The metallic labels themselves for the chains broke off when the mechanism seized during your explosion and scattered throughout the chamber.\n\nGather all sets of *Inscribed Metal Fragment*s, and figure out what order you have to pull the chains to get the hoist to work. The QRians did love their mysterious messages...\n\n| Chain | Glyph |\n|-------|-------|\n| 1 | {{{LEAVE}}} |\n| 2 | {{{WHO}}} |\n| 3 | {{{THIS}}} |\n| 4 | {{{NEVER}}} |\n| 5 | {{{WE}}} |\n| 6 | {{{TO}}} |\n| 7 | {{{BUILT}}} |\n| 8 | {{{GET}}} |\n| 9 | {{{WILL}}} |",
       requiredClueSets: [{ cardSetId: csMetalFragment.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansHoist.id,
@@ -1547,7 +1547,7 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "Seven route-setting kit components need to be assembled in the correct rigging sequence — but the bag burst when you scrambled in, and pieces of kit are scattered across the chamber floor in other teams' hands. The numbered tags (#1–#7) on each piece are inventory labels only; they do not indicate rigging order.\n\nGather all three *Unmarked Steel Hardware*s from the chamber, read each component's tag for a hint about when it's needed, then write the seven item numbers in assembly order. Those beautiful grappling hooks are waiting for you...",
+        "Seven route-setting kit components need to be assembled in the correct rigging sequence — but the bag burst when you scrambled in, and pieces of kit are scattered across the chamber floor in other teams' hands. The numbered tags (#1–#7) on each piece are inventory labels only; they do not indicate rigging order.\n\nGather all sets of *Unmarked Steel Hardware* from the chamber, read each component's tag for a hint about when it's needed, then write the seven item numbers in assembly order. Those beautiful grappling hooks are waiting for you...",
       requiredClueSets: [{ cardSetId: csSteelHardware.id, count: 3 }],
       answerTemplateType: "single_answer",
       answerId: ansRigs.id,
@@ -1622,7 +1622,7 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values \u2014 the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all three *Numbered Bone Token*s from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values \u2014 one per slot.",
+        "The disc has 8 positions, each with an inner ring slot and an outer ring slot. 5 positions are complete; 3 are missing both their inner and outer values. Numbered Bone Tokens scattered around the pedestal supply the missing inner values \u2014 the houses around you have picked up the rest.\n\n| Position | Inner | Outer |\n|----------|-------|-------|\n| 1 | 1 | 3 |\n| 2 | 3 | 8 |\n| 3 | **?** | **?** |\n| 4 | 7 | 18 |\n| 5 | **?** | **?** |\n| 6 | 11 | 28 |\n| 7 | 13 | 33 |\n| 8 | **?** | **?** |\n\nGather all sets of *Numbered Bone Token* from the chamber to learn the missing inner values. Discover the pattern in the inner ring, then find the rule that transforms inner values to outer values, and calculate the three missing outer values \u2014 one per slot.",
       requiredClueSets: [{ cardSetId: csBoneToken.id, count: 3 }],
       answerTemplateType: "multiple_text",
       answerId: ansTeaching.id,
@@ -2258,7 +2258,7 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "Two-stage gate. First, place the **saved Fuse Charges** to breach the bunker. Second, solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
+        "You realize your **saved Fuse Charges** are *perfect* for breaching the bunker. Lucky you saved them — you blast right in.\n\nInside, you realize you'll have to solve the two cryptic riddles inscribed on the *Togom Riddle-Tablets* to release the inner scroll-case.\n\nGather both Togom Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csTogomTablet.id, count: 2 }],
       answerTemplateType: "multiple_text",
       answerId: ansReinforcedBunker.id,
@@ -2520,7 +2520,7 @@ async function main() {
       description:
         "",
       puzzleDescription:
-        "Two-stage gate. First, set the **saved Grappling Rigs** and climb the ledge. Second, solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
+        "You realize your **saved Grappling Rigs** are *perfect* for reaching the ledge. Lucky you saved them — you set the lines and climb right up.\n\nInside, you realize you'll have to solve the two cryptic riddles inscribed on the *Yenus Riddle-Tablets* to release the inner scroll-case.\n\nGather both Yenus Riddle-Tablets from the chamber, read the wordplay on each, and write each tablet's answer in its slot.",
       requiredClueSets: [{ cardSetId: csYenusTablet.id, count: 2 }],
       answerTemplateType: "multiple_text",
       answerId: ansHighLedge.id,
