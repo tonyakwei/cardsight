@@ -7,6 +7,7 @@ import { CardContent } from "../card-viewer/CardContent";
 import { AnimationWrapper } from "../card-viewer/animations/AnimationWrapper";
 import { OverlayRenderer } from "../card-viewer/overlays/OverlayRenderer";
 import { MissionAnswerInput } from "./MissionAnswerInput";
+import { MissionDoors } from "./MissionDoors";
 import { MissionRevealOverlay } from "./MissionRevealOverlay";
 import { RequiredItems } from "./RequiredItems";
 import type { MissionViewerResponse, CardDesign } from "@cardsight/shared";
@@ -21,7 +22,7 @@ function houseTintedDesign(houseColor: string): CardDesign {
     textColor: "#e8e8e8",
     accentColor: houseColor,
     secondaryColor: houseColor,
-    fontFamily: "system-ui",
+    fontFamily: '"Lora", Georgia, serif',
     cardStyle: "default",
     animationIn: "fade",
     borderStyle: null,
@@ -53,6 +54,7 @@ export function MissionViewer() {
   const [selectedHouse, setSelectedHouse] = useState<string | null>(getStoredHouseId);
   const [revealPhase, setRevealPhase] = useState<"idle" | "confetti" | "revealed">("idle");
   const [revealText, setRevealText] = useState<string | null>(null);
+  const [doorsState, setDoorsState] = useState<"pending" | "playing" | "done">("pending");
 
   const loadMission = useCallback(async () => {
     if (!missionId) return;
@@ -95,6 +97,17 @@ export function MissionViewer() {
     const session = getSessionHash();
     postMissionScan(missionId, selectedHouse ?? undefined, session).catch(() => {});
   }, [missionId, mission?.id]);
+
+  // Trigger the door-opening flourish the first time a player lands on the
+  // puzzle view: only when we're actually about to render the puzzle (not the
+  // house picker, not a locked or already-completed mission).
+  useEffect(() => {
+    if (doorsState !== "pending") return;
+    if (loading || !mission) return;
+    if (mission.isCompleted || mission.lockedOut) return;
+    if (!selectedHouse && mission.houses.length > 1) return;
+    setDoorsState("playing");
+  }, [loading, mission, selectedHouse, doorsState]);
 
   const handleHouseSelect = (houseId: string) => {
     setSelectedHouse(houseId);
@@ -285,6 +298,13 @@ export function MissionViewer() {
           100% { transform: scale(1); opacity: 1; }
         }
       `}</style>
+
+      {doorsState === "playing" && (
+        <MissionDoors
+          accentColor={effectiveDesign?.accentColor ?? "#d4a574"}
+          onDone={() => setDoorsState("done")}
+        />
+      )}
 
       {revealPhase !== "idle" && (
         <MissionRevealOverlay
