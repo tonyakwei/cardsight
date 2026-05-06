@@ -1306,7 +1306,7 @@ async function main() {
       storySheetBlurb:
         "All houses blame you for the flooding. But set into the far wall, there's a heavy stone wheel \u2014 with channels radiating from its location across the floor \u2014 your tactical eyes assume something instantly: it likely controls the water. Five sets of QRian glyphs are carved into the face of the wheel. Decode them and turn the wheel appropriately, and something might happen to the water... The English -> QRian translation tablets fragments you found before you entered the temple's basement were scattered in the blast, though... some of the other teams probably have the pieces\u2026",
       correctAnswerReveal:
-        "The wheel grinds and turns. You see water redirects start to flow through the ancient channels, and it's clear this water mechanism was designed! The ability to bring water into the temple was purposeful. The flood isn't from the dynamite. The temple was built to purge itself. Your blast didn't cause this! Despite turning the wheel, though - the water *does not stop rising*...",
+        "The wheel grinds and turns. You see water redirects start to flow through the ancient channels, and it's clear this water mechanism was designed! The ability to bring water into the temple was purposeful. The flood isn't from the dynamite. The temple was built to purge itself. Your blast didn't cause this! Despite turning the wheel, though, the water keeps rising — *but slower, now*. The mechanism diverts part of the flood into channels gurgling somewhere deep below the floor. Not enough to stop it. Enough to buy the room a little more time.",
       description:
         "",
       puzzleDescription:
@@ -1437,7 +1437,7 @@ async function main() {
       storySheetBlurb:
         "Along the lower walls, half-obscured by mineral deposits — a 3x3 grid of carved pipe sections, an engineered drainage network. Source and drain are visible but seven sections of pipes are missing! If you can find those pipes - maybe with the others - can you start draining the floodwater?",
       correctAnswerReveal:
-        "The valves click open in sequence and water flows through channels that haven't moved in centuries. But V5 stays dead — deliberate chisel marks. When you look closely, it appears that the tools were QRian in origin - they have distinctive {{{O}}} {{{X}}} or other weird symbols at the sabotage points... They built a drainage system then crippled it. The QRians built a flood drainage system... and decided they didn't want it?",
+        "The valves click open in sequence and water flows through channels that haven't moved in centuries. **The floodwater begins to drop, just a little.** But V5 stays dead — deliberate chisel marks. When you look closely, it appears that the tools were QRian in origin - they have distinctive {{{O}}} {{{X}}} or other weird symbols at the sabotage points... They built a drainage system then crippled it. Without that one sabotaged section, the rest still drains. Slower than it should. But it drains.",
       description:
         "",
       puzzleDescription:
