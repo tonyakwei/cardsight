@@ -10,6 +10,8 @@
     "db:seed": "pnpm --filter server prisma db seed",
     "db:seed-date-night": "pnpm --filter server exec node --import tsx/esm prisma/seed-date-night.ts",
     "db:seed-date-night:prod": "pnpm --filter server db:seed-date-night:prod",
+    "db:seed-would-you-rather": "pnpm --filter server exec node --import tsx/esm prisma/seed-would-you-rather.ts",
+    "db:seed-would-you-rather:prod": "pnpm --filter server db:seed-would-you-rather:prod",
     "db:seed-test": "pnpm --filter server exec tsx prisma/seed-test-game.ts",
     "db:seed-qrians": "pnpm --filter server exec tsx prisma/seed-qrians.ts",
     "db:studio": "pnpm --filter server prisma studio"

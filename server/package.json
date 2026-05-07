@@ -10,6 +10,8 @@
     "prisma": "prisma",
     "db:seed-date-night": "node --import tsx/esm prisma/seed-date-night.ts",
     "db:seed-date-night:prod": "tsx scripts/seed-date-night-prod.ts",
+    "db:seed-would-you-rather": "node --import tsx/esm prisma/seed-would-you-rather.ts",
+    "db:seed-would-you-rather:prod": "tsx scripts/seed-would-you-rather-prod.ts",
     "db:seed-qrians": "tsx prisma/seed-qrians.ts",
     "db:seed-qrians:prod": "tsx scripts/seed-qrians-prod.ts",
     "sync-seed": "tsx scripts/sync-seed-from-db.ts"
