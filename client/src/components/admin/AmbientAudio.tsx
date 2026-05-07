@@ -122,7 +122,13 @@ export function AmbientAudio() {
     if (!gameId) return;
     try {
       const data = await fetchAudioFeed(gameId, cursorRef.current);
-      cursorRef.current = data.cursor;
+      if (!data || !Array.isArray(data.events)) {
+        setError("Bad audio feed response");
+        return;
+      }
+      if (typeof data.cursor === "string") {
+        cursorRef.current = data.cursor;
+      }
       if (data.events.length > 0) {
         setRecent((prev) => [...data.events, ...prev].slice(0, 25));
         enqueue(data.events);
