@@ -165,6 +165,7 @@ cardsight/
 - **SingleAnswer** — answer template for text-input puzzles (correct answer, alternatives, hints). Polymorphic pattern: `answerTemplateType` + `answerId` on Card/Mission, resolved manually in card.service.ts. Future types (multiple choice, photo select, etc.) are additive — new table + new UI component.
 - **ScanEvent** / **AnswerAttempt** — analytics logs.
 - **SetReview** — tracks when admin last reviewed a card set. Used to show "N cards modified since review" badges.
+- **EventTimer** — a singleton per-game countdown for the live event, independent of `Game.currentAct`/acts. Has `day` (1/2/3, its own narrative day, not the story act), `status` (`running`/`paused`), `remainingMs` (canonical remaining time as of `statusChangedAt`), and an optional `overrideText` that replaces the numeric countdown entirely (e.g. for intermissions). Auto-created on first read with day 1's default duration. Drives the `/timer/:gameId` TV display and is controlled from `/admin/games/:id/timer-remote`.
 
 ## Key architectural decisions
 
@@ -197,6 +198,8 @@ cardsight/
 - **Admin sidebar navigation** — when inside a game (`/admin/games/:gameId/*`), `AdminLayout` shows a persistent sidebar with links to all game sections (Cards, Missions, Story Sheets, Showtimes, Dashboard, Act Break, Simulator, Print Center). Individual page headers no longer have cross-page navigation buttons.
 - **Collapsible sections** — CardRow and MissionRow use `CollapsibleSection` to group fields into expandable sections (Content, Behavior, Answer for cards; Content, Houses & Clues, Consequences for missions). Collapse state is persisted in sessionStorage via `useSectionCollapse` hook — sections default to expanded but stay collapsed once collapsed until the session ends.
 - **Admin auth** — HTTP Basic Auth on all `/api/admin/*` routes via `adminAuth` middleware. Controlled by `ENV_LEVEL` env var: skipped when not `production`. Client stores base64 credentials in `sessionStorage`, sends via `Authorization: Basic` header through the `adminFetch()` wrapper in `client/src/api/admin/common.ts`. QR image URLs pass token as `?token=` query param (since `<img src>` can't set headers). Login gate lives in `AdminLayout.tsx`, verifies via `GET /api/admin/verify`.
+- **Live countdown timer is deliberately decoupled from `Game.currentAct`** — `EventTimer.day` (1/2/3) is its own field, tracking the real-world day of a multi-day live event, not the story act. `transitionAct`/`ActTransitionButton` never read or write it, so the TV countdown can be freely paused, rewound, or day-switched without ever risking a real act transition (which locks cards). Day switches reset `remainingMs` to that day's configured duration (`DAY_DURATION_MS` in `event-timer.service.ts`) and re-theme the display via `DAY_THEMES` in `client/src/components/event-timer/dayThemes.ts`.
+- **The timer display is intentionally unauthenticated; the remote is not** — `/timer/:gameId` only ever GETs state (never mutates), so it skips admin login entirely — the URL contains an unguessable game UUID and the page needs to load instantly on the AirPlay phone with no login friction. `/admin/games/:id/timer-remote` lives under the normal `/admin` route tree, so it's gated by the existing HTTP Basic Auth like every other admin page. Remaining-time math (`computeRemainingMs`) is always computed server-side from `remainingMs` + `statusChangedAt`, never trusted from a client.
 - **House cookie tagging (analytics-only)** — each House has an optional `slug` (e.g., `drake`, `jones`, `croft`). One member of each house taps a "house NFC card" linking to `/h/:slug`, which calls `POST /api/house-claim/:slug` to set a long-lived `cs_house=<houseId>` cookie (HttpOnly, SameSite=Lax). The `houseCookie` middleware in `server/src/middleware/house-cookie.ts` reads this cookie into `req.houseId` on every request. Card scan and answer endpoints record `houseId` on `ScanEvent` / `AnswerAttempt`. Mission scan/answer endpoints prefer the cookie over the body's `houseId` when present. **The cookie is purely for attribution — it never changes routing, content, or gameplay.** The mission viewer's house picker and showtime's `?house=` query param remain authoritative for user-facing state. The `/h/:slug` route renders a 3-second themed flash animation: Drake (fire bursts + violet glow + screen shake), Jones (text whipping in circular orbits before converging), Croft (Star Wars–style perspective crawl), and a generic fallback for other slugs. The dashboard surfaces house attribution via per-event house chips in the activity feed and a `Scan Activity by House` panel showing scan + correct-answer counts per house for the current act.
 
 ## Running locally
@@ -287,9 +290,11 @@ Code changes deploy automatically — Railway watches `main` and rebuilds on pus
 | `/admin/games/:id/ambient` | AmbientAudio | Phone-on-Bluetooth-speaker page that polls the audio feed every ~1.5s and plays a gong on correct answers / "bum-bum" on incorrect ones. Uses Screen Wake Lock API to keep the phone awake; resets cursor when tab regains visibility to avoid flood of stale events. Requires audio files in `client/public/audio/` (see below). |
 | `/admin/games/:id/print` | PrintCenter | Unified print hub (story sheets, consequence cards) |
 | `/admin/games/:id/print/finale-pads` | FinalePadsPrint | Three themed letter-portrait pads (Destroy = scorched/ember, Recontain = sealed/slate, Open = gold/dawn) for the Reckoning vote-by-card-placement |
+| `/admin/games/:id/timer-remote` | TimerRemote | Control panel for the live event countdown — pause/resume, switch day (1/2/3), override the remaining time or replace the display with freeform text. Polls every 3s so multiple open remotes stay in sync. |
 | `/m/:missionId` | MissionViewer | Player-facing mission scan (narrative, puzzle, required clues, answer) |
 | `/h/:slug` | HouseClaim | Sets `cs_house` cookie for the matching house in the active game; plays a 3s themed flash animation (DrakeFlash/JonesFlash/CroftFlash/GenericFlash) |
 | `/showtime/:id?house=:houseId` | ShowtimeViewer | Player-facing synchronized analysis console + reveal |
+| `/timer/:gameId` | TimerDisplay | Public, unauthenticated full-screen countdown display — open on a phone and AirPlay-mirror to the room TV. Polls every 3s, ticks locally between polls, holds a Screen Wake Lock, and nudges to rotate landscape in portrait. |
 
 ## API structure
 
@@ -314,6 +319,10 @@ GET   /api/showtime/:id?house=:houseId           # Full console view
 GET   /api/showtime/:id/poll?house=:houseId       # Lightweight poll (phase, slot status)
 POST  /api/showtime/:id/submit?house=:houseId     # Submit slot value
 POST  /api/showtime/:id/sync-press?house=:houseId # Record synchronized button press
+
+# Event Timer (live countdown display — read-only, unauthenticated by design)
+GET   /api/event-timer/:gameId        # Full state (auto-creates the timer row on first read)
+GET   /api/event-timer/:gameId/poll   # Same payload — small enough that poll == full state
 ```
 
 ### Admin (HTTP Basic Auth in production, open in development)
@@ -386,6 +395,13 @@ PUT    /api/admin/games/:gameId/story-sheets/:id
 DELETE /api/admin/games/:gameId/story-sheets/:id
 GET    /api/admin/games/:gameId/story-sheets/print/:act
 
+# Event Timer (mutations — gated by admin auth like everything else under /api/admin)
+POST  /api/admin/games/:gameId/event-timer/pause
+POST  /api/admin/games/:gameId/event-timer/resume
+POST  /api/admin/games/:gameId/event-timer/day             # body: { day: 1 | 2 | 3 } — resets remainingMs to that day's duration, clears overrideText
+POST  /api/admin/games/:gameId/event-timer/override-time   # body: { remainingMs: number } — clears overrideText
+POST  /api/admin/games/:gameId/event-timer/override-text   # body: { text: string | null } — leaves the countdown math untouched
+
 # Other
 GET   /api/admin/games/:gameId/designs
 GET   /api/admin/games/:gameId/answers/:type
@@ -425,6 +441,7 @@ POST  /api/admin/games/:gameId/simulator/auto-distribute
 - Mobile host console (`/admin/games/:id/console`) — phone-optimized 5-tab interface for live game hosting: pulse (stats, discovery, mission progress, blur nudge toggle, end act), activity feed (live scan/answer stream), cards (search by physical name/color/set, lock/unlock/reset), missions (per-act list, lock/unlock), showtimes (slot status, force trigger, reset). Polls every 5s, big tap targets, confirmation dialogs on destructive actions
 - Act-based physical card reuse — same 54 physical cards serve all 3 acts; `@@unique([gameId, physicalCardId, act])` constraint; QR scan resolution via `resolveCard()` (physical UUID → active game → current act); wrong-act handling (410 + client message); `game.currentAct` tracking; per-act physical card shuffling; artifact catalog sheets per house per act; act-scoped dashboard stats
 - Railway deployment (single service: Express serves API + built Vite client + ATN landing page)
+- Live countdown timer + remote — `EventTimer` model (day, running/paused status, remainingMs, optional override text), server-authoritative remaining-time math, public unauthenticated `/timer/:gameId` TV display (day-themed sky gradient, Screen Wake Lock, drift-corrected local ticking between 3s polls, portrait-rotate nudge) and admin-authed `/admin/games/:id/timer-remote` control panel (pause/resume, day switch, override time/message)
 
 ## Deployment (Railway)
 

@@ -7,6 +7,7 @@ import missionRoutes from "./routes/missions.js";
 import adminRoutes from "./routes/admin.js";
 import showtimeRoutes from "./routes/showtime.js";
 import houseClaimRoutes from "./routes/house-claim.js";
+import eventTimerRoutes from "./routes/event-timer.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { adminAuth } from "./middleware/admin-auth.js";
 import { houseCookie } from "./middleware/house-cookie.js";
@@ -24,6 +25,7 @@ app.use("/api/missions", missionRoutes);
 app.use("/api/admin", adminAuth, adminRoutes);
 app.use("/api/showtime", showtimeRoutes);
 app.use("/api/house-claim", houseClaimRoutes);
+app.use("/api/event-timer", eventTimerRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {

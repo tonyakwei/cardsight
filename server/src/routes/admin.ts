@@ -4,6 +4,7 @@ import missionRoutes from "./admin/mission-routes.js";
 import showtimeRoutes from "./admin/showtime-routes.js";
 import storySheetRoutes from "./admin/storysheet-routes.js";
 import gameRoutes from "./admin/game-routes.js";
+import eventTimerRoutes from "./admin/event-timer-routes.js";
 
 const router: RouterType = Router();
 
@@ -16,5 +17,6 @@ router.use("/", cardRoutes);
 router.use("/", missionRoutes);
 router.use("/", showtimeRoutes);
 router.use("/", storySheetRoutes);
+router.use("/", eventTimerRoutes);
 
 export default router;

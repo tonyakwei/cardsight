@@ -191,6 +191,18 @@ export interface ShowtimeSyncPressResponse {
   message: string;
 }
 
+// === Event Timer ===
+
+export type EventTimerStatus = "running" | "paused";
+
+export interface EventTimerState {
+  day: 1 | 2 | 3;
+  status: EventTimerStatus;
+  remainingMs: number;
+  overrideText: string | null;
+  serverNow: string;
+}
+
 // === Missions (Player-Facing) ===
 
 export interface MissionViewerResponse {

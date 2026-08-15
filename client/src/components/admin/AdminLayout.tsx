@@ -16,6 +16,7 @@ const GAME_NAV_ITEMS = [
   { label: "Print Center", path: "/print", icon: "🖨" },
   { label: "Host Console", path: "/console", icon: "📱" },
   { label: "Ambient Audio", path: "/ambient", icon: "🔔" },
+  { label: "Timer Remote", path: "/timer-remote", icon: "⏱" },
 ];
 
 export function AdminLayout() {

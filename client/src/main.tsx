@@ -31,6 +31,8 @@ import { Act3CardsPrint } from "./components/admin/Act3CardsPrint";
 import { HostConsole } from "./components/admin/HostConsole";
 import { AmbientAudio } from "./components/admin/AmbientAudio";
 import { TableSimulator } from "./components/admin/simulator/TableSimulator";
+import { TimerDisplay } from "./components/event-timer/TimerDisplay";
+import { TimerRemote } from "./components/event-timer/TimerRemote";
 
 const theme = createTheme({
   primaryColor: "yellow",
@@ -46,6 +48,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/m/:missionId" element={<MissionViewer />} />
           <Route path="/showtime/:showtimeId" element={<ShowtimeViewer />} />
           <Route path="/h/:slug" element={<HouseClaim />} />
+          <Route path="/timer/:gameId" element={<TimerDisplay />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<GameList />} />
             <Route path="games/:gameId" element={<CardManager />} />
@@ -68,6 +71,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="games/:gameId/print/act3-cards" element={<Act3CardsPrint />} />
             <Route path="games/:gameId/console" element={<HostConsole />} />
             <Route path="games/:gameId/ambient" element={<AmbientAudio />} />
+            <Route path="games/:gameId/timer-remote" element={<TimerRemote />} />
           </Route>
           <Route
             path="*"

@@ -29,6 +29,11 @@ enum ShowtimePhase {
   revealed
 }
 
+enum EventTimerStatus {
+  running
+  paused
+}
+
 // === Models ===
 
 model Game {
@@ -68,6 +73,7 @@ model Game {
   triggeredConsequences TriggeredConsequence[]
   storySheets           StorySheet[]
   setReviews            SetReview[]
+  eventTimer            EventTimer?
 
   @@map("games")
 }
@@ -441,6 +447,21 @@ model Showtime {
   slots ShowtimeSlot[]
 
   @@map("showtimes")
+}
+
+model EventTimer {
+  id              String           @id @default(uuid()) @db.Uuid
+  gameId          String           @unique @map("game_id") @db.Uuid
+  game            Game             @relation(fields: [gameId], references: [id])
+  day             Int              @default(1)
+  status          EventTimerStatus @default(running)
+  remainingMs     Int              @map("remaining_ms")
+  statusChangedAt DateTime         @default(now()) @map("status_changed_at")
+  overrideText    String?          @map("override_text")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  @@map("event_timers")
 }
 
 model ShowtimeSlot {
