@@ -5,6 +5,7 @@ import {
   setDaySchema,
   overrideTimeSchema,
   overrideTextSchema,
+  setDisplaySchema,
 } from "../../validation/event-timer.js";
 
 const router: RouterType = Router();
@@ -40,6 +41,18 @@ router.post("/games/:gameId/event-timer/override-text", async (req, res) => {
   const parsed = overrideTextSchema.safeParse(req.body);
   if (!parsed.success) throw new AppError(400, "Invalid request body");
   const data = await eventTimerService.setOverrideText(req.params.gameId, parsed.data.text);
+  res.json(data);
+});
+
+router.post("/games/:gameId/event-timer/display", async (req, res) => {
+  const parsed = setDisplaySchema.safeParse(req.body);
+  if (!parsed.success) throw new AppError(400, "Invalid request body");
+  const data = await eventTimerService.setDisplay(
+    req.params.gameId,
+    parsed.data.displayMode,
+    parsed.data.displayPayload ?? null,
+    parsed.data.remainingMs,
+  );
   res.json(data);
 });
 

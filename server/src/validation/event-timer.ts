@@ -11,3 +11,9 @@ export const overrideTimeSchema = z.object({
 export const overrideTextSchema = z.object({
   text: z.string().min(1).nullable(),
 });
+
+export const setDisplaySchema = z.object({
+  displayMode: z.enum(["timer", "tribunal", "artifact", "ending"]),
+  displayPayload: z.record(z.unknown()).nullable().optional(),
+  remainingMs: z.number().int().min(0).optional(),
+});

@@ -458,6 +458,8 @@ model EventTimer {
   remainingMs     Int              @map("remaining_ms")
   statusChangedAt DateTime         @default(now()) @map("status_changed_at")
   overrideText    String?          @map("override_text")
+  displayMode     String           @default("timer") @map("display_mode")
+  displayPayload  Json             @default("{}") @map("display_payload")
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
 

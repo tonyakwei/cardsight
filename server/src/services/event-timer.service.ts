@@ -1,6 +1,11 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../middleware/error-handler.js";
-import type { EventTimerState } from "@cardsight/shared";
+import type { Prisma } from "@prisma/client";
+import type {
+  EventTimerDisplayMode,
+  EventTimerDisplayPayload,
+  EventTimerState,
+} from "@cardsight/shared";
 
 const DAY_DURATION_MS: Record<number, number> = {
   1: 35 * 60 * 1000,
@@ -23,6 +28,8 @@ function toState(timer: {
   remainingMs: number;
   statusChangedAt: Date;
   overrideText: string | null;
+  displayMode: string;
+  displayPayload: unknown;
 }): EventTimerState {
   const now = new Date();
   return {
@@ -30,8 +37,20 @@ function toState(timer: {
     status: timer.status as EventTimerState["status"],
     remainingMs: computeRemainingMs(timer, now),
     overrideText: timer.overrideText,
+    displayMode: normalizeDisplayMode(timer.displayMode),
+    displayPayload: normalizeDisplayPayload(timer.displayPayload),
     serverNow: now.toISOString(),
   };
+}
+
+function normalizeDisplayMode(mode: string): EventTimerDisplayMode {
+  if (mode === "tribunal" || mode === "artifact" || mode === "ending") return mode;
+  return "timer";
+}
+
+function normalizeDisplayPayload(payload: unknown): EventTimerDisplayPayload {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
+  return payload as Record<string, unknown>;
 }
 
 async function getOrCreateTimer(gameId: string) {
@@ -48,6 +67,8 @@ async function getOrCreateTimer(gameId: string) {
       status: "running",
       remainingMs: DAY_DURATION_MS[1],
       statusChangedAt: new Date(),
+      displayMode: "timer",
+      displayPayload: {},
     },
   });
 }
@@ -97,6 +118,8 @@ export async function setDay(gameId: string, day: 1 | 2 | 3): Promise<EventTimer
       statusChangedAt: new Date(),
       status: "running",
       overrideText: null,
+      displayMode: "timer",
+      displayPayload: {},
     },
   });
   return toState(updated);
@@ -113,6 +136,8 @@ export async function setOverrideTime(
       remainingMs,
       statusChangedAt: new Date(),
       overrideText: null,
+      displayMode: "timer",
+      displayPayload: {},
     },
   });
   return toState(updated);
@@ -126,6 +151,39 @@ export async function setOverrideText(
   const updated = await prisma.eventTimer.update({
     where: { gameId },
     data: { overrideText: text },
+  });
+  return toState(updated);
+}
+
+export async function setDisplay(
+  gameId: string,
+  displayMode: EventTimerDisplayMode,
+  displayPayload: EventTimerDisplayPayload,
+  remainingMs?: number,
+): Promise<EventTimerState> {
+  await getOrCreateTimer(gameId);
+  const data: {
+    displayMode: EventTimerDisplayMode;
+    displayPayload: Prisma.InputJsonValue;
+    remainingMs?: number;
+    status?: "running";
+    statusChangedAt?: Date;
+    overrideText?: null;
+  } = {
+    displayMode,
+    displayPayload: (displayPayload ?? {}) as Prisma.InputJsonValue,
+  };
+
+  if (remainingMs != null) {
+    data.remainingMs = remainingMs;
+    data.status = "running";
+    data.statusChangedAt = new Date();
+    data.overrideText = null;
+  }
+
+  const updated = await prisma.eventTimer.update({
+    where: { gameId },
+    data,
   });
   return toState(updated);
 }

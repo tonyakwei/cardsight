@@ -194,12 +194,17 @@ export interface ShowtimeSyncPressResponse {
 // === Event Timer ===
 
 export type EventTimerStatus = "running" | "paused";
+export type EventTimerDisplayMode = "timer" | "tribunal" | "artifact" | "ending";
+
+export type EventTimerDisplayPayload = object | null;
 
 export interface EventTimerState {
   day: 1 | 2 | 3;
   status: EventTimerStatus;
   remainingMs: number;
   overrideText: string | null;
+  displayMode: EventTimerDisplayMode;
+  displayPayload: EventTimerDisplayPayload;
   serverNow: string;
 }
 

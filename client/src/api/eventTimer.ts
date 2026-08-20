@@ -1,5 +1,9 @@
 import { adminFetch } from "./admin/common";
-import type { EventTimerState } from "@cardsight/shared";
+import type {
+  EventTimerDisplayMode,
+  EventTimerDisplayPayload,
+  EventTimerState,
+} from "@cardsight/shared";
 
 const BASE = "/api/event-timer";
 const ADMIN_BASE = "/api/admin/games";
@@ -58,6 +62,20 @@ export async function setTimerOverrideText(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
+  });
+  return res.json();
+}
+
+export async function setTimerDisplay(
+  gameId: string,
+  displayMode: EventTimerDisplayMode,
+  displayPayload: EventTimerDisplayPayload = null,
+  remainingMs?: number,
+): Promise<EventTimerState> {
+  const res = await adminFetch(`${ADMIN_BASE}/${gameId}/event-timer/display`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ displayMode, displayPayload, remainingMs }),
   });
   return res.json();
 }
