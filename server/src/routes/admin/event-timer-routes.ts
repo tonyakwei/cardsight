@@ -6,6 +6,7 @@ import {
   overrideTimeSchema,
   overrideTextSchema,
   setDisplaySchema,
+  endingSelectionsSchema,
 } from "../../validation/event-timer.js";
 
 const router: RouterType = Router();
@@ -52,6 +53,16 @@ router.post("/games/:gameId/event-timer/display", async (req, res) => {
     parsed.data.displayMode,
     parsed.data.displayPayload ?? null,
     parsed.data.remainingMs,
+  );
+  res.json(data);
+});
+
+router.post("/games/:gameId/event-timer/ending-selections", async (req, res) => {
+  const parsed = endingSelectionsSchema.safeParse(req.body);
+  if (!parsed.success) throw new AppError(400, "Invalid request body");
+  const data = await eventTimerService.setEndingSelections(
+    req.params.gameId,
+    parsed.data.artifactNames,
   );
   res.json(data);
 });

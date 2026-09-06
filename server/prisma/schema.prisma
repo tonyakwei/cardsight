@@ -460,6 +460,7 @@ model EventTimer {
   overrideText    String?          @map("override_text")
   displayMode     String           @default("timer") @map("display_mode")
   displayPayload  Json             @default("{}") @map("display_payload")
+  endingSelections String[]        @default([]) @map("ending_selections")
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
 

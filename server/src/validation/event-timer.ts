@@ -17,3 +17,7 @@ export const setDisplaySchema = z.object({
   displayPayload: z.record(z.unknown()).nullable().optional(),
   remainingMs: z.number().int().min(0).optional(),
 });
+
+export const endingSelectionsSchema = z.object({
+  artifactNames: z.array(z.string().min(1)).max(6),
+});

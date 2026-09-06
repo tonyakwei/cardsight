@@ -193,3 +193,36 @@ export const ARTIFACT_IMAGES: ArtifactImageButton[] = [
     imageUrl: `${ASSET_BASE}/vial-distilled-source-d-science-tv.png`,
   },
 ];
+
+/** How many artifacts the tribunals surrender, and so how many endings play. */
+export const ENDING_SLOT_COUNT = 6;
+
+/** Every artifact that can be surrendered, alphabetical. Derived from the image pool. */
+export const ARTIFACT_NAMES: string[] = [
+  ...new Set(ARTIFACT_IMAGES.map((image) => image.artifactName)),
+].sort((a, b) => a.localeCompare(b));
+
+export function imagesForArtifact(artifactName: string): ArtifactImageButton[] {
+  return ARTIFACT_IMAGES.filter((image) => image.artifactName === artifactName);
+}
+
+/**
+ * Artifacts whose name is grammatically plural, so the caption reads "were selected".
+ * "Bundle of Purple Corn Kernels" is singular — the head noun is the bundle.
+ */
+const PLURAL_ARTIFACT_NAMES = new Set([
+  "Before-and-After Council Tablets",
+  "Bound Hymn Books of Shared Peace",
+  "Schematics of the Temple",
+  "Thirdapy Guides for Masses",
+]);
+
+/** The line that hovers under each ending plate. The artifact name is set in gold. */
+export function endingCaptionParts(artifactName: string): {
+  before: string;
+  name: string;
+  after: string;
+} {
+  const verb = PLURAL_ARTIFACT_NAMES.has(artifactName) ? "were" : "was";
+  return { before: "As the ", name: artifactName, after: ` ${verb} selected.` };
+}

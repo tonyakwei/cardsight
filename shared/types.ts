@@ -205,6 +205,8 @@ export interface EventTimerState {
   overrideText: string | null;
   displayMode: EventTimerDisplayMode;
   displayPayload: EventTimerDisplayPayload;
+  /** Ordered artifact names surrendered during the Day 3 tribunals. */
+  endingSelections: string[];
   serverNow: string;
 }
 

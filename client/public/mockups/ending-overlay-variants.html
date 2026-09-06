@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Temple Ending — Overlay Variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --gold-lit:  #f7e6ae;
+    --gold:      #d9ac45;
+    --gold-deep: #8a621a;
+    --gold-dark: #4a340a;
+    --cinzel: 'Cinzel', serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #0b0b0c; color: #e8e4dc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+  /* ---------- control strip (mockup chrome only) ---------- */
+  .chrome {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: flex-end;
+    padding: 12px 20px;
+    background: rgba(14,14,16,0.94);
+    border-bottom: 1px solid rgba(217,172,69,0.28);
+    backdrop-filter: blur(8px);
+  }
+  .chrome h1 { font-family: var(--cinzel); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 0 18px 0 0; align-self: center; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #8a8577; }
+  .field select, .field input {
+    background: #191919; color: #e8e4dc; border: 1px solid #3a3730; border-radius: 5px;
+    padding: 5px 8px; font-size: 12.5px; font-family: inherit; min-width: 120px;
+  }
+  .field select:focus, .field input:focus { outline: 1px solid var(--gold); }
+  .hint { font-size: 11px; color: #7d786c; align-self: center; max-width: 320px; line-height: 1.4; }
+
+  /* ---------- stage ---------- */
+  .stack { padding: 26px 20px 70px; display: flex; flex-direction: column; gap: 34px; }
+  .slot { max-width: 1360px; width: 100%; margin: 0 auto; }
+  .slot > .caption {
+    display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px 2px;
+  }
+  .caption .tag {
+    font-family: var(--cinzel); font-weight: 700; font-size: 12px; letter-spacing: .2em;
+    text-transform: uppercase; color: #0d0d0d; background: var(--gold);
+    padding: 3px 9px; border-radius: 3px;
+  }
+  .caption .note { font-size: 12.5px; color: #8a8577; }
+
+  .screen {
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    background: #050505; overflow: hidden;
+    border: 1px solid #26241f;
+    box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  }
+  .screen img.plate {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+
+  /* ================= GOLDEN KNOB — shared metal ================= */
+  .knob {
+    position: absolute; z-index: 3;
+    display: grid; place-items: center;
+    color: #2b1d04;
+    background:
+      radial-gradient(circle at 36% 26%, #fff8de 0%, #f0d88c 9%, #dcae42 33%, #b8821f 61%, #7c5612 85%, #573b0b 100%);
+    box-shadow:
+      inset 0 2px 3px rgba(255,255,255,.75),
+      inset 0 -3px 6px rgba(60,38,0,.6),
+      0 0 0 2px rgba(74,52,10,.85),
+      0 10px 26px rgba(0,0,0,.62);
+    text-shadow: 0 1px 0 rgba(255,247,214,.6);
+  }
+  /* rim highlight sweep */
+  .knob::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: linear-gradient(150deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 34%, rgba(0,0,0,.30) 100%);
+    pointer-events: none;
+  }
+
+  /* ================= BOTTOM CAPTION — shared ================= */
+  .band-text {
+    font-family: var(--cinzel); color: #fbf4e2;
+    text-transform: uppercase; letter-spacing: .09em; line-height: 1.15;
+    text-shadow: 0 2px 14px rgba(0,0,0,.85);
+  }
+  .band-text em { font-style: normal; color: #f3c95e; text-shadow: 0 2px 14px rgba(0,0,0,.9), 0 0 24px rgba(217,172,69,.28); }
+
+  /* ================================================================
+     VARIANT A — "Seal & Plate"
+     Big round seal, numeral over OF 6. Full-width dark plate with a
+     gold hairline above it, text centred.
+     ================================================================ */
+  .a-knob {
+    top: 4.2%; left: 3.0%;
+    width: 12.6%; aspect-ratio: 1; border-radius: 50%;
+  }
+  .a-knob .ratio {
+    font-family: var(--cinzel); font-weight: 900;
+    font-size: clamp(16px, 3.9cqw, 53px); line-height: 1;
+    letter-spacing: .01em; white-space: nowrap;
+  }
+  .a-knob .ratio .slash { font-weight: 700; opacity: .62; margin: 0 .06em; }
+  .a-band {
+    position: absolute; z-index: 2; left: 0; right: 0; bottom: 0;
+    padding: 3.2% 8% 3.6%;
+    background: linear-gradient(180deg, rgba(6,5,3,0) 0%, rgba(6,5,3,.72) 34%, rgba(6,5,3,.93) 100%);
+    border-top: 1px solid rgba(217,172,69,.55);
+    text-align: center;
+  }
+  .a-band .band-text { font-weight: 700; font-size: clamp(13px, 3.05cqw, 42px); }
+
+  /* ================================================================
+     VARIANT B — "Coin & Ribbon"
+     Smaller coin with a 6-pip progress ring. Bottom is a floating
+     lozenge, not full width — image stays visible edge to edge.
+     ================================================================ */
+  .b-knob {
+    top: 8.2%; left: 5.4%;
+    width: 9.4%; aspect-ratio: 1; border-radius: 50%;
+  }
+  .b-knob .num {
+    font-family: var(--cinzel); font-weight: 900;
+    font-size: clamp(13px, 3.2cqw, 44px); line-height: 1;
+  }
+  .b-pips {
+    position: absolute; inset: -30%; z-index: 3; pointer-events: none;
+  }
+  .b-pips span {
+    position: absolute; top: 50%; left: 50%; width: 8%; aspect-ratio: 1;
+    border-radius: 50%; background: rgba(16,13,6,.62);
+    border: 1px solid rgba(247,230,174,.45);
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-490%);
+    box-shadow: 0 2px 6px rgba(0,0,0,.55);
+  }
+  .b-pips span.on {
+    background: radial-gradient(circle at 34% 30%, #fff6d8, var(--gold) 60%, var(--gold-deep));
+    border-color: rgba(255,246,216,.9);
+    box-shadow: 0 0 10px rgba(217,172,69,.75), 0 2px 6px rgba(0,0,0,.5);
+  }
+  .b-band {
+    position: absolute; z-index: 2; bottom: 5.5%; left: 50%; transform: translateX(-50%);
+    max-width: 82%;
+    padding: 1.5% 4.2%;
+    background: rgba(8,7,4,.80);
+    border: 1px solid rgba(217,172,69,.62);
+    border-radius: 3px;
+    box-shadow: 0 14px 46px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,246,216,.14);
+    backdrop-filter: blur(3px);
+    text-align: center;
+  }
+  .b-band .band-text { font-weight: 600; font-size: clamp(11px, 2.5cqw, 34px); letter-spacing: .12em; }
+
+  /* ================================================================
+     VARIANT C — "Boss & Ledger Rule"
+     Octagonal boss reading 1 OF 6 on one line. Bottom is a full-bleed
+     scrim, text left-aligned under a short gold rule with an eyebrow.
+     ================================================================ */
+  .c-knob {
+    top: 4.4%; left: 3.0%;
+    width: 13.4%; padding: 1.5% 0;
+    clip-path: polygon(29% 0, 71% 0, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0 71%, 0 29%);
+    border-radius: 4px;
+    aspect-ratio: auto;
+  }
+  .c-knob .line {
+    font-family: var(--cinzel); font-weight: 800;
+    font-size: clamp(11px, 2.55cqw, 34px); letter-spacing: .06em; line-height: 1.5;
+  }
+  .c-band {
+    position: absolute; z-index: 2; left: 0; right: 0; bottom: 0;
+    padding: 6% 6% 3.4%;
+    background: linear-gradient(180deg, rgba(4,4,4,0) 0%, rgba(4,4,4,.42) 30%, rgba(4,4,4,.80) 62%, rgba(4,4,4,.96) 100%);
+    text-align: left;
+  }
+  .c-band .eyebrow {
+    font-family: var(--cinzel); font-weight: 700;
+    font-size: clamp(8px, 1.35cqw, 18px); letter-spacing: .3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.1%;
+  }
+  .c-band .rule {
+    width: 8%; height: 2px; margin-bottom: 1.6%;
+    background: linear-gradient(90deg, var(--gold-lit), var(--gold-deep));
+  }
+  .c-band .band-text { font-weight: 700; font-size: clamp(13px, 3.3cqw, 46px); letter-spacing: .05em; }
+
+  /* container queries so all type scales off the SCREEN, not the window */
+  .screen { container-type: inline-size; }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <h1>Ending Overlays</h1>
+
+  <div class="field">
+    <label for="pick">Artifact / image</label>
+    <select id="pick"></select>
+  </div>
+
+  <div class="field">
+    <label for="idx">Position in stack</label>
+    <select id="idx">
+      <option>1</option><option>2</option><option selected>3</option>
+      <option>4</option><option>5</option><option>6</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="phrase">Caption phrasing</label>
+    <select id="phrase">
+      <option value="as">As the {N} was selected.</option>
+      <option value="because">Because you chose the {N}…</option>
+      <option value="kept">The {N} was kept.</option>
+      <option value="world">A world that kept the {N}.</option>
+      <option value="consequence">{N} — what followed.</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="fit">Image fit</label>
+    <select id="fit">
+      <option value="cover" selected>cover (full bleed)</option>
+      <option value="contain">contain (letterbox)</option>
+    </select>
+  </div>
+
+  <p class="hint">Three treatments of the same frame. Everything scales off the screen box, so it holds at TV size. Assets are the real Day 3 ending plates.</p>
+</div>
+
+<div class="stack">
+
+  <!-- ============ VARIANT A ============ -->
+  <section class="slot">
+    <div class="caption">
+      <span class="tag">A</span>
+      <span class="note">Seal &amp; Plate — heavy seal, big numeral. Full-width plate with gold hairline; most formal, most legible across a room.</span>
+    </div>
+    <div class="screen" id="screenA">
+      <img class="plate" alt="" />
+      <div class="knob a-knob">
+        <div class="ratio"><span data-role="num">3</span><span class="slash">/</span>6</div>
+      </div>
+      <div class="a-band">
+        <div class="band-text" data-role="caption"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VARIANT B ============ -->
+  <section class="slot">
+    <div class="caption">
+      <span class="tag">B</span>
+      <span class="note">Coin &amp; Ribbon — smaller coin ringed by six pips that fill as you go; floating lozenge keeps the whole image visible.</span>
+    </div>
+    <div class="screen" id="screenB">
+      <img class="plate" alt="" />
+      <div class="knob b-knob">
+        <div class="num" data-role="num">3</div>
+        <div class="b-pips" data-role="pips"></div>
+      </div>
+      <div class="b-band">
+        <div class="band-text" data-role="caption"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VARIANT C ============ -->
+  <section class="slot">
+    <div class="caption">
+      <span class="tag">C</span>
+      <span class="note">Boss &amp; Ledger Rule — octagonal boss, one-line count; left-aligned caption under an eyebrow. Reads most like a record being read aloud.</span>
+    </div>
+    <div class="screen" id="screenC">
+      <img class="plate" alt="" />
+      <div class="knob c-knob">
+        <div class="line" data-role="line">3 OF 6</div>
+      </div>
+      <div class="c-band">
+        <div class="eyebrow" data-role="eyebrow">Consequence III</div>
+        <div class="rule"></div>
+        <div class="band-text" data-role="caption"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const BASE = "../assets/temple-ending";
+
+const IMAGES = [
+  ["Acolyte's Abacus", "GOOD", "acolytes-abacus-d-diversity-classroom.png"],
+  ["Before-and-After Council Tablets", "GOOD", "before-after-council-tablets-a-civic-deliberation.png"],
+  ["Before-and-After Council Tablets", "BAD", "before-after-council-tablets-b-filtered-anger.png"],
+  ["Bound Hymn Books of Shared Peace", "GOOD", "bound-hymn-books-a-hospital-chapel.png"],
+  ["Bound Hymn Books of Shared Peace", "BAD", "bound-hymn-books-b-institutional-quiet.png"],
+  ["Bundle of Purple Corn Kernels", "IMAGE 1", "purple-corn-a-arid-relief-fields.png"],
+  ["Bundle of Purple Corn Kernels", "IMAGE 2", "purple-corn-b-purple-bread-campaign.png"],
+  ["Emotion Purging Potion", "GOOD", "emotion-purging-potion-c-medical-study-no-brains.png"],
+  ["Emotion Purging Potion", "BAD", "emotion-purging-potion-a-courthouse-clinic.png"],
+  ["First Authority Survey Report", "GOOD 1", "first-authority-survey-report-a-relief-briefing.png"],
+  ["First Authority Survey Report", "GOOD 2", "first-authority-survey-report-c-diversity-relief-briefing.png"],
+  ["First Authority Survey Report", "BAD", "first-authority-survey-report-b-institutional-hunt.png"],
+  ["Harmonizing Reed", "BAD", "harmonizing-reed-d-grim-institution.png"],
+  ["Ledger of Authority Decisions", "GOOD", "ledger-authority-decisions-a-public-archive.png"],
+  ["Ledger of Authority Decisions", "BAD", "ledger-authority-decisions-b-strategy-room.png"],
+  ["Master Source Data Plate", "IMAGE 1", "master-source-data-plate-a-calibration-lab.png"],
+  ["Master Source Data Plate", "IMAGE 2", "master-source-data-plate-b-coordinate-room.png"],
+  ["Rolling Pebble Computer", "IMAGE 1", "rolling-pebble-computer-a-museum-exhibit.png"],
+  ["Schematics of the Temple", "BAD", "schematics-temple-b-restricted-dig.png"],
+  ["Soul Compass", "GOOD", "soul-compass-c-diverse-school-sorting.png"],
+  ["Source-Forged Arrowhead", "IMAGE 1", "source-forged-arrowhead-a-arms-control-tv.png"],
+  ["Starline Coordinate Plate", "IMAGE 1", "starline-coordinate-plate-a-observatory.png"],
+  ["Stored Vial of Lovewater", "GOOD", "stored-vial-lovewater-a-counseling-room.png"],
+  ["Stored Vial of Lovewater", "BAD", "stored-vial-lovewater-b-compatibility-center.png"],
+  ["Tablet of Eternal Mercy", "GOOD", "tablet-eternal-mercy-b-diversity-civic-care.png"],
+  ["Thirdapy Guides for Masses", "IMAGE 1", "thirdapy-guides-c-family-campaign.png"],
+  ["Thirdapy Guides for Masses", "IMAGE 2", "thirdapy-guides-d-diversity-households.png"],
+  ["Vial of Distilled Source", "IMAGE 1", "vial-distilled-source-c-arms-control-tv.png"],
+  ["Vial of Distilled Source", "IMAGE 2", "vial-distilled-source-d-science-tv.png"],
+];
+
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI"];
+
+const PHRASES = {
+  as:          n => `As the <em>${n}</em> was selected.`,
+  because:     n => `Because you chose the <em>${n}</em>…`,
+  kept:        n => `The <em>${n}</em> was kept.`,
+  world:       n => `A world that kept the <em>${n}</em>.`,
+  consequence: n => `<em>${n}</em> — what followed.`,
+};
+
+const pickEl   = document.getElementById("pick");
+const idxEl    = document.getElementById("idx");
+const phraseEl = document.getElementById("phrase");
+const fitEl    = document.getElementById("fit");
+
+IMAGES.forEach(([name, label, file], i) => {
+  const opt = document.createElement("option");
+  opt.value = String(i);
+  opt.textContent = `${name} — ${label}`;
+  pickEl.appendChild(opt);
+});
+pickEl.value = "19"; // Soul Compass — GOOD
+
+// six pips per variant-B knob
+document.querySelectorAll('[data-role="pips"]').forEach(host => {
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement("span");
+    s.style.setProperty("--a", `${i * 60}deg`);
+    host.appendChild(s);
+  }
+});
+
+function render() {
+  const [name, , file] = IMAGES[Number(pickEl.value)];
+  const idx = Number(idxEl.value);
+  const caption = PHRASES[phraseEl.value](name);
+  const fit = fitEl.value;
+
+  document.querySelectorAll("img.plate").forEach(img => {
+    img.src = `${BASE}/${file}`;
+    img.style.objectFit = fit;
+  });
+  document.querySelectorAll('[data-role="num"]').forEach(el => el.textContent = idx);
+  document.querySelectorAll('[data-role="line"]').forEach(el => el.textContent = `${idx} OF 6`);
+  document.querySelectorAll('[data-role="eyebrow"]').forEach(el => el.textContent = `Consequence ${ROMAN[idx]}`);
+  document.querySelectorAll('[data-role="caption"]').forEach(el => el.innerHTML = caption);
+
+  document.querySelectorAll('[data-role="pips"]').forEach(host => {
+    [...host.children].forEach((pip, i) => pip.classList.toggle("on", i < idx));
+  });
+}
+
+[pickEl, idxEl, phraseEl, fitEl].forEach(el => el.addEventListener("change", render));
+render();
+</script>
+</body>
+</html>

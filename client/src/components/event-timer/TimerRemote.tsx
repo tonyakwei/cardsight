@@ -1,6 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useParams } from "react-router";
 import {
+  ActionIcon,
   Badge,
   Button,
   Divider,
@@ -15,6 +16,7 @@ import {
   fetchTimerState,
   pauseTimer,
   resumeTimer,
+  setEndingSelections,
   setTimerDisplay,
   setTimerDay,
   setTimerOverrideText,
@@ -23,8 +25,11 @@ import {
 import { DAY_THEMES } from "./dayThemes";
 import {
   ARTIFACT_IMAGES,
+  ARTIFACT_NAMES,
+  ENDING_SLOT_COUNT,
   TRIBUNALS,
   TRIBUNAL_DURATION_MS,
+  imagesForArtifact,
   type ArtifactImageButton,
 } from "./templeEndingConfig";
 import { usePolling } from "../../hooks/usePolling";
@@ -56,9 +61,10 @@ export function TimerRemote() {
   const [timeInput, setTimeInput] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [endingInput, setEndingInput] = useState("");
+  const busyRef = useRef(false);
 
   const load = useCallback(async () => {
-    if (!gameId) return;
+    if (!gameId || busyRef.current) return;
     try {
       const data = await fetchTimerState(gameId);
       setState(data);
@@ -72,6 +78,7 @@ export function TimerRemote() {
 
   const withBusy = useCallback(
     async (fn: () => Promise<EventTimerState>) => {
+      busyRef.current = true;
       setBusy(true);
       try {
         const data = await fn();
@@ -81,6 +88,7 @@ export function TimerRemote() {
         setError(err?.message ?? "Action failed");
       } finally {
         setBusy(false);
+        busyRef.current = false;
       }
     },
     [],
@@ -90,6 +98,29 @@ export function TimerRemote() {
 
   const isPaused = state?.status === "paused";
   const groupedArtifactImages = groupArtifactImages(ARTIFACT_IMAGES);
+  const selections = state?.endingSelections ?? [];
+  const stackFull = selections.length >= ENDING_SLOT_COUNT;
+
+  const commitSelections = (next: string[]) => {
+    if (!gameId) return;
+    withBusy(() => setEndingSelections(gameId, next));
+  };
+
+  const toggleArtifact = (name: string) => {
+    if (selections.includes(name)) {
+      commitSelections(selections.filter((n) => n !== name));
+    } else if (!stackFull) {
+      commitSelections([...selections, name]);
+    }
+  };
+
+  const moveSelection = (index: number, delta: number) => {
+    const target = index + delta;
+    if (target < 0 || target >= selections.length) return;
+    const next = [...selections];
+    [next[index], next[target]] = [next[target], next[index]];
+    commitSelections(next);
+  };
 
   return (
     <Stack gap="lg" style={{ maxWidth: 1120 }}>
@@ -256,12 +287,183 @@ export function TimerRemote() {
       </Paper>
 
       <Paper p="md" withBorder bg="dark.8">
+        <Group justify="space-between" align="center" mb="xs">
+          <Text size="sm" fw={600}>
+            Artifacts surrendered
+          </Text>
+          <Group gap="xs">
+            <Badge color={stackFull ? "green" : "yellow"} variant="light">
+              {selections.length} / {ENDING_SLOT_COUNT} recorded
+            </Badge>
+            {selections.length > 0 && (
+              <Button
+                size="compact-xs"
+                variant="subtle"
+                color="gray"
+                loading={busy}
+                onClick={() => commitSelections([])}
+              >
+                Clear
+              </Button>
+            )}
+          </Group>
+        </Group>
+        <Text size="xs" c="dimmed" mb="md">
+          Tap each artifact as a team hands it over during the tribunals. The stack plays in
+          the order you tap. Tap a recorded artifact again to take it back off.
+        </Text>
+
+        {selections.length > 0 && (
+          <Stack gap={6} mb="md">
+            {selections.map((name, index) => (
+              <Group key={name} gap="xs" wrap="nowrap">
+                <Badge circle color="yellow" variant="filled">
+                  {index + 1}
+                </Badge>
+                <Text size="sm" style={{ flex: 1 }}>
+                  {name}
+                </Text>
+                <ActionIcon
+                  size="sm"
+                  variant="subtle"
+                  color="gray"
+                  aria-label="Move earlier"
+                  disabled={busy || index === 0}
+                  onClick={() => moveSelection(index, -1)}
+                >
+                  ↑
+                </ActionIcon>
+                <ActionIcon
+                  size="sm"
+                  variant="subtle"
+                  color="gray"
+                  aria-label="Move later"
+                  disabled={busy || index === selections.length - 1}
+                  onClick={() => moveSelection(index, 1)}
+                >
+                  ↓
+                </ActionIcon>
+                <ActionIcon
+                  size="sm"
+                  variant="subtle"
+                  color="red"
+                  aria-label="Remove"
+                  disabled={busy}
+                  onClick={() => toggleArtifact(name)}
+                >
+                  ×
+                </ActionIcon>
+              </Group>
+            ))}
+          </Stack>
+        )}
+
+        <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="xs">
+          {ARTIFACT_NAMES.map((name) => {
+            const position = selections.indexOf(name);
+            const picked = position >= 0;
+            return (
+              <Button
+                key={name}
+                size="xs"
+                color="yellow"
+                variant={picked ? "filled" : "default"}
+                loading={busy}
+                disabled={!picked && stackFull}
+                onClick={() => toggleArtifact(name)}
+                styles={{ label: { whiteSpace: "normal", lineHeight: 1.2 } }}
+              >
+                {picked ? `${position + 1} · ${name}` : name}
+              </Button>
+            );
+          })}
+        </SimpleGrid>
+      </Paper>
+
+      <Paper p="md" withBorder bg="dark.8">
+        <Group justify="space-between" align="center" mb="xs">
+          <Text size="sm" fw={600}>
+            Play the endings
+          </Text>
+          {selections.length > 0 && !stackFull && (
+            <Badge color="yellow" variant="light">
+              {ENDING_SLOT_COUNT - selections.length} still to record
+            </Badge>
+          )}
+        </Group>
+
+        {selections.length === 0 ? (
+          <Text size="xs" c="dimmed">
+            Record the surrendered artifacts above and the stack appears here, in order.
+          </Text>
+        ) : (
+          <>
+            <Text size="xs" c="dimmed" mb="md">
+              Work down the stack. Each image carries its position seal and the line
+              &ldquo;As the {"{artifact}"} was selected.&rdquo;
+            </Text>
+            <Stack gap="md">
+              {selections.map((name, index) => {
+                const images = imagesForArtifact(name);
+                return (
+                  <div key={name}>
+                    <Group gap="xs" align="center" mb={6}>
+                      <Badge circle color="yellow" variant="filled">
+                        {index + 1}
+                      </Badge>
+                      <Text size="sm" fw={600}>
+                        {name}
+                      </Text>
+                      {images.length === 1 && (
+                        <Badge size="xs" color="gray" variant="outline">
+                          one image only
+                        </Badge>
+                      )}
+                    </Group>
+                    <Group gap="xs">
+                      {images.length === 0 ? (
+                        <Text size="xs" c="red.4">
+                          No ending image exists for this artifact.
+                        </Text>
+                      ) : (
+                        images.map((image) => (
+                          <Button
+                            key={image.imageUrl}
+                            size="xs"
+                            variant={isActiveArtifact(state, image.imageUrl) ? "filled" : "default"}
+                            color={image.label.startsWith("BAD") ? "red" : "yellow"}
+                            loading={busy}
+                            onClick={() =>
+                              gameId &&
+                              withBusy(() =>
+                                setTimerDisplay(gameId, "artifact", {
+                                  ...image,
+                                  index: index + 1,
+                                  total: selections.length,
+                                }),
+                              )
+                            }
+                          >
+                            {image.label}
+                          </Button>
+                        ))
+                      )}
+                    </Group>
+                  </div>
+                );
+              })}
+            </Stack>
+          </>
+        )}
+      </Paper>
+
+      <Paper p="md" withBorder bg="dark.8">
         <Text size="sm" fw={600} mb="xs">
-          Artifact images
+          All artifact images — manual override
         </Text>
         <Text size="xs" c="dimmed" mb="md">
-          Buttons are grouped alphabetically by artifact. The selected image fades in on
-          the TV display.
+          Every image, grouped alphabetically, for showing one outside the stack. These carry
+          the caption but no position seal.
         </Text>
         <Stack gap="md">
           {groupedArtifactImages.map(([artifactName, images]) => (

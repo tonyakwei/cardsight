@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { fetchTimerState, pollTimerState } from "../../api/eventTimer";
 import { DAY_THEMES } from "./dayThemes";
+import { endingCaptionParts } from "./templeEndingConfig";
 import type { EventTimerState } from "@cardsight/shared";
 
 const POLL_MS = 2000;
@@ -20,6 +21,9 @@ interface ArtifactPayload {
   artifactName: string;
   label: string;
   imageUrl: string;
+  /** 1-based position in the ending stack, and how many endings play in all. */
+  index?: number;
+  total?: number;
 }
 
 interface EndingPayload {
@@ -307,6 +311,8 @@ function getArtifactPayload(state: EventTimerState): ArtifactPayload | null {
     artifactName: payload.artifactName,
     label: payload.label,
     imageUrl: payload.imageUrl,
+    index: typeof payload.index === "number" ? payload.index : undefined,
+    total: typeof payload.total === "number" ? payload.total : undefined,
   };
 }
 
@@ -437,7 +443,15 @@ function TribunalDisplay({ payload }: { payload: TribunalPayload }) {
   );
 }
 
+/**
+ * A Day 3 ending plate: the image full-bleed, a golden seal top-left counting the
+ * ending's place in the stack, and a hovering caption naming the artifact that
+ * caused it. Every size is a share of the viewport so it holds at TV scale.
+ */
 function ArtifactDisplay({ payload }: { payload: ArtifactPayload }) {
+  const caption = endingCaptionParts(payload.artifactName);
+  const showSeal = payload.index != null && payload.total != null && payload.total > 0;
+
   return (
     <div style={{ ...fullScreenStyle("#050505"), position: "relative", overflow: "hidden" }}>
       <img
@@ -445,22 +459,117 @@ function ArtifactDisplay({ payload }: { payload: ArtifactPayload }) {
         src={payload.imageUrl}
         alt=""
         style={{
+          position: "absolute",
+          inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "contain",
+          objectFit: "cover",
           animation: "artifactFade 700ms ease-out both",
           background: "#050505",
         }}
       />
+
+      {showSeal && (
+        <div key={`seal-${payload.imageUrl}`} style={SEAL_STYLE}>
+          <div style={SEAL_RATIO_STYLE}>
+            {payload.index}
+            <span style={{ fontWeight: 700, opacity: 0.62, margin: "0 0.06em" }}>/</span>
+            {payload.total}
+          </div>
+          <div style={SEAL_SHEEN_STYLE} />
+        </div>
+      )}
+
+      <div key={`band-${payload.imageUrl}`} style={BAND_STYLE}>
+        <div style={BAND_TEXT_STYLE}>
+          {caption.before}
+          <span style={BAND_NAME_STYLE}>{caption.name}</span>
+          {caption.after}
+        </div>
+      </div>
+
       <style>{`
         @keyframes artifactFade {
           from { opacity: 0; transform: scale(1.012); }
           to { opacity: 1; transform: scale(1); }
         }
+        @keyframes endingChromeFade {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
     </div>
   );
 }
+
+const SEAL_STYLE: React.CSSProperties = {
+  position: "absolute",
+  zIndex: 3,
+  top: "4.2%",
+  left: "3%",
+  width: "12.6%",
+  aspectRatio: "1",
+  borderRadius: "50%",
+  display: "grid",
+  placeItems: "center",
+  color: "#2b1d04",
+  background:
+    "radial-gradient(circle at 36% 26%, #fff8de 0%, #f0d88c 9%, #dcae42 33%, #b8821f 61%, #7c5612 85%, #573b0b 100%)",
+  boxShadow:
+    "inset 0 2px 3px rgba(255,255,255,.75), inset 0 -3px 6px rgba(60,38,0,.6), 0 0 0 2px rgba(74,52,10,.85), 0 10px 26px rgba(0,0,0,.62)",
+  textShadow: "0 1px 0 rgba(255,247,214,.6)",
+  animation: "endingChromeFade 800ms ease-out 220ms both",
+};
+
+const SEAL_RATIO_STYLE: React.CSSProperties = {
+  gridArea: "1 / 1",
+  fontFamily: CINZEL_FONT,
+  fontWeight: 900,
+  fontSize: "clamp(16px, 3.9vw, 120px)",
+  lineHeight: 1,
+  letterSpacing: "0.01em",
+  whiteSpace: "nowrap",
+};
+
+const SEAL_SHEEN_STYLE: React.CSSProperties = {
+  gridArea: "1 / 1",
+  alignSelf: "stretch",
+  justifySelf: "stretch",
+  borderRadius: "50%",
+  background:
+    "linear-gradient(150deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 34%, rgba(0,0,0,.30) 100%)",
+  pointerEvents: "none",
+};
+
+const BAND_STYLE: React.CSSProperties = {
+  position: "absolute",
+  zIndex: 2,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  padding: "3.2% 6% 3.6%",
+  background:
+    "linear-gradient(180deg, rgba(6,5,3,0) 0%, rgba(6,5,3,.72) 34%, rgba(6,5,3,.93) 100%)",
+  borderTop: "1px solid rgba(217,172,69,.55)",
+  textAlign: "center",
+  animation: "endingChromeFade 800ms ease-out 220ms both",
+};
+
+const BAND_TEXT_STYLE: React.CSSProperties = {
+  fontFamily: CINZEL_FONT,
+  fontWeight: 700,
+  fontSize: "clamp(13px, 2.75vw, 88px)",
+  lineHeight: 1.15,
+  letterSpacing: "0.09em",
+  textTransform: "uppercase",
+  color: "#fbf4e2",
+  textShadow: "0 2px 14px rgba(0,0,0,.85)",
+};
+
+const BAND_NAME_STYLE: React.CSSProperties = {
+  color: "#f3c95e",
+  textShadow: "0 2px 14px rgba(0,0,0,.9), 0 0 24px rgba(217,172,69,.28)",
+};
 
 function EndingDisplay({ title }: { title: string }) {
   return (

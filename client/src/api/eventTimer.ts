@@ -79,3 +79,15 @@ export async function setTimerDisplay(
   });
   return res.json();
 }
+
+export async function setEndingSelections(
+  gameId: string,
+  artifactNames: string[],
+): Promise<EventTimerState> {
+  const res = await adminFetch(`${ADMIN_BASE}/${gameId}/event-timer/ending-selections`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artifactNames }),
+  });
+  return res.json();
+}

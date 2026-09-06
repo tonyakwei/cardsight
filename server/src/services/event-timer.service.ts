@@ -30,6 +30,7 @@ function toState(timer: {
   overrideText: string | null;
   displayMode: string;
   displayPayload: unknown;
+  endingSelections: string[];
 }): EventTimerState {
   const now = new Date();
   return {
@@ -39,6 +40,7 @@ function toState(timer: {
     overrideText: timer.overrideText,
     displayMode: normalizeDisplayMode(timer.displayMode),
     displayPayload: normalizeDisplayPayload(timer.displayPayload),
+    endingSelections: timer.endingSelections,
     serverNow: now.toISOString(),
   };
 }
@@ -184,6 +186,22 @@ export async function setDisplay(
   const updated = await prisma.eventTimer.update({
     where: { gameId },
     data,
+  });
+  return toState(updated);
+}
+
+/**
+ * Record the ordered list of artifacts surrendered during the Day 3 tribunals.
+ * The remote sends the whole list each time, so add/remove/reorder are all one call.
+ */
+export async function setEndingSelections(
+  gameId: string,
+  artifactNames: string[],
+): Promise<EventTimerState> {
+  await getOrCreateTimer(gameId);
+  const updated = await prisma.eventTimer.update({
+    where: { gameId },
+    data: { endingSelections: artifactNames },
   });
   return toState(updated);
 }
