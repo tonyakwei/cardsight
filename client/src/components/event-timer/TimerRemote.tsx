@@ -9,6 +9,7 @@ import {
   Paper,
   SimpleGrid,
   Stack,
+  Switch,
   Text,
   TextInput,
 } from "@mantine/core";
@@ -61,6 +62,7 @@ export function TimerRemote() {
   const [timeInput, setTimeInput] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [endingInput, setEndingInput] = useState("");
+  const [vanishingInput, setVanishingInput] = useState("");
   const busyRef = useRef(false);
 
   const load = useCallback(async () => {
@@ -97,6 +99,7 @@ export function TimerRemote() {
   if (!gameId) return null;
 
   const isPaused = state?.status === "paused";
+  const vanishingActive = state?.displayMode === "vanishing";
   const groupedArtifactImages = groupArtifactImages(ARTIFACT_IMAGES);
   const selections = state?.endingSelections ?? [];
   const stackFull = selections.length >= ENDING_SLOT_COUNT;
@@ -178,6 +181,62 @@ export function TimerRemote() {
             onClick={() => gameId && withBusy(() => setTimerDisplay(gameId, "timer"))}
           >
             Show timer
+          </Button>
+        </Group>
+      </Paper>
+
+      <Paper p="md" withBorder bg="dark.8">
+        <Group justify="space-between" align="center" mb="xs">
+          <Text size="sm" fw={600}>
+            The Vanishing
+          </Text>
+          <Switch
+            checked={vanishingActive}
+            color="yellow"
+            label={vanishingActive ? "Showing" : "Hidden"}
+            disabled={busy}
+            onChange={(e) => {
+              if (!gameId) return;
+              const checked = e.currentTarget.checked;
+              if (checked) {
+                withBusy(() =>
+                  setTimerDisplay(gameId, "vanishing", {
+                    text: vanishingInput.trim() || undefined,
+                  }),
+                );
+              } else {
+                withBusy(() => setTimerDisplay(gameId, "timer"));
+              }
+            }}
+          />
+        </Group>
+        <Text size="xs" c="dimmed" mb="md">
+          Full-screen temple art with the "THE VANISHING" title, fading in and out on a loop.
+          Add a message below to show it underneath the title — leave it blank for just the
+          title.
+        </Text>
+        <Group align="flex-end">
+          <TextInput
+            label="Message (optional, shown below the title)"
+            placeholder="Kick off at 6:55 PM"
+            value={vanishingInput}
+            onChange={(e) => setVanishingInput(e.currentTarget.value)}
+            style={{ flex: 1 }}
+          />
+          <Button
+            variant="default"
+            loading={busy}
+            disabled={!vanishingActive}
+            onClick={() =>
+              gameId &&
+              withBusy(() =>
+                setTimerDisplay(gameId, "vanishing", {
+                  text: vanishingInput.trim() || undefined,
+                }),
+              )
+            }
+          >
+            Update text
           </Button>
         </Group>
       </Paper>

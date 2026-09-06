@@ -194,7 +194,7 @@ export interface ShowtimeSyncPressResponse {
 // === Event Timer ===
 
 export type EventTimerStatus = "running" | "paused";
-export type EventTimerDisplayMode = "timer" | "tribunal" | "artifact" | "ending";
+export type EventTimerDisplayMode = "timer" | "tribunal" | "artifact" | "ending" | "vanishing";
 
 export type EventTimerDisplayPayload = object | null;
 

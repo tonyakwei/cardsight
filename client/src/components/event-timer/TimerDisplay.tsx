@@ -30,6 +30,14 @@ interface EndingPayload {
   title: string;
 }
 
+interface VanishingPayload {
+  /** Optional message shown beneath the title art, e.g. "Kick off at 6:55 PM". */
+  text: string | null;
+}
+
+const VANISHING_BACKGROUND_URL = "/assets/vanishing/background.png";
+const VANISHING_TITLE_URL = "/assets/vanishing/title.png";
+
 function formatDuration(ms: number): string {
   const totalSeconds = Math.max(0, Math.round(ms / 1000));
   const hours = Math.floor(totalSeconds / 3600);
@@ -178,6 +186,10 @@ export function TimerDisplay() {
     return <EndingDisplay title={endingPayload.title} />;
   }
 
+  if (state.displayMode === "vanishing") {
+    return <VanishingDisplay text={getVanishingPayload(state).text} />;
+  }
+
   return (
     <div
       style={{
@@ -320,6 +332,13 @@ function getEndingPayload(state: EventTimerState): EndingPayload | null {
   const payload = getPayloadRecord(state);
   if (!payload || typeof payload.title !== "string") return null;
   return { title: payload.title };
+}
+
+function getVanishingPayload(state: EventTimerState): VanishingPayload {
+  const payload = getPayloadRecord(state);
+  const text =
+    typeof payload?.text === "string" && payload.text.trim().length > 0 ? payload.text : null;
+  return { text };
 }
 
 function TribunalDisplay({ payload }: { payload: TribunalPayload }) {
@@ -620,6 +639,85 @@ function EndingDisplay({ title }: { title: string }) {
       `}</style>
     </div>
   );
+}
+
+/**
+ * Ambient "kickoff" screen: the poster art (with the "Mystery Room Presents..." banner
+ * baked into the image) full-bleed, the specially-designed "THE VANISHING" title art on
+ * top, and an optional message beneath it (e.g. "Kick off at 6:55 PM"). The whole group
+ * fades in, holds, fades out, and holds blank on a 20s loop (1.5s in, 12s hold, 1.5s out,
+ * 5s blank) — same pacing as the pre-rendered YouTube loop this replaces.
+ */
+function VanishingDisplay({ text }: { text: string | null }) {
+  return (
+    <div style={{ ...fullScreenStyle("#000"), position: "relative", overflow: "hidden" }}>
+      <img
+        src={VANISHING_BACKGROUND_URL}
+        alt=""
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      <div
+        key={text ?? "_default"}
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "2.5vh",
+          padding: "0 6vw",
+          animation: "vanishTextPulse 20s linear infinite",
+        }}
+      >
+        <img
+          src={VANISHING_TITLE_URL}
+          alt="The Vanishing"
+          style={{ width: "min(74vw, 1400px)", maxHeight: "48vh", objectFit: "contain" }}
+        />
+        {text && (
+          <div
+            style={{
+              fontFamily: CINZEL_FONT,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              textAlign: "center",
+              color: "#fff",
+              WebkitTextStroke: "0.03em rgba(0,0,0,0.9)",
+              textShadow: "0 0.05em 0.3em rgba(0,0,0,0.55), 0 0 1em rgba(0,0,0,0.35)",
+              fontSize: vanishingSubtitleFontSize(text),
+            }}
+          >
+            {text}
+          </div>
+        )}
+      </div>
+      <style>{`
+        @keyframes vanishTextPulse {
+          0% { opacity: 0; }
+          7.5% { opacity: 1; }
+          67.5% { opacity: 1; }
+          75% { opacity: 0; }
+          100% { opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function vanishingSubtitleFontSize(text: string): string {
+  const len = text.length;
+  if (len <= 20) return "clamp(1.7rem, 5.2vw, 4.6rem)";
+  if (len <= 32) return "clamp(1.45rem, 4vw, 3.6rem)";
+  return "clamp(1.2rem, 3vw, 2.8rem)";
 }
 
 function fullScreenStyle(background: string): React.CSSProperties {

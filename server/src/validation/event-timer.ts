@@ -13,7 +13,7 @@ export const overrideTextSchema = z.object({
 });
 
 export const setDisplaySchema = z.object({
-  displayMode: z.enum(["timer", "tribunal", "artifact", "ending"]),
+  displayMode: z.enum(["timer", "tribunal", "artifact", "ending", "vanishing"]),
   displayPayload: z.record(z.unknown()).nullable().optional(),
   remainingMs: z.number().int().min(0).optional(),
 });
