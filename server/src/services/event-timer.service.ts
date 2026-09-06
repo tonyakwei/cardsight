@@ -46,7 +46,13 @@ function toState(timer: {
 }
 
 function normalizeDisplayMode(mode: string): EventTimerDisplayMode {
-  if (mode === "tribunal" || mode === "artifact" || mode === "ending" || mode === "vanishing") {
+  if (
+    mode === "tribunal" ||
+    mode === "artifact" ||
+    mode === "ending" ||
+    mode === "vanishing" ||
+    mode === "opening"
+  ) {
     return mode;
   }
   return "timer";

@@ -3,9 +3,16 @@ import { useParams } from "react-router";
 import { fetchTimerState, pollTimerState } from "../../api/eventTimer";
 import { DAY_THEMES } from "./dayThemes";
 import { endingCaptionParts } from "./templeEndingConfig";
+import {
+  DISCOVERY_INTERVAL_MS,
+  MOUNTAIN_HOLD_MS,
+  MOUNTAIN_SPLIT_MS,
+  TEMPLE_OPENING_IMAGES,
+} from "./templeOpeningConfig";
 import type { EventTimerState } from "@cardsight/shared";
 
-const POLL_MS = 2000;
+// A host cue is a live performance beat. Keep the TV's response comfortably under a second.
+const POLL_MS = 500;
 const TICK_MS = 1000;
 const CINZEL_FONT = "'Cinzel', serif";
 const CINZEL_FONT_URL =
@@ -33,6 +40,12 @@ interface EndingPayload {
 interface VanishingPayload {
   /** Optional message shown beneath the title art, e.g. "Kick off at 6:55 PM". */
   text: string | null;
+}
+
+interface OpeningPayload {
+  scene: "mountain" | "discoveries";
+  /** A new cue remounts the animation if the host repeats the same scene. */
+  cue: number;
 }
 
 const VANISHING_BACKGROUND_URL = "/assets/vanishing/background.png";
@@ -177,6 +190,7 @@ export function TimerDisplay() {
   const tribunalPayload = getTribunalPayload(state);
   const artifactPayload = getArtifactPayload(state);
   const endingPayload = getEndingPayload(state);
+  const openingPayload = getOpeningPayload(state);
 
   if (state.displayMode === "artifact" && artifactPayload) {
     return <ArtifactDisplay payload={artifactPayload} />;
@@ -188,6 +202,10 @@ export function TimerDisplay() {
 
   if (state.displayMode === "vanishing") {
     return <VanishingDisplay text={getVanishingPayload(state).text} />;
+  }
+
+  if (state.displayMode === "opening" && openingPayload) {
+    return <OpeningDisplay payload={openingPayload} />;
   }
 
   return (
@@ -339,6 +357,154 @@ function getVanishingPayload(state: EventTimerState): VanishingPayload {
   const text =
     typeof payload?.text === "string" && payload.text.trim().length > 0 ? payload.text : null;
   return { text };
+}
+
+function getOpeningPayload(state: EventTimerState): OpeningPayload | null {
+  const payload = getPayloadRecord(state);
+  if (!payload || (payload.scene !== "mountain" && payload.scene !== "discoveries")) return null;
+  return {
+    scene: payload.scene,
+    cue: typeof payload.cue === "number" ? payload.cue : 0,
+  };
+}
+
+function OpeningDisplay({ payload }: { payload: OpeningPayload }) {
+  if (payload.scene === "mountain") {
+    return <MountainOpening key={`mountain-${payload.cue}`} />;
+  }
+  return <DiscoveryOpening key={`discoveries-${payload.cue}`} />;
+}
+
+function MountainOpening() {
+  return (
+    <div className="temple-opening-stage temple-opening-mountain" aria-label="A mountain splits open">
+      <div className="temple-opening-mountain-half temple-opening-mountain-left">
+        <img src={TEMPLE_OPENING_IMAGES.mountain} alt="" />
+      </div>
+      <div className="temple-opening-mountain-half temple-opening-mountain-right">
+        <img src={TEMPLE_OPENING_IMAGES.mountain} alt="" />
+      </div>
+      <OpeningStyles />
+    </div>
+  );
+}
+
+function DiscoveryOpening() {
+  return (
+    <div className="temple-opening-stage temple-opening-discoveries" aria-label="The hidden city is revealed">
+      <img className="temple-opening-panel temple-opening-cavern" src={TEMPLE_OPENING_IMAGES.cavern} alt="" />
+      <img className="temple-opening-panel temple-opening-street" src={TEMPLE_OPENING_IMAGES.street} alt="" />
+      <img className="temple-opening-panel temple-opening-city" src={TEMPLE_OPENING_IMAGES.city} alt="" />
+      <OpeningStyles />
+    </div>
+  );
+}
+
+function OpeningStyles() {
+  return (
+    <style>{`
+      .temple-opening-stage {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background: #070706;
+      }
+      .temple-opening-mountain-half {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        animation-duration: ${MOUNTAIN_SPLIT_MS}ms;
+        animation-delay: ${MOUNTAIN_HOLD_MS}ms;
+        animation-timing-function: cubic-bezier(.22,.78,.18,1);
+        animation-fill-mode: both;
+        will-change: transform;
+      }
+      .temple-opening-mountain-half img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+      .temple-opening-mountain-left {
+        clip-path: polygon(0 0, 51% 0, 49% 15%, 53% 29%, 48% 43%, 52% 55%, 48% 70%, 51% 85%, 49% 100%, 0 100%);
+        animation-name: temple-opening-split-left;
+      }
+      .temple-opening-mountain-right {
+        clip-path: polygon(51% 0, 100% 0, 100% 100%, 49% 100%, 51% 85%, 48% 70%, 52% 55%, 48% 43%, 53% 29%, 49% 15%);
+        animation-name: temple-opening-split-right;
+      }
+      @keyframes temple-opening-split-left {
+        0%, 10% { transform: translateX(0); }
+        14% { transform: translate(-0.5vw, 0.4vh) rotate(-0.12deg); }
+        18% { transform: translate(0.65vw, -0.3vh) rotate(0.11deg); }
+        23% { transform: translate(-0.7vw, 0.25vh) rotate(-0.1deg); }
+        28% { transform: translate(0.35vw, -0.15vh); }
+        100% { transform: translateX(-110vw); }
+      }
+      @keyframes temple-opening-split-right {
+        0%, 10% { transform: translateX(0); }
+        14% { transform: translate(0.5vw, -0.4vh) rotate(0.12deg); }
+        18% { transform: translate(-0.65vw, 0.3vh) rotate(-0.11deg); }
+        23% { transform: translate(0.7vw, -0.25vh) rotate(0.1deg); }
+        28% { transform: translate(-0.35vw, 0.15vh); }
+        100% { transform: translateX(110vw); }
+      }
+      .temple-opening-panel {
+        position: absolute;
+        display: block;
+        width: 33.34vw;
+        height: 100vh;
+        object-fit: cover;
+        border: 0;
+        box-shadow: inset -1px 0 0 rgba(246, 221, 160, 0.58), 16px 0 36px rgba(0, 0, 0, 0.34);
+        will-change: transform, opacity;
+        animation-duration: 760ms;
+        animation-timing-function: cubic-bezier(.18,.86,.2,1);
+        animation-fill-mode: both;
+      }
+      .temple-opening-cavern {
+        left: 0;
+        top: 0;
+        z-index: 1;
+        object-position: 48% center;
+        animation-name: temple-opening-cavern-in;
+      }
+      .temple-opening-street {
+        left: 33.33vw;
+        top: 0;
+        z-index: 2;
+        object-position: 52% center;
+        animation-name: temple-opening-street-in;
+        animation-delay: ${DISCOVERY_INTERVAL_MS}ms;
+      }
+      .temple-opening-city {
+        right: 0;
+        bottom: 0;
+        z-index: 3;
+        object-position: 50% center;
+        animation-name: temple-opening-city-in;
+        animation-delay: ${DISCOVERY_INTERVAL_MS * 2}ms;
+      }
+      @keyframes temple-opening-cavern-in {
+        from { opacity: 0; transform: translate(-20%, 110%) rotate(-2deg); }
+        to { opacity: 1; transform: translate(0, 0) rotate(0); }
+      }
+      @keyframes temple-opening-street-in {
+        from { opacity: 0; transform: translateY(-115%) rotate(1.5deg); }
+        to { opacity: 1; transform: translateY(0) rotate(0); }
+      }
+      @keyframes temple-opening-city-in {
+        from { opacity: 0; transform: translate(20%, 110%) rotate(-1.5deg); }
+        to { opacity: 1; transform: translate(0, 0) rotate(0); }
+      }
+      @media (max-aspect-ratio: 4/3) {
+        .temple-opening-panel { width: 33.34vw; height: 100vh; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .temple-opening-mountain-half, .temple-opening-panel { animation-duration: 1ms; animation-delay: 0ms; }
+      }
+    `}</style>
+  );
 }
 
 function TribunalDisplay({ payload }: { payload: TribunalPayload }) {

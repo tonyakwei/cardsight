@@ -100,6 +100,7 @@ export function TimerRemote() {
 
   const isPaused = state?.status === "paused";
   const vanishingActive = state?.displayMode === "vanishing";
+  const openingScene = openingSceneFromState(state);
   const groupedArtifactImages = groupArtifactImages(ARTIFACT_IMAGES);
   const selections = state?.endingSelections ?? [];
   const stackFull = selections.length >= ENDING_SLOT_COUNT;
@@ -181,6 +182,43 @@ export function TimerRemote() {
             onClick={() => gameId && withBusy(() => setTimerDisplay(gameId, "timer"))}
           >
             Show timer
+          </Button>
+        </Group>
+      </Paper>
+
+      <Paper p="md" withBorder bg="dark.8">
+        <Group justify="space-between" align="center" mb="xs">
+          <Text size="sm" fw={600}>
+            Expedition opening
+          </Text>
+          <Badge color={openingScene ? "yellow" : "gray"} variant="light">
+            {openingScene === "mountain" ? "Mountain" : openingScene === "discoveries" ? "Discoveries" : "Ready"}
+          </Badge>
+        </Group>
+        <Text size="xs" c="dimmed" mb="md">
+          First cue: the mountain holds for three seconds, shakes, then opens over 1.25 seconds.
+          Second cue: cavern rises from the left, street drops from above after three seconds, then
+          city rises from the right three seconds later.
+        </Text>
+        <Group>
+          <Button
+            color="yellow"
+            loading={busy}
+            onClick={() =>
+              gameId && withBusy(() => setTimerDisplay(gameId, "opening", { scene: "mountain", cue: Date.now() }))
+            }
+          >
+            1. Split the mountain
+          </Button>
+          <Button
+            color="yellow"
+            variant="default"
+            loading={busy}
+            onClick={() =>
+              gameId && withBusy(() => setTimerDisplay(gameId, "opening", { scene: "discoveries", cue: Date.now() }))
+            }
+          >
+            2. Reveal the city
           </Button>
         </Group>
       </Paper>
@@ -619,4 +657,12 @@ function isActiveTribunal(state: EventTimerState | null, title: string): boolean
 function isActiveArtifact(state: EventTimerState | null, imageUrl: string): boolean {
   const payload = payloadRecord(state);
   return state?.displayMode === "artifact" && payload?.imageUrl === imageUrl;
+}
+
+function openingSceneFromState(state: EventTimerState | null): "mountain" | "discoveries" | null {
+  const payload = payloadRecord(state);
+  return state?.displayMode === "opening" &&
+    (payload?.scene === "mountain" || payload?.scene === "discoveries")
+    ? payload.scene
+    : null;
 }
